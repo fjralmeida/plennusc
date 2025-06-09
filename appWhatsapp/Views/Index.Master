@@ -23,8 +23,7 @@
 
             <!-- 🔝 Barra superior -->
             <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light w-100">
-                 
-                 
+
                 <!-- 🔥 Logo (dinâmico) -->
                 <div class="d-flex align-items-center gap-2">
                <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 24px;" />
@@ -40,7 +39,6 @@
                         <asp:TextBox ID="txtBusca" runat="server" CssClass="form-control border-start-0" Placeholder="Search..." />
                     </div>
                 </div>
-
 
                 <!-- 🌞 🔔 ⬛ 👤 Ações -->
                 <div class="d-flex align-items-center gap-3">
