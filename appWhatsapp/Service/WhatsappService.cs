@@ -28,7 +28,7 @@ namespace appWhatsapp.Service
                         {{
                           ""media_hsm_configuration_id"": ""2daf52d0-a086-43b5-8033-72dd51dd4ea8"",
                           ""hsm_type"": ""media_hsm"",
-                          ""campaign_id"": ""2c8a68fc-6bd2-4885-a2f4-f7a4df161361"",
+                          ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
                           ""system"": ""whatsapp"",
                           ""contacts"": [ 
                             {{ 

@@ -19,7 +19,19 @@ namespace appWhatsapp.Views
         {
             if (!IsPostBack)
             {
+                //ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
+                //DataTable dtPerfil = util.ConsultaInfoPerfil();
 
+                //if (dtPerfil.Rows.Count > 0)
+                //{
+                //    lblNomeEmpresa.Text = dtPerfil.Rows[0]["Nome"]?.ToString();
+
+                //    string simbolo = dtPerfil.Rows[0]["Conf_Simbolo"]?.ToString();
+                //    if (!string.IsNullOrEmpty(simbolo))
+                //    {
+                //        imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + simbolo);
+                //    }
+                //}
             }
         }
         protected void ButtonSignIn_Click(object sender, EventArgs e)
@@ -28,19 +40,42 @@ namespace appWhatsapp.Views
             string senha = TextBoxPassword.Text;
 
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
-            DataTable dtUser = util.ConsultaLoginUsuario(login, senha);
+            DataTable dtUser = util.ConsultaLoginComEmpresa(login, senha);
 
             if (dtUser.Rows.Count > 0)
             {
-                // Usuário autenticado
-                Session["UsuarioLogado"] = dtUser.Rows[0]["NomeUsuario"].ToString();
-                Response.Redirect("Home.aspx");
+                var row = dtUser.Rows[0];
 
+                bool usuarioAtivo = Convert.ToBoolean(row["UsuarioAtivo"]);
+                bool empresaAtiva = Convert.ToBoolean(row["EmpresaAtiva"]);
+                bool empresaLiberaAcesso = Convert.ToBoolean(row["Conf_LiberaAcesso"]);
+
+                if (!usuarioAtivo)
+                {
+                    // Usuário inativo
+                    LabelErro.Text = "Usuário está desativado.";
+                    LabelErro.Visible = true;
+                }
+
+                if (!empresaAtiva || !empresaLiberaAcesso)
+                {
+                    // Empresa inativa ou bloqueada
+                    LabelErro.Text = "Empresa desativada ou acesso bloqueado.";
+                    LabelErro.Visible = true;
+                }
+
+                // Tudo OK — salva na sessão
+                Session["CodUsuario"] = row["CodAutenticacaoAcesso"];
+                Session["NomeUsuario"] = row["NomeUsuario"];
+                Session["CodEmpresa"] = row["CodEmpresa"];
+                Session["NomeEmpresa"] = row["NomeFantasia"];
+
+                Response.Redirect("Home.aspx");
             }
             else
             {
-                //LabelErro.Text = "Usuário ou senha inválidos.";
+                LabelErro.Text = "Usuário ou senha inválidos.";
             }
-        } 
+        }
     }
 }

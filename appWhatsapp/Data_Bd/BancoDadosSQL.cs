@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Collections.Generic;
 
 namespace appWhatsapp.Data_Bd
 {
@@ -46,7 +47,7 @@ namespace appWhatsapp.Data_Bd
                 conPlennus.Close();
         }
 
-        // ==== Métodos de Acesso ====
+        // ==== Métodos de Acesso Simples ====
 
         public DataTable LerAlianca(string cmdsql)
         {
@@ -89,6 +90,86 @@ namespace appWhatsapp.Data_Bd
             {
                 comando.ExecuteNonQuery();
             }
+            DesconectarPlennus();
+        }
+
+        // ==== Métodos de Acesso com Parâmetros ====
+
+        public DataTable LerAlianca(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarAlianca();
+            DataTable dt = new DataTable();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conAlianca))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+            }
+
+            DesconectarAlianca();
+            return dt;
+        }
+
+        public void ExecutarAlianca(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarAlianca();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conAlianca))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                cmd.ExecuteNonQuery();
+            }
+
+            DesconectarAlianca();
+        }
+
+        public DataTable LerPlennus(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+            DataTable dt = new DataTable();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+            }
+
+            DesconectarPlennus();
+            return dt;
+        }
+
+        public void ExecutarPlennus(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                cmd.ExecuteNonQuery();
+            }
+
             DesconectarPlennus();
         }
     }

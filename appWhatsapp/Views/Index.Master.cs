@@ -16,21 +16,30 @@ namespace appWhatsapp.Views
         {
             if (!IsPostBack)
             {
-                // Busca (opcional: preencher automaticamente)
                 txtBusca.Text = "";
 
-                // Usuário logado (de Session)
-                lblUsuario.Text = Session["UsuarioLogado"]?.ToString() ?? "Usuário";
+                lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
+                lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
 
-                ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
-                DataTable dtUser = util.ConsultaInfoPerfil();
-
-                if (dtUser.Rows.Count > 0)
+                // Se tiver o CodEmpresa na sessão, carrega a logo correta
+                if (Session["CodEmpresa"] != null)
                 {
-                    lblNomeSistema.Text = dtUser.Rows[0]["Nome"]?.ToString();
-                    imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtUser.Rows[0]["Conf_Simbolo"].ToString());
+                    int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
 
+                    CarregarInfoEmpresa(codEmpresa);
                 }
+            }
+        }
+
+        private void CarregarInfoEmpresa(int codEmpresa)
+        {
+            ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
+            DataTable dtEmpresa = util.ConsultaInfoEmpresa(codEmpresa);
+
+            if (dtEmpresa.Rows.Count > 0)
+            {
+                imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
+                lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeFantasia"].ToString();
             }
         }
     }

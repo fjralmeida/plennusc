@@ -117,3 +117,10 @@ input[type="password"],
     font-weight: bold;
     margin-top: 10px;
 }
+
+.error-message {
+    margin-top: 10px;
+    color: red;
+    font-size: 0.9rem;
+}
+

@@ -27,24 +27,38 @@ namespace appWhatsapp.SqlQueries
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer(); // seu objeto de conexão com o banco
             return db.LerAlianca(sql);
         }
-
-        public DataTable ConsultaLoginUsuario(string login, string senha)
+        public DataTable ConsultaLoginComEmpresa(string login, string senha)
         {
-            // Calcular o hash SHA-512 da senha
             string senhaHash = CriptografiaUtil.CalcularHashSHA512(senha);
 
+            string sql = @"
+                            SELECT 
+                                AA.CodAutenticacaoAcesso,
+                                AA.NomeUsuario,
+                                AA.UsrNomeLogin,
+                                AA.Conf_Ativo AS UsuarioAtivo,
+                                SE.CodEmpresa,
+                                E.RazaoSocial,
+                                E.NomeFantasia,
+                                E.Conf_Ativo AS EmpresaAtiva,
+                                E.Conf_LiberaAcesso
+                            FROM AutenticacaoAcesso AA
+                            INNER JOIN SistemaEmpresaUsuario SEU ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
+                            INNER JOIN SistemaEmpresa SE ON SE.CodSistemaEmpresa = SEU.CodSistemaEmpresa
+                            INNER JOIN Empresa E ON E.CodEmpresa = SE.CodEmpresa
+                            WHERE AA.UsrNomeLogin = @login
+                              AND AA.UsrPasswd = @senhaHash";
 
-            string sql = $@"
-                            SELECT *
-                            FROM AutenticacaoAcesso
-                            WHERE UsrNomeLogin = '{login}' 
-                              AND UsrPasswd = '{senhaHash}'
-                              AND Conf_Ativo = 1 
-                              AND Conf_PermiteAcesso = 1";
+                                var parametros = new Dictionary<string, object>
+                        {
+                            { "@login", login },
+                            { "@senhaHash", senhaHash }
+                        };
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
-            return db.LerPlennus(sql);
+            return db.LerPlennus(sql, parametros);
         }
+
 
         public DataTable ConsultaInfoPerfil()
         {
@@ -56,6 +70,23 @@ namespace appWhatsapp.SqlQueries
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(sql);
+        }
+
+        public DataTable ConsultaInfoEmpresa(int codEmpresa)
+        {
+            string sql = @"
+                            SELECT NomeFantasia, Conf_Logo
+                            FROM Empresa
+                            WHERE CodEmpresa = @CodEmpresa
+                        ";
+
+                                var parametros = new Dictionary<string, object>
+                        {
+                            { "@CodEmpresa", codEmpresa }
+                        };
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            return db.LerPlennus(sql, parametros);
         }
     }
 }

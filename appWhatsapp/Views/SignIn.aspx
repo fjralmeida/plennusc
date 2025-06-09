@@ -21,8 +21,10 @@
             </div>
             <div class="right">
                 <div class="logo">
-                    <img src="../Content/Img/logo.svg" alt="Logo" />
+                    <asp:Image ID="imgLogo" runat="server" AlternateText="Logo da Empresa" />
                 </div>
+                <h1><asp:Label ID="lblNomeEmpresa" runat="server" Text="Minha Empresa"></asp:Label></h1>
+
                 <h2>Entrar</h2>
                 <p class="subtitle">Acesse sua conta</p>
 
@@ -35,9 +37,11 @@
                 <asp:TextBox ID="TextBoxPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Digite sua senha" />
 
                 <asp:Button ID="ButtonSignIn" runat="server" CssClass="signin" Text="Entrar" OnClick="ButtonSignIn_Click" />
+
+                <asp:Label ID="LabelErro" runat="server" ForeColor="Red" CssClass="error-message" Visible="false" />
             </div>
         </div>
     </div>
-</form>
+  </form>
 </body>
 </html>
