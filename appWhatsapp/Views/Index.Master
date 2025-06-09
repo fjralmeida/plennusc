@@ -1,0 +1,116 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="appWhatsapp.Views.Index" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Estilo personalizado para notificações -->
+    <link href="assets/css/custom-notifications.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container-fluid position-relative p-0 m-0">
+
+            <!-- 🔝 Barra superior -->
+            <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light w-100">
+
+                <!-- 🔥 Logo (dinâmico) -->
+                <div class="d-flex align-items-center gap-2">
+               <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 24px;" />
+                    <asp:Label ID="lblNomeSistema" runat="server" CssClass="fw-semibold text-primary"></asp:Label>
+                </div>
+
+                <!-- 🔍 Campo de busca (dinâmico) -->
+                <div class="flex-grow-1 px-4">
+                    <div class="input-group shadow-sm" style="max-width: 400px; margin: 0 auto;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <asp:TextBox ID="txtBusca" runat="server" CssClass="form-control border-start-0" Placeholder="Search..." />
+                    </div>
+                </div>
+
+                <!-- 🌞 🔔 ⬛ 👤 Ações -->
+                <div class="d-flex align-items-center gap-3">
+
+                    <%-- <!-- Modo claro/escuro -->
+                    <button class="btn btn-light rounded-circle p-2" title="Modo claro/escuro">
+                        <i class="bi bi-sun-fill"></i>
+                    </button>
+
+                    <!-- Notificações -->
+                    <div class="dropdown">
+                        <button class="btn btn-light rounded-circle p-2" id="dropdownNotificacoes" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownNotificacoes" style="width: 320px;">
+                            <li class="notification-item p-2 border-bottom">
+                                <div class="d-flex align-items-start">
+                                    <img class="avatar-img me-2" src="assets/img/team/40x40/57.webp" alt="avatar" />
+                                    <div>
+                                        <h6 class="mb-0">Jane Foster</h6>
+                                        <small>Criou um evento: Reunião de equipe</small><br />
+                                        <small class="text-muted">14:56 • Junho 6, 2025</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="notification-item p-2 border-bottom">
+                                <div class="d-flex align-items-start">
+                                    <img class="avatar-img me-2" src="assets/img/team/40x40/avatar.webp" alt="avatar" />
+                                    <div>
+                                        <h6 class="mb-0">Jessie Samson</h6>
+                                        <small>Curtiu seu comentário no grupo Marketing</small><br />
+                                        <small class="text-muted">12:30 • Junho 6, 2025</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="text-center py-2">
+                                <a href="#" class="btn btn-sm btn-link text-primary">Ver todas as notificações</a>
+                            </li>
+                        </ul>
+                    </div> --%>
+
+                    <!-- Apps -->
+                    <button class="btn btn-light rounded-circle p-2" title="Apps">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                    </button>
+
+                    <!-- Usuário / Avatar (dinâmico) -->
+                   <div class="dropdown">
+                        <img src='<%= ResolveUrl("~/assets/img/team/40x40/usuario.webp") %>'
+                             class="rounded-circle dropdown-toggle"
+                             data-bs-toggle="dropdown"
+                             style="width: 40px; height: 40px; object-fit: cover; cursor: pointer;" />
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="dropdown-header text-center fw-semibold">
+                                <asp:Label ID="lblUsuario" runat="server" />
+                            </li>
+                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                            <li><a class="dropdown-item" href="#">Configurações</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item text-danger" href="logout.aspx">Sair</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Conteúdo -->
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+        </div>
+    </form>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
