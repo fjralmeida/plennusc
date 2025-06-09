@@ -17,7 +17,10 @@ namespace appWhatsapp.Views
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
 
+            }
         }
         protected void ButtonSignIn_Click(object sender, EventArgs e)
         {

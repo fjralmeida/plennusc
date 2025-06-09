@@ -28,7 +28,7 @@ namespace appWhatsapp.Views
                 if (dtUser.Rows.Count > 0)
                 {
                     lblNomeSistema.Text = dtUser.Rows[0]["Nome"]?.ToString();
-                    imgLogo.ImageUrl = ResolveUrl("~" + dtUser.Rows[0]["Conf_Simbolo"].ToString());
+                    imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtUser.Rows[0]["Conf_Simbolo"].ToString());
 
                 }
             }

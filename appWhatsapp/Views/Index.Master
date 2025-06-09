@@ -26,7 +26,7 @@
 
                 <!-- 🔥 Logo (dinâmico) -->
                 <div class="d-flex align-items-center gap-2">
-               <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 24px;" />
+                    <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 80px; width: auto;" />
                     <asp:Label ID="lblNomeSistema" runat="server" CssClass="fw-semibold text-primary"></asp:Label>
                 </div>
 
