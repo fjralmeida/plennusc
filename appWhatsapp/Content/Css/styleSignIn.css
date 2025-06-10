@@ -13,6 +13,19 @@ body {
     align-items: center;
 }
 
+h1 {
+    font-size: 28px;
+    color: #1e3a8a; /* azul escuro */
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    background: linear-gradient(to right, #e96969, #dbb809);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
 .container {
     width: 100%;
     max-width: 1200px;
@@ -76,7 +89,7 @@ body {
 .subtitle {
     font-size: 14px;
     color: #888;
-    margin-bottom: 20px;
+    margin-top: 20px;
     display: flex;
     justify-content: center;
 }
@@ -107,7 +120,7 @@ input[type="password"],
 }
 
 .signin {
-    background-color: #2563eb;
+    background-color: #091225;
     color: #fff;
     padding: 10px;
     border: none;

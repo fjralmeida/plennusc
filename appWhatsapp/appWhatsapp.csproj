@@ -148,9 +148,12 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Css\custom-notifications.css.css" />
+    <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
     <Content Include="Uploads\logoVallor.png" />
     <Content Include="Content\Site.css" />
+    <Content Include="Uploads\logo_plennus.png" />
+    <Content Include="Uploads\logo_plennus_sb.png" />
     <Content Include="Views\Home.aspx" />
     <Content Include="Views\SignIn.aspx" />
     <Content Include="Views\TelaEnvio.aspx" />

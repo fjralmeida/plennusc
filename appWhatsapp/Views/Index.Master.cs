@@ -22,24 +22,24 @@ namespace appWhatsapp.Views
                 lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
 
                 // Se tiver o CodEmpresa na sessão, carrega a logo correta
-                if (Session["CodEmpresa"] != null)
+                if (Session["CodSistema"] != null)
                 {
-                    int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
+                    int codSistema = Convert.ToInt32(Session["CodSistema"]);
 
-                    CarregarInfoEmpresa(codEmpresa);
+                    CarregarInfoEmpresa(codSistema);
                 }
             }
         }
 
-        private void CarregarInfoEmpresa(int codEmpresa)
+        private void CarregarInfoEmpresa(int codSistema)
         {
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
-            DataTable dtEmpresa = util.ConsultaInfoEmpresa(codEmpresa);
+            DataTable dtEmpresa = util.ConsultaInfoEmpresa(codSistema);
 
             if (dtEmpresa.Rows.Count > 0)
             {
                 imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
-                lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeFantasia"].ToString();
+                lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
         }
     }

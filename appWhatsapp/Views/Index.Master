@@ -9,11 +9,59 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Estilo personalizado para notificações -->
+    <!-- Estilo personalizado -->
     <link href="assets/css/custom-notifications.css" rel="stylesheet" />
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <style>
+        .nome-sistema {
+            font-weight: 600;
+            background: linear-gradient(to right, #e96969, #dbb809);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            border-right: 1px solid #ddd;
+            padding: 1rem;
+            height: calc(100vh - 70px);
+            /* overflow-y removido para tirar scroll */
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            display: block;
+            padding: 0.25rem 0;
+        }
+
+        .sidebar a:hover {
+            color: #0d6efd;
+        }
+
+        .sidebar .collapse a {
+            font-size: 0.95rem;
+            font-weight: 400;
+            padding-left: 1rem;
+        }
+
+        body {
+            overflow: hidden; /* previne scroll da janela */
+        }
+    </style>
 
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
@@ -22,15 +70,14 @@
         <div class="container-fluid position-relative p-0 m-0">
 
             <!-- 🔝 Barra superior -->
-            <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light w-100">
-
-                <!-- 🔥 Logo (dinâmico) -->
+            <div class="d-flex justify-content-between align-items-center py-2 px-3 border-bottom bg-light w-100" style="height: 70px;">
+                <!-- Logo -->
                 <div class="d-flex align-items-center gap-2">
-                    <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 80px; width: auto;" />
-                    <asp:Label ID="lblNomeSistema" runat="server" CssClass="fw-semibold text-primary"></asp:Label>
+                    <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 50px; width: auto;" />
+                    <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
                 </div>
 
-                <!-- 🔍 Campo de busca (dinâmico) -->
+                <!-- Busca -->
                 <div class="flex-grow-1 px-4">
                     <div class="input-group shadow-sm" style="max-width: 400px; margin: 0 auto;">
                         <span class="input-group-text bg-white border-end-0">
@@ -40,57 +87,16 @@
                     </div>
                 </div>
 
-                <!-- 🌞 🔔 ⬛ 👤 Ações -->
-                <div class="d-flex align-items-center gap-3">
-
-                    <%-- <!-- Modo claro/escuro -->
-                    <button class="btn btn-light rounded-circle p-2" title="Modo claro/escuro">
-                        <i class="bi bi-sun-fill"></i>
-                    </button>
-
-                    <!-- Notificações -->
-                    <div class="dropdown">
-                        <button class="btn btn-light rounded-circle p-2" id="dropdownNotificacoes" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-bell-fill"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownNotificacoes" style="width: 320px;">
-                            <li class="notification-item p-2 border-bottom">
-                                <div class="d-flex align-items-start">
-                                    <img class="avatar-img me-2" src="assets/img/team/40x40/57.webp" alt="avatar" />
-                                    <div>
-                                        <h6 class="mb-0">Jane Foster</h6>
-                                        <small>Criou um evento: Reunião de equipe</small><br />
-                                        <small class="text-muted">14:56 • Junho 6, 2025</small>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="notification-item p-2 border-bottom">
-                                <div class="d-flex align-items-start">
-                                    <img class="avatar-img me-2" src="assets/img/team/40x40/avatar.webp" alt="avatar" />
-                                    <div>
-                                        <h6 class="mb-0">Jessie Samson</h6>
-                                        <small>Curtiu seu comentário no grupo Marketing</small><br />
-                                        <small class="text-muted">12:30 • Junho 6, 2025</small>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="text-center py-2">
-                                <a href="#" class="btn btn-sm btn-link text-primary">Ver todas as notificações</a>
-                            </li>
-                        </ul>
-                    </div> --%>
-
-                    <!-- Apps -->
-                    <button class="btn btn-light rounded-circle p-2" title="Apps">
+                <!-- Ícones e usuário -->
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-light rounded-circle p-1" title="Apps">
                         <i class="bi bi-grid-3x3-gap-fill"></i>
                     </button>
-
-                    <!-- Usuário / Avatar (dinâmico) -->
-                   <div class="dropdown">
+                    <div class="dropdown">
                         <img src='<%= ResolveUrl("~/assets/img/team/40x40/usuario.webp") %>'
-                             class="rounded-circle dropdown-toggle"
+                             class="rounded-circle dropdown-toggle user-avatar"
                              data-bs-toggle="dropdown"
-                             style="width: 40px; height: 40px; object-fit: cover; cursor: pointer;" />
+                             aria-expanded="false" />
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li class="dropdown-header text-center fw-semibold">
                                 <asp:Label ID="lblUsuario" runat="server" />
@@ -101,12 +107,52 @@
                             <li><a class="dropdown-item text-danger" href="logout.aspx">Sair</a></li>
                         </ul>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Conteúdo -->
-            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+            <!-- 🧱 Corpo: Sidebar + Conteúdo -->
+            <div class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
+                <!-- Sidebar -->
+                <nav class="sidebar">
+                    <ul class="list-unstyled">
+                        <li>
+                            <a class="d-flex justify-content-between align-items-center gap-2" data-bs-toggle="collapse" href="#menuEcommerce" role="button" aria-expanded="false">
+                                <span><i class="bi bi-shop"></i> E-commerce</span>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </a>
+                            <div class="collapse" id="menuEcommerce">
+                                <a href="#">Dashboard</a>
+                                <a href="#">Orders</a>
+                            </div>
+                        </li>
+                        <li class="mt-2">
+                            <a class="d-flex justify-content-between align-items-center gap-2" data-bs-toggle="collapse" href="#menuKanban" role="button" aria-expanded="false">
+                                <span><i class="bi bi-columns-gap"></i> Kanban</span>
+                                <i class="bi bi-chevron-down toggle-icon"></i>
+                            </a>
+                            <div class="collapse" id="menuKanban">
+                                <a href="#">Board 1</a>
+                                <a href="#">Board 2</a>
+                            </div>
+                        </li>
+                        <li class="mt-2">
+                            <a class="d-flex align-items-center gap-2" href="#">
+                                <i class="bi bi-chat-dots"></i> Chat
+                            </a>
+                        </li>
+                        <li class="mt-2">
+                            <a class="d-flex align-items-center gap-2" href="#">
+                                <i class="bi bi-envelope"></i> Email
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Conteúdo -->
+                <div class="flex-grow-1 p-3 overflow-auto">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+                </div>
+            </div>
         </div>
     </form>
 

@@ -25,7 +25,7 @@
                 </div>
                 <h1><asp:Label ID="lblNomeEmpresa" runat="server" Text="Minha Empresa"></asp:Label></h1>
 
-                <h2>Entrar</h2>
+              
                 <p class="subtitle">Acesse sua conta</p>
 
                 <div class="divider">ou use seu e-mail</div>
