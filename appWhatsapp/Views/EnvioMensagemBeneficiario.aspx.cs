@@ -1,25 +1,17 @@
-﻿using appWhatsapp.SqlQueries;
+﻿using appWhatsapp.Models;
+using appWhatsapp.Service;
+using appWhatsapp.SqlQueries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Text;
-using appWhatsapp.Service;
-using System.IO;
-using Microsoft.Win32;
-using appWhatsapp.Models;
 
-namespace appWhatsapp.Controller
+namespace appWhatsapp.Views
 {
-    public partial class TelaEnvio : System.Web.UI.Page
+    public partial class EnvioMensagemBeneficiario : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -110,8 +102,8 @@ namespace appWhatsapp.Controller
             foreach (var dados in mensagens)
             {
                 string resultado = await api.ConexaoApiAsync(
-                    new List<string> { dados.Telefone }, 
-                    dados.Field8,                        
+                    new List<string> { dados.Telefone },
+                    dados.Field8,
                     dados.Field1,
                     dados.Field2,
                     dados.Field3,
@@ -135,8 +127,11 @@ namespace appWhatsapp.Controller
                 CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
                 if (chk != null && chk.Checked)
                 {
-                    string telefone = "553173069983";
-                    //string telefone = FormatTelefone(telefoneBruto);
+
+
+
+                    string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
+                    string telefone = FormatTelefone(telefoneBruto);
 
                     if (string.IsNullOrEmpty(telefone))
                         continue; // Ignora se for inválido ou fixo
@@ -182,7 +177,7 @@ namespace appWhatsapp.Controller
             // Caso tenha 9 dígitos (sem DDD), remover o 9 e adicionar DDD 31
             if (clean.Length == 9 && clean.StartsWith("9"))
             {
-                return "55" + "31" + clean.Substring(1); 
+                return "55" + "31" + clean.Substring(1);
             }
 
             // Caso tenha 10 dígitos (DDD + número sem 9) — já está ok
@@ -200,8 +195,6 @@ namespace appWhatsapp.Controller
             // Se não bater com nenhum formato válido
             return null;
         }
-
-
 
     }
 }

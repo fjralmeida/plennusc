@@ -154,6 +154,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Uploads\logo_plennus.png" />
     <Content Include="Uploads\logo_plennus_sb.png" />
+    <Content Include="Views\EnvioMensagemBeneficiario.aspx" />
     <Content Include="Views\Home.aspx" />
     <Content Include="Views\SignIn.aspx" />
     <Content Include="Views\TelaEnvio.aspx" />
@@ -224,6 +225,13 @@
     </Compile>
     <Compile Include="Models\DadosMensagem.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
+    <Compile Include="Views\EnvioMensagemBeneficiario.aspx.cs">
+      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\EnvioMensagemBeneficiario.aspx.designer.cs">
+      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

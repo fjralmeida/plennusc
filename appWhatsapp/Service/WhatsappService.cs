@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -110,6 +111,21 @@ namespace appWhatsapp.Service
                         var responseBody = await response.Content.ReadAsStringAsync();
 
                         resultadoFinal.AppendLine($"✅ {telefone}: {response.StatusCode} - {responseBody}");
+
+                        // Tenta extrair o ID do envio
+                        var json = JObject.Parse(responseBody);
+                        var id = json["id"]?.ToString();
+
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            // Faz o GET para verificar status da mensagem enviada
+                            var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+                            resultadoFinal.AppendLine(statusResponse);
+                        }
+                        else
+                        {
+                            resultadoFinal.AppendLine($"⚠️ {telefone}: ID não encontrado na resposta.");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -119,8 +135,61 @@ namespace appWhatsapp.Service
                     await Task.Delay(5000);
                 }
             }
+
             return resultadoFinal.ToString();
         }
 
+        private async Task<string> ConsultarStatusEnvioAsync(string id, string telefone, string apiKey)
+        {
+            var resultado = new StringBuilder();
+            var url = $"https://vallorbeneficios.vollsc.com/api/mailings/{id}?per=100&page=1";
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                try
+                {
+                    var response = await client.GetAsync(url);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = JObject.Parse(responseBody);
+                        var unidades = json["items"];
+
+                        if (unidades != null)
+                        {
+                            foreach (var unidade in unidades)
+                            {
+                                var numero = unidade["phone_number"]?.ToString();
+                                var enviado = unidade["sent"]?.ToString();
+                                var falhou = unidade["failed"]?.ToString();
+
+                                var status = !string.IsNullOrEmpty(falhou) ? "❌ Falhou" : "✅ Enviado";
+
+                                resultado.AppendLine($" {numero} - {status} - Enviado: {enviado}");
+                            }
+                        }
+                        else
+                        {
+                            resultado.AppendLine($"⚠️ Nenhuma unidade retornada para o ID {id}");
+                        }
+                    }
+                    else
+                    {
+                        resultado.AppendLine($"⚠️ Falha ao consultar status: {response.StatusCode} - {responseBody}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    resultado.AppendLine($"❌ Erro ao consultar status: {ex.Message}");
+                }
+            }
+
+            return resultado.ToString();
+        }
     }
 }

@@ -125,16 +125,17 @@
                                 <a href="#">Orders</a>
                             </div>
                         </li>
-                        <li class="mt-2">
-                            <a class="d-flex justify-content-between align-items-center gap-2" data-bs-toggle="collapse" href="#menuKanban" role="button" aria-expanded="false">
-                                <span><i class="bi bi-columns-gap"></i> Kanban</span>
+                       <li class="mt-2">
+                            <a class="d-flex justify-content-between align-items-center gap-2" data-bs-toggle="collapse" href="#menuChatbot" role="button" aria-expanded="false">
+                                <span><i class="bi bi-robot"></i> Chatbot</span>
                                 <i class="bi bi-chevron-down toggle-icon"></i>
                             </a>
-                            <div class="collapse" id="menuKanban">
-                                <a href="#">Board 1</a>
-                                <a href="#">Board 2</a>
+                            <div class="collapse" id="menuChatbot">
+                                <a href="EnvioMensagemBeneficiario.aspx">Beneficiário</a>
+                                <a href="#">Empresa</a>
                             </div>
                         </li>
+
                         <li class="mt-2">
                             <a class="d-flex align-items-center gap-2" href="#">
                                 <i class="bi bi-chat-dots"></i> Chat
