@@ -12,43 +12,45 @@ namespace appWhatsapp.SqlQueries
     {
         public DataTable ConsultaAssociados(DateTime? dataIni = null, DateTime? dataFim = null)
         {
-            string sql = @"
-                            SELECT {0}
-                                   A.CODIGO_ASSOCIADO,
-                                   A.NOME_ASSOCIADO,
-                                   C.NOME_PLANO_ABREVIADO,
-                                   B.DATA_VENCIMENTO,
-                                   B.VALOR_FATURA,
-                                   B.NUMERO_REGISTRO,
-                                   T.NUMERO_TELEFONE
-                            FROM PS1000 A
-                            JOIN PS1020 B ON A.CODIGO_ASSOCIADO = B.CODIGO_ASSOCIADO
-                            JOIN PS1030 C ON A.CODIGO_PLANO = C.CODIGO_PLANO
-                            LEFT JOIN PS1006 T ON A.CODIGO_ASSOCIADO = T.CODIGO_ASSOCIADO
+            if (!dataIni.HasValue || !dataFim.HasValue)
+            {
+                // ATENÇÃO: você precisa garantir que esse caminho não traga tudo
+                return new DataTable(); // ← não retorna nada
+            }
+
+             string sql = @"
+                          SELECT 
+                                A.NUMERO_REGISTRO, 
+                                A.CODIGO_ASSOCIADO, 
+                                B.NOME_ASSOCIADO,
+                                A.DATA_VENCIMENTO, 
+                                A.VALOR_FATURA,
+                                C.NOME_OPERADORA,
+                                D.NOME_PLANO_ABREVIADO,
+                                T.NUMERO_TELEFONE
+                            FROM PS1020 A
+                            LEFT JOIN PS1000 B ON A.CODIGO_ASSOCIADO = B.CODIGO_ASSOCIADO
+                            LEFT JOIN ESP0002 C ON B.CODIGO_GRUPO_CONTRATO = C.CODIGO_GRUPO_CONTRATO
+                            LEFT JOIN PS1030 D ON D.CODIGO_PLANO = B.CODIGO_PLANO
+                            OUTER APPLY (
+                                SELECT TOP 1 NUMERO_TELEFONE 
+                                FROM PS1006 
+                                WHERE PS1006.CODIGO_ASSOCIADO = A.CODIGO_ASSOCIADO
+                            ) T
+                            WHERE 
+                                A.DATA_VENCIMENTO BETWEEN @DataIni AND @DataFim
+                                AND A.DATA_PAGAMENTO IS NULL
+                                AND A.DATA_CANCELAMENTO IS NULL
+                                AND A.CODIGO_EMPRESA = 400
                         ";
 
-            var parametros = new Dictionary<string, object>();
-            string topClause = "";
-
-            if (dataIni.HasValue && dataFim.HasValue)
+            var parametros = new Dictionary<string, object>
             {
-                sql += @"
-            WHERE B.DATA_VENCIMENTO >= @DataIni
-              AND B.DATA_VENCIMENTO < @DataFimPlusOne";
+                ["@DataIni"] = dataIni.Value.Date,
+                ["@DataFim"] = dataFim.Value.Date
+            };
 
-                parametros.Add("@DataIni", dataIni.Value.Date);
-                parametros.Add("@DataFimPlusOne", dataFim.Value.Date.AddDays(1));
-            }
-            else
-            {
-                topClause = "TOP 300"; // Limita só quando não há filtro de datas
-            }
-
-            // Insere o TOP na query
-            sql = string.Format(sql, topClause);
-
-            var db = new Banco_Dados_SQLServer();
-            return db.LerAlianca(sql, parametros);
+            return new Banco_Dados_SQLServer().LerAlianca(sql, parametros);
         }
 
 

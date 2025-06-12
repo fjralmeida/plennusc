@@ -222,6 +222,7 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\DadosMensagem.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Views\Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
