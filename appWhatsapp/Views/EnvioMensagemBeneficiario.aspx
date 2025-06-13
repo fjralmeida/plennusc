@@ -1,62 +1,217 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Index.Master" AutoEventWireup="true" CodeBehind="EnvioMensagemBeneficiario.aspx.cs" Inherits="appWhatsapp.Views.EnvioMensagemBeneficiario" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-        body {
-            background-color: #f9f9f9;
+       body {
+              background: #f5f7fa;
+              font-family: 'Poppins', sans-serif;
+              font-size: 13px; /* Ajuste aqui o tamanho global da fonte */
+              color: #333;
+            }
+
+
+        .card-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+            padding: 16px;
+            margin-bottom: 24px;
         }
-        .panel-body {
-            background-color: #ffffff;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
+
+        .btn-pill {
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
+
+            .btn-pill .fa {
+                margin-right: 8px;
+            }
+
+        .btn-success {
+            background-color: #4CB07A;
+            border-color: #4CB07A;
+            color: #fff;
+        }
+
+            .btn-success:hover {
+                background-color: #3B8B65;
+            }
+
+        .btn-danger {
+            background-color: #DC8689;
+            border-color: #DC8689;
+            color: #fff;
+        }
+
+            .btn-danger:hover {
+                background-color: #b75963;
+            }
+
+        .btn-info {
+            background-color: #83CEEE;
+            border-color: #83CEEE;
+            color: #fff;
+        }
+
+            .btn-info:hover {
+                background-color: #6AB9E0;
+                color: white;
+            }
+
+        .btn-purple {
+            background-color: #C06ED4;
+            border-color: #C06ED4;
+            color: #fff;
+        }
+
+            .btn-purple:hover {
+                background-color: #a14db8;
+            }
+
+        .btn-info,
+        .btn-info:hover,
+        .btn-info:focus,
+        .btn-info:active,
+        .btn-info:visited {
+            color: #fff !important;
+        }
+
+        .filter-panel {
+            background: #f0f2f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
         .table thead {
-            background-color: #003399;
-            color: white;
+            background-color: #fff;
         }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: white;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-        tr.linha-selecionada td {
-            background-color: #d0ebff !important;
-        }
-        #loadingOverlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(255, 255, 255, 0.95);
-            z-index: 9999;
+
+        .table th, .table td {
             text-align: center;
-            padding-top: 200px;
+            padding: 10px;
+            border-top: none;
+            border-bottom: 1px solid #e9ecef;
         }
-        .spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #007bff;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+
+        /* LINHAS ALTERNADAS NO GRID PARA MELHOR VISUALIZAÇÃO */
+        #GridAssociados tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* branco */
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        #GridAssociados tbody tr:nth-child(even) {
+            background-color: #f4f8fb; /* azul clarinho */
         }
+
+        /* LINHA SELECIONADA */
+        .linha-selecionada td {
+            background-color: rgba(76, 176, 122, 0.2) !important;
+        }
+
+        /* ESTILO DO CHECKBOX - APENAS APARÊNCIA PADRÃO, SEM FUNDO COLORIDO */
+        input[type="checkbox"].form-check-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4CB07A; /* verde padrão para checked */
+            border-radius: 4px;
+            margin: 0;
+            vertical-align: middle;
+            box-shadow: none; /* remove sombra */
+            background-color: transparent !important; /* sem fundo */
+            background-image: none !important; /* remove qualquer imagem */
+            border: 1px solid #ffffff !important; /* borda padrão */
+
+            appearance: auto !important;
+            -webkit-appearance: checkbox !important;
+            -moz-appearance: checkbox !important;
+        }
+
+        .form-check-input {
+            border: var(--bs-border-width) solid #ffffff;
+            --bs-border-width: 0px;
+        }
+
+
+        /* PARA O CONTAINER DO CHECKBOX NO HEADER */
+        .checkbox-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            font-size: 13px;
+            gap: 4px;
+            padding: 4px 0;
+        }
+
+        /* CÉLULA DA COLUNA DO CHECKBOX */
+        .col-selecao {
+            text-align: center;
+            vertical-align: middle;
+            width: 60px; /* largura reduzida */
+        }
+
+        /* REMOVE O NEGRITO DOS DADOS DO GRID */
+        #GridAssociados td {
+            font-weight: normal !important;
+        }
+
+        /* CHECKBOX ESTADO CHECKED */
+        .form-check-input:checked {
+            background-color: #4CB07A !important;
+            border-color: #4CB07A !important;
+        }
+
+        .form-check-input:focus {
+            outline: 2px solid #4CB07A;
+            outline-offset: 2px;
+        }
+       /* Container padrão da paginação do GridView */
+#GridAssociados .aspNetPager {
+    text-align: right !important; /* força alinhamento à direita */
+    padding: 10px 0;
+}
+
+/* Esconde os links de página e anterior, mostrando só o próximo */
+#GridAssociados .aspNetPager a,
+#GridAssociados .aspNetPager span {
+    display: none; /* esconde tudo */
+}
+
+/* Exibe somente o link do último item (normalmente Próxima) */
+#GridAssociados .aspNetPager a:last-child {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    color: #007bff;
+    font-weight: 500;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+#GridAssociados .aspNetPager a:last-child:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+
     </style>
 
     <script>
@@ -101,127 +256,153 @@
             }
         }
 
-        var dotCount = 1;
-        setInterval(function () {
-            var dots = '.'.repeat(dotCount);
-            var dotsEl = document.getElementById("dots");
-            if (dotsEl) dotsEl.textContent = dots;
-            dotCount = (dotCount % 3) + 1;
-        }, 500);
-
+        // 🔁 FUNÇÃO QUE VOCÊ PEDIU: MOSTRAR OVERLAY DE CARREGAMENTO
         function mostrarLoading() {
-            var overlay = document.getElementById("loadingOverlay");
-            if (overlay) overlay.style.display = "block";
+            document.getElementById('loadingOverlay').style.display = 'block';
+        }
+
+
+        function mostrarResultadoModal(texto) {
+            document.getElementById("modalResultadoConteudo").textContent = texto;
+            var modal = new bootstrap.Modal(document.getElementById('resultadoModal'));
+            modal.show();
         }
     </script>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <!-- Tela de carregamento -->
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-        <div style="font-size: 20px; font-weight: bold;">
-            Enviando mensagens<span id="dots">.</span>
+
+    <!-- Modal de Resultado -->
+    <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header bg-success text-white rounded-top-4">
+                    <h5 class="modal-title" id="resultadoModalLabel"><i class="fa-solid fa-paper-plane me-2"></i>Resultado do Envio</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                    <pre id="modalResultadoConteudo" class="mb-0" style="white-space: pre-wrap; font-family: 'Inter', sans-serif;"></pre>
+                </div>
+                <div class="modal-footer bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-xmark me-1"></i>Fechar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="container">
-        <asp:Button ID="btnTestarApi" runat="server" Text="Testar API" 
-            OnClick="btnTestarApi_Click" OnClientClick="mostrarLoading();" />
 
-        <br /><br />
-        <asp:Label ID="lblResultado" runat="server" Text=""></asp:Label>
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.9); z-index: 1050; text-align: center; padding-top: 30vh;">
+        <div class="spinner-border text-success" style="width: 50px; height: 50px;"></div>
+        <div style="margin-top: 8px; font-size: 18px; color: #4CB07A;">Enviando mensagens...</div>
+    </div>
 
-        <asp:Panel CssClass="container" runat="server" ID="pnlGridAssociados" Style="max-width: 960px; margin: auto; padding: 30px;">
-            <div class="d-flex justify-content-center mb-4">
-                <div class="row align-items-end" style="max-width: 600px; width: 100%;">
-                    <div class="col-md-4">
-                        <label for="txtDataInicio" class="form-label fw-bold">De:</label>
-                        <input type="date" id="txtDataInicio" runat="server" class="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <label for="txtDataFim" class="form-label fw-bold">Até:</label>
-                        <input type="date" id="txtDataFim" runat="server" class="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar"
-                            CssClass="btn btn-primary w-100 fw-bold mt-3 mt-md-0"
-                            OnClick="btnFiltrar_Click" />
-                    </div>
+    <div class="container-fluid p-4">
+        <div class="card-container">
+            <div class="card-header">
+                <h5 class="mb-0">Envio de Mensagens</h5>
+                <asp:Button ID="btnTestarApi" runat="server"
+                    CssClass="btn btn-success btn-pill"
+                    Text='Enviar mensagem'
+                    OnClientClick="mostrarLoading();" OnClick="btnTestarApi_Click" Enabled="false" />
+            </div>
+
+            <asp:Label ID="lblResultado" runat="server" CssClass="text-muted d-block mb-3"></asp:Label>
+
+            <div class="filter-panel row gx-2 gy-2">
+                <div class="col-md-4">
+                    <label class="form-label">De:</label>
+                    <input type="date" id="txtDataInicio" runat="server" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Até:</label>
+                    <input type="date" id="txtDataFim" runat="server" class="form-control" />
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <asp:Button ID="btnFiltrar" runat="server"
+                        CssClass="btn btn-info btn-pill w-100"
+                        Text="Filtrar" OnClick="btnFiltrar_Click" />
                 </div>
             </div>
-            <asp:Label runat="server" ID="LblMensagem" Visible="false" CssClass="text-danger fs-5 fw-bold d-block mt-3 text-center"></asp:Label>
-        </asp:Panel>
 
-        <asp:Literal ID="LiteralMensagem" runat="server"></asp:Literal>
+            <asp:Literal ID="LiteralMensagem" runat="server"></asp:Literal>
 
-        <div class="table-responsive">
-            <asp:GridView runat="server" ID="GridAssociados"
-                AutoGenerateColumns="False"
-                CssClass="table table-bordered table-hover align-middle"
-                EmptyDataText="Nenhum registro encontrado."
-                ClientIDMode="Static">
-                <RowStyle CssClass="linha-grid" />
-                <Columns>
-                    <asp:TemplateField HeaderText="Selecionar">
-                        <HeaderTemplate>
-                            <asp:CheckBox ID="chkSelecionarTodos" runat="server" onclick="selecionarTodos(this);" />
-                        </HeaderTemplate>
-                        <ItemTemplate>
-                            <asp:CheckBox ID="chkSelecionar" runat="server" onclick="alternarSelecao(this);" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+            <div class="table-responsive">
 
-                    <asp:TemplateField HeaderText="Código">
-                        <ItemTemplate>
-                            <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' CssClass="fw-semibold"></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+               <div class="mb-2 d-flex justify-content-end align-items-center">
+                    <label for="ddlPageSize" class="form-label me-2 mb-0">Itens por página:</label>
+                    <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="true"
+                        CssClass="form-select w-auto" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged">
+                        <asp:ListItem Text="15" Value="15" Selected="True" />
+                        <asp:ListItem Text="30" Value="30" />
+                        <asp:ListItem Text="50" Value="50" />
+                        <asp:ListItem Text="100" Value="100" />
+                         <asp:ListItem Text="200" Value="200" />
+                         <asp:ListItem Text="300" Value="300" />
+                    </asp:DropDownList>
+                </div>
 
-                    <asp:TemplateField HeaderText="Registro">
-                        <ItemTemplate>
-                            <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' CssClass="fw-semibold"></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+               <asp:GridView ID="GridAssociados" runat="server" AutoGenerateColumns="False"
+                                CssClass="table table-hover align-middle mb-0" ClientIDMode="Static"
+                                EmptyDataText="Nenhum registro encontrado."
+                                AllowPaging="true" PageSize="15" OnPageIndexChanging="GridAssociados_PageIndexChanging">
 
-                    <asp:TemplateField HeaderText="Associado">
-                        <ItemTemplate>
-                            <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' CssClass="fw-semibold"></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Plano">
-                        <ItemTemplate>
-                            <asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>'></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                    <Columns>
+                        <asp:TemplateField HeaderText="">
+                            <HeaderTemplate>
+                                <div class="checkbox-header">
+                                    <asp:CheckBox ID="chkSelecionarTodos" runat="server" CssClass="form-check-input" onclick="selecionarTodos(this);" />
+                                    <span>Todos</span>
+                                </div>
+                            </HeaderTemplate>
+                            <ItemTemplate>
+                                <div>
+                                    <asp:CheckBox ID="chkSelecionar" runat="server" CssClass="form-check-input" onclick="alternarSelecao(this);" />
+                                </div>
+                            </ItemTemplate>
+                            <ItemStyle CssClass="col-selecao" />
+                            <HeaderStyle CssClass="col-selecao" />
+                        </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Operadora">
-                        <ItemTemplate>
-                            <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>'></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-
-                    <asp:TemplateField HeaderText="Vencimento">
-                        <ItemTemplate>
-                            <asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>'></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-
-                    <asp:TemplateField HeaderText="Valor">
-                        <ItemTemplate>
-                            <asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>'></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-
-                    <asp:TemplateField HeaderText="Telefone">
-                        <ItemTemplate>
-                            <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>'></asp:Label>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
+                        <asp:TemplateField HeaderText="Código">
+                            <ItemTemplate>
+                                <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Registro">
+                            <ItemTemplate>
+                                <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Associado">
+                            <ItemTemplate>
+                                <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Plano">
+                            <ItemTemplate>
+                                <asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Operadora">
+                            <ItemTemplate>
+                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Vencimento">
+                            <ItemTemplate>
+                                <asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Valor">
+                            <ItemTemplate>
+                                <asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Telefone">
+                            <ItemTemplate>
+                                <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+            </div>
         </div>
     </div>
 </asp:Content>

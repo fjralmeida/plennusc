@@ -135,7 +135,7 @@ namespace appWhatsapp.Controller
                 CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
                 if (chk != null && chk.Checked)
                 {
-                    string telefone = "553173069983";
+                    string telefone = "5531973069983";
                     //string telefone = FormatTelefone(telefoneBruto);
 
                     if (string.IsNullOrEmpty(telefone))

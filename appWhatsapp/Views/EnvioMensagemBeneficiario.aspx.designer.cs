@@ -33,15 +33,6 @@ namespace appWhatsapp.Views
         protected global::System.Web.UI.WebControls.Label lblResultado;
 
         /// <summary>
-        /// Controle pnlGridAssociados.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlGridAssociados;
-
-        /// <summary>
         /// Controle txtDataInicio.
         /// </summary>
         /// <remarks>
@@ -69,15 +60,6 @@ namespace appWhatsapp.Views
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
 
         /// <summary>
-        /// Controle LblMensagem.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblMensagem;
-
-        /// <summary>
         /// Controle LiteralMensagem.
         /// </summary>
         /// <remarks>
@@ -85,6 +67,15 @@ namespace appWhatsapp.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal LiteralMensagem;
+
+        /// <summary>
+        /// Controle ddlPageSize.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPageSize;
 
         /// <summary>
         /// Controle GridAssociados.

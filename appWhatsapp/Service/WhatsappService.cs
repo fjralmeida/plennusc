@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.UI;
 
 namespace appWhatsapp.Service
 {
@@ -167,10 +168,11 @@ namespace appWhatsapp.Service
                                 var numero = unidade["phone_number"]?.ToString();
                                 var enviado = unidade["sent"]?.ToString();
                                 var falhou = unidade["failed"]?.ToString();
+                                var recebido = unidade["recvd"]?.ToString();
 
                                 var status = !string.IsNullOrEmpty(falhou) ? "❌ Falhou" : "✅ Enviado";
 
-                                resultado.AppendLine($" {numero} - {status} - Enviado: {enviado}");
+                                resultado.AppendLine($" {numero} - {status} - Enviado: {enviado} - Recebido: {recebido}");
                             }
                         }
                         else

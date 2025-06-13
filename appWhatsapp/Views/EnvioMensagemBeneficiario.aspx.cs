@@ -27,7 +27,26 @@ namespace appWhatsapp.Views
         //    GridAssociados.DataBind();
         //}
 
+        protected void GridAssociados_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GridAssociados.PageIndex = e.NewPageIndex;
+            CarregarGrid(); // ou refaça o filtro se tiver parâmetros
+        }
+
+        protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GridAssociados.PageSize = int.Parse(ddlPageSize.SelectedValue);
+            GridAssociados.PageIndex = 0; // Volta para a primeira página
+            CarregarGrid(); // ou refaça o filtro
+        }
+
         protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            GridAssociados.PageIndex = 0; // Reinicia para a primeira página
+            CarregarGrid();
+        }
+
+        private void CarregarGrid()
         {
             var ItensAssoci = new ItensPedIntegradoUtil();
 
@@ -45,15 +64,16 @@ namespace appWhatsapp.Views
                 }
 
                 GridAssociados.DataSource = ItensAssoci.ConsultaAssociados(ini, fim);
+                btnTestarApi.Enabled = true;
             }
             else
             {
-                // Filtro incompleto: não consulta nada
                 GridAssociados.DataSource = null;
             }
 
             GridAssociados.DataBind();
         }
+
 
         #region USAR PARA IMPORTAR PDF
         //protected void btnUpload_Click(object sender, EventArgs e)
@@ -115,8 +135,9 @@ namespace appWhatsapp.Views
 
                 resultadoFinal.AppendLine(resultado);
             }
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "MostrarResultado", $"mostrarResultadoModal(`{resultadoFinal}`);", true);
 
-            lblResultado.Text = resultadoFinal.ToString().Replace("\n", "<br/>");
+            //lblResultado.Text = resultadoFinal.ToString().Replace("\n", "<br/>");
         }
         protected List<DadosMensagem> ObterLinhasSelecionadas()
         {
@@ -127,9 +148,6 @@ namespace appWhatsapp.Views
                 CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
                 if (chk != null && chk.Checked)
                 {
-
-
-
                     string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
                     string telefone = FormatTelefone(telefoneBruto);
 
