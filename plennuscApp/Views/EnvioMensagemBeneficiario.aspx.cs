@@ -3,6 +3,7 @@ using appWhatsapp.Service;
 using appWhatsapp.SqlQueries;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -17,15 +18,26 @@ namespace appWhatsapp.Views
         {
             if (!Page.IsPostBack)
             {
-                //MontaDetalhesPedido();
+                CarregarOperadoras();
             }
         }
-        //private void MontaDetalhesPedido(DateTime? ini = null, DateTime? fim = null)
-        //{
-        //    ItensPedIntegradoUtil ItensAssoci = new ItensPedIntegradoUtil();
-        //    GridAssociados.DataSource = ItensAssoci.ConsultaAssociados(ini, fim);
-        //    GridAssociados.DataBind();
-        //}
+
+        private void CarregarOperadoras()
+        {
+            OperadoraUtil util = new OperadoraUtil();
+            DataTable dtOperadora = util.consultaOperadora();
+
+            if (dtOperadora != null && dtOperadora.Rows.Count > 0)
+            {
+                ddlOperadora.DataSource = dtOperadora;
+                ddlOperadora.DataTextField = "DESCRICAO_GRUPO_CONTRATO";
+                ddlOperadora.DataValueField = "CODIGO_GRUPO_CONTRATO";
+                ddlOperadora.DataBind();
+
+                // Adiciona a opção "Todas" no início
+                ddlOperadora.Items.Insert(0, new ListItem("Todas", ""));
+            }
+        }
 
         protected void GridAssociados_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
@@ -52,6 +64,7 @@ namespace appWhatsapp.Views
         {
             var ItensAssoci = new ItensPedIntegradoUtil();
 
+            int operadoraSel = Convert.ToInt32(ddlOperadora.SelectedValue);
             string iniTexto = txtDataInicio.Value;
             string fimTexto = txtDataFim.Value;
 
@@ -65,7 +78,7 @@ namespace appWhatsapp.Views
                     var temp = ini; ini = fim; fim = temp;
                 }
 
-                GridAssociados.DataSource = ItensAssoci.ConsultaAssociados(ini, fim);
+                GridAssociados.DataSource = ItensAssoci.ConsultaAssociados(ini, fim, operadoraSel);
                 btnTestarApi.Enabled = true;
             }
             else

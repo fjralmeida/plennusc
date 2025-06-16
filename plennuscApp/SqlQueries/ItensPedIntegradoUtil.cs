@@ -10,7 +10,7 @@ namespace appWhatsapp.SqlQueries
 {
     public class ItensPedIntegradoUtil
     {
-        public DataTable ConsultaAssociados(DateTime? dataIni = null, DateTime? dataFim = null)
+        public DataTable ConsultaAssociados(DateTime? dataIni = null, DateTime? dataFim = null, int? codigoOperadora = null)
         {
             if (!dataIni.HasValue || !dataFim.HasValue)
             {
@@ -18,39 +18,41 @@ namespace appWhatsapp.SqlQueries
                 return new DataTable(); // ← não retorna nada
             }
 
-             string sql = @"
-                          SELECT 
-                            A.NUMERO_REGISTRO, 
-                            A.CODIGO_ASSOCIADO, 
-                            B.NOME_ASSOCIADO,
-                            A.DATA_VENCIMENTO, 
-                            A.VALOR_FATURA,
-                            C.NOME_OPERADORA,
-                            D.NOME_PLANO_ABREVIADO,
-                            T.NUMERO_TELEFONE
-                        FROM PS1020 A
-                        LEFT JOIN PS1000 B ON A.CODIGO_ASSOCIADO = B.CODIGO_ASSOCIADO
-                        LEFT JOIN ESP0002 C ON B.CODIGO_GRUPO_CONTRATO = C.CODIGO_GRUPO_CONTRATO
-                        LEFT JOIN PS1030 D ON D.CODIGO_PLANO = B.CODIGO_PLANO
-                        OUTER APPLY (
-                            SELECT TOP 1 NUMERO_TELEFONE 
-                            FROM PS1006 
-                            WHERE PS1006.CODIGO_ASSOCIADO = A.CODIGO_ASSOCIADO
-                        ) T
-                        WHERE 
-                            A.DATA_VENCIMENTO BETWEEN @DataIni AND @DataFim
-                            AND A.DATA_PAGAMENTO IS NULL
-                            AND (VALOR_PAGO <> '0.00' OR VALOR_PAGO IS NOT NULL)
-                            AND A.DATA_CANCELAMENTO IS NULL
-                            AND A.CODIGO_EMPRESA = 400
-                            AND B.CODIGO_MOTIVO_EXCLUSAO IS NULL
-                            AND B.DATA_EXCLUSAO IS NULL
+            string sql = @"
+                            SELECT 
+                                A.NUMERO_REGISTRO, 
+                                A.CODIGO_ASSOCIADO, 
+                                B.NOME_ASSOCIADO,
+                                A.DATA_VENCIMENTO, 
+                                A.VALOR_FATURA,
+                                C.NOME_OPERADORA,
+                                D.NOME_PLANO_ABREVIADO,
+                                T.NUMERO_TELEFONE
+                            FROM PS1020 A
+                            LEFT JOIN PS1000 B ON A.CODIGO_ASSOCIADO = B.CODIGO_ASSOCIADO
+                            LEFT JOIN ESP0002 C ON B.CODIGO_GRUPO_CONTRATO = C.CODIGO_GRUPO_CONTRATO
+                            LEFT JOIN PS1030 D ON D.CODIGO_PLANO = B.CODIGO_PLANO
+                            OUTER APPLY (
+                                SELECT TOP 1 NUMERO_TELEFONE 
+                                FROM PS1006 
+                                WHERE PS1006.CODIGO_ASSOCIADO = A.CODIGO_ASSOCIADO
+                            ) T
+                            WHERE 
+                                A.DATA_VENCIMENTO BETWEEN @DataIni AND @DataFim
+                                AND A.DATA_PAGAMENTO IS NULL
+                                AND (VALOR_PAGO <> '0.00' OR VALOR_PAGO IS NOT NULL)
+                                AND A.DATA_CANCELAMENTO IS NULL
+                                AND A.CODIGO_EMPRESA = 400
+                                AND B.CODIGO_MOTIVO_EXCLUSAO IS NULL
+                                AND B.DATA_EXCLUSAO IS NULL
+                                AND C.CODIGO_GRUPO_CONTRATO = @CodigoOperadora
                         ";
 
             var parametros = new Dictionary<string, object>
             {
                 ["@DataIni"] = dataIni.Value.Date,
-                ["@DataFim"] = dataFim.Value.Date
+                ["@DataFim"] = dataFim.Value.Date,
+                ["@CodigoOperadora"] = codigoOperadora
             };
 
             return new Banco_Dados_SQLServer().LerAlianca(sql, parametros);

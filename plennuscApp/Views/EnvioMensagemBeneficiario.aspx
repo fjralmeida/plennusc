@@ -342,15 +342,10 @@
 
             <div class="filter-panel row gx-2 gy-2">
 
-                       <div class="col-md-3">
+                <div class="col-md-3">
                     <label class="form-label">Operadora:</label>
                     <asp:DropDownList ID="ddlOperadora" runat="server" CssClass="form-select">
                         <asp:ListItem Text="Todas" Value="" />
-                        <asp:ListItem Text="Claro" Value="Claro" />
-                        <asp:ListItem Text="Vivo" Value="Vivo" />
-                        <asp:ListItem Text="Tim" Value="Tim" />
-                        <asp:ListItem Text="Oi" Value="Oi" />
-                        <asp:ListItem Text="Outros" Value="Outros" />
                     </asp:DropDownList>
                 </div> 
 

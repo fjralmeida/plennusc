@@ -225,6 +225,7 @@
     </Compile>
     <Compile Include="Models\DadosMensagem.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
+    <Compile Include="SqlQueries\OperadoraUtil.cs" />
     <Compile Include="Views\EnvioMensagemBeneficiario.aspx.cs">
       <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
