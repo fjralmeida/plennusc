@@ -99,6 +99,21 @@
             margin-bottom: 16px;
         }
 
+        .filter-panel .form-select {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            background-color: #fff;
+            transition: border-color 0.3s;
+        }
+
+        .filter-panel .form-select:focus {
+            border-color: #4CB07A;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
+        }
+
+
         .table thead {
             background-color: #fff;
         }
@@ -142,13 +157,12 @@
             -webkit-appearance: checkbox !important;
             -moz-appearance: checkbox !important;
         }
-
         .form-check-input {
-            border: var(--bs-border-width) solid #ffffff;
-            --bs-border-width: 0px;
+            --bs-border-width: 0 !important;
+            --bs-border-color: transparent !important;
+            --bs-form-check-bg: transparent !important;
+            --bs-form-check-bg-image: none !important;
         }
-
-
         /* PARA O CONTAINER DO CHECKBOX NO HEADER */
         .checkbox-header {
             display: flex;
@@ -183,33 +197,47 @@
             outline-offset: 2px;
         }
        /* Container padrão da paginação do GridView */
-#GridAssociados .aspNetPager {
-    text-align: right !important; /* força alinhamento à direita */
-    padding: 10px 0;
-}
+        #GridAssociados .aspNetPager {
+            text-align: right !important; /* força alinhamento à direita */
+            padding: 10px 0;
+        }
 
-/* Esconde os links de página e anterior, mostrando só o próximo */
-#GridAssociados .aspNetPager a,
-#GridAssociados .aspNetPager span {
-    display: none; /* esconde tudo */
-}
+        /* Esconde os links de página e anterior, mostrando só o próximo */
+        #GridAssociados .aspNetPager a,
+        #GridAssociados .aspNetPager span {
+            display: none; /* esconde tudo */
+        }
 
-/* Exibe somente o link do último item (normalmente Próxima) */
-#GridAssociados .aspNetPager a:last-child {
-    display: inline-block;
-    padding: 5px 12px;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-    color: #007bff;
-    font-weight: 500;
-    text-decoration: none;
-    transition: 0.2s;
-}
+        /* Exibe somente o link do último item (normalmente Próxima) */
+        #GridAssociados .aspNetPager a:last-child {
+            display: inline-block;
+            padding: 5px 12px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            color: #007bff;
+            font-weight: 500;
+            text-decoration: none;
+            transition: 0.2s;
+        }
 
-#GridAssociados .aspNetPager a:last-child:hover {
-    background-color: #007bff;
-    color: white;
-}
+        #GridAssociados .aspNetPager a:last-child:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        #modalResultadoConteudo {
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        color: #333;
+            }
+
+        .modal-body {
+            background-color: #f8f9fa;
+        }
+
+        .modal-header {
+            background-color: #4CB07A !important;
+            color: white;
+        }
 
 
     </style>
@@ -313,6 +341,19 @@
             <asp:Label ID="lblResultado" runat="server" CssClass="text-muted d-block mb-3"></asp:Label>
 
             <div class="filter-panel row gx-2 gy-2">
+
+                       <div class="col-md-3">
+                    <label class="form-label">Operadora:</label>
+                    <asp:DropDownList ID="ddlOperadora" runat="server" CssClass="form-select">
+                        <asp:ListItem Text="Todas" Value="" />
+                        <asp:ListItem Text="Claro" Value="Claro" />
+                        <asp:ListItem Text="Vivo" Value="Vivo" />
+                        <asp:ListItem Text="Tim" Value="Tim" />
+                        <asp:ListItem Text="Oi" Value="Oi" />
+                        <asp:ListItem Text="Outros" Value="Outros" />
+                    </asp:DropDownList>
+                </div> 
+
                 <div class="col-md-4">
                     <label class="form-label">De:</label>
                     <input type="date" id="txtDataInicio" runat="server" class="form-control" />

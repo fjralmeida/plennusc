@@ -24,7 +24,7 @@ namespace appWhatsapp.Views
 
                 if (dtPerfil.Rows.Count > 0)
                 {
-                    lblNomeEmpresa.Text = dtPerfil.Rows[0]["Nome"]?.ToString();
+                    //lblNomeEmpresa.Text = dtPerfil.Rows[0]["Nome"]?.ToString();
 
                     string simbolo = dtPerfil.Rows[0]["Conf_Simbolo"]?.ToString();
                     if (!string.IsNullOrEmpty(simbolo))

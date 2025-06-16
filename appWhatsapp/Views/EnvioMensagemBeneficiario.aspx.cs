@@ -46,6 +46,8 @@ namespace appWhatsapp.Views
             CarregarGrid();
         }
 
+
+
         private void CarregarGrid()
         {
             var ItensAssoci = new ItensPedIntegradoUtil();
@@ -148,6 +150,12 @@ namespace appWhatsapp.Views
                 CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
                 if (chk != null && chk.Checked)
                 {
+                    //string telefone = "553173069983";
+                    ////string telefone = FormatTelefone(telefoneBruto);
+
+                    //if (string.IsNullOrEmpty(telefone))
+                    //    continue; // Ignora se for inválido ou fixo
+
                     string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
                     string telefone = FormatTelefone(telefoneBruto);
 

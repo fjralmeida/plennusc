@@ -111,7 +111,7 @@ namespace appWhatsapp.Service
                         var response = await client.PostAsync(apiUrl, content);
                         var responseBody = await response.Content.ReadAsStringAsync();
 
-                        resultadoFinal.AppendLine($"✅ {telefone}: {response.StatusCode} - {responseBody}");
+                        //resultadoFinal.AppendLine($"✅ {telefone}: {response.StatusCode} - {responseBody}");
 
                         // Tenta extrair o ID do envio
                         var json = JObject.Parse(responseBody);
@@ -142,6 +142,8 @@ namespace appWhatsapp.Service
 
         private async Task<string> ConsultarStatusEnvioAsync(string id, string telefone, string apiKey)
         {
+            await Task.Delay(10000);
+
             var resultado = new StringBuilder();
             var url = $"https://vallorbeneficios.vollsc.com/api/mailings/{id}?per=100&page=1";
 
@@ -153,6 +155,7 @@ namespace appWhatsapp.Service
 
                 try
                 {
+                    await Task.Delay(5000);
                     var response = await client.GetAsync(url);
                     var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -170,9 +173,10 @@ namespace appWhatsapp.Service
                                 var falhou = unidade["failed"]?.ToString();
                                 var recebido = unidade["recvd"]?.ToString();
 
-                                var status = !string.IsNullOrEmpty(falhou) ? "❌ Falhou" : "✅ Enviado";
+                                string statusFalha = string.IsNullOrEmpty(falhou) ? "Sem informações" : falhou;
+                                string statusRecebido = string.IsNullOrEmpty(recebido) ? "null" : recebido;
 
-                                resultado.AppendLine($" {numero} - {status} - Enviado: {enviado} - Recebido: {recebido}");
+                                resultado.AppendLine($"📞 Telefone: {numero}\n   ✅ Enviado: {enviado}\n   📥 Recebido: {statusRecebido}\n   ❌ Falhou: {statusFalha}\n");
                             }
                         }
                         else

@@ -23,7 +23,7 @@
                 <div class="logo">
                     <asp:Image ID="imgLogo" runat="server" AlternateText="Logo da Empresa" />
                 </div>
-                <h1><asp:Label ID="lblNomeEmpresa" runat="server" Text="Minha Empresa"></asp:Label></h1>
+      <%--          <h1><asp:Label ID="lblNomeEmpresa" runat="server" Text="Minha Empresa"></asp:Label></h1>--%>
 
               
                 <p class="subtitle">Acesse sua conta</p>
