@@ -1,0 +1,139 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(to bottom right, #f9f9f9, #eaeaea);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    font-size: 28px;
+    color: #1e3a8a; /* azul escuro */
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    background: linear-gradient(to right, #e96969, #dbb809);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 1px solid #c9c9c9;
+    border-radius: 12px;
+}
+
+
+.card {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0,0,0,0.05);
+    background-color: #fff;
+}
+
+.left {
+    background-color: #eaf0fc;
+    padding: 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    .left img {
+        width: 100%;
+        max-width: 350px;
+        align-self: center;
+    }
+
+.right {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%; /* garante que ocupe a largura total */
+}
+
+    .logo img {
+        max-width: 200px; /* ajuste como quiser */
+        height: auto;
+    }
+
+.right h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #888;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #aaa;
+    font-size: 13px;
+}
+
+label {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+input[type="email"],
+input[type="password"],
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.signin {
+    background-color: #091225;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.error-message {
+    margin-top: 10px;
+    color: red;
+    font-size: 0.9rem;
+}
+
