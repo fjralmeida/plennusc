@@ -75,14 +75,28 @@
             }
 
         .btn-purple {
-            background-color: #C06ED4;
-            border-color: #C06ED4;
-            color: #fff;
-        }
+    background-color: #C06ED4;
+    border-color: #C06ED4;
+    color: #fff;
+}
 
-            .btn-purple:hover {
-                background-color: #a14db8;
-            }
+.btn-purple:hover {
+    background-color: #a14db8;
+    border-color: #a14db8;
+    color: #fff;
+}
+
+.botoes-acoes {
+    display: flex;
+    gap: 12px; /* Espaço entre os botões */
+    width: 100%;
+}
+
+.botoes-acoes .btn {
+    flex: 1; /* Faz os dois botões ocuparem 50% cada */
+}
+
+
 
         .btn-info,
         .btn-info:hover,
@@ -338,30 +352,48 @@
                     OnClientClick="mostrarLoading();" OnClick="btnTestarApi_Click" Enabled="false" />
             </div>
 
+            <asp:DropDownList ID="ddlTemplate" runat="server">
+                <asp:ListItem Value="Suspensao" Text="Suspensão" />
+                <asp:ListItem Value="Definitivo" Text="Definitivo" />
+                <asp:ListItem Value="DoisBoletos" Text="Dois Boletos" />
+            </asp:DropDownList>
+
+
             <asp:Label ID="lblResultado" runat="server" CssClass="text-muted d-block mb-3"></asp:Label>
 
             <div class="filter-panel row gx-2 gy-2">
-
                 <div class="col-md-3">
                     <label class="form-label">Operadora:</label>
                     <asp:DropDownList ID="ddlOperadora" runat="server" CssClass="form-select">
                         <asp:ListItem Text="Todas" Value="" />
                     </asp:DropDownList>
-                </div> 
+                </div>
 
                 <div class="col-md-4">
                     <label class="form-label">De:</label>
                     <input type="date" id="txtDataInicio" runat="server" class="form-control" />
                 </div>
+
                 <div class="col-md-4">
                     <label class="form-label">Até:</label>
                     <input type="date" id="txtDataFim" runat="server" class="form-control" />
                 </div>
-                <div class="col-md-4 d-flex align-items-end">
-                    <asp:Button ID="btnFiltrar" runat="server"
-                        CssClass="btn btn-info btn-pill w-100"
-                        Text="Filtrar" OnClick="btnFiltrar_Click" />
-                </div>
+
+<div class="col-md-4">
+    <label class="form-label">&nbsp;</label>
+    <div class="botoes-acoes">
+        <asp:Button ID="btnFiltrar" runat="server"
+            CssClass="btn btn-info btn-pill"
+            Text="Filtrar" OnClick="btnFiltrar_Click" />
+
+        <asp:Button ID="btnEscMens" runat="server"
+            CssClass="btn btn-purple btn-pill"
+            Text="Escolher Mensagem" OnClick="btnEscMens_Click" />
+    </div>
+</div>
+
+
+
             </div>
 
             <asp:Literal ID="LiteralMensagem" runat="server"></asp:Literal>

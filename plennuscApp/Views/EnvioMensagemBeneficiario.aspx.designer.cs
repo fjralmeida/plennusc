@@ -24,6 +24,15 @@ namespace appWhatsapp.Views
         protected global::System.Web.UI.WebControls.Button btnTestarApi;
 
         /// <summary>
+        /// Controle ddlTemplate.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTemplate;
+
+        /// <summary>
         /// Controle lblResultado.
         /// </summary>
         /// <remarks>
@@ -67,6 +76,15 @@ namespace appWhatsapp.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
+
+        /// <summary>
+        /// Controle btnEscMens.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEscMens;
 
         /// <summary>
         /// Controle LiteralMensagem.

@@ -45,14 +45,14 @@ namespace appWhatsapp.SqlQueries
                                 AND A.CODIGO_EMPRESA = 400
                                 AND B.CODIGO_MOTIVO_EXCLUSAO IS NULL
                                 AND B.DATA_EXCLUSAO IS NULL
-                                AND C.CODIGO_GRUPO_CONTRATO = @CodigoOperadora
+                                AND (@CodigoOperadora IS NULL OR C.CODIGO_GRUPO_CONTRATO = @CodigoOperadora)
                         ";
 
             var parametros = new Dictionary<string, object>
             {
                 ["@DataIni"] = dataIni.Value.Date,
                 ["@DataFim"] = dataFim.Value.Date,
-                ["@CodigoOperadora"] = codigoOperadora
+                ["@CodigoOperadora"] = (object)codigoOperadora ?? DBNull.Value
             };
 
             return new Banco_Dados_SQLServer().LerAlianca(sql, parametros);

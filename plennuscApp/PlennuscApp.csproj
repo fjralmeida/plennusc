@@ -257,7 +257,6 @@
     </Compile>
     <Compile Include="Views\TelaEnvio.aspx.cs">
       <DependentUpon>TelaEnvio.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\TelaEnvio.aspx.designer.cs">
       <DependentUpon>TelaEnvio.aspx</DependentUpon>
