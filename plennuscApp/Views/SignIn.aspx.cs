@@ -71,7 +71,8 @@ namespace appWhatsapp.Views
                 Session["NomeEmpresa"] = row["NomeFantasia"];
                 Session["CodSistema"] = row["CodSistema"];
 
-                Response.Redirect("Home.aspx");
+                Response.Redirect("~/Views/Home.aspx");
+
             }
             else
             {

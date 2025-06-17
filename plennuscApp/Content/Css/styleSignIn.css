@@ -6,61 +6,70 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(to bottom right, #f9f9f9, #eaeaea);
+    background-size: cover;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../Uploads/Fundo_Login.jpg') no-repeat center center;
+    background-size: cover;
+    z-index: -1;
+}
+
+
 h1 {
     font-size: 28px;
-    color: #1e3a8a; /* azul escuro */
+    color: white;
     text-align: center;
     margin-bottom: 30px;
     font-weight: 600;
     background: linear-gradient(to right, #e96969, #dbb809);
-    color: white;
     padding: 16px 24px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .container {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    border: 1px solid #c9c9c9;
-    border-radius: 12px;
 }
-
 
 .card {
     display: flex;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(0,0,0,0.05);
-    background-color: #fff;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    background-color: rgba(255, 255, 255, 0.9); /* levemente transparente */
+    backdrop-filter: blur(5px);
 }
 
 .left {
-    background-color: #eaf0fc;
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 40px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
 }
 
     .left img {
         width: 100%;
-        max-width: 350px;
-        align-self: center;
+        max-width: 400px;
     }
 
 .right {
     flex: 1;
-    padding: 40px;
+    padding: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -70,40 +79,31 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 15px;
-    width: 100%; /* garante que ocupe a largura total */
+    margin-bottom: 20px;
 }
 
     .logo img {
-        max-width: 200px; /* ajuste como quiser */
+        max-width: 180px;
         height: auto;
     }
 
-.right h2 {
-    font-size: 22px;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: center;
-}
-
 .subtitle {
-    font-size: 14px;
-    color: #888;
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 .divider {
     text-align: center;
     margin: 20px 0;
-    color: #aaa;
+    color: #777;
     font-size: 13px;
 }
 
 label {
     margin-top: 10px;
-    font-size: 12px;
+    font-size: 13px;
     color: #333;
     margin-bottom: 4px;
 }
@@ -112,24 +112,37 @@ input[type="email"],
 input[type="password"],
 .form-control {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.3s;
 }
+
+    input:focus,
+    .form-control:focus {
+        border-color: #0056b3;
+        outline: none;
+    }
 
 .signin {
     background-color: #091225;
     color: #fff;
-    padding: 10px;
+    padding: 12px;
     border: none;
     width: 100%;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
     margin-top: 10px;
+    transition: background-color 0.3s;
 }
+
+    .signin:hover {
+        background-color: #142a51;
+    }
 
 .error-message {
     margin-top: 10px;
@@ -137,3 +150,18 @@ input[type="password"],
     font-size: 0.9rem;
 }
 
+/* Responsivo */
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+    }
+
+    .left, .right {
+        flex: none;
+        width: 100%;
+    }
+
+        .left img {
+            max-width: 250px;
+        }
+}

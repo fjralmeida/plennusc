@@ -150,6 +150,7 @@
     <Content Include="Content\Css\custom-notifications.css.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
+    <Content Include="Uploads\Fundo_Login.jpg" />
     <Content Include="Uploads\logoVallor.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Uploads\logo_plennus.png" />
