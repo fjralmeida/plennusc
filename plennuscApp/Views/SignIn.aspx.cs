@@ -101,13 +101,13 @@ namespace appWhatsapp.Views
                         Response.Redirect("~/Views/Home.aspx");
                         break;
                     case "2":
-                        Response.Redirect("~/Gestao/Views/Home.aspx"); // Gestão
+                        Response.Redirect("~/Gestao/Views/HomeGestao.aspx"); // Gestão
                         break;
                     case "3":
-                        Response.Redirect("~/Medic/Views/Home.aspx"); // Medic
+                        Response.Redirect("~/Medic/Views/HomeMedic.aspx"); // Medic
                         break;
                     case "4":
-                        Response.Redirect("~/Finance/Views/Home.aspx"); // Finance
+                        Response.Redirect("~/Finance/Views/HomeFinance.aspx"); // Finance
                         break;
                         default:
                         LabelErro.Text = "Sistema não indentificado";

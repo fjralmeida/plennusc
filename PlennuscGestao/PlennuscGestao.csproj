@@ -160,6 +160,7 @@
     <Content Include="Uploads\logo_plennus.png" />
     <Content Include="Uploads\logo_plennus_sb.png" />
     <Content Include="ViewSwitcher.ascx" />
+    <Content Include="Views\HomeGestao.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
     <Content Include="Site.Mobile.Master" />
@@ -214,19 +215,33 @@
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Views\HomeGestao.aspx.cs">
+      <DependentUpon>HomeGestao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\HomeGestao.aspx.designer.cs">
+      <DependentUpon>HomeGestao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Index.Master.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Index.Master.designer.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\Utils\" />
     <Folder Include="Service\" />
     <Folder Include="SqlQueries\" />
-    <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Uploads\715998723.pdf" />
+    <Content Include="Views\Index.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
