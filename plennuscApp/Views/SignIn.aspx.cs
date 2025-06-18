@@ -32,15 +32,38 @@ namespace appWhatsapp.Views
                         imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + simbolo);
                     }
                 }
+                CarregarSistemas();
             }
         }
+
+        private void CarregarSistemas()
+        {
+            SistemaUtil sistemaUtil = new SistemaUtil();
+            DataTable dtSistema = sistemaUtil.ConsultaSistema();
+
+            ddlSistema.DataSource = dtSistema;
+            ddlSistema.DataTextField = "NomeDisplay"; // Nome que aparece
+            ddlSistema.DataValueField = "CodSistema"; // Valor do item (ID)
+            ddlSistema.DataBind();
+
+            ddlSistema.Items.Insert(0, new ListItem("-- Selecione --", ""));
+        }
+
         protected void ButtonSignIn_Click(object sender, EventArgs e)
         {
             string login = TextBoxEmail.Text.Trim();
             string senha = TextBoxPassword.Text;
+            string codSistemaSelecionado = ddlSistema.SelectedValue;
+
+            if (string.IsNullOrEmpty(codSistemaSelecionado))
+            {
+                LabelErro.Text = "Selecione um sistema.";
+                LabelErro.Visible = true;
+                return;
+            }
 
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
-            DataTable dtUser = util.ConsultaLoginComEmpresa(login, senha);
+            DataTable dtUser = util.ConsultaLoginComEmpresa(login, senha, codSistemaSelecionado);
 
             if (dtUser.Rows.Count > 0)
             {
@@ -71,12 +94,31 @@ namespace appWhatsapp.Views
                 Session["NomeEmpresa"] = row["NomeFantasia"];
                 Session["CodSistema"] = row["CodSistema"];
 
-                Response.Redirect("~/Views/Home.aspx");
-
+                //Redirecionamento dinâmico
+                switch (codSistemaSelecionado)
+                {
+                    case "1":
+                        Response.Redirect("~/Views/Home.aspx");
+                        break;
+                    case "2":
+                        Response.Redirect("~/Gestao/Views/Home.aspx"); // Gestão
+                        break;
+                    case "3":
+                        Response.Redirect("~/Medic/Views/Home.aspx"); // Medic
+                        break;
+                    case "4":
+                        Response.Redirect("~/Finance/Views/Home.aspx"); // Finance
+                        break;
+                        default:
+                        LabelErro.Text = "Sistema não indentificado";
+                        LabelErro.Visible = true;
+                        break;
+                }
             }
             else
             {
                 LabelErro.Text = "Usuário ou senha inválidos.";
+                LabelErro.Visible = true;
             }
         }
     }

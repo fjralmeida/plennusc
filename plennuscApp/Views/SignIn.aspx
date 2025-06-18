@@ -38,6 +38,15 @@
                     <label>Senha</label>
                     <asp:TextBox ID="TextBoxPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Digite sua senha" />
 
+                 <label>Sistema</label>
+                        <asp:DropDownList 
+                            ID="ddlSistema" 
+                            runat="server" 
+                            CssClass="form-select">
+                        </asp:DropDownList>
+
+
+
                     <asp:Button ID="ButtonSignIn" runat="server" CssClass="signin" Text="Entrar" OnClick="ButtonSignIn_Click" />
 
                     <asp:Label ID="LabelErro" runat="server" ForeColor="Red" CssClass="error-message" Visible="false" />

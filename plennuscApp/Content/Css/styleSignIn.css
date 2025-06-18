@@ -150,6 +150,35 @@ input[type="password"],
     font-size: 0.9rem;
 }
 
+select,
+.form-select,
+select.form-select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6H0z' fill='%23333'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px 6px;
+}
+
+    select:focus,
+    .form-select:focus {
+        border-color: #0056b3;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
+    }
+
+
+
 /* Responsivo */
 @media (max-width: 768px) {
     .card {

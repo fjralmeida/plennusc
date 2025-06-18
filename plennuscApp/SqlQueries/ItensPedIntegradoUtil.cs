@@ -59,34 +59,37 @@ namespace appWhatsapp.SqlQueries
         }
 
 
-        public DataTable ConsultaLoginComEmpresa(string login, string senha)
+        public DataTable ConsultaLoginComEmpresa(string login, string senha, string codSistema)
         {
             string senhaHash = CriptografiaUtil.CalcularHashSHA512(senha);
 
             string sql = @"
                             SELECT 
-                                    AA.CodAutenticacaoAcesso,
-                                    AA.NomeUsuario,
-                                    AA.UsrNomeLogin,
-                                    AA.Conf_Ativo AS UsuarioAtivo,
-                                    SE.CodEmpresa,
-                                    E.RazaoSocial,
-                                    E.NomeFantasia,
-                                    E.Conf_Ativo AS EmpresaAtiva,
-                                    E.Conf_LiberaAcesso,
-                                    SI.CodSistema
-                                    FROM AutenticacaoAcesso AA
-                                    INNER JOIN SistemaEmpresaUsuario SEU ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
-                                    INNER JOIN SistemaEmpresa SE ON SE.CodSistemaEmpresa = SEU.CodSistemaEmpresa
-                                    INNER JOIN Empresa E ON E.CodEmpresa = SE.CodEmpresa
-                                    INNER JOIN Sistema SI ON SI.CodSistema = SE.CodSistema  -- JOIN com a tabela Sistema
-                                    WHERE AA.UsrNomeLogin = @login
-                                    AND AA.UsrPasswd = @senhaHash";
+                                AA.CodAutenticacaoAcesso,
+                                AA.NomeUsuario,
+                                AA.UsrNomeLogin,
+                                AA.Conf_Ativo AS UsuarioAtivo,
+                                SE.CodEmpresa,
+                                E.RazaoSocial,
+                                E.NomeFantasia,
+                                E.Conf_Ativo AS EmpresaAtiva,
+                                E.Conf_LiberaAcesso,
+                                SI.CodSistema
+                            FROM AutenticacaoAcesso AA
+                            INNER JOIN SistemaEmpresaUsuario SEU ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
+                            INNER JOIN SistemaEmpresa SE ON SE.CodSistemaEmpresa = SEU.CodSistemaEmpresa
+                            INNER JOIN Empresa E ON E.CodEmpresa = SE.CodEmpresa
+                            INNER JOIN Sistema SI ON SI.CodSistema = SE.CodSistema
+                            WHERE 
+                                AA.UsrNomeLogin = @login
+                                AND AA.UsrPasswd = @senhaHash
+                                AND SI.CodSistema = @CodSistema";
 
                                 var parametros = new Dictionary<string, object>
                         {
                             { "@login", login },
-                            { "@senhaHash", senhaHash }
+                            { "@senhaHash", senhaHash },
+                            { "@CodSistema", codSistema }
                         };
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
