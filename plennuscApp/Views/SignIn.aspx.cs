@@ -30,6 +30,7 @@ namespace appWhatsapp.Views
                     if (!string.IsNullOrEmpty(simbolo))
                     {
                         imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + simbolo);
+
                     }
                 }
                 CarregarSistemas();
@@ -42,8 +43,8 @@ namespace appWhatsapp.Views
             DataTable dtSistema = sistemaUtil.ConsultaSistema();
 
             ddlSistema.DataSource = dtSistema;
-            ddlSistema.DataTextField = "NomeDisplay"; // Nome que aparece
-            ddlSistema.DataValueField = "CodSistema"; // Valor do item (ID)
+            ddlSistema.DataTextField = "NomeDisplay";
+            ddlSistema.DataValueField = "CodSistema";
             ddlSistema.DataBind();
 
             ddlSistema.Items.Insert(0, new ListItem("-- Selecione --", ""));

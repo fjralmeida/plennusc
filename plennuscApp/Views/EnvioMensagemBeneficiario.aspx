@@ -39,9 +39,9 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
-        .btn-pill .fa {
-            margin-right: 8px;
-        }
+            .btn-pill .fa {
+                margin-right: 8px;
+            }
 
         .btn-success {
             background-color: #4CB07A;
@@ -49,9 +49,9 @@
             color: #fff;
         }
 
-        .btn-success:hover {
-            background-color: #3B8B65;
-        }
+            .btn-success:hover {
+                background-color: #3B8B65;
+            }
 
         .btn-danger {
             background-color: #DC8689;
@@ -59,9 +59,9 @@
             color: #fff;
         }
 
-        .btn-danger:hover {
-            background-color: #b75963;
-        }
+            .btn-danger:hover {
+                background-color: #b75963;
+            }
 
         .btn-info {
             background-color: #83CEEE;
@@ -69,10 +69,10 @@
             color: #fff;
         }
 
-        .btn-info:hover {
-            background-color: #6AB9E0;
-            color: white;
-        }
+            .btn-info:hover {
+                background-color: #6AB9E0;
+                color: white;
+            }
 
         .btn-purple {
             background-color: #C06ED4;
@@ -80,17 +80,17 @@
             color: #fff;
         }
 
-        .btn-purple:hover {
-            background-color: #a14db8;
-            border-color: #a14db8;
-            color: #fff;
-        }
+            .btn-purple:hover {
+                background-color: #a14db8;
+                border-color: #a14db8;
+                color: #fff;
+            }
 
-       .botoes-acoes {
+        .botoes-acoes {
             display: flex;
-            justify-content:  space-evenly; /* Centraliza no eixo horizontal */
-            gap: 16px; /* Espaçamento entre os botões */
-            flex-wrap: wrap; /* Se for responsivo ele quebra */
+            justify-content: space-evenly;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .btn-info,
@@ -108,19 +108,19 @@
             margin-bottom: 16px;
         }
 
-        .filter-panel .form-select {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
-            background-color: #fff;
-            transition: border-color 0.3s;
-        }
+            .filter-panel .form-select {
+                padding: 6px 12px;
+                border-radius: 8px;
+                border: 1px solid #ced4da;
+                background-color: #fff;
+                transition: border-color 0.3s;
+            }
 
-        .filter-panel .form-select:focus {
-            border-color: #4CB07A;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
-        }
+                .filter-panel .form-select:focus {
+                    border-color: #4CB07A;
+                    outline: none;
+                    box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
+                }
 
 
         .table thead {
@@ -136,11 +136,11 @@
 
         /* LINHAS ALTERNADAS NO GRID PARA MELHOR VISUALIZAÇÃO */
         #GridAssociados tbody tr:nth-child(odd) {
-            background-color: #ffffff; /* branco */
+            background-color: #ffffff;
         }
 
         #GridAssociados tbody tr:nth-child(even) {
-            background-color: #f4f8fb; /* azul clarinho */
+            background-color: #f4f8fb;
         }
 
         /* LINHA SELECIONADA */
@@ -153,15 +153,14 @@
             width: 20px;
             height: 20px;
             cursor: pointer;
-            accent-color: #4CB07A; /* verde padrão para checked */
+            accent-color: #4CB07A;
             border-radius: 4px;
             margin: 0;
             vertical-align: middle;
-            box-shadow: none; /* remove sombra */
-            background-color: transparent !important; /* sem fundo */
-            background-image: none !important; /* remove qualquer imagem */
-            border: 1px solid #ffffff !important; /* borda padrão */
-
+            box-shadow: none;
+            background-color: transparent !important;
+            background-image: none !important;
+            border: 1px solid #ffffff !important;
             appearance: auto !important;
             -webkit-appearance: checkbox !important;
             -moz-appearance: checkbox !important;
@@ -188,7 +187,7 @@
         .col-selecao {
             text-align: center;
             vertical-align: middle;
-            width: 60px; /* largura reduzida */
+            width: 60px;
         }
 
         /* REMOVE O NEGRITO DOS DADOS DO GRID */
@@ -208,32 +207,32 @@
         }
         /* Container padrão da paginação do GridView */
         #GridAssociados .aspNetPager {
-            text-align: right !important; /* força alinhamento à direita */
+            text-align: right !important;
             padding: 10px 0;
         }
 
-        /* Esconde os links de página e anterior, mostrando só o próximo */
-        #GridAssociados .aspNetPager a,
-        #GridAssociados .aspNetPager span {
-            display: none; /* esconde tudo */
-        }
+            /* Esconde os links de página e anterior, mostrando só o próximo */
+            #GridAssociados .aspNetPager a,
+            #GridAssociados .aspNetPager span {
+                display: none;
+            }
 
-        /* Exibe somente o link do último item (normalmente Próxima) */
-        #GridAssociados .aspNetPager a:last-child {
-            display: inline-block;
-            padding: 5px 12px;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            color: #007bff;
-            font-weight: 500;
-            text-decoration: none;
-            transition: 0.2s;
-        }
+                /* Exibe somente o link do último item (normalmente Próxima) */
+                #GridAssociados .aspNetPager a:last-child {
+                    display: inline-block;
+                    padding: 5px 12px;
+                    border: 1px solid #007bff;
+                    border-radius: 4px;
+                    color: #007bff;
+                    font-weight: 500;
+                    text-decoration: none;
+                    transition: 0.2s;
+                }
 
-        #GridAssociados .aspNetPager a:last-child:hover {
-            background-color: #007bff;
-            color: white;
-        }
+                    #GridAssociados .aspNetPager a:last-child:hover {
+                        background-color: #007bff;
+                        color: white;
+                    }
 
         #modalResultadoConteudo {
             font-family: 'Inter', sans-serif;
@@ -264,37 +263,37 @@
             padding: 60px 20px;
         }
 
-        #modalEscolherMensagem .modal-content {
-            background-color: #fff;
-            border-radius: 16px;
-            max-width: 900px;
-            margin: auto;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s;
-        }
+            #modalEscolherMensagem .modal-content {
+                background-color: #fff;
+                border-radius: 16px;
+                max-width: 900px;
+                margin: auto;
+                padding: 24px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                animation: fadeIn 0.3s;
+            }
 
-        #modalEscolherMensagem .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #4CB07A;
-            color: white;
-            border-radius: 12px 12px 0 0;
-            padding: 12px 20px;
-            margin: 3px;
-        }
+            #modalEscolherMensagem .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #4CB07A;
+                color: white;
+                border-radius: 12px 12px 0 0;
+                padding: 12px 20px;
+                margin: 3px;
+            }
 
-        #modalEscolherMensagem .modal-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
+                #modalEscolherMensagem .modal-header h2 {
+                    margin: 0;
+                    font-size: 20px;
+                }
 
-        #modalEscolherMensagem .close {
-            cursor: pointer;
-            font-size: 24px;
-            color: white;
-        }
+            #modalEscolherMensagem .close {
+                cursor: pointer;
+                font-size: 24px;
+                color: white;
+            }
 
         .template-opcao {
             border: 2px solid #ccc;
@@ -306,15 +305,15 @@
             background-color: #f9f9f9;
         }
 
-        .template-opcao:hover {
-            border-color: #4CB07A;
-            background-color: #e6f5ee;
-        }
+            .template-opcao:hover {
+                border-color: #4CB07A;
+                background-color: #e6f5ee;
+            }
 
-        .template-opcao h4 {
-            color: #4CB07A;
-            margin-top: 0;
-        }
+            .template-opcao h4 {
+                color: #4CB07A;
+                margin-top: 0;
+            }
 
         @keyframes fadeIn {
             from {
@@ -525,19 +524,19 @@
                     <input type="date" id="txtDataFim" runat="server" class="form-control" />
                 </div>
 
-               <div class="col-md-12">
-    <label class="form-label">&nbsp;</label>
-    <div class="botoes-acoes">
-        <asp:Button ID="btnFiltrar" runat="server"
-            CssClass="btn btn-info btn-pill"
-            Text="Filtrar" OnClick="btnFiltrar_Click" />
+                <div class="col-md-12">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="botoes-acoes">
+                        <asp:Button ID="btnFiltrar" runat="server"
+                            CssClass="btn btn-info btn-pill"
+                            Text="Filtrar" OnClick="btnFiltrar_Click" />
 
-        <asp:Button ID="btnEscMens" runat="server"
-            CssClass="btn btn-purple btn-pill"
-            Text="Escolher Mensagem"
-            OnClientClick="abrirModal(); return false;" />
-    </div>
-</div>
+                        <asp:Button ID="btnEscMens" runat="server"
+                            CssClass="btn btn-purple btn-pill"
+                            Text="Escolher Mensagem"
+                            OnClientClick="abrirModal(); return false;" />
+                    </div>
+                </div>
             </div>
 
             <asp:Literal ID="LiteralMensagem" runat="server"></asp:Literal>
