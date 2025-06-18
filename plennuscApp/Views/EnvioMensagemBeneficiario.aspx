@@ -358,7 +358,6 @@
                 <asp:ListItem Value="DoisBoletos" Text="Dois Boletos" />
             </asp:DropDownList>
 
-
             <asp:Label ID="lblResultado" runat="server" CssClass="text-muted d-block mb-3"></asp:Label>
 
             <div class="filter-panel row gx-2 gy-2">

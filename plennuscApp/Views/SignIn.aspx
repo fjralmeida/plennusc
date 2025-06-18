@@ -21,7 +21,7 @@
         <div class="container">
             <div class="card">
                 <div class="left">
-                    <img src="../Content/Img/imgLogin.jpeg" alt="Ilustração de Autenticação" />
+                    <img src="../Uploads/LogoFrenteLogin.jpeg"  alt="Ilustração de Autenticação" />
                 </div>
                 <div class="right">
                     <div class="logo">

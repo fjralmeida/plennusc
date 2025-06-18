@@ -52,16 +52,16 @@ namespace appWhatsapp.Views
 
                 if (!usuarioAtivo)
                 {
-                    // Usuário inativo
                     LabelErro.Text = "Usuário está desativado.";
                     LabelErro.Visible = true;
+                    return;
                 }
 
                 if (!empresaAtiva || !empresaLiberaAcesso)
                 {
-                    // Empresa inativa ou bloqueada
                     LabelErro.Text = "Empresa desativada ou acesso bloqueado.";
                     LabelErro.Visible = true;
+                    return;
                 }
 
                 // Tudo OK — salva na sessão
