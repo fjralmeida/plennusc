@@ -161,7 +161,7 @@ namespace appWhatsapp.Service
 
         public async Task<string> ConexaoApiDefinitivo(List<string> telefones, string pdfUrl,
                                                     string field1, string field2, string field3,
-                                                    string field4, string field5, string field6, string field7)
+                                                    string field4)
         {
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
@@ -177,7 +177,7 @@ namespace appWhatsapp.Service
                 {
                     var jsonBody = $@"
                     {{
-                      ""media_hsm_configuration_id"": ""2daf52d0-a086-43b5-8033-72dd51dd4ea8"",
+                      ""media_hsm_configuration_id"": ""f9acd546-1d81-4b51-b12f-765625600c8b"",
                       ""hsm_type"": ""media_hsm"",
                       ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
                       ""system"": ""whatsapp"",
@@ -188,10 +188,7 @@ namespace appWhatsapp.Service
                           ""field_2"": ""{field2}"",
                           ""field_3"": ""{field3}"",
                           ""field_4"": ""{field4}"",
-                          ""field_5"": ""{field5}"",
-                          ""field_6"": ""{field6}"",
-                          ""field_7"":  ""{field7}"",
-                          ""field_8"":  ""{pdfUrl}""
+                          ""field_5"":  ""{pdfUrl}""
                         }}
                       ]
                     }}";

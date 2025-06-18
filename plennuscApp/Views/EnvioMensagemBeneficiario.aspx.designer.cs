@@ -15,6 +15,15 @@ namespace appWhatsapp.Views
     {
 
         /// <summary>
+        /// Controle hfTemplateEscolhido.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfTemplateEscolhido;
+
+        /// <summary>
         /// Controle btnTestarApi.
         /// </summary>
         /// <remarks>
@@ -22,15 +31,6 @@ namespace appWhatsapp.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnTestarApi;
-
-        /// <summary>
-        /// Controle ddlTemplate.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlTemplate;
 
         /// <summary>
         /// Controle lblResultado.

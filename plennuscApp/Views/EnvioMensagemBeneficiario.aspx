@@ -8,12 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-       body {
-              background: #f5f7fa;
-              font-family: 'Poppins', sans-serif;
-              font-size: 13px; /* Ajuste aqui o tamanho global da fonte */
-              color: #333;
-            }
+        body {
+            background: #f5f7fa;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px; /* Ajuste aqui o tamanho global da fonte */
+            color: #333;
+        }
 
 
         .card-container {
@@ -39,9 +39,9 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
-            .btn-pill .fa {
-                margin-right: 8px;
-            }
+        .btn-pill .fa {
+            margin-right: 8px;
+        }
 
         .btn-success {
             background-color: #4CB07A;
@@ -49,9 +49,9 @@
             color: #fff;
         }
 
-            .btn-success:hover {
-                background-color: #3B8B65;
-            }
+        .btn-success:hover {
+            background-color: #3B8B65;
+        }
 
         .btn-danger {
             background-color: #DC8689;
@@ -59,9 +59,9 @@
             color: #fff;
         }
 
-            .btn-danger:hover {
-                background-color: #b75963;
-            }
+        .btn-danger:hover {
+            background-color: #b75963;
+        }
 
         .btn-info {
             background-color: #83CEEE;
@@ -69,34 +69,29 @@
             color: #fff;
         }
 
-            .btn-info:hover {
-                background-color: #6AB9E0;
-                color: white;
-            }
+        .btn-info:hover {
+            background-color: #6AB9E0;
+            color: white;
+        }
 
         .btn-purple {
-    background-color: #C06ED4;
-    border-color: #C06ED4;
-    color: #fff;
-}
+            background-color: #C06ED4;
+            border-color: #C06ED4;
+            color: #fff;
+        }
 
-.btn-purple:hover {
-    background-color: #a14db8;
-    border-color: #a14db8;
-    color: #fff;
-}
+        .btn-purple:hover {
+            background-color: #a14db8;
+            border-color: #a14db8;
+            color: #fff;
+        }
 
-.botoes-acoes {
-    display: flex;
-    gap: 12px; /* Espaço entre os botões */
-    width: 100%;
-}
-
-.botoes-acoes .btn {
-    flex: 1; /* Faz os dois botões ocuparem 50% cada */
-}
-
-
+       .botoes-acoes {
+            display: flex;
+            justify-content:  space-evenly; /* Centraliza no eixo horizontal */
+            gap: 16px; /* Espaçamento entre os botões */
+            flex-wrap: wrap; /* Se for responsivo ele quebra */
+        }
 
         .btn-info,
         .btn-info:hover,
@@ -171,6 +166,7 @@
             -webkit-appearance: checkbox !important;
             -moz-appearance: checkbox !important;
         }
+
         .form-check-input {
             --bs-border-width: 0 !important;
             --bs-border-color: transparent !important;
@@ -210,7 +206,7 @@
             outline: 2px solid #4CB07A;
             outline-offset: 2px;
         }
-       /* Container padrão da paginação do GridView */
+        /* Container padrão da paginação do GridView */
         #GridAssociados .aspNetPager {
             text-align: right !important; /* força alinhamento à direita */
             padding: 10px 0;
@@ -238,11 +234,12 @@
             background-color: #007bff;
             color: white;
         }
+
         #modalResultadoConteudo {
-        font-family: 'Inter', sans-serif;
-        font-size: 14px;
-        color: #333;
-            }
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
 
         .modal-body {
             background-color: #f8f9fa;
@@ -253,7 +250,81 @@
             color: white;
         }
 
+        /* 🔥 Modal Escolher Template */
+        #modalEscolherMensagem {
+            display: none;
+            position: fixed;
+            z-index: 1055;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 60px 20px;
+        }
 
+        #modalEscolherMensagem .modal-content {
+            background-color: #fff;
+            border-radius: 16px;
+            max-width: 900px;
+            margin: auto;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s;
+        }
+
+        #modalEscolherMensagem .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4CB07A;
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 20px;
+            margin: 3px;
+        }
+
+        #modalEscolherMensagem .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        #modalEscolherMensagem .close {
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+
+        .template-opcao {
+            border: 2px solid #ccc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        .template-opcao:hover {
+            border-color: #4CB07A;
+            background-color: #e6f5ee;
+        }
+
+        .template-opcao h4 {
+            color: #4CB07A;
+            margin-top: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 
     <script>
@@ -298,7 +369,7 @@
             }
         }
 
-        // 🔁 FUNÇÃO QUE VOCÊ PEDIU: MOSTRAR OVERLAY DE CARREGAMENTO
+        // 🔁 FUNÇÃO  MOSTRAR OVERLAY DE CARREGAMENTO
         function mostrarLoading() {
             document.getElementById('loadingOverlay').style.display = 'block';
         }
@@ -309,12 +380,26 @@
             var modal = new bootstrap.Modal(document.getElementById('resultadoModal'));
             modal.show();
         }
+
+        // 🔁 FUNÇÃO PARA MODAL MENSAGEM
+        function abrirModal() {
+            document.getElementById('modalEscolherMensagem').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalEscolherMensagem').style.display = 'none';
+        }
+
+        function selecionarTemplate(template) {
+            document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
+            fecharModal();
+        }
+
     </script>
 
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
 
     <!-- Modal de Resultado -->
     <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
@@ -336,6 +421,74 @@
         </div>
     </div>
 
+    <%--MODAL TEMPLETE MENSAGEM--%>
+
+    <asp:HiddenField ID="hfTemplateEscolhido" runat="server" />
+    <div id="modalEscolherMensagem">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Escolher Template de Mensagem</h2>
+                <span class="close" onclick="fecharModal()">&times;</span>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
+                    <h4>Suspensão</h4>
+                    <p>
+                        <strong>EVITE MAIS ACÚMULO DE JUROS E MULTA</strong><br>
+                        <br>
+                        Prezado(a) beneficiário(a) ****<br>
+                        Segue abaixo o boleto para pagamento referente ao vencimento <strong>MAIO</strong> do seu plano de saúde <strong>UNIMED BH</strong>.<br>
+                        Prazo para efetuar o pagamento e evitar o cancelamento COM PROBABILIDADE DE REATIVAÇÃO do seu plano é <strong>17 DE JUNHO DE 2025</strong>.<br>
+                        <br>
+                        Gentileza conferir os dados do boleto antes de realizar o pagamento.<br>
+                        <br>
+                        Dúvidas, seguimos à disposição.<br>
+                        <strong>Departamento de cobrança da Vallor Benefícios.</strong>
+                    </p>
+                </div>
+
+                <div class="template-opcao" onclick="selecionarTemplate('Definitivo')">
+                    <h4>Definitivo</h4>
+                    <p>
+                        <strong>EVITE MAIS ACÚMULO DE JUROS E MULTA</strong><br>
+                        <br>
+                        Prezado(a) beneficiário(a) *****<br>
+                        Segue abaixo o boleto para pagamento referente ao vencimento <strong>ABRIL</strong> do seu plano de saúde <strong>VOCE TOTAL</strong>.<br>
+                        Prazo para efetuar o pagamento e evitar o cancelamento <strong>DEFINITIVO</strong> do seu plano é <strong>30 DE MAIO DE 2025</strong>.<br>
+                        O não pagamento poderá acarretar a inclusão do seu nome nos órgãos de proteção ao crédito <strong>SPC/SERASA</strong>.<br>
+                        <strong>Após o pagamento, gentileza enviar o comprovante.</strong><br>
+                        <br>
+                        Gentileza conferir os dados do boleto antes de realizar o pagamento.<br>
+                        <br>
+                        Dúvidas, seguimos à disposição.<br>
+                        <strong>Departamento de cobrança da Vallor Benefícios.</strong>
+                    </p>
+                </div>
+
+                <div class="template-opcao" onclick="selecionarTemplate('DoisBoletos')">
+                    <h4>Dois Boletos</h4>
+                    <p>
+                        Boa tarde!<br>
+                        <br>
+                        Prezado(a) Sr.(a) ******, tudo bem? Esperamos que sim!<br>
+                        <br>
+                        Para sua comodidade, seguem em anexo os boletos referentes às mensalidades de <strong>ABRIL e MAIO</strong> em atraso do seu plano de saúde <strong>AURORA</strong>, cujo vencimento original foi <strong>05/04/2025</strong>.<br>
+                        <br>
+                        Ambos os boletos devem ser pagos até o dia <strong>30 DE MAIO DE 2025</strong> para evitar o <strong>cancelamento definitivo</strong> do seu plano.<br>
+                        <br>
+                        Gentileza conferir os dados dos boletos antes de realizar o pagamento.<br>
+                        <br>
+                        Caso tenha alguma dúvida, basta responder este e-mail ou entrar em contato pelos telefones abaixo.<br>
+                        <br>
+                        Atenciosamente.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.9); z-index: 1050; text-align: center; padding-top: 30vh;">
         <div class="spinner-border text-success" style="width: 50px; height: 50px;"></div>
@@ -351,12 +504,6 @@
                     Text='Enviar mensagem'
                     OnClientClick="mostrarLoading();" OnClick="btnTestarApi_Click" Enabled="false" />
             </div>
-
-            <asp:DropDownList ID="ddlTemplate" runat="server">
-                <asp:ListItem Value="Suspensao" Text="Suspensão" />
-                <asp:ListItem Value="Definitivo" Text="Definitivo" />
-                <asp:ListItem Value="DoisBoletos" Text="Dois Boletos" />
-            </asp:DropDownList>
 
             <asp:Label ID="lblResultado" runat="server" CssClass="text-muted d-block mb-3"></asp:Label>
 
@@ -378,7 +525,7 @@
                     <input type="date" id="txtDataFim" runat="server" class="form-control" />
                 </div>
 
-<div class="col-md-4">
+               <div class="col-md-12">
     <label class="form-label">&nbsp;</label>
     <div class="botoes-acoes">
         <asp:Button ID="btnFiltrar" runat="server"
@@ -387,19 +534,17 @@
 
         <asp:Button ID="btnEscMens" runat="server"
             CssClass="btn btn-purple btn-pill"
-            Text="Escolher Mensagem" OnClick="btnEscMens_Click" />
+            Text="Escolher Mensagem"
+            OnClientClick="abrirModal(); return false;" />
     </div>
 </div>
-
-
-
             </div>
 
             <asp:Literal ID="LiteralMensagem" runat="server"></asp:Literal>
 
             <div class="table-responsive">
 
-               <div class="mb-2 d-flex justify-content-end align-items-center">
+                <div class="mb-2 d-flex justify-content-end align-items-center">
                     <label for="ddlPageSize" class="form-label me-2 mb-0">Itens por página:</label>
                     <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="true"
                         CssClass="form-select w-auto" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged">
@@ -407,17 +552,15 @@
                         <asp:ListItem Text="30" Value="30" />
                         <asp:ListItem Text="50" Value="50" />
                         <asp:ListItem Text="100" Value="100" />
-                         <asp:ListItem Text="200" Value="200" />
-                         <asp:ListItem Text="300" Value="300" />
+                        <asp:ListItem Text="200" Value="200" />
+                        <asp:ListItem Text="300" Value="300" />
                     </asp:DropDownList>
                 </div>
 
-               <asp:GridView ID="GridAssociados" runat="server" AutoGenerateColumns="False"
-                                CssClass="table table-hover align-middle mb-0" ClientIDMode="Static"
-                                EmptyDataText="Nenhum registro encontrado."
-                                AllowPaging="true" PageSize="15" OnPageIndexChanging="GridAssociados_PageIndexChanging">
-
-
+                <asp:GridView ID="GridAssociados" runat="server" AutoGenerateColumns="False"
+                    CssClass="table table-hover align-middle mb-0" ClientIDMode="Static"
+                    EmptyDataText="Nenhum registro encontrado."
+                    AllowPaging="true" PageSize="15" OnPageIndexChanging="GridAssociados_PageIndexChanging">
                     <Columns>
                         <asp:TemplateField HeaderText="">
                             <HeaderTemplate>
@@ -437,35 +580,43 @@
 
                         <asp:TemplateField HeaderText="Código">
                             <ItemTemplate>
-                                <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Registro">
                             <ItemTemplate>
-                                <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Associado">
                             <ItemTemplate>
-                                <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Plano">
                             <ItemTemplate>
-                                <asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Operadora">
                             <ItemTemplate>
-                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' /></ItemTemplate>
+                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Vencimento">
                             <ItemTemplate>
-                                <asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' /></ItemTemplate>
+                                <asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Valor">
                             <ItemTemplate>
-                                <asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' /></ItemTemplate>
+                                <asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Telefone">
                             <ItemTemplate>
-                                <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' /></ItemTemplate>
+                                <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>

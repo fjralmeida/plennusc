@@ -128,7 +128,7 @@ input[type="password"],
     }
 
 .signin {
-    background-color: #091225;
+    background-color: #83CEEE;
     color: #fff;
     padding: 12px;
     border: none;
@@ -141,7 +141,7 @@ input[type="password"],
 }
 
     .signin:hover {
-        background-color: #142a51;
+        background-color: #6AB9E0;
     }
 
 .error-message {
@@ -176,8 +176,6 @@ select.form-select {
         outline: none;
         box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
     }
-
-
 
 /* Responsivo */
 @media (max-width: 768px) {

@@ -138,7 +138,7 @@ namespace appWhatsapp.Views
 
             var api = new WhatsappService();
 
-            string escolhaTemplate = ddlTemplate.SelectedValue;
+            string escolhaTemplate = hfTemplateEscolhido.Value;
 
             var resultadoFinal = new StringBuilder();
 
@@ -163,14 +163,11 @@ namespace appWhatsapp.Views
                     case "Definitivo":
                         resultado = await api.ConexaoApiDefinitivo(
                             telefones,
-                            dados.Field1, // substitua se tiver um campo específico
+                            dados.Field8,
                             dados.Field1,
                             dados.Field2,
                             dados.Field3,
-                            dados.Field4,
-                            dados.Field5,
-                            dados.Field6,
-                            dados.Field7
+                            dados.Field4
                         );
                         break;
 
@@ -208,17 +205,17 @@ namespace appWhatsapp.Views
                 CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
                 if (chk != null && chk.Checked)
                 {
-                    string telefone = "553173069983";
-                    //string telefone = FormatTelefone(telefoneBruto);
-
-                    if (string.IsNullOrEmpty(telefone))
-                        continue; // Ignora se for inválido ou fixo
-
-                    //string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
-                    //string telefone = FormatTelefone(telefoneBruto);
+                    //string telefone = "553173069983";
+                    ////string telefone = FormatTelefone(telefoneBruto);
 
                     //if (string.IsNullOrEmpty(telefone))
                     //    continue; // Ignora se for inválido ou fixo
+
+                    string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
+                    string telefone = FormatTelefone(telefoneBruto);
+
+                    if (string.IsNullOrEmpty(telefone))
+                        continue; // Ignora se for inválido ou fixo
 
                     string nome = ((Label)row.FindControl("lblNome"))?.Text?.Trim();
                     string plano = ((Label)row.FindControl("lblPlano"))?.Text?.Trim();
@@ -293,7 +290,14 @@ namespace appWhatsapp.Views
 
         protected void btnEscMens_Click(object sender, EventArgs e)
         {
+            string escolherTemplete = hfTemplateEscolhido.Value;
 
+            if (string.IsNullOrEmpty(escolherTemplete))
+            {
+                lblResultado.Text = "Selecionar um templete";
+                return;
+            }
+            lblResultado.Text = $"Templete escolhido: {escolherTemplete}";
         }
     }
 }

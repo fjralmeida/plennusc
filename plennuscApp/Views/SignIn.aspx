@@ -13,15 +13,15 @@
 
 <body>
     <!-- IMAGEM DE FUNDO NO FRONT -->
-    <img src="../Uploads/Fundo_Login.jpg" 
-         style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;" 
-         alt="Fundo Login" />
+    <img src="../Uploads/Fundo_Login.jpg"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;"
+        alt="Fundo Login" />
 
     <form id="form1" runat="server">
         <div class="container">
             <div class="card">
                 <div class="left">
-                    <img src="../Uploads/LogoFrenteLogin.jpeg"  alt="Ilustração de Autenticação" />
+                    <img src="../Uploads/LogoFrenteLogin.jpeg" alt="Ilustração de Autenticação" />
                 </div>
                 <div class="right">
                     <div class="logo">
@@ -38,14 +38,12 @@
                     <label>Senha</label>
                     <asp:TextBox ID="TextBoxPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Digite sua senha" />
 
-                 <label>Sistema</label>
-                        <asp:DropDownList 
-                            ID="ddlSistema" 
-                            runat="server" 
-                            CssClass="form-select">
-                        </asp:DropDownList>
-
-
+                    <label>Sistema</label>
+                    <asp:DropDownList
+                        ID="ddlSistema"
+                        runat="server"
+                        CssClass="form-select">
+                    </asp:DropDownList>
 
                     <asp:Button ID="ButtonSignIn" runat="server" CssClass="signin" Text="Entrar" OnClick="ButtonSignIn_Click" />
 
