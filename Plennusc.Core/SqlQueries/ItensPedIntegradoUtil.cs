@@ -64,32 +64,26 @@ namespace appWhatsapp.SqlQueries
             string senhaHash = CriptografiaUtil.CalcularHashSHA512(senha);
 
             string sql = @"
-                        SELECT 
-    AA.CodAutenticacaoAcesso,
-    AA.NomeUsuario,
-    AA.UsrNomeLogin,
-    AA.Conf_Ativo AS UsuarioAtivo,
-    SE.CodEmpresa,
-    E.RazaoSocial,
-    E.NomeFantasia,
-    E.Conf_Ativo AS EmpresaAtiva,
-    E.Conf_LiberaAcesso, -- Empresa liberada?
-    SE.Conf_LiberaAcesso AS LiberacaoVinculoSistemaEmpresa,
-    SEU.Conf_LiberaAcesso AS LiberacaoUsuarioSistema,
-    SEU.Conf_BloqueiaAcesso AS BloqueioUsuarioSistema, 
-    SI.CodSistema,
-    SI.Nome AS NomeSistema,
-    SI.NomeDisplay AS NomeDisplaySistema
-FROM AutenticacaoAcesso AA
-INNER JOIN SistemaEmpresaUsuario SEU 
-    ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
-INNER JOIN SistemaEmpresa SE 
-    ON SE.CodSistemaEmpresa = SEU.CodSistemaEmpresa
-INNER JOIN Empresa E 
-    ON E.CodEmpresa = SE.CodEmpresa
-INNER JOIN Sistema SI 
-    ON SI.CodSistema = SE.CodSistema
-";
+                            SELECT 
+                                AA.CodAutenticacaoAcesso,
+                                AA.NomeUsuario,
+                                AA.UsrNomeLogin,
+                                AA.Conf_Ativo AS UsuarioAtivo,
+                                SE.CodEmpresa,
+                                E.RazaoSocial,
+                                E.NomeFantasia,
+                                E.Conf_Ativo AS EmpresaAtiva,
+                                E.Conf_LiberaAcesso,
+                                SI.CodSistema
+                            FROM AutenticacaoAcesso AA
+                            INNER JOIN SistemaEmpresaUsuario SEU ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
+                            INNER JOIN SistemaEmpresa SE ON SE.CodSistemaEmpresa = SEU.CodSistemaEmpresa
+                            INNER JOIN Empresa E ON E.CodEmpresa = SE.CodEmpresa
+                            INNER JOIN Sistema SI ON SI.CodSistema = SE.CodSistema
+                            WHERE 
+                                AA.UsrNomeLogin = @login
+                                AND AA.UsrPasswd = @senhaHash
+                                AND SI.CodSistema = @CodSistema";
 
                                 var parametros = new Dictionary<string, object>
                         {
@@ -101,7 +95,6 @@ INNER JOIN Sistema SI
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(sql, parametros);
         }
-
 
 
         public DataTable ConsultaInfoPerfil()

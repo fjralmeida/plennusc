@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlunnuscMedic", "PlunnuscMe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlennuscFinance", "PlennuscFinance\PlennuscFinance.csproj", "{8EAA0BE8-4F47-4C8C-A58D-3D5BF84B4DA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plennusc.Core", "Plennusc.Core\Plennusc.Core.csproj", "{896589F0-F1AE-49AB-BBCC-168EEC970152}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{8EAA0BE8-4F47-4C8C-A58D-3D5BF84B4DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EAA0BE8-4F47-4C8C-A58D-3D5BF84B4DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EAA0BE8-4F47-4C8C-A58D-3D5BF84B4DA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{896589F0-F1AE-49AB-BBCC-168EEC970152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{896589F0-F1AE-49AB-BBCC-168EEC970152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{896589F0-F1AE-49AB-BBCC-168EEC970152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{896589F0-F1AE-49AB-BBCC-168EEC970152}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace appWhatsapp.Views
+namespace PlunnuscMedic.Views.Masters
 {
 
 

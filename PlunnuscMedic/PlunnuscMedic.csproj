@@ -182,7 +182,6 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Data_Bd\BancoDadosSQL.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -222,32 +221,35 @@
     <Compile Include="Views\HomeMedic.aspx.designer.cs">
       <DependentUpon>HomeMedic.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\Index.Master.cs">
+    <Compile Include="Views\Masters\Index.Master.cs">
       <DependentUpon>Index.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Views\Index.Master.designer.cs">
+    <Compile Include="Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\Utils\" />
-    <Folder Include="Service\" />
-    <Folder Include="SqlQueries\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Uploads\715998723.pdf" />
-    <Content Include="Views\Index.Master" />
+    <Content Include="Views\Masters\Index.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plennusc.Core\Plennusc.Core.csproj">
+      <Project>{896589f0-f1ae-49ab-bbcc-168eec970152}</Project>
+      <Name>Plennusc.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -264,7 +266,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56229</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44356/</IISUrl>
+          <IISUrl>https://localhost:44347/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

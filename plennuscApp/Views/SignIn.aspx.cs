@@ -3,6 +3,7 @@ using appWhatsapp.SqlQueries;
 using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
@@ -66,13 +67,16 @@ namespace appWhatsapp.Views
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
             DataTable dtUser = util.ConsultaLoginComEmpresa(login, senha, codSistemaSelecionado);
 
-            if (dtUser.Rows.Count > 0)
+                if (dtUser.Rows.Count > 0)
             {
                 var row = dtUser.Rows[0];
 
                 bool usuarioAtivo = Convert.ToBoolean(row["UsuarioAtivo"]);
                 bool empresaAtiva = Convert.ToBoolean(row["EmpresaAtiva"]);
-                bool empresaLiberaAcesso = Convert.ToBoolean(row["Conf_LiberaAcesso"]);
+                bool empresaLiberaAcesso = Convert.ToBoolean(row["Conf_LiberaAcesso"]); // da empresa
+                bool liberacaoVinculo = Convert.ToBoolean(row["LiberacaoVinculoSistemaEmpresa"]); // empresa-sistema
+                bool liberacaoUsuario = Convert.ToBoolean(row["LiberacaoUsuarioSistema"]); // usuário-sistema
+                bool bloqueioUsuario = Convert.ToBoolean(row["BloqueioUsuarioSistema"]);
 
                 if (!usuarioAtivo)
                 {
@@ -95,23 +99,26 @@ namespace appWhatsapp.Views
                 Session["NomeEmpresa"] = row["NomeFantasia"];
                 Session["CodSistema"] = row["CodSistema"];
 
-                //Redirecionamento dinâmico
+                string urlGestao = ConfigurationManager.AppSettings["UrlAppGestao"];
+                string urlMedic = ConfigurationManager.AppSettings["UrlAppMedic"];
+                string urlFinance = ConfigurationManager.AppSettings["UrlAppFinance"];
+
                 switch (codSistemaSelecionado)
                 {
                     case "1":
-                        Response.Redirect("~/Views/Home.aspx");
+                        Response.Redirect(urlGestao + "/Views/HomeGestao.aspx"); // Gestão
                         break;
                     case "2":
-                        Response.Redirect("~/Gestao/Views/HomeGestao.aspx"); // Gestão
+                        Response.Redirect(urlFinance + "/Views/HomeFinance.aspx"); // Finance
                         break;
                     case "3":
-                        Response.Redirect("~/Medic/Views/HomeMedic.aspx"); // Medic
+                        Response.Redirect(urlMedic + "/Views/HomeMedic.aspx");   // Medic
                         break;
-                    case "4":
-                        Response.Redirect("~/Finance/Views/HomeFinance.aspx"); // Finance
-                        break;
-                        default:
-                        LabelErro.Text = "Sistema não indentificado";
+                    //case "4":
+                    //    Response.Redirect(urlGestao + "/Views/HomeGestao.aspx"); // Gestão
+                    //    break;
+                    default:
+                        LabelErro.Text = "Sistema não identificado";
                         LabelErro.Visible = true;
                         break;
                 }

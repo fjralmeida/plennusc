@@ -7,7 +7,7 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace appWhatsapp.Views
+namespace PlennuscGestao.Views.Masters
 {
 
 

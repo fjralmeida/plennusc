@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Collections.Generic;
-
+using System.Configuration;
 namespace appWhatsapp.Data_Bd
 {
     class Banco_Dados_SQLServer

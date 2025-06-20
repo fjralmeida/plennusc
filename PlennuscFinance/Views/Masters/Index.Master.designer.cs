@@ -7,7 +7,7 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace appWhatsapp.Views
+namespace PlennuscFinance.Views.Masters
 {
 
 

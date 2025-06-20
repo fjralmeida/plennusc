@@ -1,4 +1,5 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="appWhatsapp.Views.Index" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="PlennuscFinance.Views.Masters.Index" %>
+
 
 <!DOCTYPE html>
 <html>

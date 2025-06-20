@@ -1,5 +1,4 @@
 ﻿using appWhatsapp.SqlQueries;
-using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,7 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace appWhatsapp.Views
+namespace PlennuscGestao.Views.Masters
 {
     public partial class Index : System.Web.UI.MasterPage
     {
