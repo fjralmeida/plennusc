@@ -15,17 +15,13 @@ namespace PlennuscGestao.Views.Masters
         {
             if (!IsPostBack)
             {
-                txtBusca.Text = "";
+                lblUsuario.Text = Request.QueryString["nomeUsuario"] ?? "Usuário";
+                lblNomeSistema.Text = Request.QueryString["nomeEmpresa"] ?? "Empresa";
 
-                lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
-                lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
-
-                // Se tiver o CodEmpresa na sessão, carrega a logo correta
-                if (Session["CodSistema"] != null)
+                if (Request.QueryString["codEmpresa"] != null)
                 {
-                    int codSistema = Convert.ToInt32(Session["CodSistema"]);
-
-                    CarregarInfoEmpresa(codSistema);
+                    int codEmpresa = Convert.ToInt32(Request.QueryString["codEmpresa"]);
+                    CarregarInfoEmpresa(codEmpresa);
                 }
             }
         }

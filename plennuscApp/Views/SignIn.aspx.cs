@@ -105,18 +105,33 @@ namespace appWhatsapp.Views
 
                 switch (codSistemaSelecionado)
                 {
-                    case "1":
-                        Response.Redirect(urlGestao + "/Views/HomeGestao.aspx"); // Gestão
+                    case "1": // Gestão
+                        Response.Redirect(urlGestao + "/Views/HomeGestao.aspx"
+                            + "?codUsuario=" + row["CodAutenticacaoAcesso"]
+                            + "&codEmpresa=" + row["CodEmpresa"]
+                            + "&nomeUsuario=" + HttpUtility.UrlEncode(row["NomeUsuario"].ToString())
+                            + "&nomeEmpresa=" + HttpUtility.UrlEncode(row["NomeFantasia"].ToString())
+                            + "&codSistema=" + row["CodSistema"]);
                         break;
-                    case "2":
-                        Response.Redirect(urlFinance + "/Views/HomeFinance.aspx"); // Finance
+
+                    case "2": // Finance
+                        Response.Redirect(urlFinance + "/Views/HomeFinance.aspx"
+                            + "?codUsuario=" + row["CodAutenticacaoAcesso"]
+                            + "&codEmpresa=" + row["CodEmpresa"]
+                            + "&nomeUsuario=" + HttpUtility.UrlEncode(row["NomeUsuario"].ToString())
+                            + "&nomeEmpresa=" + HttpUtility.UrlEncode(row["NomeFantasia"].ToString())
+                            + "&codSistema=" + row["CodSistema"]);
                         break;
-                    case "3":
-                        Response.Redirect(urlMedic + "/Views/HomeMedic.aspx");   // Medic
+
+                    case "3": // Medic
+                        Response.Redirect(urlMedic + "/Views/HomeMedic.aspx"
+                            + "?codUsuario=" + row["CodAutenticacaoAcesso"]
+                            + "&codEmpresa=" + row["CodEmpresa"]
+                            + "&nomeUsuario=" + HttpUtility.UrlEncode(row["NomeUsuario"].ToString())
+                            + "&nomeEmpresa=" + HttpUtility.UrlEncode(row["NomeFantasia"].ToString())
+                            + "&codSistema=" + row["CodSistema"]);
                         break;
-                    //case "4":
-                    //    Response.Redirect(urlGestao + "/Views/HomeGestao.aspx"); // Gestão
-                    //    break;
+
                     default:
                         LabelErro.Text = "Sistema não identificado";
                         LabelErro.Visible = true;
