@@ -47,17 +47,25 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Data_Bd\BancoDadosSQL.cs" />
-    <Compile Include="Models\DadosMensagem.cs" />
-    <Compile Include="Models\Mensagem.cs" />
+    <Compile Include="Models\ModelsGestao\DadosMensagem.cs" />
+    <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\WhatsappService.cs" />
-    <Compile Include="SqlQueries\ItensPedIntegradoUtil.cs" />
-    <Compile Include="SqlQueries\OperadoraUtil.cs" />
-    <Compile Include="SqlQueries\SistemaUtil.cs" />
+    <Compile Include="Service\ServiceGestao\WhatsappService.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\ItensPedIntegradoUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\OperadoraUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\ModelsFinance\" />
+    <Folder Include="Models\ModelsMedic\" />
+    <Folder Include="Service\ServiceFinance\" />
+    <Folder Include="Service\ServiceMedic\" />
+    <Folder Include="SqlQueries\SqlQueriesFinance\" />
+    <Folder Include="SqlQueries\SqlQueriesMedic\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

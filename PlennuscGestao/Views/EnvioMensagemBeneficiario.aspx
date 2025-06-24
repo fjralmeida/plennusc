@@ -1,4 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Index.Master" AutoEventWireup="true" CodeBehind="EnvioMensagemBeneficiario.aspx.cs" Inherits="appWhatsapp.Views.EnvioMensagemBeneficiario" Async="true" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Masters/Index.Master" 
+    AutoEventWireup="true" CodeBehind="EnvioMensagemBeneficiario.aspx.cs" 
+    Inherits="PlennuscGestao.Views.EnvioMensagemBeneficiario" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">

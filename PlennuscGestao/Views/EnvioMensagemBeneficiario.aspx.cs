@@ -10,7 +10,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace appWhatsapp.Views
+namespace PlennuscGestao.Views
 {
     public partial class EnvioMensagemBeneficiario : System.Web.UI.Page
     {

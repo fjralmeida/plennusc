@@ -45,6 +45,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -79,9 +82,6 @@
     </Reference>
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -160,7 +160,10 @@
     <Content Include="Uploads\logo_plennus.png" />
     <Content Include="Uploads\logo_plennus_sb.png" />
     <Content Include="ViewSwitcher.ascx" />
+    <Content Include="Views\EnvioMensagemBeneficiario.aspx" />
     <Content Include="Views\HomeGestao.aspx" />
+    <Content Include="Views\TelaEnvio.aspx" />
+    <Content Include="Views\TempleteMensagem.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
     <Content Include="Site.Mobile.Master" />
@@ -214,6 +217,13 @@
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Views\EnvioMensagemBeneficiario.aspx.cs">
+      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\EnvioMensagemBeneficiario.aspx.designer.cs">
+      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\HomeGestao.aspx.cs">
       <DependentUpon>HomeGestao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -227,6 +237,19 @@
     </Compile>
     <Compile Include="Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TelaEnvio.aspx.cs">
+      <DependentUpon>TelaEnvio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TelaEnvio.aspx.designer.cs">
+      <DependentUpon>TelaEnvio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TempleteMensagem.aspx.cs">
+      <DependentUpon>TempleteMensagem.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\TempleteMensagem.aspx.designer.cs">
+      <DependentUpon>TempleteMensagem.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

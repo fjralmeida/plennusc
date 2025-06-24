@@ -156,11 +156,8 @@
     <Content Include="Content\Site.css" />
     <Content Include="Uploads\logo_plennus.png" />
     <Content Include="Uploads\logo_plennus_sb.png" />
-    <Content Include="Views\EnvioMensagemBeneficiario.aspx" />
     <Content Include="Views\Home.aspx" />
     <Content Include="Views\SignIn.aspx" />
-    <Content Include="Views\TelaEnvio.aspx" />
-    <Content Include="Views\TempleteMensagem.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -225,17 +222,7 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Models\DadosMensagem.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
-    <Compile Include="SqlQueries\OperadoraUtil.cs" />
-    <Compile Include="SqlQueries\SistemaUtil.cs" />
-    <Compile Include="Views\EnvioMensagemBeneficiario.aspx.cs">
-      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\EnvioMensagemBeneficiario.aspx.designer.cs">
-      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Views\Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -257,20 +244,6 @@
     <Compile Include="Views\SignIn.aspx.designer.cs">
       <DependentUpon>SignIn.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\TelaEnvio.aspx.cs">
-      <DependentUpon>TelaEnvio.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TelaEnvio.aspx.designer.cs">
-      <DependentUpon>TelaEnvio.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TempleteMensagem.aspx.cs">
-      <DependentUpon>TempleteMensagem.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\TempleteMensagem.aspx.designer.cs">
-      <DependentUpon>TempleteMensagem.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Data_Bd\BancoDadosSQL.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -281,9 +254,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Mensagem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\WhatsappService.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -298,7 +269,6 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
-    <Compile Include="SqlQueries\ItensPedIntegradoUtil.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -310,6 +280,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\Img\" />
+    <Folder Include="Data_Bd\" />
+    <Folder Include="Service\" />
+    <Folder Include="SqlQueries\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
