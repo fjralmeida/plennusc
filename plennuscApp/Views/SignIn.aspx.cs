@@ -67,15 +67,24 @@ namespace appWhatsapp.Views
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
             DataTable dtUser = util.ConsultaLoginComEmpresa(login, senha, codSistemaSelecionado);
 
-                if (dtUser.Rows.Count > 0)
+            if (dtUser.Rows.Count > 0)
             {
-                var row = dtUser.Rows[0];
+                DataRow[] linhasFiltradas = dtUser.Select($"CodSistema = {codSistemaSelecionado}");
+
+                if (linhasFiltradas.Length == 0)
+                {
+                    LabelErro.Text = "Não há acesso para o sistema selecionado.";
+                    LabelErro.Visible = true;
+                    return;
+                }
+
+                var row = linhasFiltradas[0];
 
                 bool usuarioAtivo = Convert.ToBoolean(row["UsuarioAtivo"]);
                 bool empresaAtiva = Convert.ToBoolean(row["EmpresaAtiva"]);
-                bool empresaLiberaAcesso = Convert.ToBoolean(row["Conf_LiberaAcesso"]); // da empresa
-                bool liberacaoVinculo = Convert.ToBoolean(row["LiberacaoVinculoSistemaEmpresa"]); // empresa-sistema
-                bool liberacaoUsuario = Convert.ToBoolean(row["LiberacaoUsuarioSistema"]); // usuário-sistema
+                bool empresaLiberaAcesso = Convert.ToBoolean(row["Conf_LiberaAcesso"]);
+                bool liberacaoVinculo = Convert.ToBoolean(row["LiberacaoVinculoSistemaEmpresa"]);
+                bool liberacaoUsuario = Convert.ToBoolean(row["LiberacaoUsuarioSistema"]);
                 bool bloqueioUsuario = Convert.ToBoolean(row["BloqueioUsuarioSistema"]);
 
                 if (!usuarioAtivo)
@@ -92,7 +101,7 @@ namespace appWhatsapp.Views
                     return;
                 }
 
-                // Tudo OK — salva na sessão
+                // Salva na sessão
                 Session["CodUsuario"] = row["CodAutenticacaoAcesso"];
                 Session["NomeUsuario"] = row["NomeUsuario"];
                 Session["CodEmpresa"] = row["CodEmpresa"];
@@ -105,7 +114,7 @@ namespace appWhatsapp.Views
 
                 switch (codSistemaSelecionado)
                 {
-                    case "1": // Gestão
+                    case "1":
                         Response.Redirect(urlGestao + "/Views/HomeGestao.aspx"
                             + "?codUsuario=" + row["CodAutenticacaoAcesso"]
                             + "&codEmpresa=" + row["CodEmpresa"]
@@ -114,7 +123,7 @@ namespace appWhatsapp.Views
                             + "&codSistema=" + row["CodSistema"]);
                         break;
 
-                    case "2": // Finance
+                    case "2":
                         Response.Redirect(urlFinance + "/Views/HomeFinance.aspx"
                             + "?codUsuario=" + row["CodAutenticacaoAcesso"]
                             + "&codEmpresa=" + row["CodEmpresa"]
@@ -123,7 +132,7 @@ namespace appWhatsapp.Views
                             + "&codSistema=" + row["CodSistema"]);
                         break;
 
-                    case "3": // Medic
+                    case "3":
                         Response.Redirect(urlMedic + "/Views/HomeMedic.aspx"
                             + "?codUsuario=" + row["CodAutenticacaoAcesso"]
                             + "&codEmpresa=" + row["CodEmpresa"]

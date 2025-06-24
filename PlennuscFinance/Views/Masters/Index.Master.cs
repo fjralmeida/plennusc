@@ -18,9 +18,9 @@ namespace PlennuscFinance.Views.Masters
                 lblUsuario.Text = Request.QueryString["nomeUsuario"] ?? "Usuário";
                 lblNomeSistema.Text = Request.QueryString["nomeEmpresa"] ?? "Empresa";
 
-                if (Request.QueryString["codEmpresa"] != null)
+                if (Request.QueryString["CodSistema"] != null)
                 {
-                    int codEmpresa = Convert.ToInt32(Request.QueryString["codEmpresa"]);
+                    int codEmpresa = Convert.ToInt32(Request.QueryString["CodSistema"]);
                     CarregarInfoEmpresa(codEmpresa);
                 }
             }
