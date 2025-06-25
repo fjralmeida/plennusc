@@ -18,9 +18,9 @@ namespace PlennuscFinance.Views.Masters
                 lblUsuario.Text = Request.QueryString["nomeUsuario"] ?? "Usuário";
                 lblNomeSistema.Text = Request.QueryString["nomeEmpresa"] ?? "Empresa";
 
-                if (Request.QueryString["CodSistema"] != null)
+                if (Request.QueryString["codEmpresa"] != null)
                 {
-                    int codEmpresa = Convert.ToInt32(Request.QueryString["CodSistema"]);
+                    int codEmpresa = Convert.ToInt32(Request.QueryString["codEmpresa"]);
                     CarregarInfoEmpresa(codEmpresa);
                 }
             }
@@ -36,6 +36,27 @@ namespace PlennuscFinance.Views.Masters
                 imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
                 lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
+        }
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session.Abandon();
+
+            string baseUrl;
+
+            if (Request.Url.Host.Contains("localhost"))
+            {
+                // Ambiente local — endereço do PlennuscApp local
+                baseUrl = "https://localhost:44332";
+            }
+            else
+            {
+                // Ambiente de produção — endereço do PlennuscApp no servidor
+                baseUrl = "https://app.plennus.com.br";
+            }
+
+            string redirectUrl = $"{baseUrl}/Views/SignIn";
+            Response.Redirect(redirectUrl, true);
         }
     }
 }

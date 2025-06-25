@@ -37,5 +37,27 @@ namespace PlennuscGestao.Views.Masters
                 lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
         }
+
+        protected void LogoutUsuario(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session.Abandon();
+
+            string baseUrl;
+
+            if (Request.Url.Host.Contains("localhost"))
+            {
+                // Ambiente local — endereço do PlennuscApp local
+                baseUrl = "https://localhost:44332";
+            }
+            else
+            {
+                // Ambiente de produção — endereço do PlennuscApp no servidor
+                baseUrl = "https://app.plennus.com.br"; 
+            }
+
+            string redirectUrl = $"{baseUrl}/Views/SignIn";
+            Response.Redirect(redirectUrl, true);
+        }
     }
 }

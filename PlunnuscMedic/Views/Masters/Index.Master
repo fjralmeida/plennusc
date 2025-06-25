@@ -61,6 +61,20 @@
         body {
             overflow: hidden; /* previne scroll da janela */
         }
+
+           /* Hover AZUL para todos os dropdowns, exceto o "Sair" */
+        .dropdown-menu .dropdown-item:hover,
+        .dropdown-menu .dropdown-item:focus {
+            background-color: #83CEEE !important;
+            color: #000 !important; /* cor preta para texto */
+        }
+
+        /* Hover VERMELHO para o item "Sair" */
+        .dropdown-menu .dropdown-item.text-danger:hover,
+        .dropdown-menu .dropdown-item.text-danger:focus {
+            background-color: #f8d7da !important;
+            color: #842029 !important;
+        }
     </style>
 
     <asp:ContentPlaceHolder ID="head" runat="server" />
@@ -89,25 +103,35 @@
 
                 <!-- Ícones e usuário -->
                 <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-light rounded-circle p-1" title="Apps">
-                        <i class="bi bi-grid-3x3-gap-fill"></i>
-                    </button>
-                    <div class="dropdown">
-                        <img src='<%= ResolveUrl("~/assets/img/team/40x40/usuario.webp") %>'
-                             class="rounded-circle dropdown-toggle user-avatar"
-                             data-bs-toggle="dropdown"
-                             aria-expanded="false" />
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li class="dropdown-header text-center fw-semibold">
-                                <asp:Label ID="lblUsuario" runat="server" />
-                            </li>
-                            <li><a class="dropdown-item" href="#">Perfil</a></li>
-                            <li><a class="dropdown-item" href="#">Configurações</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item text-danger" href="logout.aspx">Sair</a></li>
-                        </ul>
-                    </div>
-                </div>
+    <button class="btn btn-light rounded-circle p-1" title="Apps">
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+    </button>
+
+    <div class="dropdown">
+        <img src='<%= ResolveUrl("~/assets/img/team/40x40/usuario.webp") %>'
+             class="rounded-circle dropdown-toggle user-avatar"
+             data-bs-toggle="dropdown"
+             aria-expanded="false" />
+
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li class="dropdown-header text-center fw-semibold">
+                <asp:Label ID="lblUsuario" runat="server" />
+            </li>
+            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li><a class="dropdown-item" href="#">Configurações</a></li>
+            <li><hr class="dropdown-divider" /></li>
+
+            <li>
+                <asp:LinkButton ID="btnLogout"
+                                runat="server"
+                                CssClass="dropdown-item text-danger"
+                                OnClick="btnLogout_Click">
+                    Sair
+                </asp:LinkButton>
+            </li>
+        </ul>
+    </div>
+</div>
             </div>
 
             <!-- 🧱 Corpo: Sidebar + Conteúdo -->
