@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="PlunnuscMedic.Views.Masters.Index" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="PlennuscGestao.Views.Masters.Index" %>
 
 <!DOCTYPE html>
 <html>
@@ -62,7 +62,7 @@
             overflow: hidden; /* previne scroll da janela */
         }
 
-           /* Hover AZUL para todos os dropdowns, exceto o "Sair" */
+       /* Hover AZUL para todos os dropdowns, exceto o "Sair" */
         .dropdown-menu .dropdown-item:hover,
         .dropdown-menu .dropdown-item:focus {
             background-color: #83CEEE !important;
@@ -75,6 +75,7 @@
             background-color: #f8d7da !important;
             color: #842029 !important;
         }
+
     </style>
 
     <asp:ContentPlaceHolder ID="head" runat="server" />
@@ -102,7 +103,7 @@
                 </div>
 
                 <!-- Ícones e usuário -->
-                <div class="d-flex align-items-center gap-2">
+               <div class="d-flex align-items-center gap-2">
     <button class="btn btn-light rounded-circle p-1" title="Apps">
         <i class="bi bi-grid-3x3-gap-fill"></i>
     </button>
@@ -125,7 +126,7 @@
                 <asp:LinkButton ID="btnLogout"
                                 runat="server"
                                 CssClass="dropdown-item text-danger"
-                                OnClick="btnLogout_Click">
+                                OnClick="LogoutUsuario">
                     Sair
                 </asp:LinkButton>
             </li>

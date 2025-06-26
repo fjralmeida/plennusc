@@ -7,7 +7,7 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace PlennuscGestao.Views
+namespace PlennuscApp.PlennuscGestao.Views
 {
 
 

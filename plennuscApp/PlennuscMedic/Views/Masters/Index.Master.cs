@@ -15,13 +15,14 @@ namespace PlunnuscMedic.Views.Masters
         {
             if (!IsPostBack)
             {
-                lblUsuario.Text = Request.QueryString["nomeUsuario"] ?? "Usuário";
-                lblNomeSistema.Text = Request.QueryString["nomeEmpresa"] ?? "Empresa";
+                lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
+                lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
 
-                if (Request.QueryString["codEmpresa"] != null)
+                // Se tiver o CodEmpresa na sessão, carrega a logo correta
+                if (Session["CodSistema"] != null)
                 {
-                    int codEmpresa = Convert.ToInt32(Request.QueryString["codEmpresa"]);
-                    CarregarInfoEmpresa(codEmpresa);
+                    int codSistema = Convert.ToInt32(Session["CodSistema"]);
+                    CarregarInfoEmpresa(codSistema);
                 }
             }
         }
@@ -57,7 +58,7 @@ namespace PlunnuscMedic.Views.Masters
                 baseUrl = "https://app.plennus.com.br";
             }
 
-            string redirectUrl = $"{baseUrl}/Views/SignIn";
+            string redirectUrl = $"{baseUrl}/ViewsApp/SignIn";
             Response.Redirect(redirectUrl, true);
         }
     }

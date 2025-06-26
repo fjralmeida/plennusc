@@ -150,14 +150,20 @@
     <Content Include="Content\Css\custom-notifications.css.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
+    <Content Include="PlennuscFinance\Views\HomeFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\EnvioMensagemBeneficiario.aspx" />
+    <Content Include="PlennuscGestao\Views\HomeGestao.aspx" />
+    <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
+    <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
+    <Content Include="PlennuscMedic\Views\HomeMedic.aspx" />
     <Content Include="Uploads\Fundo_Login.jpg" />
     <Content Include="Uploads\LogoFrenteLogin.jpeg" />
     <Content Include="Uploads\logoVallor.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Uploads\logo_plennus.png" />
     <Content Include="Uploads\logo_plennus_sb.png" />
-    <Content Include="Views\Home.aspx" />
-    <Content Include="Views\SignIn.aspx" />
+    <Content Include="ViewsApp\Home.aspx" />
+    <Content Include="ViewsApp\SignIn.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -170,6 +176,9 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="PlennuscGestao\Views\Masters\Index.Master" />
+    <Content Include="PlennuscFinance\Views\Masters\Index.Master" />
+    <Content Include="PlennuscMedic\Views\Masters\Index.Master" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -223,25 +232,87 @@
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
-    <Compile Include="Views\Home.aspx.cs">
-      <DependentUpon>Home.aspx</DependentUpon>
+    <Compile Include="PlennuscFinance\Views\HomeFinance.aspx.cs">
+      <DependentUpon>HomeFinance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Views\Home.aspx.designer.cs">
-      <DependentUpon>Home.aspx</DependentUpon>
+    <Compile Include="PlennuscFinance\Views\HomeFinance.aspx.designer.cs">
+      <DependentUpon>HomeFinance.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\Index.Master.cs">
+    <Compile Include="PlennuscFinance\Views\Masters\Index.Master.cs">
       <DependentUpon>Index.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Views\Index.Master.designer.cs">
+    <Compile Include="PlennuscFinance\Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
     </Compile>
-    <Compile Include="Views\SignIn.aspx.cs">
+    <Compile Include="PlennuscGestao\Views\EnvioMensagemBeneficiario.aspx.cs">
+      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\EnvioMensagemBeneficiario.aspx.designer.cs">
+      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\HomeGestao.aspx.cs">
+      <DependentUpon>HomeGestao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\HomeGestao.aspx.designer.cs">
+      <DependentUpon>HomeGestao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\Masters\Index.Master.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\Masters\Index.Master.designer.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\TelaEnvio.aspx.cs">
+      <DependentUpon>TelaEnvio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\TelaEnvio.aspx.designer.cs">
+      <DependentUpon>TelaEnvio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\TempleteMensagem.aspx.cs">
+      <DependentUpon>TempleteMensagem.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\TempleteMensagem.aspx.designer.cs">
+      <DependentUpon>TempleteMensagem.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\HomeMedic.aspx.cs">
+      <DependentUpon>HomeMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\HomeMedic.aspx.designer.cs">
+      <DependentUpon>HomeMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\Masters\Index.Master.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\Masters\Index.Master.designer.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsApp\Home.aspx.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewsApp\Home.aspx.designer.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsApp\Index.Master.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewsApp\Index.Master.designer.cs">
+      <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="ViewsApp\SignIn.aspx.cs">
       <DependentUpon>SignIn.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Views\SignIn.aspx.designer.cs">
+    <Compile Include="ViewsApp\SignIn.aspx.designer.cs">
       <DependentUpon>SignIn.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
@@ -289,7 +360,7 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Uploads\715998723.pdf" />
-    <Content Include="Views\Index.Master" />
+    <Content Include="ViewsApp\Index.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

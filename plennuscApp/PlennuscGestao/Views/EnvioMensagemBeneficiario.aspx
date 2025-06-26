@@ -1,6 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Masters/Index.Master" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" 
     AutoEventWireup="true" CodeBehind="EnvioMensagemBeneficiario.aspx.cs" 
-    Inherits="PlennuscGestao.Views.EnvioMensagemBeneficiario" Async="true" %>
+    Inherits="PlennuscApp.PlennuscGestao.Views.EnvioMensagemBeneficiario"
+    Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +31,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 16px
         }
 
         .btn-pill {

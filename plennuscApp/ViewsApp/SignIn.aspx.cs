@@ -108,37 +108,19 @@ namespace appWhatsapp.Views
                 Session["NomeEmpresa"] = row["NomeFantasia"];
                 Session["CodSistema"] = row["CodSistema"];
 
-                string urlGestao = ConfigurationManager.AppSettings["UrlAppGestao"];
-                string urlMedic = ConfigurationManager.AppSettings["UrlAppMedic"];
-                string urlFinance = ConfigurationManager.AppSettings["UrlAppFinance"];
 
                 switch (codSistemaSelecionado)
                 {
-                    case "1":
-                        Response.Redirect(urlGestao + "/Views/HomeGestao.aspx"
-                            + "?codUsuario=" + row["CodAutenticacaoAcesso"]
-                            + "&codEmpresa=" + row["CodEmpresa"]
-                            + "&nomeUsuario=" + HttpUtility.UrlEncode(row["NomeUsuario"].ToString())
-                            + "&nomeEmpresa=" + HttpUtility.UrlEncode(row["NomeFantasia"].ToString())
-                            + "&codSistema=" + row["CodSistema"]);
+                    case "1": // Gestão
+                        Response.Redirect("~/PlennuscGestao/Views/HomeGestao.aspx");
                         break;
 
-                    case "2":
-                        Response.Redirect(urlFinance + "/Views/HomeFinance.aspx"
-                            + "?codUsuario=" + row["CodAutenticacaoAcesso"]
-                            + "&codEmpresa=" + row["CodEmpresa"]
-                            + "&nomeUsuario=" + HttpUtility.UrlEncode(row["NomeUsuario"].ToString())
-                            + "&nomeEmpresa=" + HttpUtility.UrlEncode(row["NomeFantasia"].ToString())
-                            + "&codSistema=" + row["CodSistema"]);
+                    case "2": // Finance
+                        Response.Redirect("~/PlennuscFinance/Views/HomeFinance.aspx");
                         break;
 
-                    case "3":
-                        Response.Redirect(urlMedic + "/Views/HomeMedic.aspx"
-                            + "?codUsuario=" + row["CodAutenticacaoAcesso"]
-                            + "&codEmpresa=" + row["CodEmpresa"]
-                            + "&nomeUsuario=" + HttpUtility.UrlEncode(row["NomeUsuario"].ToString())
-                            + "&nomeEmpresa=" + HttpUtility.UrlEncode(row["NomeFantasia"].ToString())
-                            + "&codSistema=" + row["CodSistema"]);
+                    case "3": // Medic
+                        Response.Redirect("~/PlennuscMedic/Views/HomeMedic.aspx");
                         break;
 
                     default:

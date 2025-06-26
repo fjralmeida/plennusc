@@ -7,7 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace PlennuscFinance.Views.Masters
+namespace PlennuscGestao.Views.Masters
 {
     public partial class Index : System.Web.UI.MasterPage
     {
@@ -15,12 +15,12 @@ namespace PlennuscFinance.Views.Masters
         {
             if (!IsPostBack)
             {
-                lblUsuario.Text = Request.QueryString["nomeUsuario"] ?? "Usuário";
-                lblNomeSistema.Text = Request.QueryString["nomeEmpresa"] ?? "Empresa";
+                lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
+                lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
 
-                if (Request.QueryString["codEmpresa"] != null)
+                if (Session["CodEmpresa"] != null)
                 {
-                    int codEmpresa = Convert.ToInt32(Request.QueryString["codEmpresa"]);
+                    int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
                     CarregarInfoEmpresa(codEmpresa);
                 }
             }
@@ -37,7 +37,8 @@ namespace PlennuscFinance.Views.Masters
                 lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
         }
-        protected void btnLogout_Click(object sender, EventArgs e)
+
+        protected void LogoutUsuario(object sender, EventArgs e)
         {
             Session.Clear();
             Session.Abandon();
@@ -55,7 +56,7 @@ namespace PlennuscFinance.Views.Masters
                 baseUrl = "https://app.plennus.com.br";
             }
 
-            string redirectUrl = $"{baseUrl}/Views/SignIn";
+            string redirectUrl = $"{baseUrl}/ViewsApp/SignIn";
             Response.Redirect(redirectUrl, true);
         }
     }

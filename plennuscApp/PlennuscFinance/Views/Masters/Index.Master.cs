@@ -1,5 +1,4 @@
 ﻿using appWhatsapp.SqlQueries;
-using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,7 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace appWhatsapp.Views
+namespace PlennuscFinance.Views.Masters
 {
     public partial class Index : System.Web.UI.MasterPage
     {
@@ -16,8 +15,6 @@ namespace appWhatsapp.Views
         {
             if (!IsPostBack)
             {
-                txtBusca.Text = "";
-
                 lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
                 lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
 
@@ -25,7 +22,6 @@ namespace appWhatsapp.Views
                 if (Session["CodSistema"] != null)
                 {
                     int codSistema = Convert.ToInt32(Session["CodSistema"]);
-
                     CarregarInfoEmpresa(codSistema);
                 }
             }
@@ -41,6 +37,27 @@ namespace appWhatsapp.Views
                 imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
                 lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
+        }
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Session.Abandon();
+
+            string baseUrl;
+
+            if (Request.Url.Host.Contains("localhost"))
+            {
+                // Ambiente local — endereço do PlennuscApp local
+                baseUrl = "https://localhost:44332";
+            }
+            else
+            {
+                // Ambiente de produção — endereço do PlennuscApp no servidor
+                baseUrl = "https://app.plennus.com.br";
+            }
+
+            string redirectUrl = $"{baseUrl}/ViewsApp/SignIn";
+            Response.Redirect(redirectUrl, true);
         }
     }
 }

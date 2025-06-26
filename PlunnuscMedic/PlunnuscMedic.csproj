@@ -160,7 +160,6 @@
     <Content Include="Uploads\logo_plennus.png" />
     <Content Include="Uploads\logo_plennus_sb.png" />
     <Content Include="ViewSwitcher.ascx" />
-    <Content Include="Views\HomeMedic.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
     <Content Include="Site.Mobile.Master" />
@@ -214,20 +213,6 @@
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Views\HomeMedic.aspx.cs">
-      <DependentUpon>HomeMedic.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\HomeMedic.aspx.designer.cs">
-      <DependentUpon>HomeMedic.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Masters\Index.Master.cs">
-      <DependentUpon>Index.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\Masters\Index.Master.designer.cs">
-      <DependentUpon>Index.Master</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -238,7 +223,6 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Uploads\715998723.pdf" />
-    <Content Include="Views\Masters\Index.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

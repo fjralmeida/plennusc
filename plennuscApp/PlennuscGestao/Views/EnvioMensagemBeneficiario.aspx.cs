@@ -10,7 +10,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace PlennuscGestao.Views
+namespace PlennuscApp.PlennuscGestao.Views
 {
     public partial class EnvioMensagemBeneficiario : System.Web.UI.Page
     {
@@ -65,11 +65,11 @@ namespace PlennuscGestao.Views
             var ItensAssoci = new ItensPedIntegradoUtil();
 
             int? operadoraSel = null;
-            if(int.TryParse(ddlOperadora.SelectedValue, out int op))
+            if (int.TryParse(ddlOperadora.SelectedValue, out int op))
             {
                 operadoraSel = op;
             }
- 
+
             string iniTexto = txtDataInicio.Value;
             string fimTexto = txtDataFim.Value;
 

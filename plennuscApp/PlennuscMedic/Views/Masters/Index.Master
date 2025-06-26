@@ -1,5 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="PlennuscFinance.Views.Masters.Index" %>
-
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="PlunnuscMedic.Views.Masters.Index" %>
 
 <!DOCTYPE html>
 <html>
@@ -63,7 +62,7 @@
             overflow: hidden; /* previne scroll da janela */
         }
 
-   /* Hover AZUL para todos os dropdowns, exceto o "Sair" */
+           /* Hover AZUL para todos os dropdowns, exceto o "Sair" */
         .dropdown-menu .dropdown-item:hover,
         .dropdown-menu .dropdown-item:focus {
             background-color: #83CEEE !important;
@@ -123,12 +122,12 @@
             <li><hr class="dropdown-divider" /></li>
 
             <li>
-              <asp:LinkButton ID="btnLogout"
-                runat="server"
-                OnClick="btnLogout_Click"
-                CssClass="dropdown-item text-danger">
-    Sair
-</asp:LinkButton>
+                <asp:LinkButton ID="btnLogout"
+                                runat="server"
+                                CssClass="dropdown-item text-danger"
+                                OnClick="btnLogout_Click">
+                    Sair
+                </asp:LinkButton>
             </li>
         </ul>
     </div>

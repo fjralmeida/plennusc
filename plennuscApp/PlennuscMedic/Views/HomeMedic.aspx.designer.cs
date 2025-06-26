@@ -7,11 +7,20 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace PlennuscFinance.Views
+namespace appWhatsapp.PlennuscMedic.Views
 {
 
 
-    public partial class HomeFinance
+    public partial class HomeMedic
     {
+
+        /// <summary>
+        /// Controle LabelErro.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelErro;
     }
 }
