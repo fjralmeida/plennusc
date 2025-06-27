@@ -53,7 +53,7 @@ namespace PlennuscGestao.Views.Masters
             else
             {
                 // Ambiente de produção — endereço do PlennuscApp no servidor
-                baseUrl = "https://app.plennus.com.br";
+                baseUrl = "http://plennuschomo.vallorbeneficios.com.br";
             }
 
             string redirectUrl = $"{baseUrl}/ViewsApp/SignIn";

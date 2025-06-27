@@ -64,11 +64,19 @@ namespace appWhatsapp.Views
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(senha))
+            {
+                LabelErro.Text = "Informe o login e a senha.";
+                LabelErro.Visible = true;
+                return;
+            }
+
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
             DataTable dtUser = util.ConsultaLoginComEmpresa(login, senha, codSistemaSelecionado);
 
             if (dtUser.Rows.Count > 0)
             {
+                // Filtra somente os dados do sistema selecionado
                 DataRow[] linhasFiltradas = dtUser.Select($"CodSistema = {codSistemaSelecionado}");
 
                 if (linhasFiltradas.Length == 0)
@@ -80,6 +88,7 @@ namespace appWhatsapp.Views
 
                 var row = linhasFiltradas[0];
 
+                // Verifica se está liberado para uso
                 bool usuarioAtivo = Convert.ToBoolean(row["UsuarioAtivo"]);
                 bool empresaAtiva = Convert.ToBoolean(row["EmpresaAtiva"]);
                 bool empresaLiberaAcesso = Convert.ToBoolean(row["Conf_LiberaAcesso"]);
@@ -101,14 +110,21 @@ namespace appWhatsapp.Views
                     return;
                 }
 
-                // Salva na sessão
+                if (!liberacaoVinculo || !liberacaoUsuario || bloqueioUsuario)
+                {
+                    LabelErro.Text = "Usuário sem permissão para o sistema selecionado.";
+                    LabelErro.Visible = true;
+                    return;
+                }
+
+                // Login validado, salvar dados na sessão
                 Session["CodUsuario"] = row["CodAutenticacaoAcesso"];
                 Session["NomeUsuario"] = row["NomeUsuario"];
                 Session["CodEmpresa"] = row["CodEmpresa"];
                 Session["NomeEmpresa"] = row["NomeFantasia"];
                 Session["CodSistema"] = row["CodSistema"];
 
-
+                // Redireciona para a home correta
                 switch (codSistemaSelecionado)
                 {
                     case "1": // Gestão
@@ -124,7 +140,7 @@ namespace appWhatsapp.Views
                         break;
 
                     default:
-                        LabelErro.Text = "Sistema não identificado";
+                        LabelErro.Text = "Sistema não identificado.";
                         LabelErro.Visible = true;
                         break;
                 }
