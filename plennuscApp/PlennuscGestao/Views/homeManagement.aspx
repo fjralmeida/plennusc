@@ -3,7 +3,7 @@
     Language="C#" 
     MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" 
     AutoEventWireup="true" 
-    CodeBehind="HomeGestao.aspx.cs" 
+    CodeBehind="homeManagement.aspx.cs" 
     Inherits="PlennuscGestao.Views.HomeGestao" 
 %>
 

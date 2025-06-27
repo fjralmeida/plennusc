@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscFinance/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="HomeFinance.aspx.cs" Inherits="appWhatsapp.PlennuscFinance.Views.HomeFinance" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscFinance/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="homeFinance.aspx.cs" Inherits="appWhatsapp.PlennuscFinance.Views.HomeFinance" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">

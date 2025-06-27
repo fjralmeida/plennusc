@@ -150,12 +150,13 @@
     <Content Include="Content\Css\custom-notifications.css.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
-    <Content Include="PlennuscFinance\Views\HomeFinance.aspx" />
-    <Content Include="PlennuscGestao\Views\EnvioMensagemBeneficiario.aspx" />
-    <Content Include="PlennuscGestao\Views\HomeGestao.aspx" />
+    <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
+    <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
+    <Content Include="PlennuscGestao\Views\profile.aspx" />
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
-    <Content Include="PlennuscMedic\Views\HomeMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
     <Content Include="Uploads\Fundo_Login.jpg" />
     <Content Include="Uploads\LogoFrenteLogin.jpeg" />
     <Content Include="Uploads\logoVallor.png" />
@@ -232,12 +233,12 @@
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
-    <Compile Include="PlennuscFinance\Views\HomeFinance.aspx.cs">
-      <DependentUpon>HomeFinance.aspx</DependentUpon>
+    <Compile Include="PlennuscFinance\Views\homeFinance.aspx.cs">
+      <DependentUpon>homeFinance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PlennuscFinance\Views\HomeFinance.aspx.designer.cs">
-      <DependentUpon>HomeFinance.aspx</DependentUpon>
+    <Compile Include="PlennuscFinance\Views\homeFinance.aspx.designer.cs">
+      <DependentUpon>homeFinance.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscFinance\Views\Masters\Index.Master.cs">
       <DependentUpon>Index.Master</DependentUpon>
@@ -246,19 +247,19 @@
     <Compile Include="PlennuscFinance\Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\EnvioMensagemBeneficiario.aspx.cs">
-      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx.cs">
+      <DependentUpon>sendMessageBeneficiary.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\EnvioMensagemBeneficiario.aspx.designer.cs">
-      <DependentUpon>EnvioMensagemBeneficiario.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx.designer.cs">
+      <DependentUpon>sendMessageBeneficiary.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\HomeGestao.aspx.cs">
-      <DependentUpon>HomeGestao.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\homeManagement.aspx.cs">
+      <DependentUpon>homeManagement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\HomeGestao.aspx.designer.cs">
-      <DependentUpon>HomeGestao.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\homeManagement.aspx.designer.cs">
+      <DependentUpon>homeManagement.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\Masters\Index.Master.cs">
       <DependentUpon>Index.Master</DependentUpon>
@@ -266,6 +267,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\profile.aspx.cs">
+      <DependentUpon>profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\profile.aspx.designer.cs">
+      <DependentUpon>profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\TelaEnvio.aspx.cs">
       <DependentUpon>TelaEnvio.aspx</DependentUpon>
@@ -280,12 +288,12 @@
     <Compile Include="PlennuscGestao\Views\TempleteMensagem.aspx.designer.cs">
       <DependentUpon>TempleteMensagem.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PlennuscMedic\Views\HomeMedic.aspx.cs">
-      <DependentUpon>HomeMedic.aspx</DependentUpon>
+    <Compile Include="PlennuscMedic\Views\homeDoctor.aspx.cs">
+      <DependentUpon>homeDoctor.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PlennuscMedic\Views\HomeMedic.aspx.designer.cs">
-      <DependentUpon>HomeMedic.aspx</DependentUpon>
+    <Compile Include="PlennuscMedic\Views\homeDoctor.aspx.designer.cs">
+      <DependentUpon>homeDoctor.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\Masters\Index.Master.cs">
       <DependentUpon>Index.Master</DependentUpon>

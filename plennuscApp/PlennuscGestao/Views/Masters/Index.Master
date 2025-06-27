@@ -142,7 +142,7 @@
             <div class="d-flex justify-content-between align-items-center py-2 px-3 border-bottom bg-light w-100" style="height: 70px;">
                 <!-- Logo -->
         <div class="d-flex align-items-center gap-2" style="cursor:pointer;" 
-            onclick="location.href='<%= ResolveUrl("~/PlennuscGestao/Views/HomeGestao.aspx") %>'">
+            onclick="location.href='<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>'">
                 <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 50px; width: auto;" />
                 <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
             </div>
@@ -170,7 +170,7 @@
             <li class="dropdown-header text-center fw-semibold">
                 <asp:Label ID="lblUsuario" runat="server" />
             </li>
-            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li><a class="dropdown-item" href="profile.aspx">Perfil</a></li>
             <li><a class="dropdown-item" href="#">Configurações</a></li>
             <li><hr class="dropdown-divider" /></li>
 
@@ -208,7 +208,7 @@
                                 <i class="bi bi-chevron-down toggle-icon"></i>
                             </a>
                             <div class="collapse" id="menuChatbot">
-                                <a href="EnvioMensagemBeneficiario.aspx">Beneficiário</a>
+                                <a href="sendMessageBeneficiary.aspx">Beneficiário</a>
                                 <a href="#">Empresa</a>
                             </div>
                         </li>

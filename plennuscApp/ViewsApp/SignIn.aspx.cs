@@ -128,15 +128,15 @@ namespace appWhatsapp.Views
                 switch (codSistemaSelecionado)
                 {
                     case "1": // Gestão
-                        Response.Redirect("~/PlennuscGestao/Views/HomeGestao.aspx");
+                        Response.Redirect("~/PlennuscGestao/Views/homeManagement.aspx");
                         break;
 
                     case "2": // Finance
-                        Response.Redirect("~/PlennuscFinance/Views/HomeFinance.aspx");
+                        Response.Redirect("~/PlennuscFinance/Views/homeFinance.aspx");
                         break;
 
                     case "3": // Medic
-                        Response.Redirect("~/PlennuscMedic/Views/HomeMedic.aspx");
+                        Response.Redirect("~/PlennuscMedic/Views/homeDoctor.aspx");
                         break;
 
                     default:

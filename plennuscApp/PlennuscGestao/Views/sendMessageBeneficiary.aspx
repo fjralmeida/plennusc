@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" 
-    AutoEventWireup="true" CodeBehind="EnvioMensagemBeneficiario.aspx.cs" 
+    AutoEventWireup="true" CodeBehind="sendMessageBeneficiary.aspx.cs" 
     Inherits="PlennuscApp.PlennuscGestao.Views.EnvioMensagemBeneficiario"
     Async="true" %>
 

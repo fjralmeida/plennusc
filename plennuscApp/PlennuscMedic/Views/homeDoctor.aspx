@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscMedic/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="HomeMedic.aspx.cs" Inherits="appWhatsapp.PlennuscMedic.Views.HomeMedic" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscMedic/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="homeDoctor.aspx.cs" Inherits="appWhatsapp.PlennuscMedic.Views.HomeMedic" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
