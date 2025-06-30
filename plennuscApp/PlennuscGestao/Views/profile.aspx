@@ -29,10 +29,10 @@
             transition: 0.2s;
         }
 
-            #btnEditar:hover {
-                background-color: #3a9e69;
-                border-color: #3a9e69;
-            }
+        #btnEditar:hover {
+            background-color: #3a9e69;
+            border-color: #3a9e69;
+        }
 
         /* Foto de perfil */
         #imgFotoPerfil {
@@ -69,11 +69,11 @@
             transition: border 0.2s;
         }
 
-            .form-control:focus {
-                background-color: #fff;
-                border-color: #4CB07A;
-                box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
-            }
+        .form-control:focus {
+            background-color: #fff;
+            border-color: #4CB07A;
+            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
+        }
 
         /* Campos somente leitura */
         input[readonly].form-control {
