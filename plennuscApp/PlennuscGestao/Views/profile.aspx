@@ -2,162 +2,149 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
-        /* Container geral */
-        .card-container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-            padding: 24px;
-            margin: 20px;
-        }
+    .perfil-card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(131, 206, 238, 0.25); /* leve azul claro */
+    }
 
-        /* Título */
-        .card-header h4 {
-            color: #4CB07A;
-            font-size: 20px;
-            margin: 0;
-        }
+        .perfil-titulo {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #4CB07A; /* título verde */
+      margin-bottom: 1.5rem;
+    }
+    .avatar-img
+    { width:140px;
+      height:140px; border-radius:50%;
+      object-fit:cover;
+      border:2px groove#c06ed4;
+      transition:.3s; }
+   
+      .avatar-img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 4px #DC8689; /* rosa hover */
+    }
 
-        /* Botão Editar */
-        #btnEditar {
-            font-weight: 600;
-            background: #4CB07A;
-            border-color: #4CB07A;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 25px;
-            transition: 0.2s;
-        }
+   .avatar-img:hover {
+   transform: scale(1.05);
+   box-shadow: 0 0 0 4px #dc8689; /* rosa */
+ }
 
-        #btnEditar:hover {
-            background-color: #3a9e69;
-            border-color: #3a9e69;
-        }
+ .file-upload {
+   position: absolute;
+   top: 0; left: 0;
+   width: 100%; height: 100%;
+   opacity: 0; cursor: pointer;
+ }
 
-        /* Foto de perfil */
-        #imgFotoPerfil {
-            width: 130px;
-            height: 130px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #4CB07A;
-            margin-bottom: 8px;
-        }
+ .upload-label {
+   display: block;
+   margin-top: 0.5rem;
+   font-size: 0.875rem;
+   color: #666;
+ }
 
-        /* Botão alterar foto */
-        #btnAlterarFoto {
-            font-size: 12px;
-            padding: 6px 14px;
-            border-radius: 8px;
-        }
 
-        /* Labels */
-        .form-label {
-            font-weight: 600;
-            color: #444;
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
+ .form-control:focus {
+   border-color: #83ceee;
+   box-shadow: 0 0 0 0.2rem rgba(131, 206, 238, 0.4);
+ }
 
-        /* Campos */
-        .form-control {
-            font-size: 13px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
-            background-color: #f9f9f9;
-            transition: border 0.2s;
-        }
+ .btn-primary {
+   background-color: #4CB07A;
+   border-color: #4CB07A;
+ }
 
-        .form-control:focus {
-            background-color: #fff;
-            border-color: #4CB07A;
-            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
-        }
+ .btn-primary:hover {
+   background-color: #3e9b68;
+   border-color: #3e9b68;
+ }
 
-        /* Campos somente leitura */
-        input[readonly].form-control {
-            background-color: #f0f0f0;
-            color: #555;
-            cursor: not-allowed;
-        }
+  </style>
 
-        /* Espaçamento geral */
-        .card-container .row {
-            margin-top: 10px;
-        }
+    <script type="text/javascript">
+      function previewFoto() {
+        var fileInput = document.getElementById("fuFoto");
+        var imgPreview = document.getElementById("imgFotoPerfil");
 
-        .card-container .col-md-6,
-        .card-container .col-md-3 {
-            margin-bottom: 16px;
+        if (fileInput.files && fileInput.files[0]) {
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+            imgPreview.src = e.target.result;
+          };
+
+          reader.readAsDataURL(fileInput.files[0]);
         }
-    </style>
+      }
+    </script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-     <div class="container" style="max-width: 960px; margin: auto;">
-        <div class="card-container">
-            <div class="card-header">
-                <h4 class="fw-bold mb-0" style="color: #4CB07A;">Perfil do Usuário</h4>
-                <asp:Button ID="btnEditar" runat="server" CssClass="btn btn-info btn-pill" Text="Editar Perfil" />
-            </div>
-
-            <div class="row">
-                <!-- Foto -->
-               <div class="col-md-4 text-center">
-                    <asp:Image ID="imgFotoPerfil" runat="server" CssClass="rounded-circle" 
-                        Style="width: 140px; height: 140px; object-fit: cover; border: 2px solid #e0e0e0;" />
-                    <br />
-                    <asp:Button ID="btnAlterarFoto" runat="server" CssClass="btn btn-outline-secondary mt-2 btn-sm" Text="Alterar Foto" OnClick="btnAlterarFoto_Click" />
-                    <asp:FileUpload ID="fuFoto" runat="server" CssClass="form-control form-control-sm mt-2" />
-                </div>
-
-                <!-- Dados pessoais -->
-                <div class="col-md-8">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Nome</label>
-                            <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Sobrenome</label>
-                            <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Apelido</label>
-                            <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Sexo</label>
-                            <asp:TextBox ID="txtSexo" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Data de Nascimento</label>
-                            <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">CPF</label>
-                            <asp:TextBox ID="txtCpf" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">E-mail</label>
-                            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Telefone</label>
-                            <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Cargo</label>
-                            <asp:TextBox ID="txtCargo" runat="server" CssClass="form-control" ReadOnly="true" />
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="container py-4">
+    <div class="perfil-card mx-auto">
+      <div class="row align-items-center g-4">
+        <div class="col-md-4 text-center position-relative">
+        <asp:Image ID="imgFotoPerfil" runat="server" CssClass="avatar-img" ClientIDMode="Static" />
+<asp:FileUpload ID="fuFoto" runat="server" CssClass="file-upload" ClientIDMode="Static" onchange="previewFoto()" />
+          <label for="<%= fuFoto.ClientID %>" class="upload-label">Clique para trocar foto</label>
+          <asp:Button ID="btnAlterarFoto" runat="server" CssClass="btn btn-success mt-3" Text="Salvar Foto" OnClick="btnAlterarFoto_Click1" />
         </div>
-    </div>
 
+        <div class="col-md-8">
+          <h4 class="perfil-titulo">Perfil do Usuário</h4>
+
+          <!-- DADOS PESSOAIS -->
+          <h5 class="mt-3 mb-2 text-muted fw-bold">Dados Pessoais</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="txtNome">Nome</label>
+              <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="txtSobrenome">Sobrenome</label>
+              <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="txtApelido">Apelido</label>
+              <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="txtSexo">Sexo</label>
+              <asp:TextBox ID="txtSexo" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="txtDataNasc">Data de Nascimento</label>
+              <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+          </div>
+
+          <!-- CONTATO & CARGO -->
+          <h5 class="mt-4 mb-2 text-muted fw-bold" >Contato & Cargo</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="txtEmail">E‑mail</label>
+              <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="txtTelefone1">Telefone</label>
+              <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="txtCpf">CPF</label>
+              <asp:TextBox ID="txtCpf" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="txtCargo">Cargo</label>
+              <asp:TextBox ID="txtCargo" runat="server" CssClass="form-control" ReadOnly="true" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </asp:Content>
+

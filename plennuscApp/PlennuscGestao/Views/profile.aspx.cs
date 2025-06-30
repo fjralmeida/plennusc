@@ -48,6 +48,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnAlterarFoto_Click(object sender, EventArgs e)
         {
+           
+        }
+
+        protected void btnAlterarFoto_Click1(object sender, EventArgs e)
+        {
             if (fuFoto.HasFile)
             {
                 string fileName = System.IO.Path.GetFileName(fuFoto.FileName);

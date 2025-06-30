@@ -15,15 +15,6 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
-        /// Controle btnEditar.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnEditar;
-
-        /// <summary>
         /// Controle imgFotoPerfil.
         /// </summary>
         /// <remarks>
@@ -33,15 +24,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Image imgFotoPerfil;
 
         /// <summary>
-        /// Controle btnAlterarFoto.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAlterarFoto;
-
-        /// <summary>
         /// Controle fuFoto.
         /// </summary>
         /// <remarks>
@@ -49,6 +31,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload fuFoto;
+
+        /// <summary>
+        /// Controle btnAlterarFoto.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAlterarFoto;
 
         /// <summary>
         /// Controle txtNome.
@@ -96,15 +87,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.TextBox txtDataNasc;
 
         /// <summary>
-        /// Controle txtCpf.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCpf;
-
-        /// <summary>
         /// Controle txtEmail.
         /// </summary>
         /// <remarks>
@@ -121,6 +103,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtTelefone1;
+
+        /// <summary>
+        /// Controle txtCpf.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCpf;
 
         /// <summary>
         /// Controle txtCargo.
