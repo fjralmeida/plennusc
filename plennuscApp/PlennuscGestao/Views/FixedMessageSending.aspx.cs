@@ -4,9 +4,11 @@ using Newtonsoft.Json.Linq;
 using Plennusc.Core.Models.ModelsGestao;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
@@ -20,10 +22,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             get => (List<DadosMensagemCsv>)Session["CsvImportado"];
             set => Session["CsvImportado"] = value;
-        }
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
         }
 
         protected void btnLerCsv_Click(object sender, EventArgs e)
@@ -53,21 +51,55 @@ namespace appWhatsapp.PlennuscGestao.Views
             var api = new WhatsappService();
             var resultadoFinal = new StringBuilder();
 
+            //Tabela para armazenar o resultado para exportação posterior 
+            DataTable resultadoCsv = new DataTable();
+            resultadoCsv.Columns.Add("Nome");
+            resultadoCsv.Columns.Add("Data");
+            resultadoCsv.Columns.Add("Telefone");
+            resultadoCsv.Columns.Add("CPF");
+            resultadoCsv.Columns.Add("StatusEnvio");
+
             foreach (var mensagem in mensagens)
             {
-                var resultado = await api.ConexaoApifixo(
-                    new List<string> { mensagem.Telefone },
-                    mensagem.Field1, // "Prezado(a)"
-                    mensagem.Field2, // "Beneficiário(a)"
+                string status;
+                string retornoApi;
+
+                try
+                {
+                    retornoApi = await api.ConexaoApifixo(
+                        new List<string> { mensagem.Telefone },
+                        mensagem.Field1,
+                        mensagem.Field2,
+                        mensagem.Field3,
+                        mensagem.Field4
+                    );
+
+                    status = "OK";
+                }
+                catch (Exception ex)
+                {
+                    retornoApi = $"Erro ao enviar para {mensagem.Telefone}: {ex.Message}";
+                    status = "Erro";
+                }
+
+                resultadoFinal.AppendLine(retornoApi);
+
+                // Registrar na tabela
+                resultadoCsv.Rows.Add(
                     mensagem.Field3, // Nome
-                    mensagem.Field4  // Data
-                    
+                    mensagem.Field4, // Data
+                    mensagem.Telefone,
+                    mensagem.Field5, // CPF
+                    status
                 );
 
-                resultadoFinal.AppendLine(resultado);
-                await Task.Delay(1000); // opcional: espera entre cada envio
+                await Task.Delay(1000); // delay entre envios
             }
 
+            // Guardar no ViewState para usar depois no botão de download
+            ViewState["ResultadoEnvio"] = resultadoCsv;
+
+            // Exibir o modal com o resultado final e ativar botão de download
             ScriptManager.RegisterStartupScript(this, GetType(), "mostrarModal", $"mostrarResultadoModal(`{resultadoFinal.ToString().Replace("`", "'")}`);", true);
         }
 
@@ -130,6 +162,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             return lista;
         }
 
+        private DataTable ResultadoEnvio
+        {
+            get => (DataTable)Session["ResultadoEnvio"];
+            set => Session["ResultadoEnvio"] = value;
+        }
+
         private string FormatTelefone(string telefone)
         {
             if (string.IsNullOrWhiteSpace(telefone))
@@ -163,6 +201,32 @@ namespace appWhatsapp.PlennuscGestao.Views
             // Se não bater com nenhum formato válido
             return null;
         }
+        protected void btnDownloadCsvStatus_Click(object sender, EventArgs e)
+        {
+            if (!(ViewState["ResultadoEnvio"] is DataTable dt) || dt.Rows.Count == 0)
+                return;
 
+            var sb = new StringBuilder();
+
+            // Cabeçalhos
+            var colunas = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
+            sb.AppendLine(string.Join(";", colunas));
+
+            // Linhas
+            foreach (DataRow row in dt.Rows)
+            {
+                var valores = row.ItemArray.Select(v => v.ToString());
+                sb.AppendLine(string.Join(";", valores));
+            }
+
+            string nomeArquivo = "ResultadoEnvio_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
+
+            Response.Clear();
+            Response.ContentType = "text/csv";
+            Response.AddHeader("Content-Disposition", $"attachment;filename={nomeArquivo}");
+            Response.ContentEncoding = Encoding.UTF8;
+            Response.Write(sb.ToString());
+            Response.End();
+        }
     }
 }

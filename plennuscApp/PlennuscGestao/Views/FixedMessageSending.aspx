@@ -145,6 +145,7 @@
         function mostrarLoading() {
             document.getElementById('loadingOverlay').style.display = 'block';
         }
+
     </script>
 </asp:Content>
 
@@ -196,25 +197,30 @@
     </div>
 
     <!-- Modal Resultado -->
-    <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-4 shadow">
-                <div class="modal-header bg-success text-white rounded-top-4">
-                    <h5 class="modal-title" id="resultadoModalLabel"><i class="fa-solid fa-paper-plane me-2"></i>Resultado do Envio</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                    <pre id="modalResultadoConteudo" class="mb-0"></pre>
-                </div>
-                <div class="modal-footer bg-light rounded-bottom-4">
-                    <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
-                        <i class="fa-solid fa-xmark me-1"></i>Fechar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+   <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg modal-dialog-centered">
+         <div class="modal-content rounded-4 shadow">
+             <div class="modal-header bg-success text-white rounded-top-4">
+                 <h5 class="modal-title" id="resultadoModalLabel"><i class="fa-solid fa-paper-plane me-2"></i>Resultado do Envio</h5>
+                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+             </div>
+             <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                 <pre id="modalResultadoConteudo" class="mb-0"></pre>
+             </div>
+             <div class="modal-footer bg-light rounded-bottom-4">
 
+                     <asp:Button ID="btnDownloadCsvStatus" runat="server"
+                                    Text="Baixar Csv com Status"
+                                    CssClass="btn btn-info btn-pill"
+                                    OnClick="btnDownloadCsvStatus_Click" />
+
+                 <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
+                     <i class="fa-solid fa-xmark me-1"></i>Fechar
+                 </button>
+             </div>
+         </div>
+     </div>
+ </div>
     <!-- Overlay -->
     <div id="loadingOverlay">
         <div class="spinner-border text-success" style="width: 50px; height: 50px;"></div>
