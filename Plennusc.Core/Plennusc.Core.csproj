@@ -48,6 +48,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Data_Bd\BancoDadosSQL.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagem.cs" />
+    <Compile Include="Models\ModelsGestao\DadosMensagemCsv.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

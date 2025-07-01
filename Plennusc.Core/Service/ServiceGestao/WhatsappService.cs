@@ -302,6 +302,71 @@ namespace appWhatsapp.Service
         }
 
 
+        public async Task<string> ConexaoApifixo(List<string> telefones,
+                                           string field1, string field2, string field3, string field4)
+        {
+            var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
+            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var resultadoFinal = new StringBuilder();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                foreach (var telefone in telefones)
+                {
+                    var jsonBody = $@"
+            {{
+              ""media_hsm_configuration_id"": ""019896de-1b32-4f22-ad48-40f12dbb64ca"",
+              ""hsm_type"": ""media_hsm"",
+              ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
+              ""system"": ""whatsapp"",
+              ""contacts"": [ 
+                {{ 
+                  ""phone_number"": ""{telefone}"",
+                  ""field_1"": ""{field1}"",
+                  ""field_2"": ""{field2}"",
+                  ""field_3"": ""{field3}"",
+                  ""field_4"": ""{field4}""
+                }}
+              ]
+            }}";
+
+                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    try
+                    {
+                        var response = await client.PostAsync(apiUrl, content);
+                        var responseBody = await response.Content.ReadAsStringAsync();
+
+                        var json = JObject.Parse(responseBody);
+                        var id = json["id"]?.ToString();
+
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+                            resultadoFinal.AppendLine(statusResponse);
+                        }
+                        else
+                        {
+                            resultadoFinal.AppendLine($"⚠️ {telefone}: ID não encontrado na resposta.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        resultadoFinal.AppendLine($"❌ {telefone}: Erro - {ex.Message}");
+                    }
+
+                    await Task.Delay(5000); // 5 segundos entre os envios
+                }
+            }
+
+            return resultadoFinal.ToString();
+        }
+
+
         private async Task<string> ConsultarStatusEnvioAsync(string id, string telefone, string apiKey)
         {
             await Task.Delay(10000);
