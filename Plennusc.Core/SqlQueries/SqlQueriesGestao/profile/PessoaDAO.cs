@@ -13,12 +13,21 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
         public DataRow ObterPessoaPorUsuario(int codUsuario)
         {
             string sql = @"
-            SELECT TOP 1
-                P.*
-            FROM Pessoa P
-            INNER JOIN AutenticacaoAcesso AA ON AA.CodPessoa = P.CodPessoa
-            WHERE AA.CodAutenticacaoAcesso = @CodUsuario
-        ";
+                SELECT TOP 1
+                    P.CodPessoa, P.Nome, P.Sobrenome, P.Apelido, P.Sexo, P.DataNasc, 
+                    P.CodEstr_TipoPessoa, P.ImagemFoto, P.DocRG, P.DocCPF, P.TituloEleitor, 
+                    P.ZonaEleitor, P.SecaoEleitor, P.NumCTPS, P.NumCTPSSerie, P.NumCTPSUf, 
+                    P.NumPIS, P.Matricula, P.DataAdmissao, P.DataDemissao, 
+                    P.NomeFiliacao1, P.NomeFiliacao2, P.Telefone1, P.Telefone2, P.Telefone3, 
+                    P.Email, P.EmailAlt, P.CodCargo, P.CodDepartamento, 
+                    P.Conf_CriaContaAD, P.DataHora_CriaContaAD, 
+                    P.Conf_CadastraPonto, P.DataHora_CadastraPonto, 
+                    P.Conf_Ativo, P.PermiteAcesso, P.AcessoSite, P.DataUltimoAcesso, 
+                    P.Observacao, P.Informacoes_Log_I, P.Informacoes_Log_A, P.Informacoes_Log_E
+                FROM Pessoa P
+                INNER JOIN AutenticacaoAcesso AA ON AA.CodPessoa = P.CodPessoa
+                WHERE AA.CodAutenticacaoAcesso = @CodUsuario
+            ";
 
             var parametros = new Dictionary<string, object>
         {

@@ -26,16 +26,33 @@ namespace appWhatsapp.PlennuscGestao.Views
             DataRow pessoa = dao.ObterPessoaPorUsuario(codUsuario);
             if(pessoa != null)
             {
-                txtNome.Text = pessoa["NOme"].ToString();
                 txtNome.Text = pessoa["Nome"].ToString();
                 txtSobrenome.Text = pessoa["Sobrenome"].ToString();
                 txtApelido.Text = pessoa["Apelido"].ToString();
                 txtSexo.Text = pessoa["Sexo"].ToString();
                 txtDataNasc.Text = Convert.ToDateTime(pessoa["DataNasc"]).ToString("dd/MM/yyyy");
-                txtCpf.Text = pessoa["DocCPF"].ToString();
-                txtEmail.Text = pessoa["Email"].ToString();
+                txtDocCPF.Text = pessoa["DocCPF"].ToString();
+                txtDocRG.Text = pessoa["DocRG"].ToString();
+                txtTitulo.Text = pessoa["TituloEleitor"].ToString();
+                txtZona.Text = pessoa["ZonaEleitor"].ToString();
+                txtSecao.Text = pessoa["SecaoEleitor"].ToString();
+                txtCTPS.Text = pessoa["NumCTPS"].ToString();
+                txtCTPSSerie.Text = pessoa["NumCTPSSerie"].ToString();
+                txtCTPSUf.Text = pessoa["NumCTPSUf"].ToString();
+                txtPis.Text = pessoa["NumPIS"].ToString();
+                txtMatricula.Text = pessoa["Matricula"].ToString();
+                txtDataAdmissao.Text = Convert.ToDateTime(pessoa["DataAdmissao"]).ToString("dd/MM/yyyy");
+                txtDataDemissao.Text = pessoa["DataDemissao"] == DBNull.Value ? "" : Convert.ToDateTime(pessoa["DataDemissao"]).ToString("dd/MM/yyyy");
+                txtFiliacao1.Text = pessoa["NomeFiliacao1"].ToString();
+                txtFiliacao2.Text = pessoa["NomeFiliacao2"].ToString();
                 txtTelefone1.Text = pessoa["Telefone1"].ToString();
-                txtCargo.Text = pessoa["CodCargo"].ToString(); // Você pode transformar em nome via join
+                txtTelefone2.Text = pessoa["Telefone2"].ToString();
+                txtTelefone3.Text = pessoa["Telefone3"].ToString();
+                txtEmail.Text = pessoa["Email"].ToString();
+                txtEmailAlt.Text = pessoa["EmailAlt"].ToString();
+                txtCargo.Text = pessoa["CodCargo"].ToString();
+                txtDepartamento.Text = pessoa["CodDepartamento"].ToString();
+
 
                 string foto = pessoa["ImagemFoto"].ToString();
                 imgFotoPerfil.ImageUrl = string.IsNullOrEmpty(foto) ? "~/Content/Img/default-user.png" : ResolveUrl("~/Uploads/" + foto);
