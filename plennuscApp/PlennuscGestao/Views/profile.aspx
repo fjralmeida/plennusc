@@ -2,98 +2,120 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
   <style>
-    .perfil-titulo {
-      font-weight: bold;
-      font-size: 1.5rem;
-      color: #3c494fc7;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
+.perfil-titulo {
+  font-weight: 600;
+  font-size: 1.75rem;
+  color: #83CEEE; /* azul institucional */
+  margin-bottom: 2rem;
+  text-align: center;
+}
 
-    .avatar-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
 
-    .avatar-img {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px groove #4CB07A;
-      transition: 0.3s;
-      cursor: pointer;
-    }
+.avatar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
 
-    .avatar-img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 0 1px #4CB07A;
-    }
+.avatar-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4CB07A;
+  transition: 0.3s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-    .file-upload {
-      display: none;
-    }
+.avatar-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(76, 176, 122, 0.4);
+}
 
-    .upload-label {
-      font-size: 0.875rem;
-      color: #666;
-      margin-top: 0.5rem;
-    }
+.file-upload {
+  display: none;
+}
 
-    .btn-salvar-foto {
-      background-color: #c06ed4;
-      color: white;
-      padding: 0.5rem 1.25rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      border: none;
-      transition: all 0.3s ease;
-    }
+.upload-label {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
 
-    .btn-salvar-foto:hover {
-      background-color: #753c83;
-    }
+.btn-salvar-foto {
+  background-color: #c06ed4;
+  color: #fff;
+  padding: 0.4rem 1.1rem;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 0.75rem;
+}
 
-    .form-control:focus {
-      border-color: #83ceee;
-      box-shadow: 0 0 0 0.2rem rgba(131, 206, 238, 0.4);
-    }
+.btn-salvar-foto:hover {
+  background-color: #a250b1;
+  transform: translateY(-2px);
+}
 
-    .btn-primary {
-      background-color: #4CB07A;
-      border-color: #4CB07A;
-    }
+.form-control:focus {
+  border-color: #83CEEE;
+  box-shadow: 0 0 0 0.2rem rgba(131, 206, 238, 0.4);
+}
 
-    .btn-primary:hover {
-      background-color: #3e9b68;
-      border-color: #3e9b68;
-    }
+.form-control[readonly] {
+  background-color: #f9f9f9;
+  cursor: default;
+}
 
-    .section-block {
-      border-radius: 1rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
+.btn-primary {
+  background-color: #4CB07A;
+  border-color: #4CB07A;
+}
 
-    .bg-white-section {
-      background-color: #ffffff;
-    }
+.btn-primary:hover {
+  background-color: #3e9b68;
+  border-color: #3e9b68;
+}
 
-    .bg-gray-section {
-      background-color: #f8f9fa;
-    }
+.section-block {
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
 
-    .erro-upload-foto {
-      margin-top: 0.75rem;
-      color: #d9534f; /* vermelho Bootstrap */
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-align: center;
-      display: block;
-    }
+.bg-white-section {
+  background-color: #ffffff;
+}
+
+.bg-gray-section {
+  background-color: #f5f7f9;
+}
+
+h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #495057;
+  border-left: 4px solid #83CEEE; /* destaque azul ao lado do título */
+  padding-left: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+
+.erro-upload-foto {
+  margin-top: 0.75rem;
+  color: #d9534f;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  display: block;
+}
+
   </style>
 
   <script type="text/javascript">
@@ -177,42 +199,7 @@
     </div>
 
       
-  <!-- CONTATO & CARGO -->
-      
-    <div class="section-block bg-gray-section">
-  <h5 class="mt-4 mb-2 text-muted fw-bold">Contato & Cargo</h5>
-  <div class="row g-3">
-    <div class="col-md-6">
-      <label for="txtEmail" class="form-label">E‑mail</label>
-      <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-6">
-      <label for="txtEmailAlt" class="form-label">E‑mail Alternativo</label>
-      <asp:TextBox ID="txtEmailAlt" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-4">
-      <label for="txtTelefone1" class="form-label">Telefone 1</label>
-      <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-4">
-      <label for="txtTelefone2" class="form-label">Telefone 2</label>
-      <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-4">
-      <label for="txtTelefone3" class="form-label">Telefone 3</label>
-      <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-6">
-      <label for="txtCargo" class="form-label">Cargo</label>
-      <asp:TextBox ID="txtCargo" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-6">
-      <label for="txtDepartamento" class="form-label">Departamento</label>
-      <asp:TextBox ID="txtDepartamento" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-  </div>
-        <asp:label ID="txtCodPessoa" Visible="false" runat="server" class="form-label">Departamento</asp:label>
-        </div>
+
 
     <div class="section-block bg-white-section">
       <h5 class="mb-3 text-muted fw-bold">Dados Eleitorais</h5>
@@ -280,6 +267,43 @@
     </div>
   </div>
             </div>
+
+        <!-- CONTATO & CARGO -->
+      
+    <div class="section-block bg-gray-section">
+  <h5 class="mt-4 mb-2 text-muted fw-bold">Contato & Cargo</h5>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="txtEmail" class="form-label">E‑mail</label>
+      <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-6">
+      <label for="txtEmailAlt" class="form-label">E‑mail Alternativo</label>
+      <asp:TextBox ID="txtEmailAlt" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-4">
+      <label for="txtTelefone1" class="form-label">Telefone 1</label>
+      <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-4">
+      <label for="txtTelefone2" class="form-label">Telefone 2</label>
+      <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-4">
+      <label for="txtTelefone3" class="form-label">Telefone 3</label>
+      <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-6">
+      <label for="txtCargo" class="form-label">Cargo</label>
+      <asp:TextBox ID="txtCargo" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-6">
+      <label for="txtDepartamento" class="form-label">Departamento</label>
+      <asp:TextBox ID="txtDepartamento" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+  </div>
+        <asp:label ID="txtCodPessoa" Visible="false" runat="server" class="form-label">Departamento</asp:label>
+        </div>
 
 
       </div>

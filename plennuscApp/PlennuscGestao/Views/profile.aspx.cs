@@ -25,7 +25,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             PessoaDAO dao = new PessoaDAO();
             DataRow pessoa = dao.ObterPessoaPorUsuario(codUsuario);
-            txtCodPessoa.Text = pessoa["CodPessoa"].ToString();
             if (pessoa != null)
             {
                 txtNome.Text = pessoa["Nome"].ToString();
