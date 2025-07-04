@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,21 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             DataTable dt = db.LerPlennus(sql, parametros);
 
             return dt.Rows.Count > 0 ? dt.Rows[0] : null;
+        }
+
+        public void UpdateImgPerfil(int codPessoa, string nomeImagem)
+        {
+            string sql = "UPDATE Pessoa SET ImagemFoto = @ImagemFoto WHERE CodPessoa = @CodPessoa";
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@ImagemFoto", nomeImagem },
+                { "@CodPessoa", codPessoa }
+            };
+
+            db.ExecutarPlennus(sql, parametros);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!IsPostBack)
             {
                 CarregarDadosUsuarios();
+                lblUsuario.InnerText = Session["NomeUsuario"].ToString();
             }
         }
         private void CarregarDadosUsuarios()
@@ -24,7 +25,8 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             PessoaDAO dao = new PessoaDAO();
             DataRow pessoa = dao.ObterPessoaPorUsuario(codUsuario);
-            if(pessoa != null)
+            txtCodPessoa.Text = pessoa["CodPessoa"].ToString();
+            if (pessoa != null)
             {
                 txtNome.Text = pessoa["Nome"].ToString();
                 txtSobrenome.Text = pessoa["Sobrenome"].ToString();
@@ -52,33 +54,37 @@ namespace appWhatsapp.PlennuscGestao.Views
                 txtEmailAlt.Text = pessoa["EmailAlt"].ToString();
                 txtCargo.Text = pessoa["CodCargo"].ToString();
                 txtDepartamento.Text = pessoa["CodDepartamento"].ToString();
+                txtCodPessoa.Text = pessoa["CodPessoa"].ToString();
 
 
                 string foto = pessoa["ImagemFoto"].ToString();
                 imgFotoPerfil.ImageUrl = string.IsNullOrEmpty(foto) ? "~/Content/Img/default-user.png" : ResolveUrl("~/Uploads/" + foto);
             }
         }
-        protected void btnSalvar_Click(object sender, EventArgs e)
-        {
-            // Atualizar os dados do perfil (implementação futura)
-        }
-
-        protected void btnAlterarFoto_Click(object sender, EventArgs e)
-        {
-           
-        }
 
         protected void btnAlterarFoto_Click1(object sender, EventArgs e)
         {
-            if (fuFoto.HasFile)
+            try
             {
+                int codUsuario = Convert.ToInt32(Session["codUsuario"]);
+                int codPessoa = Convert.ToInt32(txtCodPessoa.Text); // Recupera o CodPessoa da tela
+
+                // Salvar imagem no servidor
                 string fileName = System.IO.Path.GetFileName(fuFoto.FileName);
                 string path = Server.MapPath("~/Uploads/") + fileName;
                 fuFoto.SaveAs(path);
 
+                // Atualizar a imagem na interface
                 imgFotoPerfil.ImageUrl = "~/Uploads/" + fileName;
 
-                // Aqui você atualiza no banco também
+                // Atualizar a imagem no banco
+                PessoaDAO dao = new PessoaDAO();
+                dao.UpdateImgPerfil(codPessoa, fileName); // Passa CodPessoa + nome da imagem
+            }
+            catch (Exception ex)
+            {
+                lblErro.Text = "Erro ao atualizar a imagem: " + ex.Message;
+                lblErro.Visible = true;
             }
         }
     }

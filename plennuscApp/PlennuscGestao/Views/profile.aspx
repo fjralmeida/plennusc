@@ -5,7 +5,7 @@
     .perfil-titulo {
       font-weight: bold;
       font-size: 1.5rem;
-      color: #4CB07A;
+      color: #3c494fc7;
       margin-bottom: 1.5rem;
       text-align: center;
     }
@@ -23,14 +23,14 @@
       height: 140px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px groove #c06ed4;
+      border: 2px groove #4CB07A;
       transition: 0.3s;
       cursor: pointer;
     }
 
     .avatar-img:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 0 1px #c06ed4;
+      box-shadow: 0 0 0 1px #4CB07A;
     }
 
     .file-upload {
@@ -44,7 +44,7 @@
     }
 
     .btn-salvar-foto {
-      background-color: #2e7d32;
+      background-color: #c06ed4;
       color: white;
       padding: 0.5rem 1.25rem;
       border-radius: 8px;
@@ -54,7 +54,7 @@
     }
 
     .btn-salvar-foto:hover {
-      background-color: #1b5e20;
+      background-color: #753c83;
     }
 
     .form-control:focus {
@@ -84,6 +84,15 @@
 
     .bg-gray-section {
       background-color: #f8f9fa;
+    }
+
+    .erro-upload-foto {
+      margin-top: 0.75rem;
+      color: #d9534f; /* vermelho Bootstrap */
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+      display: block;
     }
   </style>
 
@@ -120,12 +129,16 @@
       <asp:FileUpload ID="fuFoto" runat="server" CssClass="file-upload" ClientIDMode="Static" onchange="previewFoto()" />
       <label class="upload-label" for="fuFoto">Clique na imagem para trocar</label>
       <asp:Button ID="btnAlterarFoto" runat="server" CssClass="btn-salvar-foto mt-2" Text="Salvar Foto" OnClick="btnAlterarFoto_Click1" />
+
+        
+    <!-- Label de erro -->
+    <asp:Label ID="lblErro" runat="server" CssClass="erro-upload-foto" Visible="false" />
     </div>
 
-    <h4 class="perfil-titulo">Perfil do Usuário</h4>
-
+ <h4 ID="lblUsuario" runat="server" class="perfil-titulo"></h4>
     <div class="section-block bg-white-section">
       <div class="row g-3">
+           <h5 class="mb-3 text-muted fw-bold">Dados Pessoais</h5>
         <div class="col-md-6">
           <label for="txtNome" class="form-label">Nome</label>
           <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" ReadOnly="true" />
@@ -162,6 +175,44 @@
         </div>
       </div>
     </div>
+
+      
+  <!-- CONTATO & CARGO -->
+      
+    <div class="section-block bg-gray-section">
+  <h5 class="mt-4 mb-2 text-muted fw-bold">Contato & Cargo</h5>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="txtEmail" class="form-label">E‑mail</label>
+      <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-6">
+      <label for="txtEmailAlt" class="form-label">E‑mail Alternativo</label>
+      <asp:TextBox ID="txtEmailAlt" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-4">
+      <label for="txtTelefone1" class="form-label">Telefone 1</label>
+      <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-4">
+      <label for="txtTelefone2" class="form-label">Telefone 2</label>
+      <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-4">
+      <label for="txtTelefone3" class="form-label">Telefone 3</label>
+      <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-6">
+      <label for="txtCargo" class="form-label">Cargo</label>
+      <asp:TextBox ID="txtCargo" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+    <div class="col-md-6">
+      <label for="txtDepartamento" class="form-label">Departamento</label>
+      <asp:TextBox ID="txtDepartamento" runat="server" CssClass="form-control" ReadOnly="true" />
+    </div>
+  </div>
+        <asp:label ID="txtCodPessoa" Visible="false" runat="server" class="form-label">Departamento</asp:label>
+        </div>
 
     <div class="section-block bg-white-section">
       <h5 class="mb-3 text-muted fw-bold">Dados Eleitorais</h5>
@@ -230,41 +281,6 @@
   </div>
             </div>
 
-  <!-- CONTATO & CARGO -->
-      
-    <div class="section-block bg-gray-section">
-  <h5 class="mt-4 mb-2 text-muted fw-bold">Contato & Cargo</h5>
-  <div class="row g-3">
-    <div class="col-md-6">
-      <label for="txtEmail" class="form-label">E‑mail</label>
-      <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-6">
-      <label for="txtEmailAlt" class="form-label">E‑mail Alternativo</label>
-      <asp:TextBox ID="txtEmailAlt" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-4">
-      <label for="txtTelefone1" class="form-label">Telefone 1</label>
-      <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-4">
-      <label for="txtTelefone2" class="form-label">Telefone 2</label>
-      <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-4">
-      <label for="txtTelefone3" class="form-label">Telefone 3</label>
-      <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-6">
-      <label for="txtCargo" class="form-label">Cargo</label>
-      <asp:TextBox ID="txtCargo" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-    <div class="col-md-6">
-      <label for="txtDepartamento" class="form-label">Departamento</label>
-      <asp:TextBox ID="txtDepartamento" runat="server" CssClass="form-control" ReadOnly="true" />
-    </div>
-  </div>
-        </div>
 
       </div>
 </asp:Content>
