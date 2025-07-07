@@ -41,6 +41,28 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             return dt.Rows.Count > 0 ? dt.Rows[0] : null;
         }
 
+        public DataTable TipoEstrutura()
+        {
+            string query = "SELECT CodEstrutura, DescEstrutura FROM VW_PERFIL_PESSOA ORDER BY DescEstrutura";
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            return db.LerPlennus(query);
+        }
+
+        public DataTable TipoCargo()
+        {
+            string query = "SELECT CodCargo, Nome FROM cargo ORDER BY Nome";
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            return db.LerPlennus(query);
+        }
+        public DataTable TipoDepartamento()
+        {
+            string query = "SELECT CodDepartamento, Nome FROM departamento ORDER BY Nome";
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            return db.LerPlennus(query);
+        }
+
         public void UpdateImgPerfil(int codPessoa, string nomeImagem)
         {
             string sql = "UPDATE Pessoa SET ImagemFoto = @ImagemFoto WHERE CodPessoa = @CodPessoa";
@@ -53,6 +75,86 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 { "@CodPessoa", codPessoa }
             };
 
+            db.ExecutarPlennus(sql, parametros);
+        }
+
+        public void InsertPersonSystem(
+                                     int codEstrutura, string nome, string sobrenome, string apelido, string sexo, DateTime? dataNasc, string cpf, string rg,
+                                     string tituloEleitor, string zona, string secao, string ctps, string serie, string uf, string pis, string matricula,
+                                     DateTime? dataAdmissao, DateTime? dataDemissao, string filiacao1, string filiacao2,
+                                     string telefone1, string telefone2, string telefone3,
+                                     string email, string emailAlt, int codCargo, int codDepartamento,
+                                     bool criaContaAD, bool cadastraPonto, bool ativo, bool permiteAcesso,
+                                     int codSistema, int codUsuario, string observacao)
+        {
+            string sql = @"
+            INSERT INTO Pessoa (
+                CodEstr_TipoPessoa, Nome, Sobrenome, Apelido, Sexo, DataNasc, DocCPF, DocRG,
+                TituloEleitor, ZonaEleitor, SecaoEleitor, NumCTPS, NumCTPSSerie, NumCTPSUf,
+                NumPIS, Matricula, DataAdmissao, DataDemissao,
+                NomeFiliacao1, NomeFiliacao2, Telefone1, Telefone2, Telefone3,
+                Email, EmailAlt, CodCargo, CodDepartamento,
+                Conf_CriaContaAD, DataHora_CriaContaAD,
+                Conf_CadastraPonto, DataHora_CadastraPonto,
+                Conf_Ativo, PermiteAcesso, AcessoSite, DataUltimoAcesso,
+                Observacao, Informacoes_Log_I
+            ) VALUES (
+                @CodEstr_TipoPessoa, @Nome, @Sobrenome, @Apelido, @Sexo, @DataNasc, @DocCPF, @DocRG,
+                @TituloEleitor, @ZonaEleitor, @SecaoEleitor, @NumCTPS, @NumCTPSSerie, @NumCTPSUf,
+                @NumPIS, @Matricula, @DataAdmissao, @DataDemissao,
+                @NomeFiliacao1, @NomeFiliacao2, @Telefone1, @Telefone2, @Telefone3,
+                @Email, @EmailAlt, @CodCargo, @CodDepartamento,
+                @Conf_CriaContaAD, @DataHora_CriaContaAD,
+                @Conf_CadastraPonto, @DataHora_CadastraPonto,
+                @Conf_Ativo, @PermiteAcesso, @AcessoSite, @DataUltimoAcesso,
+                @Observacao, @Informacoes_Log_I
+            )";
+
+            DateTime agora = DateTime.Now;
+            DateTime agoraSemSegundos = new DateTime(agora.Year, agora.Month, agora.Day, agora.Hour, agora.Minute, 0);
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@CodEstr_TipoPessoa", codEstrutura },
+                { "@Nome", nome },
+                { "@Sobrenome", sobrenome },
+                { "@Apelido", string.IsNullOrWhiteSpace(apelido) ? "" : apelido },
+                { "@Sexo", sexo },
+                { "@DataNasc", dataNasc.HasValue ? (object)dataNasc.Value : DBNull.Value },
+                { "@DocCPF", cpf },
+                { "@DocRG", rg },
+                { "@TituloEleitor", string.IsNullOrWhiteSpace(tituloEleitor) ? "" : tituloEleitor },
+                { "@ZonaEleitor", string.IsNullOrWhiteSpace(zona) ? "" : zona },
+                { "@SecaoEleitor", string.IsNullOrWhiteSpace(secao) ? "" : secao },
+                { "@NumCTPS", string.IsNullOrWhiteSpace(ctps) ? "" : ctps },
+                { "@NumCTPSSerie", string.IsNullOrWhiteSpace(serie) ? "" : serie },
+                { "@NumCTPSUf", string.IsNullOrWhiteSpace(uf) ? "" : uf },
+                { "@NumPIS", string.IsNullOrWhiteSpace(pis) ? (object)DBNull.Value : pis },
+                { "@Matricula", string.IsNullOrWhiteSpace(matricula) ? "" : matricula },
+                { "@DataAdmissao", dataAdmissao.HasValue ? (object)dataAdmissao.Value : DBNull.Value },
+                { "@DataDemissao", dataDemissao.HasValue ? (object)dataDemissao.Value : DBNull.Value },
+                { "@NomeFiliacao1", string.IsNullOrWhiteSpace(filiacao1) ? "Não informado" : filiacao1 },
+                { "@NomeFiliacao2", string.IsNullOrWhiteSpace(filiacao2) ? "" : filiacao2 },
+                { "@Telefone1", telefone1 },
+                { "@Telefone2", string.IsNullOrWhiteSpace(telefone2) ? "" : telefone2 },
+                { "@Telefone3", string.IsNullOrWhiteSpace(telefone3) ? "" : telefone3 },
+                { "@Email", email },
+                { "@EmailAlt", string.IsNullOrWhiteSpace(emailAlt) ? "" : emailAlt },
+                { "@CodCargo", codCargo },
+                { "@CodDepartamento", codDepartamento },
+                { "@Conf_CriaContaAD", criaContaAD ? 1 : 0 },
+                { "@DataHora_CriaContaAD", criaContaAD ? (object)agora : DBNull.Value },
+                { "@Conf_CadastraPonto", cadastraPonto ? 1 : 0 },
+                { "@DataHora_CadastraPonto", cadastraPonto ? (object)agora : DBNull.Value },
+                { "@Conf_Ativo", ativo ? 1 : 0 },
+                { "@PermiteAcesso", permiteAcesso ? 1 : 0 },
+                { "@AcessoSite", 0 },
+                { "@DataUltimoAcesso", DBNull.Value },
+                { "@Observacao", string.IsNullOrWhiteSpace(observacao) ? "" : observacao },
+                { "@Informacoes_Log_I", agoraSemSegundos }
+            };
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             db.ExecutarPlennus(sql, parametros);
         }
     }

@@ -4,6 +4,11 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
 
 <script type="text/javascript">
     function aplicarMascaras() {
@@ -255,11 +260,11 @@
                     </div>
                     <div class="col-md-4">
                         <label>Sexo *</label>
-                        <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
-                            <asp:ListItem Value="">Selecione</asp:ListItem>
-                            <asp:ListItem>Masculino</asp:ListItem>
-                            <asp:ListItem>Feminino</asp:ListItem>
-                        </asp:DropDownList>
+                     <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
+                                <asp:ListItem Value="">Selecione</asp:ListItem>
+                                <asp:ListItem Value="M">Masculino</asp:ListItem>
+                                <asp:ListItem Value="F">Feminino</asp:ListItem>
+                            </asp:DropDownList>
                         <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-4">
@@ -390,24 +395,25 @@
             <div class="section-block bg-white-section">
                 <h5>Cargo e Departamento</h5>
                 <div class="row g-3">
+
+                     <div class="col-md-12">
+                          <label>Perfil Pessoa *</label>
+                          <asp:DropDownList ID="ddlPerfilPessoa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
+                              <asp:ListItem Text="Selecione" Value="" />
+                          </asp:DropDownList>
+                          <asp:RequiredFieldValidator ID="rfvPerfilPessoa" runat="server" ControlToValidate="ddlPerfilPessoa" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                      </div>
+
                     <div class="col-md-6">
                         <label>Cargo *</label>
                         <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-control">
-                            <asp:ListItem Value="">Selecione</asp:ListItem>
-                            <asp:ListItem>Diretor</asp:ListItem>
-                            <asp:ListItem>Gestor</asp:ListItem>
-                            <asp:ListItem>Supervisor</asp:ListItem>
-                        </asp:DropDownList>
+                            <asp:ListItem Text= "Selecione" Value="" />
+                        </asp:DropDownList> 
                         <asp:RequiredFieldValidator ID="rfvCargo" runat="server" ControlToValidate="ddlCargo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-6">
                         <label>Departamento *</label>
                         <asp:DropDownList ID="ddlDepartamento" runat="server" CssClass="form-control">
-                            <asp:ListItem Value="">Selecione</asp:ListItem>
-                            <asp:ListItem>Operacional</asp:ListItem>
-                            <asp:ListItem>Comercial</asp:ListItem>
-                            <asp:ListItem>Financeiro</asp:ListItem>
-                            <asp:ListItem>Tecnologia</asp:ListItem>
                         </asp:DropDownList>
                         <asp:RequiredFieldValidator ID="rfvDepartamento" runat="server" ControlToValidate="ddlDepartamento" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
@@ -418,6 +424,7 @@
             <div class="section-block bg-gray-section">
                 <h5>Configurações</h5>
                 <div class="row g-3">
+
                     <div class="col-md-4">
                         <label>
                             <asp:CheckBox ID="chkCriaContaAD" runat="server" />

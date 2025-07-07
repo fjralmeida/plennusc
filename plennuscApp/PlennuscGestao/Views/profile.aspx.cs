@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -16,7 +18,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!IsPostBack)
             {
                 CarregarDadosUsuarios();
-                lblUsuario.InnerText = Session["NomeUsuario"].ToString();
+                lblUsuario.Text = Session["NomeUsuario"].ToString();
             }
         }
         private void CarregarDadosUsuarios()
@@ -31,7 +33,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                 txtSobrenome.Text = pessoa["Sobrenome"].ToString();
                 txtApelido.Text = pessoa["Apelido"].ToString();
                 txtSexo.Text = pessoa["Sexo"].ToString();
-                txtDataNasc.Text = Convert.ToDateTime(pessoa["DataNasc"]).ToString("dd/MM/yyyy");
+                if (pessoa["DataNasc"] != DBNull.Value)
+                {
+                    txtDataNasc.Text = Convert.ToDateTime(pessoa["DataNasc"]).ToString("dd/MM/yyyy");
+                }
+                else
+                {
+                    txtDataNasc.Text = string.Empty; // ou deixe como quiser
+                }
                 txtDocCPF.Text = pessoa["DocCPF"].ToString();
                 txtDocRG.Text = pessoa["DocRG"].ToString();
                 txtTitulo.Text = pessoa["TituloEleitor"].ToString();
@@ -42,7 +51,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                 txtCTPSUf.Text = pessoa["NumCTPSUf"].ToString();
                 txtPis.Text = pessoa["NumPIS"].ToString();
                 txtMatricula.Text = pessoa["Matricula"].ToString();
-                txtDataAdmissao.Text = Convert.ToDateTime(pessoa["DataAdmissao"]).ToString("dd/MM/yyyy");
+                if (pessoa["DataAdmissao"] != DBNull.Value)
+                {
+                    txtDataAdmissao.Text = Convert.ToDateTime(pessoa["DataAdmissao"]).ToString("dd/MM/yyyy");
+                }
+                else
+                {
+                    txtDataAdmissao.Text = string.Empty; // ou deixe como quiser
+                }
                 txtDataDemissao.Text = pessoa["DataDemissao"] == DBNull.Value ? "" : Convert.ToDateTime(pessoa["DataDemissao"]).ToString("dd/MM/yyyy");
                 txtFiliacao1.Text = pessoa["NomeFiliacao1"].ToString();
                 txtFiliacao2.Text = pessoa["NomeFiliacao2"].ToString();
@@ -56,8 +72,10 @@ namespace appWhatsapp.PlennuscGestao.Views
                 txtCodPessoa.Text = pessoa["CodPessoa"].ToString();
 
 
-                string foto = pessoa["ImagemFoto"].ToString();
-                imgFotoPerfil.ImageUrl = string.IsNullOrEmpty(foto) ? "~/Content/Img/default-user.png" : ResolveUrl("~/Uploads/" + foto);
+                string foto = pessoa["ImagemFoto"].ToString().Trim();
+                imgFotoPerfil.ImageUrl = string.IsNullOrWhiteSpace(foto)
+                    ? "~/Content/Img/default-user.png"
+                    : ResolveUrl("~/UploadsGestao/" + foto);
             }
         }
 
@@ -68,17 +86,40 @@ namespace appWhatsapp.PlennuscGestao.Views
                 int codUsuario = Convert.ToInt32(Session["codUsuario"]);
                 int codPessoa = Convert.ToInt32(txtCodPessoa.Text); // Recupera o CodPessoa da tela
 
-                // Salvar imagem no servidor
-                string fileName = System.IO.Path.GetFileName(fuFoto.FileName);
-                string path = Server.MapPath("~/Uploads/") + fileName;
-                fuFoto.SaveAs(path);
+                if (!fuFoto.HasFile)
+                    throw new Exception("Nenhuma imagem foi selecionada.");
 
-                // Atualizar a imagem na interface
-                imgFotoPerfil.ImageUrl = "~/Uploads/" + fileName;
+                // Limpa e prepara o nome do arquivo
+                string fileName = Path.GetFileName(fuFoto.FileName).Trim();
+                string folderVirtualPath = "~/UploadsGestao/";
+                string folderPhysicalPath = Server.MapPath(folderVirtualPath);
 
-                // Atualizar a imagem no banco
+                // Garante que a pasta existe
+                if (!Directory.Exists(folderPhysicalPath))
+                    Directory.CreateDirectory(folderPhysicalPath);
+
+                // Caminho físico para salvar
+                string fullFilePath = Path.Combine(folderPhysicalPath, fileName);
+
+                // Salva a imagem fisicamente
+                fuFoto.SaveAs(fullFilePath);
+
                 PessoaDAO dao = new PessoaDAO();
-                dao.UpdateImgPerfil(codPessoa, fileName); // Passa CodPessoa + nome da imagem
+                dao.UpdateImgPerfil(codPessoa, fileName.Trim());// Passa CodPessoa + nome da imagem
+
+                // Atualiza o caminho da imagem no front
+                imgFotoPerfil.ImageUrl = ResolveUrl(folderVirtualPath + fileName);
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Imagem Salva!',
+                        text: 'A imagem do colaborador foi salva com sucesso.',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    });", true);
             }
             catch (Exception ex)
             {

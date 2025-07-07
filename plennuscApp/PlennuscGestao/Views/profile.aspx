@@ -1,6 +1,16 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="profile.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.profile" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
+
+
   <style>
 .perfil-titulo {
   font-weight: 600;
@@ -157,7 +167,7 @@ h5 {
     <asp:Label ID="lblErro" runat="server" CssClass="erro-upload-foto" Visible="false" />
     </div>
 
- <h4 ID="lblUsuario" runat="server" class="perfil-titulo"></h4>
+ <asp:Label ID="lblUsuario" runat="server" class="perfil-titulo"></asp:Label>
     <div class="section-block bg-white-section">
       <div class="row g-3">
            <h5 class="mb-3 text-muted fw-bold">Dados Pessoais</h5>

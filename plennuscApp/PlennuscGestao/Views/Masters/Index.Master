@@ -162,10 +162,10 @@
                 <div class="d-flex align-items-center gap-2">
 
                     <div class="dropdown">
-                        <img src='<%= ResolveUrl("~/assets/img/team/40x40/usuario.webp") %>'
-                            class="rounded-circle dropdown-toggle user-avatar"
+                         <asp:Image ID="imgAvatarUsuario" runat="server" 
+                            CssClass="rounded-circle dropdown-toggle user-avatar"
                             data-bs-toggle="dropdown"
-                            aria-expanded="false" />
+                            AlternateText="Avatar do Usuário" />
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li class="dropdown-header text-center fw-semibold">

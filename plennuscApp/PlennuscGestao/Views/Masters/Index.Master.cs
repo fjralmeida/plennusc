@@ -1,4 +1,5 @@
 ﻿using appWhatsapp.SqlQueries;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,6 +23,23 @@ namespace PlennuscGestao.Views.Masters
                 {
                     int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
                     CarregarInfoEmpresa(codEmpresa);
+                }
+
+                int codUsuario = Convert.ToInt32(Session["codUsuario"]);
+                PessoaDAO pessoaDao = new PessoaDAO();
+                DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
+
+                if (pessoa != null)
+                {
+                    string foto = pessoa["ImagemFoto"]?.ToString().Trim();
+
+                    imgAvatarUsuario.ImageUrl = string.IsNullOrWhiteSpace(foto)
+                        ? ResolveUrl("~/assets/img/team/40x40/usuario.webp")
+                        : ResolveUrl("~/UploadsGestao/" + foto);
+                }
+                else
+                {
+                    imgAvatarUsuario.ImageUrl = ResolveUrl("~/assets/img/team/40x40/usuario.webp");
                 }
             }
         }
