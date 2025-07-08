@@ -151,6 +151,7 @@
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
@@ -248,6 +249,13 @@
     </Compile>
     <Compile Include="PlennuscFinance\Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\csvImportPlanium.aspx.cs">
+      <DependentUpon>csvImportPlanium.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\csvImportPlanium.aspx.designer.cs">
+      <DependentUpon>csvImportPlanium.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\employeeManagement.aspx.cs">
       <DependentUpon>employeeManagement.aspx</DependentUpon>

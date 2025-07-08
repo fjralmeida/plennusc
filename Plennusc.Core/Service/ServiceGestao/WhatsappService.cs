@@ -318,21 +318,21 @@ namespace appWhatsapp.Service
                 foreach (var telefone in telefones)
                 {
                     var jsonBody = $@"
-            {{
-              ""media_hsm_configuration_id"": ""019896de-1b32-4f22-ad48-40f12dbb64ca"",
-              ""hsm_type"": ""media_hsm"",
-              ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
-              ""system"": ""whatsapp"",
-              ""contacts"": [ 
-                {{ 
-                  ""phone_number"": ""{telefone}"",
-                  ""field_1"": ""{field1}"",
-                  ""field_2"": ""{field2}"",
-                  ""field_3"": ""{field3}"",
-                  ""field_4"": ""{field4}""
-                }}
-              ]
-            }}";
+                    {{
+                      ""media_hsm_configuration_id"": ""019896de-1b32-4f22-ad48-40f12dbb64ca"",
+                      ""hsm_type"": ""media_hsm"",
+                      ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
+                      ""system"": ""whatsapp"",
+                      ""contacts"": [ 
+                        {{ 
+                          ""phone_number"": ""{telefone}"",
+                          ""field_1"": ""{field1}"",
+                          ""field_2"": ""{field2}"",
+                          ""field_3"": ""{field3}"",
+                          ""field_4"": ""{field4}""
+                        }}
+                      ]
+                    }}";
 
                     var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
