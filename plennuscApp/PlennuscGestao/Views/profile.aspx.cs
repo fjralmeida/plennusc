@@ -75,7 +75,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string foto = pessoa["ImagemFoto"].ToString().Trim();
                 imgFotoPerfil.ImageUrl = string.IsNullOrWhiteSpace(foto)
                     ? "~/Content/Img/default-user.png"
-                    : ResolveUrl("~/UploadsGestao/" + foto);
+                    : ResolveUrl("~/public/uploadgestao/images/" + foto);
             }
         }
 
@@ -91,7 +91,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 // Limpa e prepara o nome do arquivo
                 string fileName = Path.GetFileName(fuFoto.FileName).Trim();
-                string folderVirtualPath = "~/UploadsGestao/";
+                string folderVirtualPath = "~/public/uploadgestao/images/";
                 string folderPhysicalPath = Server.MapPath(folderVirtualPath);
 
                 // Garante que a pasta existe

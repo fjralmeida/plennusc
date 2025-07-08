@@ -13,14 +13,23 @@
 
   <style>
 .perfil-titulo {
-  font-weight: 600;
-  font-size: 1.75rem;
-  color: #83CEEE; /* azul institucional */
-  margin-bottom: 2rem;
+  display: block; /* força comportamento de bloco */
+  font-size: 2rem;
+  color: #4CB07A;
   text-align: center;
+  margin: 2rem 0 2.5rem 0;
+  position: relative;
 }
 
-
+.perfil-titulo::after {
+  content: "";
+  width: 60px;
+  height: 3px;
+  background-color: #83CEEE;
+  display: block;
+  margin: 0.5rem auto 0 auto;
+  border-radius: 2px;
+}
 .avatar-wrapper {
   display: flex;
   flex-direction: column;
@@ -167,7 +176,9 @@ h5 {
     <asp:Label ID="lblErro" runat="server" CssClass="erro-upload-foto" Visible="false" />
     </div>
 
- <asp:Label ID="lblUsuario" runat="server" class="perfil-titulo"></asp:Label>
+ <div class="w-100">
+  <asp:Label ID="lblUsuario" runat="server" CssClass="perfil-titulo"></asp:Label>
+</div>
     <div class="section-block bg-white-section">
       <div class="row g-3">
            <h5 class="mb-3 text-muted fw-bold">Dados Pessoais</h5>
