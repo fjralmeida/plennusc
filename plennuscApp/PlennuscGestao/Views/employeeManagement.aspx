@@ -4,36 +4,41 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-<!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
-
-<!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
 
 <script type="text/javascript">
     function aplicarMascaras() {
-        $('#<%= txtDocCPF.ClientID %>').mask('000.000.000-00');
-        $('#<%= txtDocRG.ClientID %>').mask('00.000.000-0');
-        $('#<%= txtPis.ClientID %>').mask('000.00000.00-0');
-        $('#<%= txtTelefone1.ClientID %>').mask('(00) 00000-0000');
-        $('#<%= txtTelefone2.ClientID %>').mask('(00) 00000-0000');
-        $('#<%= txtTelefone3.ClientID %>').mask('(00) 00000-0000');
-        $('#<%= txtDataNasc.ClientID %>').mask('00/00/0000');
-        $('#<%= txtDataAdmissao.ClientID %>').mask('00/00/0000');
-        $('#<%= txtDataDemissao.ClientID %>').mask('00/00/0000');
+        // CPF
+        $('#<%= txtDocCPF.ClientID %>').mask('000.000.000-00', { reverse: true });
+
+        // Telefones (Celular ou Fixo dinâmico)
+        aplicarMascaraTelefone('#<%= txtTelefone1.ClientID %>');
+        aplicarMascaraTelefone('#<%= txtTelefone2.ClientID %>');
+        aplicarMascaraTelefone('#<%= txtTelefone3.ClientID %>');
     }
 
-    // Forçar aplicação mesmo com delay do UpdatePanel (caso use AJAX)
-    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-        aplicarMascaras();
-    });
+    function aplicarMascaraTelefone(selector) {
+        var $campo = $(selector);
+        $campo.mask('(00) 00000-0000');
 
-    // Aplica na primeira carga
+        $campo.on('blur', function () {
+            var val = $campo.val().replace(/\D/g, '');
+            if (val.length <= 10) {
+                $campo.mask('(00) 0000-0000');
+            } else {
+                $campo.mask('(00) 00000-0000');
+            }
+        });
+    }
+
+    // Aplica as máscaras quando o painel estiver visível
     Sys.Application.add_load(function () {
-        aplicarMascaras();
+        if ($('#<%= PanelCadastro.ClientID %>').is(':visible')) {
+            aplicarMascaras();
+        }
     });
 </script>
-
 
     <style>
         .titulo-gestao {
@@ -279,11 +284,13 @@
             <div class="section-block bg-gray-section">
                 <h5>Documentos</h5>
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label>CPF *</label>
-                        <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvCPF" runat="server" ControlToValidate="txtDocCPF" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
+                <div class="col-md-6">
+                    <label>CPF *</label>
+                    <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="14" />
+                    <asp:RequiredFieldValidator ID="rfvCPF" runat="server" ControlToValidate="txtDocCPF" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                    <asp:RegularExpressionValidator ID="revCPF" runat="server" ControlToValidate="txtDocCPF" 
+                        ValidationExpression="^\d{3}\.\d{3}\.\d{3}-\d{2}$" ErrorMessage="CPF inválido" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                </div>
                     <div class="col-md-6">
                         <label>RG *</label>
                         <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
@@ -368,16 +375,17 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label>Telefone 1 *</label>
-                        <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvTel1" runat="server" ControlToValidate="txtTelefone1" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" MaxLength="15" />
+                        <asp:RequiredFieldValidator ID="rfvTel1" runat="server" ControlToValidate="txtTelefone1"
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-4">
                         <label>Telefone 2</label>
-                        <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" />
+                        <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" MaxLength="15" />
                     </div>
                     <div class="col-md-4">
                         <label>Telefone 3</label>
-                        <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" />
+                        <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" MaxLength="15" />
                     </div>
                     <div class="col-md-6">
                         <label>Email *</label>
@@ -472,5 +480,4 @@
         }
     });
     </script>
-
 </asp:Content>
