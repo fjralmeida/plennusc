@@ -68,7 +68,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnConsultarUsuario_Click(object sender, EventArgs e)
         {
-            // Redirecionar para página de busca ou exibir grid
+            PanelConsulta.Visible = true;
+            lblTitGestao.Visible = false;
+            btnConsultarUsuario.Visible = false;
+            btnDesativarUsuario.Visible = false;
+            btnIncluirUsuario.Visible = false;
         }
 
         protected void btnDesativarUsuario_Click(object sender, EventArgs e)
@@ -163,6 +167,43 @@ namespace appWhatsapp.PlennuscGestao.Views
             }});", true);
             }
 
+        }
+
+        protected void btnBuscarPorNome_Click(object sender, EventArgs e)
+        {
+            PessoaDAO dao = new PessoaDAO();
+            DataTable dt = dao.BuscarUsuarioPorNome(txtBuscaNome.Text.Trim());
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                gvUsuarios.DataSource = dt;
+                gvUsuarios.DataBind();
+                PanelResultado.Visible = true;
+            }
+            else
+            {
+                gvUsuarios.DataSource = null;
+                gvUsuarios.DataBind();
+                PanelResultado.Visible = false;
+            }
+        }
+        protected void btnBuscarPorCPF_Click(object sender, EventArgs e)
+        {
+            PessoaDAO dao = new PessoaDAO();
+            DataTable dt = dao.BuscarUsuarioPorCPF(txtBuscaCPF.Text.Trim());
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                gvUsuarios.DataSource = dt;
+                gvUsuarios.DataBind();
+                PanelResultado.Visible = true;
+            }
+            else
+            {
+                gvUsuarios.DataSource = null;
+                gvUsuarios.DataBind();
+                PanelResultado.Visible = false;
+            }
         }
     }
 }

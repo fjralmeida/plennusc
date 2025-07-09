@@ -2,43 +2,43 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
 
-<script type="text/javascript">
-    function aplicarMascaras() {
-        // CPF
-        $('#<%= txtDocCPF.ClientID %>').mask('000.000.000-00', { reverse: true });
+    <script type="text/javascript">
+        function aplicarMascaras() {
+            // CPF
+            $('#<%= txtDocCPF.ClientID %>').mask('000.000.000-00', { reverse: true });
 
         // Telefones (Celular ou Fixo dinâmico)
         aplicarMascaraTelefone('#<%= txtTelefone1.ClientID %>');
         aplicarMascaraTelefone('#<%= txtTelefone2.ClientID %>');
         aplicarMascaraTelefone('#<%= txtTelefone3.ClientID %>');
-    }
+        }
 
-    function aplicarMascaraTelefone(selector) {
-        var $campo = $(selector);
-        $campo.mask('(00) 00000-0000');
+        function aplicarMascaraTelefone(selector) {
+            var $campo = $(selector);
+            $campo.mask('(00) 00000-0000');
 
-        $campo.on('blur', function () {
-            var val = $campo.val().replace(/\D/g, '');
-            if (val.length <= 10) {
-                $campo.mask('(00) 0000-0000');
-            } else {
-                $campo.mask('(00) 00000-0000');
-            }
-        });
-    }
+            $campo.on('blur', function () {
+                var val = $campo.val().replace(/\D/g, '');
+                if (val.length <= 10) {
+                    $campo.mask('(00) 0000-0000');
+                } else {
+                    $campo.mask('(00) 00000-0000');
+                }
+            });
+        }
 
-    // Aplica as máscaras quando o painel estiver visível
-    Sys.Application.add_load(function () {
-        if ($('#<%= PanelCadastro.ClientID %>').is(':visible')) {
+        // Aplica as máscaras quando o painel estiver visível
+        Sys.Application.add_load(function () {
+            if ($('#<%= PanelCadastro.ClientID %>').is(':visible')) {
             aplicarMascaras();
         }
     });
-</script>
+    </script>
 
     <style>
         .titulo-gestao {
@@ -70,10 +70,10 @@
             gap: 0.5rem;
         }
 
-            .btn-gestao:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            }
+        .btn-gestao:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
         .btn-incluir {
             background-color: #4CB07A;
@@ -87,17 +87,17 @@
             background-color: #83CEEE;
         }
 
-            .btn-consultar:hover {
-                background-color: #63b6da;
-            }
+        .btn-consultar:hover {
+            background-color: #63b6da;
+        }
 
         .btn-desativar {
             background-color: #DC8689;
         }
 
-            .btn-desativar:hover {
-                background-color: #c96c6f;
-            }
+        .btn-desativar:hover {
+            background-color: #c96c6f;
+        }
 
         @media (max-width: 600px) {
             .btn-gestao {
@@ -126,19 +126,19 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         }
 
-            .section-block:nth-child(even) {
-                background: #f7fafd;
-            }
+        .section-block:nth-child(even) {
+            background: #f7fafd;
+        }
 
-            /* Títulos com cor verde padrão */
-            .section-block h5 {
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: #4CB07A;
-                margin-bottom: 1rem;
-                border-left: 5px solid #83CEEE;
-                padding-left: 0.6rem;
-            }
+        /* Títulos com cor verde padrão */
+        .section-block h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4CB07A;
+            margin-bottom: 1rem;
+            border-left: 5px solid #83CEEE;
+            padding-left: 0.6rem;
+        }
 
         /* Campos em grid com espaçamento responsivo */
         .row.g-3 {
@@ -147,11 +147,11 @@
             gap: 1rem;
         }
 
-            .row.g-3 > .col-md-6,
-            .row.g-3 > .col-md-4 {
-                flex: 1 1 47%;
-                min-width: 260px;
-            }
+        .row.g-3 > .col-md-6,
+        .row.g-3 > .col-md-4 {
+            flex: 1 1 47%;
+            min-width: 260px;
+        }
 
         .titulo-cadastro {
             font-size: 1.1rem;
@@ -186,13 +186,13 @@
             transition: border-color 0.3s ease-in-out;
         }
 
-            input:focus,
-            select:focus,
-            textarea:focus {
-                border-color: #83CEEE;
-                outline: none;
-                box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.2);
-            }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #83CEEE;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.2);
+        }
 
         /* Validação com vermelho suave */
         .text-danger {
@@ -212,9 +212,9 @@
             transition: all 0.3s ease;
         }
 
-            .btn-success:hover {
-                background-color: #3b9562;
-            }
+        .btn-success:hover {
+            background-color: #3b9562;
+        }
 
         /* Botões secundários com roxo padrão */
         .btn-secondary {
@@ -226,9 +226,66 @@
             border-radius: 6px;
         }
 
-            .btn-secondary:hover {
-                background-color: #a44cba;
-            }
+        .btn-secondary:hover {
+            background-color: #a44cba;
+        }
+.section-block h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4CB07A;
+    margin-bottom: 1rem;
+    border-left: 5px solid #83CEEE;
+    padding-left: 0.6rem;
+}
+
+.btn-success {
+    background-color: #4CB07A;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #3b9562;
+}
+
+input[type="text"],
+input[type="email"],
+select,
+textarea,
+.form-control {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease-in-out;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #83CEEE;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.2);
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    display: block;
+    color: #333;
+}
+
+.text-danger {
+    color: #DC8689;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
     </style>
 </asp:Content>
 
@@ -265,11 +322,11 @@
                     </div>
                     <div class="col-md-4">
                         <label>Sexo *</label>
-                     <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
-                                <asp:ListItem Value="">Selecione</asp:ListItem>
-                                <asp:ListItem Value="M">Masculino</asp:ListItem>
-                                <asp:ListItem Value="F">Feminino</asp:ListItem>
-                            </asp:DropDownList>
+                        <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
+                            <asp:ListItem Value="">Selecione</asp:ListItem>
+                            <asp:ListItem Value="M">Masculino</asp:ListItem>
+                            <asp:ListItem Value="F">Feminino</asp:ListItem>
+                        </asp:DropDownList>
                         <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-4">
@@ -284,13 +341,13 @@
             <div class="section-block bg-gray-section">
                 <h5>Documentos</h5>
                 <div class="row g-3">
-                <div class="col-md-6">
-                    <label>CPF *</label>
-                    <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="14" />
-                    <asp:RequiredFieldValidator ID="rfvCPF" runat="server" ControlToValidate="txtDocCPF" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    <asp:RegularExpressionValidator ID="revCPF" runat="server" ControlToValidate="txtDocCPF" 
-                        ValidationExpression="^\d{3}\.\d{3}\.\d{3}-\d{2}$" ErrorMessage="CPF inválido" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                </div>
+                    <div class="col-md-6">
+                        <label>CPF *</label>
+                        <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="14" placeHolder="Insira com números e pontos" />
+                        <asp:RequiredFieldValidator ID="rfvCPF" runat="server" ControlToValidate="txtDocCPF" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RegularExpressionValidator ID="revCPF" runat="server" ControlToValidate="txtDocCPF"
+                            ValidationExpression="^\d{3}\.\d{3}\.\d{3}-\d{2}$" ErrorMessage="CPF inválido" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                    </div>
                     <div class="col-md-6">
                         <label>RG *</label>
                         <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
@@ -404,19 +461,19 @@
                 <h5>Cargo e Departamento</h5>
                 <div class="row g-3">
 
-                     <div class="col-md-12">
-                          <label>Perfil Pessoa *</label>
-                          <asp:DropDownList ID="ddlPerfilPessoa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
-                              <asp:ListItem Text="Selecione" Value="" />
-                          </asp:DropDownList>
-                          <asp:RequiredFieldValidator ID="rfvPerfilPessoa" runat="server" ControlToValidate="ddlPerfilPessoa" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                      </div>
+                    <div class="col-md-12">
+                        <label>Perfil Pessoa *</label>
+                        <asp:DropDownList ID="ddlPerfilPessoa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
+                            <asp:ListItem Text="Selecione" Value="" />
+                        </asp:DropDownList>
+                        <asp:RequiredFieldValidator ID="rfvPerfilPessoa" runat="server" ControlToValidate="ddlPerfilPessoa" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                    </div>
 
                     <div class="col-md-6">
                         <label>Cargo *</label>
                         <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-control">
-                            <asp:ListItem Text= "Selecione" Value="" />
-                        </asp:DropDownList> 
+                            <asp:ListItem Text="Selecione" Value="" />
+                        </asp:DropDownList>
                         <asp:RequiredFieldValidator ID="rfvCargo" runat="server" ControlToValidate="ddlCargo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-6">
@@ -469,6 +526,56 @@
             </div>
         </asp:Panel>
 
+        <asp:Panel ID="PanelConsulta" runat="server" CssClass="form-panel mt-4" Visible="false">
+            <!-- Título principal -->
+            <h4 class="titulo-cadastro">🔍 Consultar Usuário</h4>
+
+            <!-- 🔎 BLOCO DE BUSCA -->
+      <div class="section-block">
+    <h5>Buscar por Nome ou CPF</h5>
+    <div class="row g-3">
+        <!-- Busca por Nome -->
+        <div class="col-md-6">
+            <label>Buscar por Nome</label>
+            <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Digite o nome" />
+        </div>
+        <div class="col-md-6 d-flex align-items-end justify-content-start">
+            <asp:Button ID="btnBuscarPorNome" runat="server" Text="🔍 Buscar por Nome" CssClass="btn btn-success" OnClick="btnBuscarPorNome_Click" />
+        </div>
+
+        <!-- Busca por CPF -->
+        <div class="col-md-6">
+            <label>Buscar por CPF</label>
+            <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Digite o CPF (somente números)" MaxLength="11" />
+        </div>
+        <div class="col-md-6 d-flex align-items-end justify-content-start">
+            <asp:Button ID="btnBuscarPorCPF" runat="server" Text="🔍 Buscar por CPF" CssClass="btn btn-success" OnClick="btnBuscarPorCPF_Click" />
+        </div>
+    </div>
+</div>
+
+    <!-- 📋 RESULTADOS -->
+    <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
+        <h5>Resultados</h5>
+        <asp:GridView 
+            ID="gvUsuarios" 
+            runat="server" 
+            CssClass="table-custom" 
+            AutoGenerateColumns="False" 
+            GridLines="None" 
+            ShowHeaderWhenEmpty="False" 
+            EmptyDataText="Nenhum usuário encontrado.">
+            
+            <HeaderStyle CssClass="table-custom-header" />
+            <Columns>
+                <asp:BoundField DataField="Nome" HeaderText="Nome" />
+<asp:BoundField DataField="CPF" HeaderText="CPF" />
+<asp:BoundField DataField="Email" HeaderText="Email" />
+<asp:BoundField DataField="Cargo" HeaderText="Cargo" />
+            </Columns>
+        </asp:GridView>
+    </asp:Panel>
+</asp:Panel>
 
     </div>
 
@@ -476,8 +583,8 @@
     <script type="text/javascript">
         Sys.Application.add_load(function () {
             if ($('#<%= PanelCadastro.ClientID %>').is(':visible')) {
-            aplicarMascaras();
-        }
-    });
+                aplicarMascaras();
+            }
+        });
     </script>
 </asp:Content>

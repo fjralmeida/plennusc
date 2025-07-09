@@ -88,74 +88,110 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                                      int codSistema, int codUsuario, string observacao)
         {
             string sql = @"
-            INSERT INTO Pessoa (
-                CodEstr_TipoPessoa, Nome, Sobrenome, Apelido, Sexo, DataNasc, DocCPF, DocRG,
-                TituloEleitor, ZonaEleitor, SecaoEleitor, NumCTPS, NumCTPSSerie, NumCTPSUf,
-                NumPIS, Matricula, DataAdmissao, DataDemissao,
-                NomeFiliacao1, NomeFiliacao2, Telefone1, Telefone2, Telefone3,
-                Email, EmailAlt, CodCargo, CodDepartamento,
-                Conf_CriaContaAD, DataHora_CriaContaAD,
-                Conf_CadastraPonto, DataHora_CadastraPonto,
-                Conf_Ativo, PermiteAcesso, AcessoSite, DataUltimoAcesso,
-                Observacao, Informacoes_Log_I
-            ) VALUES (
-                @CodEstr_TipoPessoa, @Nome, @Sobrenome, @Apelido, @Sexo, @DataNasc, @DocCPF, @DocRG,
-                @TituloEleitor, @ZonaEleitor, @SecaoEleitor, @NumCTPS, @NumCTPSSerie, @NumCTPSUf,
-                @NumPIS, @Matricula, @DataAdmissao, @DataDemissao,
-                @NomeFiliacao1, @NomeFiliacao2, @Telefone1, @Telefone2, @Telefone3,
-                @Email, @EmailAlt, @CodCargo, @CodDepartamento,
-                @Conf_CriaContaAD, @DataHora_CriaContaAD,
-                @Conf_CadastraPonto, @DataHora_CadastraPonto,
-                @Conf_Ativo, @PermiteAcesso, @AcessoSite, @DataUltimoAcesso,
-                @Observacao, @Informacoes_Log_I
-            )";
+                INSERT INTO Pessoa (
+                    CodEstr_TipoPessoa, Nome, Sobrenome, Apelido, Sexo, DataNasc, DocCPF, DocRG,
+                    TituloEleitor, ZonaEleitor, SecaoEleitor, NumCTPS, NumCTPSSerie, NumCTPSUf,
+                    NumPIS, Matricula, DataAdmissao, DataDemissao,
+                    NomeFiliacao1, NomeFiliacao2, Telefone1, Telefone2, Telefone3,
+                    Email, EmailAlt, CodCargo, CodDepartamento,
+                    Conf_CriaContaAD, DataHora_CriaContaAD,
+                    Conf_CadastraPonto, DataHora_CadastraPonto,
+                    Conf_Ativo, PermiteAcesso, AcessoSite, DataUltimoAcesso,
+                    Observacao, Informacoes_Log_I
+                ) VALUES (
+                    @CodEstr_TipoPessoa, @Nome, @Sobrenome, @Apelido, @Sexo, @DataNasc, @DocCPF, @DocRG,
+                    @TituloEleitor, @ZonaEleitor, @SecaoEleitor, @NumCTPS, @NumCTPSSerie, @NumCTPSUf,
+                    @NumPIS, @Matricula, @DataAdmissao, @DataDemissao,
+                    @NomeFiliacao1, @NomeFiliacao2, @Telefone1, @Telefone2, @Telefone3,
+                    @Email, @EmailAlt, @CodCargo, @CodDepartamento,
+                    @Conf_CriaContaAD, @DataHora_CriaContaAD,
+                    @Conf_CadastraPonto, @DataHora_CadastraPonto,
+                    @Conf_Ativo, @PermiteAcesso, @AcessoSite, @DataUltimoAcesso,
+                    @Observacao, @Informacoes_Log_I
+                )";
 
             DateTime agora = DateTime.Now;
             DateTime agoraSemSegundos = new DateTime(agora.Year, agora.Month, agora.Day, agora.Hour, agora.Minute, 0);
 
             var parametros = new Dictionary<string, object>
-            {
-                { "@CodEstr_TipoPessoa", codEstrutura },
-                { "@Nome", nome },
-                { "@Sobrenome", sobrenome },
-                { "@Apelido", string.IsNullOrWhiteSpace(apelido) ? "" : apelido },
-                { "@Sexo", sexo },
-                { "@DataNasc", dataNasc.HasValue ? (object)dataNasc.Value : DBNull.Value },
-                { "@DocCPF", cpf },
-                { "@DocRG", rg },
-                { "@TituloEleitor", string.IsNullOrWhiteSpace(tituloEleitor) ? "" : tituloEleitor },
-                { "@ZonaEleitor", string.IsNullOrWhiteSpace(zona) ? "" : zona },
-                { "@SecaoEleitor", string.IsNullOrWhiteSpace(secao) ? "" : secao },
-                { "@NumCTPS", string.IsNullOrWhiteSpace(ctps) ? "" : ctps },
-                { "@NumCTPSSerie", string.IsNullOrWhiteSpace(serie) ? "" : serie },
-                { "@NumCTPSUf", string.IsNullOrWhiteSpace(uf) ? "" : uf },
-                { "@NumPIS", string.IsNullOrWhiteSpace(pis) ? (object)DBNull.Value : pis },
-                { "@Matricula", string.IsNullOrWhiteSpace(matricula) ? "" : matricula },
-                { "@DataAdmissao", dataAdmissao.HasValue ? (object)dataAdmissao.Value : DBNull.Value },
-                { "@DataDemissao", dataDemissao.HasValue ? (object)dataDemissao.Value : DBNull.Value },
-                { "@NomeFiliacao1", string.IsNullOrWhiteSpace(filiacao1) ? "Não informado" : filiacao1 },
-                { "@NomeFiliacao2", string.IsNullOrWhiteSpace(filiacao2) ? "" : filiacao2 },
-                { "@Telefone1", telefone1 },
-                { "@Telefone2", string.IsNullOrWhiteSpace(telefone2) ? "" : telefone2 },
-                { "@Telefone3", string.IsNullOrWhiteSpace(telefone3) ? "" : telefone3 },
-                { "@Email", email },
-                { "@EmailAlt", string.IsNullOrWhiteSpace(emailAlt) ? "" : emailAlt },
-                { "@CodCargo", codCargo },
-                { "@CodDepartamento", codDepartamento },
-                { "@Conf_CriaContaAD", criaContaAD ? 1 : 0 },
-                { "@DataHora_CriaContaAD", criaContaAD ? (object)agora : DBNull.Value },
-                { "@Conf_CadastraPonto", cadastraPonto ? 1 : 0 },
-                { "@DataHora_CadastraPonto", cadastraPonto ? (object)agora : DBNull.Value },
-                { "@Conf_Ativo", ativo ? 1 : 0 },
-                { "@PermiteAcesso", permiteAcesso ? 1 : 0 },
-                { "@AcessoSite", 0 },
-                { "@DataUltimoAcesso", DBNull.Value },
-                { "@Observacao", string.IsNullOrWhiteSpace(observacao) ? "" : observacao },
-                { "@Informacoes_Log_I", agoraSemSegundos }
-            };
+                {
+                    { "@CodEstr_TipoPessoa", codEstrutura },
+                    { "@Nome", nome },
+                    { "@Sobrenome", sobrenome },
+                    { "@Apelido", string.IsNullOrWhiteSpace(apelido) ? "" : apelido },
+                    { "@Sexo", sexo },
+                    { "@DataNasc", dataNasc.HasValue ? (object)dataNasc.Value : DBNull.Value },
+                    { "@DocCPF", cpf },
+                    { "@DocRG", rg },
+                    { "@TituloEleitor", string.IsNullOrWhiteSpace(tituloEleitor) ? "" : tituloEleitor },
+                    { "@ZonaEleitor", string.IsNullOrWhiteSpace(zona) ? "" : zona },
+                    { "@SecaoEleitor", string.IsNullOrWhiteSpace(secao) ? "" : secao },
+                    { "@NumCTPS", string.IsNullOrWhiteSpace(ctps) ? "" : ctps },
+                    { "@NumCTPSSerie", string.IsNullOrWhiteSpace(serie) ? "" : serie },
+                    { "@NumCTPSUf", string.IsNullOrWhiteSpace(uf) ? "" : uf },
+                    { "@NumPIS", string.IsNullOrWhiteSpace(pis) ? (object)DBNull.Value : pis },
+                    { "@Matricula", string.IsNullOrWhiteSpace(matricula) ? "" : matricula },
+                    { "@DataAdmissao", dataAdmissao.HasValue ? (object)dataAdmissao.Value : DBNull.Value },
+                    { "@DataDemissao", dataDemissao.HasValue ? (object)dataDemissao.Value : DBNull.Value },
+                    { "@NomeFiliacao1", string.IsNullOrWhiteSpace(filiacao1) ? "Não informado" : filiacao1 },
+                    { "@NomeFiliacao2", string.IsNullOrWhiteSpace(filiacao2) ? "" : filiacao2 },
+                    { "@Telefone1", telefone1 },
+                    { "@Telefone2", string.IsNullOrWhiteSpace(telefone2) ? "" : telefone2 },
+                    { "@Telefone3", string.IsNullOrWhiteSpace(telefone3) ? "" : telefone3 },
+                    { "@Email", email },
+                    { "@EmailAlt", string.IsNullOrWhiteSpace(emailAlt) ? "" : emailAlt },
+                    { "@CodCargo", codCargo },
+                    { "@CodDepartamento", codDepartamento },
+                    { "@Conf_CriaContaAD", criaContaAD ? 1 : 0 },
+                    { "@DataHora_CriaContaAD", criaContaAD ? (object)agora : DBNull.Value },
+                    { "@Conf_CadastraPonto", cadastraPonto ? 1 : 0 },
+                    { "@DataHora_CadastraPonto", cadastraPonto ? (object)agora : DBNull.Value },
+                    { "@Conf_Ativo", ativo ? 1 : 0 },
+                    { "@PermiteAcesso", permiteAcesso ? 1 : 0 },
+                    { "@AcessoSite", 0 },
+                    { "@DataUltimoAcesso", DBNull.Value },
+                    { "@Observacao", string.IsNullOrWhiteSpace(observacao) ? "" : observacao },
+                    { "@Informacoes_Log_I", agoraSemSegundos }
+                };
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             db.ExecutarPlennus(sql, parametros);
         }
+        public DataTable BuscarUsuarioPorNome(string nome)
+        {
+            string query = $@"
+                            SELECT 
+                                CodPessoa,
+                                Nome,
+                                Sobrenome,
+                                DocCPF AS CPF,
+                                Email,
+                                CodCargo AS Cargo
+                            FROM Pessoa
+                            WHERE Nome LIKE '%{nome}%' OR Sobrenome LIKE '%{nome}%'
+                            ORDER BY Nome
+                        ";
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            return db.LerPlennus(query);
+        }
+        public DataTable BuscarUsuarioPorCPF(string cpf)
+        {
+            string query = $@"
+                            SELECT 
+                                CodPessoa,
+                                Nome,
+                                Sobrenome,
+                                DocCPF AS CPF,
+                                Email,
+                                CodCargo AS Cargo
+                            FROM Pessoa
+                            WHERE DocCPF = '{cpf}'
+                        ";
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            return db.LerPlennus(query);
+        }
+
     }
 }
