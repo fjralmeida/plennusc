@@ -38,7 +38,7 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string COD_EMPRESA { get; set; }
         public string COD_UNID { get; set; }
         public string MAT { get; set; }
-        public string ADMISSA_O { get; set; }
+        public string ADMISSAO { get; set; } // Corrigido de "ADMISSÃO"
         public string NOME_MAE { get; set; }
         public string NOME_PAI { get; set; }
         public string EMAIL { get; set; }
@@ -73,7 +73,7 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string COD_ANS_OPERADORA { get; set; }
         public string NOME_OPERADORA { get; set; }
         public string IDADE { get; set; }
-        public string RESPF_MÃE { get; set; }
+        public string RESPF_MAE { get; set; }
         public string RESPF_NASCIMENTO { get; set; }
         public string RESPF_EMAIL { get; set; }
         public string RESPF_IDADE { get; set; }
@@ -88,6 +88,6 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string TELEFONE_VENDEDOR { get; set; }
         public string MENSALIDADE_TIT { get; set; }
         public string MENSALIDADE_DEP { get; set; }
-        public string ACESSÓRIOS { get; set; }
+        public string ACESSORIOS { get; set; }
     }
 }
