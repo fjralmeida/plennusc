@@ -1,26 +1,28 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="profile.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.profile" %>
 
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-<!-- SweetAlert2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
-
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
-
-
-  <style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+  }
+  body, html {
+    background-color: #f2f4f8;
+    color: #333;
+    font-size: 14px;
+  }
 .perfil-titulo {
-  display: block; /* força comportamento de bloco */
-  font-size: 2rem;
+  font-size: 24px;
+  font-weight: 600;
   color: #4CB07A;
   text-align: center;
-  margin: 2rem 0 2.5rem 0;
+  margin: 2rem auto 1.5rem auto;
   position: relative;
+  max-width: 100%;
+  display: block;
 }
-
 .perfil-titulo::after {
   content: "";
   width: 60px;
@@ -30,137 +32,109 @@
   margin: 0.5rem auto 0 auto;
   border-radius: 2px;
 }
-.avatar-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.avatar-img {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #4CB07A;
-  transition: 0.3s;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.avatar-img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(76, 176, 122, 0.4);
-}
-
-.file-upload {
-  display: none;
-}
-
-.upload-label {
-  font-size: 0.875rem;
-  color: #666;
-  margin-top: 0.5rem;
-}
-
-.btn-salvar-foto {
-  background-color: #c06ed4;
-  color: #fff;
-  padding: 0.4rem 1.1rem;
-  font-size: 0.875rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-top: 0.75rem;
-}
-
-.btn-salvar-foto:hover {
-  background-color: #a250b1;
-  transform: translateY(-2px);
-}
-
-.form-control:focus {
-  border-color: #83CEEE;
-  box-shadow: 0 0 0 0.2rem rgba(131, 206, 238, 0.4);
-}
-
-.form-control[readonly] {
-  background-color: #f9f9f9;
-  cursor: default;
-}
-
-.btn-primary {
-  background-color: #4CB07A;
-  border-color: #4CB07A;
-}
-
-.btn-primary:hover {
-  background-color: #3e9b68;
-  border-color: #3e9b68;
-}
-
-.section-block {
-  border-radius: 1rem;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-}
-
-.bg-white-section {
-  background-color: #ffffff;
-}
-
-.bg-gray-section {
-  background-color: #f5f7f9;
-}
-
-h5 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #495057;
-  border-left: 4px solid #83CEEE; /* destaque azul ao lado do título */
-  padding-left: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-
-.erro-upload-foto {
-  margin-top: 0.75rem;
-  color: #d9534f;
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-align: center;
-  display: block;
-}
-
-  </style>
-
-  <script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", function () {
-          var img = document.getElementById("imgFotoPerfil");
-          var file = document.getElementById("fuFoto");
-          if (img && file) {
-              img.addEventListener("click", function () {
-                  file.click();
-              });
-          }
-      });
-
-      function previewFoto() {
-          var fileInput = document.getElementById("fuFoto");
-          var imgPreview = document.getElementById("imgFotoPerfil");
-
-          if (fileInput.files && fileInput.files[0]) {
-              var reader = new FileReader();
-              reader.onload = function (e) {
-                  imgPreview.src = e.target.result;
-              };
-              reader.readAsDataURL(fileInput.files[0]);
-          }
-      }
-  </script>
+  .avatar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  .avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4CB07A;
+    transition: 0.3s;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  }
+  .avatar-img:hover {
+    transform: scale(1.05);
+  }
+  .upload-label {
+    font-size: 0.875rem;
+    color: #555;
+    margin-top: 0.5rem;
+  }
+  .file-upload { display: none; }
+  .btn-salvar-foto {
+    background-color: #c06ed4;
+    color: white;
+    font-size: 0.875rem;
+    padding: 0.45rem 1rem;
+    border: none;
+    border-radius: 10px;
+    margin-top: 0.75rem;
+    transition: 0.2s;
+  }
+  .btn-salvar-foto:hover {
+    background-color: #a650b1;
+  }
+  .form-control:focus {
+    border-color: #83CEEE;
+    box-shadow: 0 0 0 3px rgba(131, 206, 238, 0.25);
+  }
+  .section-block {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+  }
+  .bg-gray-section {
+    background-color: #f4f6f9;
+  }
+  h5 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #444;
+    border-left: 4px solid #83CEEE;
+    padding-left: 12px;
+    margin-bottom: 20px;
+  }
+  .erro-upload-foto {
+    color: #DC8689;
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  .row.g-3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .col-md-4, .col-md-6 {
+    flex: 1 1 calc(50% - 20px);
+    min-width: 250px;
+  }
+  @media (max-width: 768px) {
+    .col-md-4, .col-md-6 {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const img = document.getElementById("imgFotoPerfil");
+        const file = document.getElementById("fuFoto");
+        if (img && file) {
+            img.addEventListener("click", function () {
+                file.click();
+            });
+        }
+    });
+    function previewFoto() {
+        const fileInput = document.getElementById("fuFoto");
+        const imgPreview = document.getElementById("imgFotoPerfil");
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imgPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+</script>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">

@@ -162,9 +162,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             string query = $@"
                             SELECT 
                                 CodPessoa,
-                                Nome,
-                                Sobrenome,
+                                (Nome + ' ' + Sobrenome) AS NomeCompleto,
+                                DocRG AS RG,
                                 DocCPF AS CPF,
+                                Telefone1,
                                 Email,
                                 CodCargo AS Cargo
                             FROM Pessoa
@@ -180,10 +181,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             string query = $@"
                             SELECT 
                                 CodPessoa,
-                                Nome,
-                                Sobrenome,
+                                (Nome + ' ' + Sobrenome) AS NomeCompleto,
+                                DocRG AS RG,
                                 DocCPF AS CPF,
                                 Email,
+                                Telefone1,
                                 CodCargo AS Cargo
                             FROM Pessoa
                             WHERE DocCPF = '{cpf}'
