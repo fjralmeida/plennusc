@@ -91,6 +91,10 @@
         .btn-secondary:hover {
             background-color: #b5b5b5;
         }
+        .text-end {
+    text-align: right !important;
+    padding: 10px;
+}
 
         .filter-panel {
             background: #f0f2f5;
@@ -180,6 +184,14 @@
                 </div>
             </div>
 
+              <div class="text-end">
+      <asp:Button ID="btnEnviar" runat="server" Text="Enviar Mensagens"
+          CssClass="btn btn-success btn-pill"
+          Enabled="false"
+          OnClick="btnEnviar_Click"
+          OnClientClick="mostrarLoading();" />
+  </div>
+
             <asp:GridView ID="gridCsv" runat="server" AutoGenerateColumns="false"
                 CssClass="table table-striped table-bordered shadow-sm rounded mb-4">
                 <Columns>
@@ -190,13 +202,7 @@
                 </Columns>
             </asp:GridView>
 
-            <div class="text-end">
-                <asp:Button ID="btnEnviar" runat="server" Text="Enviar Mensagens"
-                    CssClass="btn btn-success btn-pill"
-                    Enabled="false"
-                    OnClick="btnEnviar_Click"
-                    OnClientClick="mostrarLoading();" />
-            </div>
+          
 
             <asp:Literal ID="litResultado" runat="server" Mode="PassThrough"></asp:Literal>
         </div>

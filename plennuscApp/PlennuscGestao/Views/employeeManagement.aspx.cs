@@ -205,5 +205,37 @@ namespace appWhatsapp.PlennuscGestao.Views
                 PanelResultado.Visible = false;
             }
         }
+        protected void btnSaveUser_Click(object sender, EventArgs e)
+        {
+            PessoaDAO dao = new PessoaDAO();
+
+            int codPessoa;
+            if (!int.TryParse(hfCodPessoa.Value, out codPessoa))
+                return;
+
+            string nomeCompleto = txtModalNome.Text.Trim();
+            string cpf = txtModalCPF.Text.Trim();
+            string rg = txtModalRG.Text.Trim();
+            string email = txtModalEmail.Text.Trim();
+            string telefone = txtModalTelefone.Text.Trim();
+            string cargo = txtModalCargo.Text.Trim();
+
+            try
+            {
+                dao.AtualizarUsuario(codPessoa, nomeCompleto, cpf, rg, email, telefone, cargo);
+
+                // Recarrega os dados atualizados
+                btnBuscarPorNome_Click(null, null); // ou btnBuscarPorCPF_Click(null, null)
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
+                    "Swal.fire('Sucesso', 'Usuário atualizado com sucesso.', 'success');", true);
+            }
+            catch (Exception ex)
+            {
+                // Logar erro, se necessário
+                ScriptManager.RegisterStartupScript(this, GetType(), "Erro",
+                    "Swal.fire('Erro', 'Erro ao atualizar o usuário.', 'error');", true);
+            }
+        }
     }
 }

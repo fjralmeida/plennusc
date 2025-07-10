@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -194,6 +195,39 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(query);
         }
+        public void AtualizarUsuario(int codPessoa, string nomeCompleto, string cpf, string rg, string email, string telefone, string cargo)
+        {
+            // Separa nome e sobrenome
+            string[] partes = nomeCompleto.Trim().Split(' ');
+            string nome = partes[0];
+            string sobrenome = partes.Length > 1 ? string.Join(" ", partes.Skip(1)) : "";
 
+            string sql = @"
+                        UPDATE Pessoa
+                        SET 
+                            Nome = @Nome,
+                            Sobrenome = @Sobrenome,
+                            DocCPF = @CPF,
+                            DocRG = @RG,
+                            Email = @Email,
+                            Telefone1 = @Telefone,
+                            CodCargo = @Cargo
+                        WHERE CodPessoa = @CodPessoa";
+
+                            var parametros = new Dictionary<string, object>
+                    {
+                        { "@Nome", nome },
+                        { "@Sobrenome", sobrenome },
+                        { "@CPF", cpf },
+                        { "@RG", rg },
+                        { "@Email", email },
+                        { "@Telefone", telefone },
+                        { "@Cargo", cargo },
+                        { "@CodPessoa", codPessoa }
+                    };
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            db.ExecutarPlennus(sql, parametros);
+        }
     }
 }

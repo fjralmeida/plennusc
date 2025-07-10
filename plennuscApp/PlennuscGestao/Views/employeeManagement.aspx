@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -192,22 +192,35 @@
             padding-bottom: 10px;
         }
 
-        .btn-busca-nome,
+        .btn-busca-nome{
+             background-color: #83ceee;
+             color: white;
+             font-weight: 500;
+             font-size: 13px;
+             padding: 10px 14px;
+             border-radius: 10px;
+             border: none;
+             cursor: pointer;
+             transition: 0.2s;
+        }
         .btn-busca-cpf {
-            background-color: #83ceee;
-            color: white;
-            font-weight: 500;
-            font-size: 13px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
+            background-color: #c06ed4;
+             color: white;
+             font-weight: 500;
+             font-size: 13px;
+             padding: 10px 14px;
+             border-radius: 10px;
+             border: none;
+             cursor: pointer;
+             transition: 0.2s;
         }
 
-        .btn-busca-nome:hover,
-        .btn-busca-cpf:hover {
+        .btn-busca-nome:hover{
             background-color: #67b7da;
+        }
+
+        .btn-busca-cpf:hover {
+            background-color: #c06ed4;
         }
 
         @media (max-width: 768px) {
@@ -218,6 +231,22 @@
             }
         }
     </style>
+
+<script type="text/javascript">
+    function abrirModalEdicao(codPessoa, nome, cpf, rg, email, telefone, cargo) {
+        $('#<%= hfCodPessoa.ClientID %>').val(codPessoa);
+        $('#<%= txtModalNome.ClientID %>').val(nome);
+        $('#<%= txtModalCPF.ClientID %>').val(cpf);
+        $('#<%= txtModalRG.ClientID %>').val(rg);
+        $('#<%= txtModalEmail.ClientID %>').val(email);
+        $('#<%= txtModalTelefone.ClientID %>').val(telefone);
+        $('#<%= txtModalCargo.ClientID %>').val(cargo);
+
+        var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
+        modal.show();
+    }
+</script>
+
 </asp:Content>
 
 
@@ -506,8 +535,81 @@
                         <asp:BoundField DataField="Email" HeaderText="Email" />
                         <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
                         <asp:BoundField DataField="Cargo" HeaderText="Cargo" />
+                       <asp:TemplateField HeaderText="Editar">
+                            <ItemTemplate>
+                                <button type="button" class="btn btn-info btn-sm btn-pill"
+                                    onclick='abrirModalEdicao(
+                                        <%# Eval("CodPessoa") %>,
+                                        "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>",
+                                        "<%# Eval("CPF").ToString() %>",
+                                        "<%# Eval("RG").ToString() %>",
+                                        "<%# Eval("Email").ToString() %>",
+                                        "<%# Eval("Telefone1").ToString() %>",
+                                        "<%# Eval("Cargo").ToString().Replace("\"", "\\\"") %>"
+                                    )'>
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
+
+                <!-- Modal Edição -->
+                    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content rounded-4 shadow">
+                                <div class="modal-header bg-info text-white">
+                                    <h5 class="modal-title" id="modalEditarUsuarioLabel">
+                                        <i class="fa-solid fa-user-pen me-2"></i>Editar Usuário
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <!-- Campos do formulário -->
+                                    <asp:HiddenField ID="hfCodPessoa" runat="server" />
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Nome Completo</label>
+                                            <asp:TextBox ID="txtModalNome" runat="server" CssClass="form-control" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">CPF</label>
+                                            <asp:TextBox ID="txtModalCPF" runat="server" CssClass="form-control" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">RG</label>
+                                            <asp:TextBox ID="txtModalRG" runat="server" CssClass="form-control" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">E-mail</label>
+                                            <asp:TextBox ID="txtModalEmail" runat="server" CssClass="form-control" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Telefone</label>
+                                            <asp:TextBox ID="txtModalTelefone" runat="server" CssClass="form-control" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Cargo</label>
+                                            <asp:TextBox ID="txtModalCargo" runat="server" CssClass="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer bg-light rounded-bottom-4">
+                                    <asp:Button ID="btnSaveUser" runat="server"
+                                        CssClass="btn btn-success btn-pill"
+                                        Text="Salvar Alterações"
+                                        OnClick="btnSaveUser_Click" />
+
+                                    <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
+                                        <i class="fa-solid fa-xmark me-1"></i>Fechar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </asp:Panel>
         </asp:Panel>
 
