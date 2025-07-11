@@ -1,5 +1,6 @@
 ﻿using appWhatsapp.Data_Bd;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -168,6 +169,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                                 DocCPF AS CPF,
                                 Telefone1,
                                 Email,
+                                Conf_Ativo,
                                 CodCargo AS Cargo
                             FROM Pessoa
                             WHERE Nome LIKE '%{nome}%' OR Sobrenome LIKE '%{nome}%'
@@ -187,6 +189,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                                 DocCPF AS CPF,
                                 Email,
                                 Telefone1,
+                                Conf_Ativo,
                                 CodCargo AS Cargo
                             FROM Pessoa
                             WHERE DocCPF = '{cpf}'
@@ -225,6 +228,20 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                         { "@Cargo", cargo },
                         { "@CodPessoa", codPessoa }
                     };
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            db.ExecutarPlennus(sql, parametros);
+        }
+
+        public void InactivateUser(int codPessoa, string motivo)
+        {
+            string sql = "UPDATE Pessoa SET Conf_Ativo = 0, Observacao = @Motivo WHERE CodPessoa = @CodPessoa";
+
+            Dictionary<string, object> parametros = new Dictionary<string, object>
+            {
+                { "@Motivo", motivo },
+                { "@CodPessoa", codPessoa }
+            };
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             db.ExecutarPlennus(sql, parametros);

@@ -62,7 +62,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             PanelCadastro.Visible = true;
             lblTitGestao.Visible = false;
             btnConsultarUsuario.Visible = false;
-            btnDesativarUsuario.Visible = false;
+            //btnDesativarUsuario.Visible = false;
             btnIncluirUsuario.Visible = false;
         }
 
@@ -71,14 +71,14 @@ namespace appWhatsapp.PlennuscGestao.Views
             PanelConsulta.Visible = true;
             lblTitGestao.Visible = false;
             btnConsultarUsuario.Visible = false;
-            btnDesativarUsuario.Visible = false;
+            //btnDesativarUsuario.Visible = false;
             btnIncluirUsuario.Visible = false;
         }
 
-        protected void btnDesativarUsuario_Click(object sender, EventArgs e)
-        {
-            // Abrir tela/modal de seleção para desativação
-        }
+        //protected void btnDesativarUsuario_Click(object sender, EventArgs e)
+        //{
+        //    // Abrir tela/modal de seleção para desativação
+        //}
 
         protected void btnSalvarUsuario_Click(object sender, EventArgs e)
         {
@@ -224,8 +224,15 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 dao.AtualizarUsuario(codPessoa, nomeCompleto, cpf, rg, email, telefone, cargo);
 
-                // Recarrega os dados atualizados
-                btnBuscarPorNome_Click(null, null); // ou btnBuscarPorCPF_Click(null, null)
+                // Verifica qual campo foi usado na busca
+                if (!string.IsNullOrWhiteSpace(txtBuscaNome.Text))
+                {
+                    btnBuscarPorNome_Click(null, null);
+                }
+                else if (!string.IsNullOrWhiteSpace(txtBuscaCPF.Text))
+                {
+                    btnBuscarPorCPF_Click(null, null);
+                }
 
                 ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
                     "Swal.fire('Sucesso', 'Usuário atualizado com sucesso.', 'success');", true);
@@ -235,6 +242,39 @@ namespace appWhatsapp.PlennuscGestao.Views
                 // Logar erro, se necessário
                 ScriptManager.RegisterStartupScript(this, GetType(), "Erro",
                     "Swal.fire('Erro', 'Erro ao atualizar o usuário.', 'error');", true);
+            }
+        }
+        protected void btnConfirmarInativar_Click(object sender, EventArgs e)
+        {
+            int codPessoa;
+            if (!int.TryParse(hfCodPessoaInativa.Value, out codPessoa))
+                return;
+
+            string motivo = txtMotivoInativacao.Text.Trim();
+
+            PessoaDAO dao = new PessoaDAO();
+
+            try
+            {
+                dao.InactivateUser(codPessoa, motivo);
+
+                // Verifica qual campo foi usado na busca
+                if (!string.IsNullOrWhiteSpace(txtBuscaNome.Text))
+                {
+                    btnBuscarPorNome_Click(null, null);
+                }
+                else if (!string.IsNullOrWhiteSpace(txtBuscaCPF.Text))
+                {
+                    btnBuscarPorCPF_Click(null, null);
+                }
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
+                    "Swal.fire('Inativado', 'Usuário inativado com sucesso.', 'success');", true);
+            }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "Erro",
+                    "Swal.fire('Erro', 'Erro ao inativar o usuário.', 'error');", true);
             }
         }
     }

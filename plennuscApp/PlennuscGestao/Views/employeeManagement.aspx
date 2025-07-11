@@ -8,228 +8,359 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
+
         * {
-            font-family: 'Poppins', sans-serif;
-            box-sizing: border-box;
-        }
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
 
-        body, html {
-            background-color: #f2f4f8;
-            color: #333;
-            font-size: 14px;
-        }
+body, html {
+    background-color: #f2f4f8;
+    color: #333;
+    font-size: 14px;
+}
 
-        .titulo-gestao {
-            font-size: 26px;
-            font-weight: 600;
-            margin-bottom: 30px;
-            color: #413a3a;
-            text-align: center;
-        }
+.titulo-gestao {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #413a3a;
+    text-align: center;
+}
 
-        .container-gestao {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
+.container-gestao {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
 
-        .btn-gestao {
-            padding: 6px 14px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 500;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
+.btn-gestao {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
 
-        .btn-incluir {
-            background-color: #4CB07A;
-        }
+.btn-incluir {
+    background-color: #4CB07A;
+}
 
-        .btn-consultar {
-            background-color: #83ceee;
-        }
+.btn-consultar {
+    background-color: #83ceee;
+}
 
-        .btn-desativar {
-            background-color: #DC8689;
-        }
+.btn-desativar {
+    background-color: #DC8689;
+}
 
-        .btn-gestao:hover {
-            transform: translateY(-1px);
-            filter: brightness(0.95);
-        }
+.btn-gestao:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
+}
 
-        .form-panel {
-            background: white;
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-            max-width: 1200px;
-            margin: 0 auto 40px auto;
-        }
+.form-panel {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    max-width: 1200px;
+    margin: 0 auto 40px auto;
+}
 
-        .section-block {
-            margin-bottom: 40px;
-        }
+.section-block {
+    margin-bottom: 40px;
+}
 
-        .section-block h5 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 20px;
-            border-left: 5px solid #c06ed4;
-            padding-left: 12px;
-        }
+.section-block h5 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #353030;
+    margin-bottom: 20px;
+    border-left: 5px solid #c06ed4;
+    padding-left: 12px;
+}
 
-        .row.g-3 {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+.row.g-3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
-        .row.g-3 > .col-md-4,
-        .row.g-3 > .col-md-6,
-        .row.g-3 > .col-md-12 {
-            flex: 1 1 calc(33% - 20px);
-            min-width: 250px;
-        }
+.row.g-3 > .col-md-4,
+.row.g-3 > .col-md-6,
+.row.g-3 > .col-md-12 {
+    flex: 1 1 calc(33% - 20px);
+    min-width: 250px;
+}
 
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #333;
-        }
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+}
 
-        input[type="text"],
-        input[type="date"],
-        input[type="email"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #fff;
-            transition: all 0.2s;
-        }
+input[type="text"],
+input[type="date"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: all 0.2s;
+}
 
-        input:focus, select:focus, textarea:focus {
-            border-color: #83ceee;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(131, 206, 238, 0.25);
-        }
+input:focus, select:focus, textarea:focus {
+    border-color: #83ceee;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(131, 206, 238, 0.25);
+}
 
-        .btn-success {
-            background-color: #4CB07A;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 10px;
-            font-weight: 500;
-            font-size: 14px;
-            color: white;
-            cursor: pointer;
-        }
+.btn-success {
+    background-color: #83ceee;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(76, 176, 122, 0.25);
+}
 
-        .btn-success:hover {
-            background-color: #3e9f69;
-        }
+.btn-success:hover {
+    background-color: #67b7da;
+}
 
-        .btn-secondary {
-            background-color: #9E9E9E;
-            color: white;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-        }
+.btn-secondary {
+    background-color: #ccc;
+    color: #333;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+}
 
-        .btn-secondary:hover {
-            background-color: #757575;
-        }
+.btn-secondary:hover {
+    background-color: #bbb;
+}
 
-        .text-danger {
-            color: #f44336;
-            font-size: 13px;
-        }
+.text-danger {
+    color: #f44336;
+    font-size: 13px;
+}
 
-        .table-custom {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #ddd;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-        }
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
-        .table-custom th, .table-custom td {
-            padding: 12px 16px;
-            text-align: left;
-        }
+.table-custom th, .table-custom td {
+    padding: 12px 16px;
+    text-align: left;
+}
 
-        .table-custom th {
-            background-color: #f4f7fb;
-            color: #444;
-            font-weight: 600;
-        }
+.table-custom th {
+    background-color: #f4f7fb;
+    color: #444;
+    font-weight: 600;
+}
 
-        .table-custom tr:nth-child(even) {
-            background-color: #fafafa;
-        }
+.table-custom tr:nth-child(even) {
+    background-color: #fafafa;
+}
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 
-        .titulo-cadastro {
-            font-size: 20px;
-            color: #4CB07A;
-            font-weight: 600;
-            margin-bottom: 24px;
-            text-align: center;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
+.titulo-cadastro {
+    font-size: 20px;
+    color: #4CB07A;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
 
-        .btn-busca-nome{
-             background-color: #83ceee;
-             color: white;
-             font-weight: 500;
-             font-size: 13px;
-             padding: 10px 14px;
-             border-radius: 10px;
-             border: none;
-             cursor: pointer;
-             transition: 0.2s;
-        }
-        .btn-busca-cpf {
-            background-color: #c06ed4;
-             color: white;
-             font-weight: 500;
-             font-size: 13px;
-             padding: 10px 14px;
-             border-radius: 10px;
-             border: none;
-             cursor: pointer;
-             transition: 0.2s;
-        }
+.btn-busca-nome {
+    background-color: #83ceee;
+    color: white;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        .btn-busca-nome:hover{
-            background-color: #67b7da;
-        }
+.btn-busca-cpf {
+    background-color: #c06ed4;
+    color: white;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        .btn-busca-cpf:hover {
-            background-color: #c06ed4;
-        }
+.btn-busca-nome:hover {
+    background-color: #67b7da;
+}
 
-        @media (max-width: 768px) {
-            .row.g-3 > .col-md-4,
-            .row.g-3 > .col-md-6,
-            .row.g-3 > .col-md-12 {
-                flex: 1 1 100%;
-            }
-        }
+.btn-busca-cpf:hover {
+    background-color: #ad4fbb;
+}
+
+
+.btn-editar {
+    background-color: #4CB07A;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 50px;
+    transition: background-color 0.3s;
+}
+
+.btn-editar:hover {
+    background-color: #3A9E68 !important;
+}
+.bg-info {
+    background-color: #4CB07A !important;
+        margin: 10px;
+    border-radius: 20px;
+}
+/* ================= Modal Edição ================= */
+
+/* ===== MODAL HEADER ===== */
+.modal-header {
+    background-color: #4CB07A;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0; /* tira a quebra horrorosa */
+}
+
+.modal-title i {
+    font-size: 16px;
+}
+
+/* ===== BOTÃO DE FECHAR ===== */
+.btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+    transition: 0.2s;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+/* ===== MODAL BODY ===== */
+.modal-body {
+    padding: 24px;
+    background-color: #fff;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Campos do formulário */
+.modal-body .form-control {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #333;
+    height: 42px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.modal-body .form-control:focus {
+    border-color: #4CB07A;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 176, 122, 0.25);
+}
+
+.modal-body label.form-label {
+    font-weight: 500;
+    color: #444;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+/* ===== MODAL FOOTER ===== */
+.modal-footer {
+    background-color: #f5f7fa;
+    padding: 18px 24px;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ===== BOTÃO DE EDIÇÃO (ícone verde na GridView) ===== */
+
+
+/* Responsividade modal */
+@media (max-width: 768px) {
+    .modal-body .row.g-3 > .col-md-6 {
+        flex: 1 1 100%;
+    }
+}
+
+
+.btn-inativar {
+    background-color: #DC8689;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 50px;
+    transition: background-color 0.3s;
+}
+
+.btn-inativar:hover {
+    background-color: #c95b60;
+}
+
+
     </style>
 
 <script type="text/javascript">
@@ -245,7 +376,14 @@
         var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
         modal.show();
     }
+
+    function abrirModalInativar(codPessoa, nome) {
+        $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
+         document.getElementById("lblNomeUsuarioInativa").innerText = nome;
+         $('#modalInativarUsuario').modal('show');
+     }
 </script>
+
 
 </asp:Content>
 
@@ -257,7 +395,7 @@
         <div class="container-gestao">
             <asp:Button ID="btnIncluirUsuario" runat="server" Text="Incluir Usuário" CssClass="btn-gestao btn-incluir" OnClick="btnIncluirUsuario_Click" />
             <asp:Button ID="btnConsultarUsuario" runat="server" Text="Consultar Usuário" CssClass="btn-gestao btn-consultar" OnClick="btnConsultarUsuario_Click" />
-            <asp:Button ID="btnDesativarUsuario" runat="server" Text="Desativar Usuário" CssClass="btn-gestao btn-desativar" OnClick="btnDesativarUsuario_Click" />
+          <%--  <asp:Button ID="btnDesativarUsuario" runat="server" Text="Desativar Usuário" CssClass="btn-gestao btn-desativar" OnClick="btnDesativarUsuario_Click" />--%>
         </div>
 
         <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="false">
@@ -517,42 +655,57 @@
             <!-- 📋 RESULTADOS -->
             <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
                 <h5>Resultados</h5>
-                <asp:GridView 
-                    ID="gvUsuarios" 
-                    runat="server" 
-                    CssClass="table-custom" 
-                    AutoGenerateColumns="False" 
-                    GridLines="None" 
-                    ShowHeaderWhenEmpty="False" 
-                    EmptyDataText="Nenhum usuário encontrado.">
+                 <div class="table-responsive">
+        <asp:GridView 
+            ID="gvUsuarios" 
+            runat="server" 
+            CssClass="table-custom" 
+            AutoGenerateColumns="False" 
+            GridLines="None" 
+            ShowHeaderWhenEmpty="False" 
+            EmptyDataText="Nenhum usuário encontrado.">
             
-                    <HeaderStyle CssClass="table-custom-header" />
-                    <Columns>
-                        <asp:BoundField DataField="CodPessoa" HeaderText="CodPessoa" />
-                        <asp:BoundField DataField="NomeCompleto" HeaderText="Nome" />
-                        <asp:BoundField DataField="CPF" HeaderText="CPF" />
-                        <asp:BoundField DataField="RG" HeaderText="RG" />
-                        <asp:BoundField DataField="Email" HeaderText="Email" />
-                        <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
-                        <asp:BoundField DataField="Cargo" HeaderText="Cargo" />
-                       <asp:TemplateField HeaderText="Editar">
-                            <ItemTemplate>
-                                <button type="button" class="btn btn-info btn-sm btn-pill"
-                                    onclick='abrirModalEdicao(
-                                        <%# Eval("CodPessoa") %>,
-                                        "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>",
-                                        "<%# Eval("CPF").ToString() %>",
-                                        "<%# Eval("RG").ToString() %>",
-                                        "<%# Eval("Email").ToString() %>",
-                                        "<%# Eval("Telefone1").ToString() %>",
-                                        "<%# Eval("Cargo").ToString().Replace("\"", "\\\"") %>"
-                                    )'>
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                </asp:GridView>
+            <HeaderStyle CssClass="table-custom-header" />
+            <Columns>
+                <asp:BoundField DataField="CodPessoa" HeaderText="CodPessoa" />
+                <asp:BoundField DataField="NomeCompleto" HeaderText="Nome" />
+                <asp:BoundField DataField="CPF" HeaderText="CPF" />
+                <asp:BoundField DataField="RG" HeaderText="RG" />
+                <asp:BoundField DataField="Email" HeaderText="Email" />
+                <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
+                <asp:BoundField DataField="Cargo" HeaderText="Cargo" />
+                <asp:BoundField DataField="Conf_Ativo" HeaderText="Conf_Ativo" />
+                <asp:TemplateField HeaderText="Editar">
+                    <ItemTemplate>
+                        <button type="button" class="btn-editar"
+                            onclick='abrirModalEdicao(
+                                <%# Eval("CodPessoa") %>,
+                                "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>",
+                                "<%# Eval("CPF").ToString() %>",
+                                "<%# Eval("RG").ToString() %>",
+                                "<%# Eval("Email").ToString() %>",
+                                "<%# Eval("Telefone1").ToString() %>",
+                                "<%# Eval("Cargo").ToString().Replace("\"", "\\\"") %>"
+                            )'>
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Inativar">
+                    <ItemTemplate>
+                        <button type="button" class="btn-inativar"
+                            onclick='abrirModalInativar(
+                                <%# Eval("CodPessoa") %>,
+                                "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>"
+                            )'>
+                            <i class="fa-solid fa-user-slash"></i>
+                        </button>
+                    </ItemTemplate>
+                </asp:TemplateField>
+            </Columns>
+        </asp:GridView>
+    </div>
+
 
                 <!-- Modal Edição -->
                     <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
@@ -605,6 +758,40 @@
 
                                     <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
                                         <i class="fa-solid fa-xmark me-1"></i>Fechar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Modal de Inativação -->
+                    <div class="modal fade" id="modalInativarUsuario" tabindex="-1" aria-labelledby="modalInativarUsuarioLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md modal-dialog-centered">
+                            <div class="modal-content rounded-4 shadow">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title" id="modalInativarUsuarioLabel">
+                                        <i class="fa-solid fa-user-slash me-2"></i>Inativar Usuário
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <asp:HiddenField ID="hfCodPessoaInativa" runat="server" />
+
+                                    <p><strong>Tem certeza que deseja inativar o usuário:</strong> <span id="lblNomeUsuarioInativa" style="color: #d9534f;"></span>?</p>
+
+                                    <label class="form-label mt-3">Motivo da Inativação</label>
+                                    <asp:TextBox ID="txtMotivoInativacao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
+                                </div>
+
+                                <div class="modal-footer bg-light rounded-bottom-4">
+                                    <asp:Button ID="btnConfirmarInativar" runat="server"
+                                        CssClass="btn btn-danger btn-pill"
+                                        Text="Confirmar Inativação"
+                                        OnClick="btnConfirmarInativar_Click" />
+
+                                    <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
+                                        <i class="fa-solid fa-xmark me-1"></i>Cancelar
                                     </button>
                                 </div>
                             </div>
