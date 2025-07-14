@@ -1,11 +1,17 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="employeeManagement.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.employeeManagement" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- jQuery Mask Plugin (FALTAVA ESSE AQUI!) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <!-- Outras bibliotecas -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
     <style>
 
@@ -363,26 +369,70 @@ input:focus, select:focus, textarea:focus {
 
     </style>
 
-<script type="text/javascript">
-    function abrirModalEdicao(codPessoa, nome, cpf, rg, email, telefone, cargo) {
-        $('#<%= hfCodPessoa.ClientID %>').val(codPessoa);
-        $('#<%= txtModalNome.ClientID %>').val(nome);
-        $('#<%= txtModalCPF.ClientID %>').val(cpf);
-        $('#<%= txtModalRG.ClientID %>').val(rg);
-        $('#<%= txtModalEmail.ClientID %>').val(email);
-        $('#<%= txtModalTelefone.ClientID %>').val(telefone);
-        $('#<%= txtModalCargo.ClientID %>').val(cargo);
+ <script type="text/javascript">
+     function abrirModalEdicao(codPessoa, nome, cpf, rg, email, telefone, cargo) {
+         $('#<%= hfCodPessoa.ClientID %>').val(codPessoa);
+            $('#<%= txtModalNome.ClientID %>').val(nome);
+            $('#<%= txtModalCPF.ClientID %>').val(cpf);
+            $('#<%= txtModalRG.ClientID %>').val(rg);
+            $('#<%= txtModalEmail.ClientID %>').val(email);
+            $('#<%= txtModalTelefone.ClientID %>').val(telefone);
+            $('#<%= txtModalCargo.ClientID %>').val(cargo);
 
-        var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
-        modal.show();
+            var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
+            modal.show();
+        }
+
+        function abrirModalInativar(codPessoa, nome) {
+            $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
+            document.getElementById("lblNomeUsuarioInativa").innerText = nome;
+            $('#modalInativarUsuario').modal('show');
+        }
+
+             function mascararCPF(campo) {
+                 let v = campo.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+
+                 if (v.length > 3 && v.length <= 6)
+                     v = v.replace(/^(\d{3})(\d+)/, '$1.$2');
+                 else if (v.length > 6 && v.length <= 9)
+                     v = v.replace(/^(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+                 else if (v.length > 9)
+                     v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2}).*/, '$1.$2.$3-$4');
+
+                 campo.value = v;
+             }
+ </script>
+<script>
+    $(document).ready(function () {
+        aplicarMascarasCPF();
+
+        // Reaplica a máscara quando clica no botão "Incluir Usuário"
+        $('#<%= btnIncluirUsuario.ClientID %>').on('click', function () {
+          setTimeout(aplicarMascarasCPF, 200); // tempo para o DOM renderizar
+      });
+  });
+
+    function aplicarMascarasCPF() {
+        const campoBusca = document.getElementById('<%= txtBuscaCPF.ClientID %>');
+    if (campoBusca) {
+      $(campoBusca).mask('000.000.000-00', { reverse: true });
     }
 
-    function abrirModalInativar(codPessoa, nome) {
-        $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
-         document.getElementById("lblNomeUsuarioInativa").innerText = nome;
-         $('#modalInativarUsuario').modal('show');
-     }
+    const campoInclusao = document.getElementById('txtDocCPF'); // precisa estar com ClientIDMode="Static"
+    if (campoInclusao) {
+      $(campoInclusao).mask('000.000.000-00', { reverse: true });
+    }
+
+    const campoModal = document.getElementById('<%= txtModalCPF.ClientID %>');
+        if (campoModal) {
+            $(campoModal).mask('000.000.000-00', { reverse: true });
+        }
+    }
 </script>
+
+
+
+
 
 
 </asp:Content>
@@ -442,7 +492,9 @@ input:focus, select:focus, textarea:focus {
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label>CPF *</label>
-                        <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="11" placeHolder="Insira apenas números" />          
+<asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control"
+    MaxLength="14" placeholder="Insira apenas números" ClientIDMode="Static" />
+
                     </div>
                     <div class="col-md-6">
                         <label>RG *</label>
@@ -644,7 +696,8 @@ input:focus, select:focus, textarea:focus {
                 <div class="row g-3 align-items-end">
                     <div class="col-md-6">
                         <label>Buscar por CPF</label>
-                        <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Digite o CPF (somente números)" MaxLength="11" />
+                       <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" 
+                             placeholder="Digite o CPF" MaxLength="14" />
                     </div>
                     <div class="col-md-3">
                         <asp:Button ID="btnBuscarPorCPF" runat="server" Text="Buscar por CPF" CssClass="btn btn-busca-cpf w-100" OnClick="btnBuscarPorCPF_Click" />
@@ -674,7 +727,7 @@ input:focus, select:focus, textarea:focus {
                 <asp:BoundField DataField="Email" HeaderText="Email" />
                 <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
                 <asp:BoundField DataField="Cargo" HeaderText="Cargo" />
-                <asp:BoundField DataField="Conf_Ativo" HeaderText="Conf_Ativo" />
+                <asp:BoundField DataField="Conf_Ativo" HeaderText="Ativo" />
                 <asp:TemplateField HeaderText="Editar">
                     <ItemTemplate>
                         <button type="button" class="btn-editar"
@@ -801,13 +854,4 @@ input:focus, select:focus, textarea:focus {
         </asp:Panel>
 
     </div>
-
-
-    <script type="text/javascript">
-        Sys.Application.add_load(function () {
-            if ($('#<%= PanelCadastro.ClientID %>').is(':visible')) {
-                aplicarMascaras();
-            }
-        });
-    </script>
 </asp:Content>
