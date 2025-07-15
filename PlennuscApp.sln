@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlennuscApp", "plennuscApp\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plennusc.Core", "Plennusc.Core\Plennusc.Core.csproj", "{896589F0-F1AE-49AB-BBCC-168EEC970152}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalCorretor", "..\PortalCorretor\PortalCorretor.csproj", "{EA99766A-50A3-494E-BF5E-A241C9BDF12D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{896589F0-F1AE-49AB-BBCC-168EEC970152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{896589F0-F1AE-49AB-BBCC-168EEC970152}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{896589F0-F1AE-49AB-BBCC-168EEC970152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA99766A-50A3-494E-BF5E-A241C9BDF12D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA99766A-50A3-494E-BF5E-A241C9BDF12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA99766A-50A3-494E-BF5E-A241C9BDF12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA99766A-50A3-494E-BF5E-A241C9BDF12D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
