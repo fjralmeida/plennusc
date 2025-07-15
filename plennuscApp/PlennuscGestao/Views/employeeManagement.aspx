@@ -369,71 +369,51 @@ input:focus, select:focus, textarea:focus {
 
     </style>
 
- <script type="text/javascript">
-     function abrirModalEdicao(codPessoa, nome, cpf, rg, email, telefone, cargo) {
-         $('#<%= hfCodPessoa.ClientID %>').val(codPessoa);
-            $('#<%= txtModalNome.ClientID %>').val(nome);
-            $('#<%= txtModalCPF.ClientID %>').val(cpf);
-            $('#<%= txtModalRG.ClientID %>').val(rg);
-            $('#<%= txtModalEmail.ClientID %>').val(email);
-            $('#<%= txtModalTelefone.ClientID %>').val(telefone);
-            $('#<%= txtModalCargo.ClientID %>').val(cargo);
+<script type="text/javascript">
+    // 🧠 ABRE MODAL DE EDIÇÃO
+    function abrirModalEdicao(codPessoa, nome, cpf, rg, email, telefone, cargo) {
+        $('#<%= hfCodPessoa.ClientID %>').val(codPessoa);
+        $('#<%= txtModalNome.ClientID %>').val(nome);
+        $('#<%= txtModalCPF.ClientID %>').val(cpf);
+        $('#<%= txtModalRG.ClientID %>').val(rg);
+        $('#<%= txtModalEmail.ClientID %>').val(email);
+        $('#<%= txtModalTelefone.ClientID %>').val(telefone);
+        $('#<%= txtModalCargo.ClientID %>').val(cargo);
 
-            var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
-            modal.show();
-        }
+        var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
+        modal.show();
+    }
 
-        function abrirModalInativar(codPessoa, nome) {
-            $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
-            document.getElementById("lblNomeUsuarioInativa").innerText = nome;
-            $('#modalInativarUsuario').modal('show');
-        }
+    // ❌ ABRE MODAL DE INATIVAR
+    function abrirModalInativar(codPessoa, nome) {
+        $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
+        document.getElementById("lblNomeUsuarioInativa").innerText = nome;
+        $('#modalInativarUsuario').modal('show');
+    }
 
-             function mascararCPF(campo) {
-                 let v = campo.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+    // ✅ FUNÇÃO ÚNICA DE MÁSCARAS
+    function aplicarMascaras() {
+        const campoCPF = $('#<%= txtDocCPF.ClientID %>');
+        const campoRG = $('#<%= txtDocRG.ClientID %>');
+        const campoBuscaCPF = $('#<%= txtBuscaCPF.ClientID %>');
+        const campoModalCPF = $('#<%= txtModalCPF.ClientID %>');
 
-                 if (v.length > 3 && v.length <= 6)
-                     v = v.replace(/^(\d{3})(\d+)/, '$1.$2');
-                 else if (v.length > 6 && v.length <= 9)
-                     v = v.replace(/^(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
-                 else if (v.length > 9)
-                     v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2}).*/, '$1.$2.$3-$4');
+        if (campoCPF.length) campoCPF.unmask().mask('000.000.000-00', { reverse: true });
+        if (campoRG.length) campoRG.unmask().mask('00.000.000-0');
+        if (campoBuscaCPF.length) campoBuscaCPF.unmask().mask('000.000.000-00', { reverse: true });
+        if (campoModalCPF.length) campoModalCPF.unmask().mask('000.000.000-00', { reverse: true });
+    }
 
-                 campo.value = v;
-             }
- </script>
-<script>
+    // ✅ APLICA MÁSCARAS QUANDO A PÁGINA CARREGA
     $(document).ready(function () {
-        aplicarMascarasCPF();
+        aplicarMascaras();
 
-        // Reaplica a máscara quando clica no botão "Incluir Usuário"
+        // Também reaplica quando clica no botão de inclusão
         $('#<%= btnIncluirUsuario.ClientID %>').on('click', function () {
-          setTimeout(aplicarMascarasCPF, 200); // tempo para o DOM renderizar
-      });
-  });
-
-    function aplicarMascarasCPF() {
-        const campoBusca = document.getElementById('<%= txtBuscaCPF.ClientID %>');
-    if (campoBusca) {
-      $(campoBusca).mask('000.000.000-00', { reverse: true });
-    }
-
-    const campoInclusao = document.getElementById('txtDocCPF'); // precisa estar com ClientIDMode="Static"
-    if (campoInclusao) {
-      $(campoInclusao).mask('000.000.000-00', { reverse: true });
-    }
-
-    const campoModal = document.getElementById('<%= txtModalCPF.ClientID %>');
-        if (campoModal) {
-            $(campoModal).mask('000.000.000-00', { reverse: true });
-        }
-    }
+            setTimeout(aplicarMascaras, 300);
+        });
+    });
 </script>
-
-
-
-
-
 
 </asp:Content>
 
@@ -448,7 +428,7 @@ input:focus, select:focus, textarea:focus {
           <%--  <asp:Button ID="btnDesativarUsuario" runat="server" Text="Desativar Usuário" CssClass="btn-gestao btn-desativar" OnClick="btnDesativarUsuario_Click" />--%>
         </div>
 
-        <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="false">
+       <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="false">
             <h4 class="titulo-cadastro">Cadastro de Novo Colaborador</h4>
 
             <!-- DADOS PESSOAIS -->
@@ -491,9 +471,7 @@ input:focus, select:focus, textarea:focus {
                 <h5>Documentos</h5>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label>CPF *</label>
-<asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control"
-    MaxLength="14" placeholder="Insira apenas números" ClientIDMode="Static" />
+                        <label>CPF *<asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="11" placeHolder="Insira apenas números" /> </label>
 
                     </div>
                     <div class="col-md-6">
@@ -552,10 +530,10 @@ input:focus, select:focus, textarea:focus {
                         <asp:TextBox ID="txtDataAdmissao" runat="server" CssClass="form-control" TextMode="Date" />
                         <asp:RequiredFieldValidator ID="rfvAdmissao" runat="server" ControlToValidate="txtDataAdmissao" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
-                    <div class="col-md-6">
+                  <%--  <div class="col-md-6"  id="linhaDemissao" runat="server">
                         <label>Demissão</label>
                         <asp:TextBox ID="txtDataDemissao" runat="server" CssClass="form-control" TextMode="Date" />
-                    </div>
+                    </div>--%>
                 </div>
             </div>
 
@@ -633,32 +611,35 @@ input:focus, select:focus, textarea:focus {
             </div>
 
             <!-- CONFIGURAÇÕES -->
-            <div class="section-block bg-gray-section">
-                <h5>Configurações</h5>
-                <div class="row g-3">
-
-                    <div class="col-md-4">
-                        <label>
-                            <asp:CheckBox ID="chkCriaContaAD" runat="server" />
-                            Criar conta no AD</label>
-                    </div>
-                    <div class="col-md-4">
-                        <label>
-                            <asp:CheckBox ID="chkCadastraPonto" runat="server" />
-                            Cadastrar no ponto</label>
-                    </div>
-                    <div class="col-md-4">
-                        <label>
-                            <asp:CheckBox ID="chkAtivo" runat="server" Checked="true" />
-                            Ativo *</label>
-                    </div>
-                    <div class="col-md-4">
-                        <label>
-                            <asp:CheckBox ID="chkPermiteAcesso" runat="server" />
-                            Permite Acesso</label>
-                    </div>
-                </div>
-            </div>
+                  <div class="section-block bg-gray-section">
+<h5>Configurações</h5>
+          <div class="row px-2">
+    <div class="col-md-3">
+        <label class="d-flex align-items-center gap-2">
+            <asp:CheckBox ID="chkCriaContaAD" runat="server" />
+            Criar conta no AD
+        </label>
+    </div>
+    <div class="col-md-3">
+        <label class="d-flex align-items-center gap-2">
+            <asp:CheckBox ID="chkCadastraPonto" runat="server" />
+            Cadastrar no ponto
+        </label>
+    </div>
+    <div class="col-md-3">
+        <label class="d-flex align-items-center gap-2">
+            <asp:CheckBox ID="chkAtivo" runat="server" Checked="true" />
+            Ativo *
+        </label>
+    </div>
+    <div class="col-md-3">
+        <label class="d-flex align-items-center gap-2">
+            <asp:CheckBox ID="chkPermiteAcesso" runat="server" />
+            Permite Acesso
+        </label>
+    </div>
+</div>
+</div>
 
             <!-- OBSERVAÇÕES -->
             <div class="section-block bg-white-section">
@@ -695,9 +676,7 @@ input:focus, select:focus, textarea:focus {
                 <!-- BLOCO DE CPF -->
                 <div class="row g-3 align-items-end">
                     <div class="col-md-6">
-                        <label>Buscar por CPF</label>
-                       <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" 
-                             placeholder="Digite o CPF" MaxLength="14" />
+                        <label>Buscar  <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Digite o CPF (somente números)" MaxLength="11" />  </label>
                     </div>
                     <div class="col-md-3">
                         <asp:Button ID="btnBuscarPorCPF" runat="server" Text="Buscar por CPF" CssClass="btn btn-busca-cpf w-100" OnClick="btnBuscarPorCPF_Click" />
@@ -852,6 +831,15 @@ input:focus, select:focus, textarea:focus {
                     </div>
             </asp:Panel>
         </asp:Panel>
+
+
+    <script type="text/javascript">
+        Sys.Application.add_load(function () {
+            if ($('#<%= PanelCadastro.ClientID %>').is(':visible')) {
+                aplicarMascaras();
+            }
+        });
+    </script>
 
     </div>
 </asp:Content>

@@ -83,7 +83,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
         public void InsertPersonSystem(
                                      int codEstrutura, string nome, string sobrenome, string apelido, string sexo, DateTime? dataNasc, string cpf, string rg,
                                      string tituloEleitor, string zona, string secao, string ctps, string serie, string uf, string pis, string matricula,
-                                     DateTime? dataAdmissao, DateTime? dataDemissao, string filiacao1, string filiacao2,
+                                     DateTime? dataAdmissao, string filiacao1, string filiacao2,
                                      string telefone1, string telefone2, string telefone3,
                                      string email, string emailAlt, int codCargo, int codDepartamento,
                                      bool criaContaAD, bool cadastraPonto, bool ativo, bool permiteAcesso,
@@ -93,7 +93,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 INSERT INTO Pessoa (
                     CodEstr_TipoPessoa, Nome, Sobrenome, Apelido, Sexo, DataNasc, DocCPF, DocRG,
                     TituloEleitor, ZonaEleitor, SecaoEleitor, NumCTPS, NumCTPSSerie, NumCTPSUf,
-                    NumPIS, Matricula, DataAdmissao, DataDemissao,
+                    NumPIS, Matricula, DataAdmissao,
                     NomeFiliacao1, NomeFiliacao2, Telefone1, Telefone2, Telefone3,
                     Email, EmailAlt, CodCargo, CodDepartamento,
                     Conf_CriaContaAD, DataHora_CriaContaAD,
@@ -103,7 +103,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 ) VALUES (
                     @CodEstr_TipoPessoa, @Nome, @Sobrenome, @Apelido, @Sexo, @DataNasc, @DocCPF, @DocRG,
                     @TituloEleitor, @ZonaEleitor, @SecaoEleitor, @NumCTPS, @NumCTPSSerie, @NumCTPSUf,
-                    @NumPIS, @Matricula, @DataAdmissao, @DataDemissao,
+                    @NumPIS, @Matricula, @DataAdmissao,
                     @NomeFiliacao1, @NomeFiliacao2, @Telefone1, @Telefone2, @Telefone3,
                     @Email, @EmailAlt, @CodCargo, @CodDepartamento,
                     @Conf_CriaContaAD, @DataHora_CriaContaAD,
@@ -134,7 +134,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                     { "@NumPIS", string.IsNullOrWhiteSpace(pis) ? (object)DBNull.Value : pis },
                     { "@Matricula", string.IsNullOrWhiteSpace(matricula) ? "" : matricula },
                     { "@DataAdmissao", dataAdmissao.HasValue ? (object)dataAdmissao.Value : DBNull.Value },
-                    { "@DataDemissao", dataDemissao.HasValue ? (object)dataDemissao.Value : DBNull.Value },
                     { "@NomeFiliacao1", string.IsNullOrWhiteSpace(filiacao1) ? "Não informado" : filiacao1 },
                     { "@NomeFiliacao2", string.IsNullOrWhiteSpace(filiacao2) ? "" : filiacao2 },
                     { "@Telefone1", telefone1 },

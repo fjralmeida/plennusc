@@ -122,7 +122,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 DateTime? dataNascDt = null;
                 DateTime? dataAdmissaoDt = null;
-                DateTime? dataDemissaoDt = null;
+                //DateTime? dataDemissaoDt = null;
 
                 if (DateTime.TryParse(txtDataNasc.Text.Trim(), out DateTime parsedDataNasc))
                     dataNascDt = parsedDataNasc;
@@ -130,14 +130,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (DateTime.TryParse(txtDataAdmissao.Text.Trim(), out DateTime parsedAdmissao))
                     dataAdmissaoDt = parsedAdmissao;
 
-                if (DateTime.TryParse(txtDataDemissao.Text.Trim(), out DateTime parsedDemissao))
-                    dataDemissaoDt = parsedDemissao;
+                //if (DateTime.TryParse(txtDataDemissao.Text.Trim(), out DateTime parsedDemissao))
+                //    dataDemissaoDt = parsedDemissao;
 
                 PessoaDAO pessoa = new PessoaDAO();
                 pessoa.InsertPersonSystem(
                     codEstrutura, nome, sobrenome, apelido, sexo, dataNascDt, cpf, rg,
                     tituloEleitor, zona, secao, ctps, serie, uf, pis, matricula,
-                    dataAdmissaoDt, dataDemissaoDt, filiacao1, filiacao2,
+                    dataAdmissaoDt, filiacao1, filiacao2,
                     telefone1, telefone2, telefone3,
                     email, emailAlt, codCargo, codDepartamento,
                     criaContaAD, cadastraPonto, ativo, permiteAcesso,
