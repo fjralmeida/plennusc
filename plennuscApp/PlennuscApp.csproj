@@ -161,6 +161,8 @@
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
+    <Content Include="public\uploadgestao\images\DSCN1684_Original.JPEG" />
+    <Content Include="public\uploadgestao\images\logoVallor.png" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
     <Content Include="Scripts\jquery-3.7.1.slim.js" />
@@ -391,6 +393,9 @@
     <Folder Include="PlennuscFinance\UploadsFinance\" />
     <Folder Include="PlennuscGestao\UploadsGestao\" />
     <Folder Include="PlennuscMedic\UploadsMedic\" />
+    <Folder Include="public\uploadfinance\" />
+    <Folder Include="public\uploadgestao\docs\" />
+    <Folder Include="public\uploadmedic\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
