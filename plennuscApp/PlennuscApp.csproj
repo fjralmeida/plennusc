@@ -161,9 +161,16 @@
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
-    <Content Include="public\uploadgestao\docs\Pros e Contras de cada arquitetura.txt" />
+    <Content Include="public\uploadfinance\docs\Pros e Contras de cada arquitetura.txt" />
+    <Content Include="public\uploadfinance\images\DSCN1684_Original.JPEG" />
+    <Content Include="public\uploadfinance\images\logoVallor.png" />
+    <Content Include="public\uploadfinance\images\logo_vallor.png" />
     <Content Include="public\uploadgestao\images\DSCN1684_Original.JPEG" />
     <Content Include="public\uploadgestao\images\logoVallor.png" />
+    <Content Include="public\uploadmedic\docs\Pros e Contras de cada arquitetura.txt" />
+    <Content Include="public\uploadmedic\images\DSCN1684_Original.JPEG" />
+    <Content Include="public\uploadmedic\images\logoVallor.png" />
+    <Content Include="public\uploadmedic\images\logo_vallor.png" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
     <Content Include="Scripts\jquery-3.7.1.slim.js" />
@@ -391,8 +398,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\Img\" />
     <Folder Include="Data_Bd\" />
-    <Folder Include="public\uploadfinance\" />
-    <Folder Include="public\uploadmedic\" />
+    <Folder Include="public\uploadgestao\docs\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
