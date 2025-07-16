@@ -1,0 +1,194 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../Uploads/Fundo_Login.jpg') no-repeat center center;
+    background-size: cover;
+    z-index: -1;
+}
+
+
+h1 {
+    font-size: 28px;
+    color: white;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    background: linear-gradient(to right, #e96969, #dbb809);
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    display: flex;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    background-color: rgba(255, 255, 255, 0.9); /* levemente transparente */
+    backdrop-filter: blur(5px);
+}
+
+.left {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    .left img {
+        width: 100%;
+        max-width: 400px;
+    }
+
+.right {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+    .logo img {
+        max-width: 180px;
+        height: auto;
+    }
+
+.subtitle {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #777;
+    font-size: 13px;
+}
+
+label {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+input[type="email"],
+input[type="password"],
+.form-control {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+}
+
+    input:focus,
+    .form-control:focus {
+        border-color: #0056b3;
+        outline: none;
+    }
+
+.signin {
+    background-color: #83CEEE;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+    .signin:hover {
+        background-color: #6AB9E0;
+    }
+
+.error-message {
+    margin-top: 10px;
+    color: red;
+    font-size: 0.9rem;
+}
+
+select,
+.form-select,
+select.form-select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6H0z' fill='%23333'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px 6px;
+}
+
+    select:focus,
+    .form-select:focus {
+        border-color: #0056b3;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
+    }
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+    }
+
+    .left, .right {
+        flex: none;
+        width: 100%;
+    }
+
+        .left img {
+            max-width: 250px;
+        }
+}

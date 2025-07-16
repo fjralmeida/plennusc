@@ -1,0 +1,304 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="PlennuscGestao.Views.Masters.Index" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+            background-color: #f5f7fb;
+        }
+
+        .nome-sistema {
+            font-weight: 600;
+            background: linear-gradient(to right, #4CB07A, #83CEEE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            object-fit: cover;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 1.5rem 1rem;
+            height: 100%;
+            font-size: 14px;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #000000;
+            padding: 10px 15px;
+            border-radius: 6px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .sidebar a:hover {
+            background-color: #83ceee33;
+            color: #000;
+        }
+
+        .sidebar .collapse a {
+            font-size: 0.95rem;
+            margin-left: 10px;
+        }
+
+        .topbar {
+            height: 70px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 24px;
+        }
+
+        .highlight {
+            background: linear-gradient(to right, #4CB07A, #83CEEE);
+            color: #000;
+            font-weight: 600;
+            padding: 1px 3px;
+            border-radius: 3px;
+        }
+
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #83CEEE !important;
+            color: #000 !important;
+        }
+
+        .dropdown-menu .dropdown-item.text-danger:hover {
+            background-color: #f8d7da !important;
+            color: #842029 !important;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+        }
+    </style>
+
+ <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const input = document.getElementById("txtBusca");
+
+         // Evita Enter fazer postback
+         input?.addEventListener("keydown", function (e) {
+             if (e.key === "Enter") {
+                 e.preventDefault();
+                 return false;
+             }
+         });
+
+         // Busca dinâmica com destaque
+         input?.addEventListener("input", function () {
+             const termo = input.value.trim().toLowerCase();
+             document.querySelectorAll(".highlight").forEach(el => {
+                 const parent = el.parentNode;
+                 parent.replaceChild(document.createTextNode(el.textContent), el);
+                 parent.normalize();
+             });
+
+             if (termo === "") return;
+
+             const treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+                 acceptNode: function (node) {
+                     if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+                     if (!node.parentElement.offsetParent) return NodeFilter.FILTER_REJECT;
+                     return NodeFilter.FILTER_ACCEPT;
+                 }
+             });
+
+             const regex = new RegExp(termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+             let node;
+             while ((node = treeWalker.nextNode())) {
+                 if (regex.test(node.nodeValue)) {
+                     const span = document.createElement("span");
+                     span.innerHTML = node.nodeValue.replace(regex, m => `<span class="highlight">${m}</span>`);
+                     node.parentNode.replaceChild(span, node);
+                 }
+             }
+         });
+
+         // === CONTROLE DE MENUS ===
+         const currentPath = window.location.pathname.toLowerCase();
+
+         // Só abre automaticamente se não estiver na home ou login
+         const isPaginaInicial = currentPath.includes("homemanagement.aspx") || currentPath.includes("signin.aspx");
+
+         if (!isPaginaInicial) {
+             const menuMap = [
+                 { id: "menuGestaoPessoas", keywords: ["employeemanagement", "departamentos", "cargos", "documentos"] },
+                 { id: "menuChatbot", keywords: ["sendmessagebeneficiary", "fixedmessagesending"] },
+                 { id: "importPlanium", keywords: ["csvimportplanium", "importar"] },
+                 { id: "menuEmail", keywords: ["email"] }
+             ];
+
+             menuMap.forEach(menu => {
+                 const match = menu.keywords.some(kw => currentPath.includes(kw));
+                 if (match) {
+                     const target = document.getElementById(menu.id);
+                     if (target) {
+                         // Força abertura
+                         if (!target.classList.contains("show")) {
+                             new bootstrap.Collapse(target, { toggle: true });
+                         }
+
+                         // Força seta para baixo SEMPRE
+                         const icon = target.previousElementSibling.querySelector("i.bi");
+                         if (icon) {
+                             icon.classList.remove("bi-chevron-right");
+                             icon.classList.add("bi-chevron-down");
+                         }
+                     }
+                 }
+             });
+         }
+
+         // Atualiza setas ao abrir/fechar
+         document.querySelectorAll('.sidebar .collapse').forEach(menu => {
+             menu.addEventListener('show.bs.collapse', function () {
+                 const icon = this.previousElementSibling.querySelector("i.bi-chevron-right, i.bi-chevron-down");
+                 if (icon) {
+                     icon.classList.remove("bi-chevron-right");
+                     icon.classList.add("bi-chevron-down");
+                 }
+             });
+
+             menu.addEventListener('hide.bs.collapse', function () {
+                 const icon = this.previousElementSibling.querySelector("i.bi-chevron-right, i.bi-chevron-down");
+                 if (icon) {
+                     icon.classList.remove("bi-chevron-down");
+                     icon.classList.add("bi-chevron-right");
+                 }
+             });
+         });
+     });
+ </script>
+
+
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container-fluid p-0">
+            <!-- Top Bar -->
+            <div class="d-flex justify-content-between align-items-center topbar">
+                <div class="d-flex align-items-center gap-2" style="cursor: pointer;"
+                    onclick="location.href='<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>'">
+                    <asp:Image ID="imgLogo" runat="server" Style="height: 45px; width: auto;" />
+                    <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
+                </div>
+
+                <div class="flex-grow-1 px-4">
+                    <div class="input-group shadow-sm" style="max-width: 400px; margin: 0 auto;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <asp:TextBox ID="txtBusca" runat="server" ClientIDMode="Static" CssClass="form-control border-start-0" Placeholder="Search..." />
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <asp:Image ID="imgAvatarUsuario" runat="server" CssClass="user-avatar dropdown-toggle"
+                        data-bs-toggle="dropdown" AlternateText="Avatar do Usuário" />
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="dropdown-header text-center fw-semibold">
+                            <asp:Label ID="lblUsuario" runat="server" />
+                        </li>
+                        <li><a class="dropdown-item" href="profile.aspx">Perfil</a></li>
+                        <li><a class="dropdown-item" href="#">Configurações</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="dropdown-item text-danger" OnClick="LogoutUsuario">Sair</asp:LinkButton>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
+                <!-- Sidebar -->
+                <nav class="sidebar">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
+                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <div class="collapse" id="menuGestaoPessoas">
+                                <a href="employeeManagement.aspx">Colaboradores</a>
+                                <a href="#">Departamentos</a>
+                                <a href="#">Cargos</a>
+                                <a href="#">Documentos</a>
+                            </div>
+                        </li>
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot">
+                                <span><i class="bi bi-robot"></i> Chatbot</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <div class="collapse" id="menuChatbot">
+                                <a href="sendMessageBeneficiary.aspx">Beneficiário</a>
+                                <a href="FixedMessageSending.aspx">Mensagem Fixa</a>
+                                <a href="#">Empresa</a>
+                            </div>
+                        </li>
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium">
+                                <span><i class="bi bi-upload"></i> Importação Planium</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <div class="collapse" id="importPlanium">
+                                <a href="csvImportPlanium.aspx">Importar Csv</a>
+                                <a href="#">Importar Pdf</a>
+                            </div>
+                        </li>
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">
+                                <span><i class="bi bi-envelope"></i> Email</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <div class="collapse" id="menuEmail">
+                                <a href="#">Enviar Email</a>
+                            </div>
+                        </li>
+                        <li><a class="d-flex align-items-center" href="#"><i class="bi bi-chat-dots"></i> Chat</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Main Content -->
+                <div class="flex-grow-1 p-4 overflow-auto">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
