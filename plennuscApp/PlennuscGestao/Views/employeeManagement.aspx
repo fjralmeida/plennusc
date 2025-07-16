@@ -475,9 +475,10 @@ input:focus, select:focus, textarea:focus {
 
                     </div>
                     <div class="col-md-6">
-                        <label>RG *</label>
+                        <label>RG *
                         <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
                         <asp:RequiredFieldValidator ID="rfvRG" runat="server" ControlToValidate="txtDocRG" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </label>
                     </div>
                 </div>
             </div>
