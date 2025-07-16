@@ -240,7 +240,6 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="PlennuscFinance\Views\homeFinance.aspx.cs">
       <DependentUpon>homeFinance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -392,8 +391,6 @@
     <Folder Include="PlennuscFinance\UploadsFinance\" />
     <Folder Include="PlennuscGestao\UploadsGestao\" />
     <Folder Include="PlennuscMedic\UploadsMedic\" />
-    <Folder Include="Service\" />
-    <Folder Include="SqlQueries\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
