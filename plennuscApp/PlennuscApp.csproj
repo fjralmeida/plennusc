@@ -161,6 +161,7 @@
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
+    <Content Include="public\uploadgestao\docs\Pros e Contras de cada arquitetura.txt" />
     <Content Include="public\uploadgestao\images\DSCN1684_Original.JPEG" />
     <Content Include="public\uploadgestao\images\logoVallor.png" />
     <Content Include="Scripts\jquery-3.7.1.js" />
@@ -391,7 +392,6 @@
     <Folder Include="Content\Img\" />
     <Folder Include="Data_Bd\" />
     <Folder Include="public\uploadfinance\" />
-    <Folder Include="public\uploadgestao\docs\" />
     <Folder Include="public\uploadmedic\" />
   </ItemGroup>
   <ItemGroup>

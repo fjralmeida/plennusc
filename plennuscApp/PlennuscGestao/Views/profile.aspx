@@ -44,6 +44,10 @@
                 border-radius: 2px;
             }
 
+
+
+
+
         .avatar-wrapper {
             display: flex;
             flex-direction: column;
