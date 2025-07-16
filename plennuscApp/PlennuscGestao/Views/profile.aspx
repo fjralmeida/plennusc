@@ -4,10 +4,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
     <!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -34,15 +34,15 @@
             display: block;
         }
 
-            .perfil-titulo::after {
-                content: "";
-                width: 60px;
-                height: 3px;
-                background-color: #83CEEE;
-                display: block;
-                margin: 0.5rem auto 0 auto;
-                border-radius: 2px;
-            }
+        .perfil-titulo::after {
+            content: "";
+            width: 60px;
+            height: 3px;
+            background-color: #83CEEE;
+            display: block;
+            margin: 0.5rem auto 0 auto;
+            border-radius: 2px;
+        }
 
 
         .avatar-wrapper {
@@ -131,7 +131,7 @@
             gap: 20px;
         }
 
-         .col-md-4 {
+        .col-md-4 {
             flex: 1 1 calc(33.33% - 20px);
             min-width: 250px;
         }
@@ -141,6 +141,16 @@
             min-width: 250px;
         }
 
+        .row-eleitorais {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 20px;
+        }
+
+        .row-eleitorais > .col-md-4 {
+            flex: 1 1 0;
+            min-width: 0;
+        }
 
         @media (max-width: 768px) {
             .col-md-4, .col-md-6 {
@@ -188,37 +198,37 @@
         <div class="w-100">
             <asp:Label ID="lblUsuario" runat="server" CssClass="perfil-titulo"></asp:Label>
         </div>
-       <div class="section-block bg-white-section">
-    <h5 class="mb-3 text-muted fw-bold">Dados Pessoais</h5>
+        <div class="section-block bg-white-section">
+            <h5 class="mb-3 text-muted fw-bold">Dados Pessoais</h5>
 
-    <!-- Linha 1: Nome, Sobrenome, Apelido -->
-    <div class="row g-2">
-        <div class="col-md-4">
-            <label for="txtNome" class="form-label">Nome</label>
-            <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" ReadOnly="true" />
-        </div>
-        <div class="col-md-4">
-            <label for="txtSobrenome" class="form-label">Sobrenome</label>
-            <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
-        </div>
-        <div class="col-md-4">
-            <label for="txtApelido" class="form-label">Apelido</label>
-            <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" ReadOnly="true" />
-        </div>
-    </div>
+            <!-- Linha 1: Nome, Sobrenome, Apelido -->
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <label for="txtNome" class="form-label">Nome</label>
+                    <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" ReadOnly="true" />
+                </div>
+                <div class="col-md-4">
+                    <label for="txtSobrenome" class="form-label">Sobrenome</label>
+                    <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
+                </div>
+                <div class="col-md-4">
+                    <label for="txtApelido" class="form-label">Apelido</label>
+                    <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" ReadOnly="true" />
+                </div>
+            </div>
 
-    <!-- Linha 2: Sexo, Data de Nascimento -->
-    <div class="row g-2 mt-2">
-        <div class="col-md-6">
-            <label for="txtSexo" class="form-label">Sexo</label>
-            <asp:TextBox ID="txtSexo" runat="server" CssClass="form-control" ReadOnly="true" />
+            <!-- Linha 2: Sexo, Data de Nascimento -->
+            <div class="row g-2 mt-2">
+                <div class="col-md-6">
+                    <label for="txtSexo" class="form-label">Sexo</label>
+                    <asp:TextBox ID="txtSexo" runat="server" CssClass="form-control" ReadOnly="true" />
+                </div>
+                <div class="col-md-6">
+                    <label for="txtDataNasc" class="form-label">Data de Nascimento</label>
+                    <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" ReadOnly="true" />
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <label for="txtDataNasc" class="form-label">Data de Nascimento</label>
-            <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" ReadOnly="true" />
-        </div>
-    </div>
-</div>
 
 
         <div class="section-block bg-gray-section">
@@ -235,12 +245,9 @@
             </div>
         </div>
 
-
-
-
         <div class="section-block bg-white-section">
             <h5 class="mb-3 text-muted fw-bold">Dados Eleitorais</h5>
-            <div class="row g-3">
+            <div class="row row-eleitorais">
                 <div class="col-md-4">
                     <label for="txtTitulo" class="form-label">Título de Eleitor</label>
                     <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control" ReadOnly="true" />
@@ -306,7 +313,6 @@
         </div>
 
         <!-- CONTATO & CARGO -->
-
         <div class="section-block bg-gray-section">
             <h5 class="mt-4 mb-2 text-muted fw-bold">Contato & Cargo</h5>
             <div class="row g-3">
@@ -341,8 +347,6 @@
             </div>
             <asp:Label ID="txtCodPessoa" Visible="false" runat="server" class="form-label">Departamento</asp:Label>
         </div>
-
-
     </div>
 </asp:Content>
 
