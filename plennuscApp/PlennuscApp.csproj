@@ -390,9 +390,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\Img\" />
     <Folder Include="Data_Bd\" />
-    <Folder Include="PlennuscFinance\UploadsFinance\" />
-    <Folder Include="PlennuscGestao\UploadsGestao\" />
-    <Folder Include="PlennuscMedic\UploadsMedic\" />
     <Folder Include="public\uploadfinance\" />
     <Folder Include="public\uploadgestao\docs\" />
     <Folder Include="public\uploadmedic\" />

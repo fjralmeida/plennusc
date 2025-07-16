@@ -34,8 +34,8 @@ namespace PlennuscGestao.Views.Masters
                     string foto = pessoa["ImagemFoto"]?.ToString().Trim();
 
                     imgAvatarUsuario.ImageUrl = string.IsNullOrWhiteSpace(foto)
-                        ? ResolveUrl("~/assets/img/team/40x40/usuario.webp")
-                        : ResolveUrl("~/UploadsGestao/" + foto);
+                     ? ResolveUrl("~/assets/img/team/40x40/usuario.webp")
+                     : ResolveUrl("~/public/uploadgestao/images/" + foto);
                 }
                 else
                 {
