@@ -152,7 +152,9 @@
     <Content Include="Content\Css\styleSignIn.css" />
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
+    <Content Include="PlennuscGestao\Views\employeeDepartment.aspx" />
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
+    <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
@@ -271,12 +273,26 @@
     <Compile Include="PlennuscGestao\Views\csvImportPlanium.aspx.designer.cs">
       <DependentUpon>csvImportPlanium.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscGestao\Views\employeeDepartment.aspx.cs">
+      <DependentUpon>employeeDepartment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\employeeDepartment.aspx.designer.cs">
+      <DependentUpon>employeeDepartment.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscGestao\Views\employeeManagement.aspx.cs">
       <DependentUpon>employeeManagement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="PlennuscGestao\Views\employeeManagement.aspx.designer.cs">
       <DependentUpon>employeeManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\employeePosition.aspx.cs">
+      <DependentUpon>employeePosition.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\employeePosition.aspx.designer.cs">
+      <DependentUpon>employeePosition.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\FixedMessageSending.aspx.cs">
       <DependentUpon>FixedMessageSending.aspx</DependentUpon>

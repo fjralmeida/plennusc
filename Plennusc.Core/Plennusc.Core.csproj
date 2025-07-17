@@ -54,8 +54,10 @@
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceGestao\WhatsappService.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\department\EmpDepartment.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\ItensPedIntegradoUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\OperadoraUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\position\EmpPosition.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
   </ItemGroup>

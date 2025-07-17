@@ -102,6 +102,11 @@
         .input-group .form-control {
             border-left: none;
         }
+        .sidebar a.active {
+    font-weight: 600;
+    color: #4CB07A;
+}
+
     </style>
 
  <script>
@@ -153,32 +158,41 @@
          const isPaginaInicial = currentPath.includes("homemanagement.aspx") || currentPath.includes("signin.aspx");
 
          if (!isPaginaInicial) {
-             const menuMap = [
-                 { id: "menuGestaoPessoas", keywords: ["employeemanagement", "departamentos", "cargos", "documentos"] },
-                 { id: "menuChatbot", keywords: ["sendmessagebeneficiary", "fixedmessagesending"] },
-                 { id: "importPlanium", keywords: ["csvimportplanium", "importar"] },
-                 { id: "menuEmail", keywords: ["email"] }
-             ];
+           const menuMap = [
+                { id: "menuGestaoPessoas", keywords: ["employeemanagement", "employeedepartment", "employeeposition", "documentos"] },
+                { id: "menuChatbot", keywords: ["sendmessagebeneficiary", "fixedmessagesending"] },
+                { id: "importPlanium", keywords: ["csvimportplanium", "importar"] },
+                { id: "menuEmail", keywords: ["email"] }
+            ];
 
-             menuMap.forEach(menu => {
-                 const match = menu.keywords.some(kw => currentPath.includes(kw));
-                 if (match) {
-                     const target = document.getElementById(menu.id);
-                     if (target) {
-                         // Força abertura
-                         if (!target.classList.contains("show")) {
-                             new bootstrap.Collapse(target, { toggle: true });
-                         }
+            menuMap.forEach(menu => {
+                const match = menu.keywords.some(kw => currentPath.includes(kw.toLowerCase()));
+                if (match) {
+                    const target = document.getElementById(menu.id);
+                    if (target) {
+                        // === Força abertura do menu pai ===
+                        new bootstrap.Collapse(target, {
+                            toggle: false
+                        });
+                        target.classList.add("show");
 
-                         // Força seta para baixo SEMPRE
-                         const icon = target.previousElementSibling.querySelector("i.bi");
-                         if (icon) {
-                             icon.classList.remove("bi-chevron-right");
-                             icon.classList.add("bi-chevron-down");
-                         }
-                     }
-                 }
-             });
+                        // === Força seta para baixo ===
+                        const icon = target.previousElementSibling.querySelector("i.bi");
+                        if (icon) {
+                            icon.classList.remove("bi-chevron-right");
+                            icon.classList.add("bi-chevron-down");
+                        }
+
+                        // === Destaca link ativo ===
+                        target.querySelectorAll("a").forEach(link => {
+                            const href = link.getAttribute("href").toLowerCase();
+                            if (currentPath.includes(href)) {
+                                link.classList.add("active");
+                            }
+                        });
+                    }
+                }
+            });
          }
 
          // Atualiza setas ao abrir/fechar
@@ -248,13 +262,13 @@
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
-                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
+    <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
+    <i class="bi bi-chevron-right"></i>
+</a>
                             <div class="collapse" id="menuGestaoPessoas">
                                 <a href="employeeManagement.aspx">Colaboradores</a>
-                                <a href="#">Departamentos</a>
-                                <a href="#">Cargos</a>
+                                <a href="employeeDepartment.aspx">Departamentos</a>
+                                <a href="employeePosition.aspx">Cargos</a>
                                 <a href="#">Documentos</a>
                             </div>
                         </li>
