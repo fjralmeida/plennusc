@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" Inherits="PlennuscGestao.Views.Masters.Index" %>
+
 <!DOCTYPE html>
 <html>
 <head runat="server">
@@ -46,32 +47,47 @@
         }
 
         .sidebar {
-            width: 250px;
-            background-color: #fff;
-            border-right: 1px solid #e0e0e0;
-            padding: 1.5rem 1rem;
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #e3e6ef;
+            padding: 1.5rem 0.5rem;
             height: 100%;
-            font-size: 14px;
+            font-size: 13.5px;
+            overflow-y: auto;
         }
 
         .sidebar a {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-decoration: none;
-            color: #000000;
-            padding: 10px 15px;
+            color: #3b3f5c;
+            padding: 8px 16px;
             border-radius: 6px;
-            transition: background 0.2s;
-            white-space: nowrap;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
         }
 
         .sidebar a:hover {
-            background-color: #83ceee33;
-            color: #000;
+            background-color: #f1f5ff;
+            color: #1d4ed8;
+        }
+
+        .sidebar a.active {
+            background-color: #e0edff;
+            color: #1d4ed8;
+            font-weight: 600;
         }
 
         .sidebar .collapse a {
-            font-size: 0.95rem;
-            margin-left: 10px;
+            font-size: 13px;
+            padding-left: 32px;
+            font-weight: 400;
+        }
+
+        .sidebar .bi {
+            font-size: 15px;
+            color: #9ca3af;
         }
 
         .topbar {
@@ -102,133 +118,29 @@
         .input-group .form-control {
             border-left: none;
         }
-        .sidebar a.active {
-    font-weight: 600;
-    color: #4CB07A;
-}
 
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 0 16px;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+        }
     </style>
-
- <script>
-     document.addEventListener("DOMContentLoaded", function () {
-         const input = document.getElementById("txtBusca");
-
-         // Evita Enter fazer postback
-         input?.addEventListener("keydown", function (e) {
-             if (e.key === "Enter") {
-                 e.preventDefault();
-                 return false;
-             }
-         });
-
-         // Busca dinâmica com destaque
-         input?.addEventListener("input", function () {
-             const termo = input.value.trim().toLowerCase();
-             document.querySelectorAll(".highlight").forEach(el => {
-                 const parent = el.parentNode;
-                 parent.replaceChild(document.createTextNode(el.textContent), el);
-                 parent.normalize();
-             });
-
-             if (termo === "") return;
-
-             const treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-                 acceptNode: function (node) {
-                     if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-                     if (!node.parentElement.offsetParent) return NodeFilter.FILTER_REJECT;
-                     return NodeFilter.FILTER_ACCEPT;
-                 }
-             });
-
-             const regex = new RegExp(termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-             let node;
-             while ((node = treeWalker.nextNode())) {
-                 if (regex.test(node.nodeValue)) {
-                     const span = document.createElement("span");
-                     span.innerHTML = node.nodeValue.replace(regex, m => `<span class="highlight">${m}</span>`);
-                     node.parentNode.replaceChild(span, node);
-                 }
-             }
-         });
-
-         // === CONTROLE DE MENUS ===
-         const currentPath = window.location.pathname.toLowerCase();
-
-         // Só abre automaticamente se não estiver na home ou login
-         const isPaginaInicial = currentPath.includes("homemanagement.aspx") || currentPath.includes("signin.aspx");
-
-         if (!isPaginaInicial) {
-           const menuMap = [
-                { id: "menuGestaoPessoas", keywords: ["employeemanagement", "employeedepartment", "employeeposition", "documentos"] },
-                { id: "menuChatbot", keywords: ["sendmessagebeneficiary", "fixedmessagesending"] },
-                { id: "importPlanium", keywords: ["csvimportplanium", "importar"] },
-                { id: "menuEmail", keywords: ["email"] }
-            ];
-
-            menuMap.forEach(menu => {
-                const match = menu.keywords.some(kw => currentPath.includes(kw.toLowerCase()));
-                if (match) {
-                    const target = document.getElementById(menu.id);
-                    if (target) {
-                        // === Força abertura do menu pai ===
-                        new bootstrap.Collapse(target, {
-                            toggle: false
-                        });
-                        target.classList.add("show");
-
-                        // === Força seta para baixo ===
-                        const icon = target.previousElementSibling.querySelector("i.bi");
-                        if (icon) {
-                            icon.classList.remove("bi-chevron-right");
-                            icon.classList.add("bi-chevron-down");
-                        }
-
-                        // === Destaca link ativo ===
-                        target.querySelectorAll("a").forEach(link => {
-                            const href = link.getAttribute("href").toLowerCase();
-                            if (currentPath.includes(href)) {
-                                link.classList.add("active");
-                            }
-                        });
-                    }
-                }
-            });
-         }
-
-         // Atualiza setas ao abrir/fechar
-         document.querySelectorAll('.sidebar .collapse').forEach(menu => {
-             menu.addEventListener('show.bs.collapse', function () {
-                 const icon = this.previousElementSibling.querySelector("i.bi-chevron-right, i.bi-chevron-down");
-                 if (icon) {
-                     icon.classList.remove("bi-chevron-right");
-                     icon.classList.add("bi-chevron-down");
-                 }
-             });
-
-             menu.addEventListener('hide.bs.collapse', function () {
-                 const icon = this.previousElementSibling.querySelector("i.bi-chevron-right, i.bi-chevron-down");
-                 if (icon) {
-                     icon.classList.remove("bi-chevron-down");
-                     icon.classList.add("bi-chevron-right");
-                 }
-             });
-         });
-     });
- </script>
-
-
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
-    <form id="form1" runat="server">
+   <form id="form1" runat="server">
         <div class="container-fluid p-0">
             <!-- Top Bar -->
             <div class="d-flex justify-content-between align-items-center topbar">
-                <div class="d-flex align-items-center gap-2" style="cursor: pointer;"
-                    onclick="location.href='<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>'">
-                    <asp:Image ID="imgLogo" runat="server" Style="height: 45px; width: auto;" />
-                    <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
-                </div>
+             <div class="d-flex align-items-center gap-2" style="cursor: pointer;"
+                 onclick="limparMenuESeguir('<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>')">
+                <asp:Image ID="imgLogo" runat="server" Style="height: 45px; width: auto;" />
+                <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
+             </div>
+
 
                 <div class="flex-grow-1 px-4">
                     <div class="input-group shadow-sm" style="max-width: 400px; margin: 0 auto;">
@@ -262,9 +174,9 @@
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
-    <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
-    <i class="bi bi-chevron-right"></i>
-</a>
+                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
                             <div class="collapse" id="menuGestaoPessoas">
                                 <a href="employeeManagement.aspx">Colaboradores</a>
                                 <a href="employeeDepartment.aspx">Departamentos</a>
@@ -272,6 +184,7 @@
                                 <a href="#">Documentos</a>
                             </div>
                         </li>
+
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot">
                                 <span><i class="bi bi-robot"></i> Chatbot</span>
@@ -283,6 +196,7 @@
                                 <a href="#">Empresa</a>
                             </div>
                         </li>
+
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium">
                                 <span><i class="bi bi-upload"></i> Importação Planium</span>
@@ -293,6 +207,7 @@
                                 <a href="#">Importar Pdf</a>
                             </div>
                         </li>
+
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">
                                 <span><i class="bi bi-envelope"></i> Email</span>
@@ -302,7 +217,10 @@
                                 <a href="#">Enviar Email</a>
                             </div>
                         </li>
-                        <li><a class="d-flex align-items-center" href="#"><i class="bi bi-chat-dots"></i> Chat</a></li>
+
+                        <li>
+                            <a class="d-flex align-items-center" href="#"><i class="bi bi-chat-dots"></i> <span>Chat</span></a>
+                        </li>
                     </ul>
                 </nav>
 
@@ -316,5 +234,66 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para manter menu e seta -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+          function getCollapseToggler(collapseId) {
+            return document.querySelector(`[data-bs-target="#${collapseId}"]`) 
+                || document.querySelector(`a[href="#${collapseId}"]`);
+          }
+
+          let openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
+
+          document.querySelectorAll('.collapse').forEach(function (collapseEl) {
+            const collapseId = collapseEl.id;
+            const toggler = getCollapseToggler(collapseId);
+            if (!collapseId || !toggler) return; 
+
+            collapseEl.addEventListener('show.bs.collapse', function () {
+    
+              const icon = toggler.querySelector('.bi-chevron-right, .bi-chevron-down');
+              if (icon) {
+                icon.classList.replace('bi-chevron-right', 'bi-chevron-down');
+              }
+              openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
+              if (!openMenus.includes(collapseId)) {
+                openMenus.push(collapseId);
+                localStorage.setItem('openMenuIds', JSON.stringify(openMenus));
+              }
+            });
+
+   
+            collapseEl.addEventListener('hide.bs.collapse', function () {
+              const icon = toggler.querySelector('.bi-chevron-right, .bi-chevron-down');
+              if (icon) {
+                icon.classList.replace('bi-chevron-down', 'bi-chevron-right');
+              }
+              openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
+              const idx = openMenus.indexOf(collapseId);
+              if (idx !== -1) {
+                openMenus.splice(idx, 1);
+                localStorage.setItem('openMenuIds', JSON.stringify(openMenus));
+              }
+            });
+          });
+
+          openMenus.forEach(function (menuId) {
+            const menuEl = document.getElementById(menuId);
+            if (menuEl) {
+              bootstrap.Collapse.getOrCreateInstance(menuEl).show();
+            }
+          });
+        });
+    </script>
+
+    <script>
+    function limparMenuESeguir(url) {
+        localStorage.removeItem('openMenuIds');
+        window.location.href = url;
+    }
+    </script>
+
 </body>
 </html>
