@@ -11,7 +11,13 @@ namespace PlennuscGestao.Views
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                //lblNomeUsuario.Text = "Thales"; // Opcional
+                lblTotalColaboradores.Text = "12"; // Exemplo fictício
+                lblTotalDepartamentos.Text = "5";
+                lblTotalEmpresas.Text = "3";
+            }
         }
     }
 }
