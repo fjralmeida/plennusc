@@ -17,5 +17,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.department
             Banco_Dados_SQLServer bd = new Banco_Dados_SQLServer();
             return bd.LerPlennus(sql);
         }
+        public DataTable GetTotalDepartamentos()
+        {
+            string sql = "SELECT COUNT(*) AS Total FROM Departamento";
+
+            Banco_Dados_SQLServer bd = new Banco_Dados_SQLServer();
+            return bd.LerPlennus(sql);
+        }
     }
 }

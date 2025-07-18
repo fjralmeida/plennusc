@@ -33,12 +33,12 @@ namespace PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Label lblTotalDepartamentos;
 
         /// <summary>
-        /// Controle lblTotalEmpresas.
+        /// Controle lblTotalCargos.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotalEmpresas;
+        protected global::System.Web.UI.WebControls.Label lblTotalCargos;
     }
 }

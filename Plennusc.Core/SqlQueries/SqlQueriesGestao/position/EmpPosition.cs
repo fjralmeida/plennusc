@@ -17,5 +17,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.position
             Banco_Dados_SQLServer bd = new Banco_Dados_SQLServer();
             return bd.LerPlennus(sql);
         }
+        public DataTable GetTotalCargos()
+        {
+            string sql = "SELECT COUNT(*) AS Total FROM Cargo";
+
+            Banco_Dados_SQLServer bd = new Banco_Dados_SQLServer();
+            return bd.LerPlennus(sql);
+        }
     }
 }

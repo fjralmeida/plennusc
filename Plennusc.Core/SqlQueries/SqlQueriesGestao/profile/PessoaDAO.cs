@@ -245,5 +245,19 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             db.ExecutarPlennus(sql, parametros);
         }
+
+        public DataTable GetTotalUsuarios()
+        {
+            string sql = @"
+                SELECT COUNT(*) AS Total
+                FROM Pessoa
+                WHERE Conf_Ativo = 1 
+                  AND CodCargo IS NOT NULL 
+                  AND CodDepartamento IS NOT NULL
+            ";
+
+            Banco_Dados_SQLServer bd = new Banco_Dados_SQLServer();
+            return bd.LerPlennus(sql);
+        }
     }
 }

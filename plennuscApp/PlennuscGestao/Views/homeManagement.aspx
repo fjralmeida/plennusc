@@ -51,9 +51,9 @@
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
                             <h6 class="fw-semibold text-danger">
-                                <asp:Label ID="lblTotalEmpresas" runat="server" CssClass="text-danger"></asp:Label> empresas
+                                <asp:Label ID="lblTotalCargos" runat="server" CssClass="text-danger"></asp:Label> cargos
                             </h6>
-                            <small class="text-muted">Cadastradas</small>
+                            <small class="text-muted">Cadastrados</small>
                         </div>
                         <i class="bi bi-buildings fs-2 text-danger"></i>
                     </div>
