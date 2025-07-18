@@ -19,8 +19,8 @@
         <p class="text-muted mb-4">Veja o que está acontecendo agora no sistema</p>
 
         <!-- Cards coloridos -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4 justify-content-center">
+            <div>
                 <div class="card shadow-sm border-0" style="background: #e1fbee;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div>
                 <div class="card shadow-sm border-0" style="background: #fff8e1;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
@@ -46,25 +46,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div>
                 <div class="card shadow-sm border-0" style="background: #fbe7e7;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
                             <h6 class="fw-semibold text-danger">
                                 <asp:Label ID="lblTotalCargos" runat="server" CssClass="text-danger"></asp:Label> cargos
                             </h6>
-                            <small class="text-muted">Cadastrados</small>
+                            <small class="text-muted">Em uso</small>
                         </div>
-                        <i class="bi bi-buildings fs-2 text-danger"></i>
+                        <i class="bi bi-briefcase-fill fs-2 text-danger"></i>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div>
                 <div class="card shadow-sm border-0" style="background: #eae7fb;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
-                            <h6 class="fw-semibold" style="color: #c06ed4;">4 cargos</h6>
-                            <small class="text-muted">Em uso</small>
+                            <h6 class="fw-semibold" style="color: #c06ed4;">teste</h6>
+                            <small class="text-muted">teste</small>
                         </div>
                         <i class="bi bi-briefcase-fill fs-2" style="color: #c06ed4;"></i>
                     </div>

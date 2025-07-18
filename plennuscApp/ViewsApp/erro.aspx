@@ -74,8 +74,7 @@
             <h1>Ocorreu um erro</h1>
             <p>Algo deu errado em nossa aplicação. Estamos trabalhando para resolver o mais rápido possível.</p>
             <p>Por favor, tente novamente mais tarde ou entre em contato com o suporte.</p>
-
-            <a href="/ViewsApp/Signin.aspx" class="btn btn-voltar">Voltar ao Login</a>
+            <%--<a href="/ViewsApp/Signin.aspx" class="btn btn-voltar">Voltar ao Login</a>--%>
         </div>
     </div>
 </body>

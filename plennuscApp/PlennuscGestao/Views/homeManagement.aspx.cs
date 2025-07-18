@@ -37,7 +37,7 @@ namespace PlennuscGestao.Views
             EmpDepartment profile = new EmpDepartment();
             DataTable dt = profile.GetTotalDepartamentos();
             if (dt != null && dt.Rows.Count > 0)
-                lblTotalDepartamentos.Text = dt.Rows.Count.ToString();
+                lblTotalDepartamentos.Text = dt.Rows[0]["Total"].ToString();
         }
 
         private void CarregarCargos()
