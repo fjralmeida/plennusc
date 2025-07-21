@@ -205,22 +205,37 @@ namespace PlennuscApp.PlennuscGestao.Views
                 CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
                 if (chk != null && chk.Checked)
                 {
-                    //string telefone = "553173069983";
-                    ////string telefone = FormatTelefone(telefoneBruto);
-
-                    //if (string.IsNullOrEmpty(telefone))
-                    //    continue; // Ignora se for inválido ou fixo
-
-                    string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
-                    string telefone = FormatTelefone(telefoneBruto);
+                    string telefone = "553173069983";
+                    //string telefone = FormatTelefone(telefoneBruto);
 
                     if (string.IsNullOrEmpty(telefone))
                         continue; // Ignora se for inválido ou fixo
 
+                    //string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
+                    //string telefone = FormatTelefone(telefoneBruto);
+
+                    //if (string.IsNullOrEmpty(telefone))
+                    //    continue; // Ignora se for inválido ou fixo
+
                     string nome = ((Label)row.FindControl("lblNome"))?.Text?.Trim();
                     string plano = ((Label)row.FindControl("lblPlano"))?.Text?.Trim();
                     string operadora = ((Label)row.FindControl("lblOperadora"))?.Text?.Trim();
-                    string vencimento = ((Label)row.FindControl("lblVencimento"))?.Text?.Trim();
+
+                    string vencimento = "";
+
+                    if (hfTemplateEscolhido.Value == "Suspensao")
+                    {
+                        vencimento = txtDataSuspensao.Text;
+                    }
+                    else if (hfTemplateEscolhido.Value == "Definitivo")
+                    {
+                        vencimento = txtDataDefinitivo.Text;
+                    }
+                    else if (hfTemplateEscolhido.Value == "NovaOpcao") // novo template
+                    {
+                        vencimento = txtDataNovaOpcao.Text;
+                    }
+
                     string vencimentoMes = vencimento;
 
                     string nomeMes = ""; // Declara fora pra poder usar depois

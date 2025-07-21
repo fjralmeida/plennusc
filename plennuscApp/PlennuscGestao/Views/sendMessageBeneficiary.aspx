@@ -1,5 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" 
-    AutoEventWireup="true" CodeBehind="sendMessageBeneficiary.aspx.cs" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master"
+    AutoEventWireup="true" CodeBehind="sendMessageBeneficiary.aspx.cs"
     Inherits="PlennuscApp.PlennuscGestao.Views.EnvioMensagemBeneficiario"
     Async="true" %>
 
@@ -41,9 +41,9 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
-        .btn-pill .fa {
-            margin-right: 8px;
-        }
+            .btn-pill .fa {
+                margin-right: 8px;
+            }
 
         .btn-success {
             background-color: #4CB07A;
@@ -51,9 +51,9 @@
             color: #fff;
         }
 
-        .btn-success:hover {
-            background-color: #3B8B65;
-        }
+            .btn-success:hover {
+                background-color: #3B8B65;
+            }
 
         .btn-danger {
             background-color: #DC8689;
@@ -61,9 +61,9 @@
             color: #fff;
         }
 
-        .btn-danger:hover {
-            background-color: #b75963;
-        }
+            .btn-danger:hover {
+                background-color: #b75963;
+            }
 
         .btn-info {
             background-color: #83CEEE;
@@ -71,10 +71,10 @@
             color: #fff;
         }
 
-        .btn-info:hover {
-            background-color: #6AB9E0;
-            color: white;
-        }
+            .btn-info:hover {
+                background-color: #6AB9E0;
+                color: white;
+            }
 
         .btn-purple {
             background-color: #C06ED4;
@@ -82,11 +82,11 @@
             color: #fff;
         }
 
-        .btn-purple:hover {
-            background-color: #a14db8;
-            border-color: #a14db8;
-            color: #fff;
-        }
+            .btn-purple:hover {
+                background-color: #a14db8;
+                border-color: #a14db8;
+                color: #fff;
+            }
 
         .botoes-acoes {
             display: flex;
@@ -110,19 +110,19 @@
             margin-bottom: 16px;
         }
 
-        .filter-panel .form-select {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
-            background-color: #fff;
-            transition: border-color 0.3s;
-        }
+            .filter-panel .form-select {
+                padding: 6px 12px;
+                border-radius: 8px;
+                border: 1px solid #ced4da;
+                background-color: #fff;
+                transition: border-color 0.3s;
+            }
 
-        .filter-panel .form-select:focus {
-            border-color: #4CB07A;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
-        }
+                .filter-panel .form-select:focus {
+                    border-color: #4CB07A;
+                    outline: none;
+                    box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
+                }
 
 
         .table thead {
@@ -213,28 +213,28 @@
             padding: 10px 0;
         }
 
-        /* Esconde os links de página e anterior, mostrando só o próximo */
-        #GridAssociados .aspNetPager a,
-        #GridAssociados .aspNetPager span {
-            display: none;
-        }
+            /* Esconde os links de página e anterior, mostrando só o próximo */
+            #GridAssociados .aspNetPager a,
+            #GridAssociados .aspNetPager span {
+                display: none;
+            }
 
-        /* Exibe somente o link do último item (normalmente Próxima) */
-        #GridAssociados .aspNetPager a:last-child {
-            display: inline-block;
-            padding: 5px 12px;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            color: #007bff;
-            font-weight: 500;
-            text-decoration: none;
-            transition: 0.2s;
-        }
+                /* Exibe somente o link do último item (normalmente Próxima) */
+                #GridAssociados .aspNetPager a:last-child {
+                    display: inline-block;
+                    padding: 5px 12px;
+                    border: 1px solid #007bff;
+                    border-radius: 4px;
+                    color: #007bff;
+                    font-weight: 500;
+                    text-decoration: none;
+                    transition: 0.2s;
+                }
 
-        #GridAssociados .aspNetPager a:last-child:hover {
-            background-color: #007bff;
-            color: white;
-        }
+                    #GridAssociados .aspNetPager a:last-child:hover {
+                        background-color: #007bff;
+                        color: white;
+                    }
 
         #modalResultadoConteudo {
             font-family: 'Inter', sans-serif;
@@ -265,37 +265,37 @@
             padding: 60px 20px;
         }
 
-        #modalEscolherMensagem .modal-content {
-            background-color: #fff;
-            border-radius: 16px;
-            max-width: 900px;
-            margin: auto;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s;
-        }
-
-        #modalEscolherMensagem .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #4CB07A;
-            color: white;
-            border-radius: 12px 12px 0 0;
-            padding: 12px 20px;
-            margin: 3px;
-        }
-
-            #modalEscolherMensagem .modal-header h2 {
-                margin: 0;
-                font-size: 20px;
+            #modalEscolherMensagem .modal-content {
+                background-color: #fff;
+                border-radius: 16px;
+                max-width: 900px;
+                margin: auto;
+                padding: 24px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                animation: fadeIn 0.3s;
             }
 
-        #modalEscolherMensagem .close {
-            cursor: pointer;
-            font-size: 24px;
-            color: white;
-        }
+            #modalEscolherMensagem .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #4CB07A;
+                color: white;
+                border-radius: 12px 12px 0 0;
+                padding: 12px 20px;
+                margin: 3px;
+            }
+
+                #modalEscolherMensagem .modal-header h2 {
+                    margin: 0;
+                    font-size: 20px;
+                }
+
+            #modalEscolherMensagem .close {
+                cursor: pointer;
+                font-size: 24px;
+                color: white;
+            }
 
         .template-opcao {
             border: 2px solid #ccc;
@@ -307,15 +307,42 @@
             background-color: #f9f9f9;
         }
 
-        .template-opcao:hover {
-            border-color: #4CB07A;
-            background-color: #e6f5ee;
+            .template-opcao:hover {
+                border-color: #4CB07A;
+                background-color: #e6f5ee;
+            }
+
+            .template-opcao h4 {
+                color: #4CB07A;
+                margin-top: 0;
+            }
+
+        .data-pequena {
+            max-width: 200px; /* ajustável, você pode testar com 180px ou 150px */
+            width: 100%;
+            padding: 6px 12px;
+            box-sizing: border-box;
+            cursor: pointer;
         }
 
-        .template-opcao h4 {
-            color: #4CB07A;
-            margin-top: 0;
+        .campo-data {
+            max-width: 240px;
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
         }
+
+            .campo-data:focus {
+                border-color: #4CB07A;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
+            }
 
         @keyframes fadeIn {
             from {
@@ -437,34 +464,41 @@
                 <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
                     <h4>Suspensão</h4>
                     <p>
-                        <strong>EVITE MAIS ACÚMULO DE JUROS E MULTA</strong><br>
+                        EVITE MAIS ACÚMULO DE JUROS E MULTA<br>
                         <br>
                         Prezado(a) beneficiário(a) ****<br>
-                        Segue abaixo o boleto para pagamento referente ao vencimento <strong>MAIO</strong> do seu plano de saúde <strong>UNIMED BH</strong>.<br>
-                        Prazo para efetuar o pagamento e evitar o cancelamento COM PROBABILIDADE DE REATIVAÇÃO do seu plano é <strong>17 DE JUNHO DE 2025</strong>.<br>
+                        Segue abaixo o boleto para pagamento referente ao vencimento MAIO do seu plano de saúde UNIMED BH.<br>
+                        Prazo para efetuar o pagamento e evitar o cancelamento COM PROBABILIDADE DE REATIVAÇÃO do seu plano é:
+        <asp:TextBox ID="txtDataSuspensao" runat="server" TextMode="Date"
+            CssClass="form-control campo-data" ClientIDMode="Static"
+            onclick="event.stopPropagation();"></asp:TextBox><br>
                         <br>
                         Gentileza conferir os dados do boleto antes de realizar o pagamento.<br>
                         <br>
                         Dúvidas, seguimos à disposição.<br>
-                        <strong>Departamento de cobrança da Vallor Benefícios.</strong>
+                        Departamento de cobrança da Vallor Benefícios.
                     </p>
                 </div>
 
                 <div class="template-opcao" onclick="selecionarTemplate('Definitivo')">
                     <h4>Definitivo</h4>
                     <p>
-                        <strong>EVITE MAIS ACÚMULO DE JUROS E MULTA</strong><br>
+                        EVITE MAIS ACÚMULO DE JUROS E MULTA<br>
                         <br>
                         Prezado(a) beneficiário(a) *****<br>
-                        Segue abaixo o boleto para pagamento referente ao vencimento <strong>ABRIL</strong> do seu plano de saúde <strong>VOCE TOTAL</strong>.<br>
-                        Prazo para efetuar o pagamento e evitar o cancelamento <strong>DEFINITIVO</strong> do seu plano é <strong>30 DE MAIO DE 2025</strong>.<br>
-                        O não pagamento poderá acarretar a inclusão do seu nome nos órgãos de proteção ao crédito <strong>SPC/SERASA</strong>.<br>
-                        <strong>Após o pagamento, gentileza enviar o comprovante.</strong><br>
+                        Segue abaixo o boleto para pagamento referente ao vencimento ABRIL do seu plano de saúde VOCE TOTAL.<br>
+                        Prazo para efetuar o pagamento e evitar o cancelamento DEFINITIVO do seu plano é:
+        <asp:TextBox ID="txtDataDefinitivo" runat="server" TextMode="Date"
+            CssClass="form-control campo-data" ClientIDMode="Static"
+            onclick="event.stopPropagation();"></asp:TextBox><br>
+                        <br>
+                        O não pagamento poderá acarretar a inclusão do seu nome nos órgãos de proteção ao crédito SPC/SERASA.<br>
+                        Após o pagamento, gentileza enviar o comprovante.<br>
                         <br>
                         Gentileza conferir os dados do boleto antes de realizar o pagamento.<br>
                         <br>
                         Dúvidas, seguimos à disposição.<br>
-                        <strong>Departamento de cobrança da Vallor Benefícios.</strong>
+                        Departamento de cobrança da Vallor Benefícios.
                     </p>
                 </div>
 
@@ -475,9 +509,14 @@
                         <br>
                         Prezado(a) Sr.(a) ******, tudo bem? Esperamos que sim!<br>
                         <br>
-                        Para sua comodidade, seguem em anexo os boletos referentes às mensalidades de <strong>ABRIL e MAIO</strong> em atraso do seu plano de saúde <strong>AURORA</strong>, cujo vencimento original foi <strong>05/04/2025</strong>.<br>
+                        Para sua comodidade, seguem em anexo os boletos referentes às mensalidades de ABRIL e MAIO em atraso do seu plano de saúde AURORA, cujo vencimento original foi 05/04/2025.<br>
                         <br>
-                        Ambos os boletos devem ser pagos até o dia <strong>30 DE MAIO DE 2025</strong> para evitar o <strong>cancelamento definitivo</strong> do seu plano.<br>
+                        Ambos os boletos devem ser pagos até o dia:
+        <asp:TextBox ID="txtDataNovaOpcao" runat="server" TextMode="Date"
+            CssClass="form-control campo-data" ClientIDMode="Static"
+            onclick="event.stopPropagation();"></asp:TextBox><br>
+                        <br>
+                        Para evitar o cancelamento definitivo do seu plano.<br>
                         <br>
                         Gentileza conferir os dados dos boletos antes de realizar o pagamento.<br>
                         <br>
@@ -486,6 +525,8 @@
                         Atenciosamente.
                     </p>
                 </div>
+
+
 
             </div>
         </div>
