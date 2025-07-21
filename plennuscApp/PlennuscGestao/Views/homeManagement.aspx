@@ -10,6 +10,26 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+     .dashboard-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 8px;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* sombra leve só no hover */
+}
+
+.dashboard-card:active {
+    transform: scale(0.98);
+    box-shadow: none; /* sem sombra no clique */
+}
+
+    </style>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -20,8 +40,8 @@
 
         <!-- Cards coloridos -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4 justify-content-center">
-            <div>
-                <div class="card shadow-sm border-0" style="background: #e1fbee;">
+          <div class="dashboard-card" onclick="window.location.href='employeeManagement.aspx';">
+                <div  class="card border-0" style="background: #e1fbee;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
                             <h6 class="fw-semibold text-success">
@@ -33,8 +53,8 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="card shadow-sm border-0" style="background: #fff8e1;">
+            <div class="dashboard-card" onclick="window.location.href='employeeDepartment.aspx';">
+                <div  class="card border-0" style="background: #fff8e1;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
                             <h6 class="fw-semibold text-warning">
@@ -46,8 +66,8 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="card shadow-sm border-0" style="background: #fbe7e7;">
+            <div class="dashboard-card" onclick="window.location.href='employeePosition.aspx';">
+                <div  class="card border-0" style="background: #fbe7e7;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
                             <h6 class="fw-semibold text-danger">
@@ -59,8 +79,8 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="card shadow-sm border-0" style="background: #eae7fb;">
+            <div class="dashboard-card" onclick="window.location.href='employeeManagement.aspx';">
+                <div  class="card border-0" style="background: #eae7fb;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
                             <h6 class="fw-semibold" style="color: #c06ed4;">teste</h6>

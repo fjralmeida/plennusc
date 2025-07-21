@@ -7,101 +7,74 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace PlennuscGestao.Views.Masters
+namespace appWhatsapp.PlennuscGestao.Views
 {
 
 
-    public partial class Index
+    public partial class privacySettings
     {
 
         /// <summary>
-        /// Controle head.
+        /// Controle txtLoginAtual.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder head;
+        protected global::System.Web.UI.WebControls.TextBox txtLoginAtual;
 
         /// <summary>
-        /// Controle form1.
+        /// Controle txtNovoLogin.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.TextBox txtNovoLogin;
 
         /// <summary>
-        /// Controle imgLogo.
+        /// Controle btnAlterarLogin.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgLogo;
+        protected global::System.Web.UI.WebControls.Button btnAlterarLogin;
 
         /// <summary>
-        /// Controle lblNomeSistema.
+        /// Controle txtSenhaAtual.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNomeSistema;
+        protected global::System.Web.UI.WebControls.TextBox txtSenhaAtual;
 
         /// <summary>
-        /// Controle txtBusca.
+        /// Controle txtNovaSenha.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBusca;
+        protected global::System.Web.UI.WebControls.TextBox txtNovaSenha;
 
         /// <summary>
-        /// Controle imgAvatarUsuario.
+        /// Controle txtConfirmarSenha.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAvatarUsuario;
+        protected global::System.Web.UI.WebControls.TextBox txtConfirmarSenha;
 
         /// <summary>
-        /// Controle imgAvatarUsuarioDropdown.
+        /// Controle btnAlterarSenha.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAvatarUsuarioDropdown;
-
-        /// <summary>
-        /// Controle lblUsuario.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUsuario;
-
-        /// <summary>
-        /// Controle btnLogout.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnLogout;
-
-        /// <summary>
-        /// Controle ContentPlaceHolder1.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder1;
+        protected global::System.Web.UI.WebControls.Button btnAlterarSenha;
     }
 }

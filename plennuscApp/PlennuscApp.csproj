@@ -156,6 +156,7 @@
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
+    <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\profile.aspx" />
@@ -301,6 +302,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\FixedMessageSending.aspx.designer.cs">
       <DependentUpon>FixedMessageSending.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\privacySettings.aspx.cs">
+      <DependentUpon>privacySettings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\privacySettings.aspx.designer.cs">
+      <DependentUpon>privacySettings.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx.cs">
       <DependentUpon>sendMessageBeneficiary.aspx</DependentUpon>

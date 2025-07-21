@@ -208,39 +208,36 @@
             outline-offset: 2px;
         }
       /* PAGINAÇÃO DO GRID */
-/* 🔧 Estilo simples e elegante para a paginação do GridView */
-#GridAssociados .pager-footer {
-    padding: 10px 16px;
-    border-top: 1px solid #e6e6e6;
-    background-color: #fff;
-    font-size: 13px;
-    text-align: right;
-}
+        /* 🔧 Estilo simples e elegante para a paginação do GridView */
+        #GridAssociados .pager-footer {
+            padding: 10px 16px;
+            border-top: 1px solid #e6e6e6;
+            background-color: #fff;
+            font-size: 13px;
+            text-align: right;
+        }
 
-#GridAssociados .pager-footer a,
-#GridAssociados .pager-footer span {
-    display: inline-block;
-    padding: 4px 10px;
-    margin: 0 2px;
-    text-decoration: none;
-    font-weight: 500;
-    color: #4CB07A;
-    border-radius: 4px;
-    transition: all 0.2s ease-in-out;
-}
+        #GridAssociados .pager-footer a,
+        #GridAssociados .pager-footer span {
+            display: inline-block;
+            padding: 4px 10px;
+            margin: 0 2px;
+            text-decoration: none;
+            font-weight: 500;
+            color: #4CB07A;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
+        }
 
-#GridAssociados .pager-footer a:hover {
-    background-color: #4CB07A;
-    color: white;
-}
+        #GridAssociados .pager-footer a:hover {
+            background-color: #4CB07A;
+            color: white;
+        }
 
-#GridAssociados .pager-footer span {
-    background-color: #4CB07A;
-    color: white;
-}
-
-
-
+        #GridAssociados .pager-footer span {
+            background-color: #4CB07A;
+            color: white;
+        }
         #modalResultadoConteudo {
             font-family: 'Inter', sans-serif;
             font-size: 14px;
@@ -270,37 +267,37 @@
             padding: 60px 20px;
         }
 
-            #modalEscolherMensagem .modal-content {
-                background-color: #fff;
-                border-radius: 16px;
-                max-width: 900px;
-                margin: auto;
-                padding: 24px;
-                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-                animation: fadeIn 0.3s;
-            }
+        #modalEscolherMensagem .modal-content {
+            background-color: #fff;
+            border-radius: 16px;
+            max-width: 900px;
+            margin: auto;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s;
+        }
 
-            #modalEscolherMensagem .modal-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background-color: #4CB07A;
-                color: white;
-                border-radius: 12px 12px 0 0;
-                padding: 12px 20px;
-                margin: 3px;
-            }
+        #modalEscolherMensagem .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4CB07A;
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 20px;
+            margin: 3px;
+        }
 
-                #modalEscolherMensagem .modal-header h2 {
-                    margin: 0;
-                    font-size: 20px;
-                }
+        #modalEscolherMensagem .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
 
-            #modalEscolherMensagem .close {
-                cursor: pointer;
-                font-size: 24px;
-                color: white;
-            }
+        #modalEscolherMensagem .close {
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
 
         .template-opcao {
             border: 2px solid #ccc;
@@ -312,15 +309,15 @@
             background-color: #f9f9f9;
         }
 
-            .template-opcao:hover {
-                border-color: #4CB07A;
-                background-color: #e6f5ee;
-            }
+        .template-opcao:hover {
+            border-color: #4CB07A;
+            background-color: #e6f5ee;
+        }
 
-            .template-opcao h4 {
-                color: #4CB07A;
-                margin-top: 0;
-            }
+        .template-opcao h4 {
+            color: #4CB07A;
+            margin-top: 0;
+        }
 
         .data-pequena {
             max-width: 200px; /* ajustável, você pode testar com 180px ou 150px */
@@ -343,11 +340,11 @@
             transition: border-color 0.3s ease;
         }
 
-            .campo-data:focus {
-                border-color: #4CB07A;
-                outline: none;
-                box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
-            }
+        .campo-data:focus {
+            border-color: #4CB07A;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
+        }
 
         @keyframes fadeIn {
             from {

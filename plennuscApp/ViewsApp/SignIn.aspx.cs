@@ -123,6 +123,7 @@ namespace appWhatsapp.Views
                 Session["CodEmpresa"] = row["CodEmpresa"];
                 Session["NomeEmpresa"] = row["NomeFantasia"];
                 Session["CodSistema"] = row["CodSistema"];
+                Session["CodPessoa"] = row["CodPessoa"];
 
                 // Redireciona para a home correta
                 switch (codSistemaSelecionado)

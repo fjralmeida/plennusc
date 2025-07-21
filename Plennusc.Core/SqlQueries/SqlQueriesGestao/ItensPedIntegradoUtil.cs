@@ -66,6 +66,7 @@ namespace appWhatsapp.SqlQueries
             string sql = @"
                            SELECT 
             AA.CodAutenticacaoAcesso,
+            AA.CodPessoa,
             AA.NomeUsuario,
             AA.UsrNomeLogin,
             AA.Conf_Ativo AS UsuarioAtivo,
