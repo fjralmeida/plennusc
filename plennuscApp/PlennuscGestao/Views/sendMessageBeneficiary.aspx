@@ -207,34 +207,39 @@
             outline: 2px solid #4CB07A;
             outline-offset: 2px;
         }
-        /* Container padrão da paginação do GridView */
-        #GridAssociados .aspNetPager {
-            text-align: right !important;
-            padding: 10px 0;
-        }
+      /* PAGINAÇÃO DO GRID */
+/* 🔧 Estilo simples e elegante para a paginação do GridView */
+#GridAssociados .pager-footer {
+    padding: 10px 16px;
+    border-top: 1px solid #e6e6e6;
+    background-color: #fff;
+    font-size: 13px;
+    text-align: right;
+}
 
-            /* Esconde os links de página e anterior, mostrando só o próximo */
-            #GridAssociados .aspNetPager a,
-            #GridAssociados .aspNetPager span {
-                display: none;
-            }
+#GridAssociados .pager-footer a,
+#GridAssociados .pager-footer span {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 0 2px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #4CB07A;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+}
 
-                /* Exibe somente o link do último item (normalmente Próxima) */
-                #GridAssociados .aspNetPager a:last-child {
-                    display: inline-block;
-                    padding: 5px 12px;
-                    border: 1px solid #007bff;
-                    border-radius: 4px;
-                    color: #007bff;
-                    font-weight: 500;
-                    text-decoration: none;
-                    transition: 0.2s;
-                }
+#GridAssociados .pager-footer a:hover {
+    background-color: #4CB07A;
+    color: white;
+}
 
-                    #GridAssociados .aspNetPager a:last-child:hover {
-                        background-color: #007bff;
-                        color: white;
-                    }
+#GridAssociados .pager-footer span {
+    background-color: #4CB07A;
+    color: white;
+}
+
+
 
         #modalResultadoConteudo {
             font-family: 'Inter', sans-serif;
@@ -599,69 +604,62 @@
                     </asp:DropDownList>
                 </div>
 
-                <asp:GridView ID="GridAssociados" runat="server" AutoGenerateColumns="False"
-                    CssClass="table table-hover align-middle mb-0" ClientIDMode="Static"
-                    EmptyDataText="Nenhum registro encontrado."
-                    AllowPaging="true" PageSize="15" OnPageIndexChanging="GridAssociados_PageIndexChanging">
-                    <Columns>
-                        <asp:TemplateField HeaderText="">
-                            <HeaderTemplate>
-                                <div class="checkbox-header">
-                                    <asp:CheckBox ID="chkSelecionarTodos" runat="server" CssClass="form-check-input" onclick="selecionarTodos(this);" />
-                                    <span>Todos</span>
-                                </div>
-                            </HeaderTemplate>
-                            <ItemTemplate>
-                                <div>
-                                    <asp:CheckBox ID="chkSelecionar" runat="server" CssClass="form-check-input" onclick="alternarSelecao(this);" />
-                                </div>
-                            </ItemTemplate>
-                            <ItemStyle CssClass="col-selecao" />
-                            <HeaderStyle CssClass="col-selecao" />
-                        </asp:TemplateField>
+                <asp:GridView ID="GridAssociados" runat="server"
+    AutoGenerateColumns="False"
+    CssClass="table table-hover align-middle mb-0"
+    ClientIDMode="Static"
+    EmptyDataText="Nenhum registro encontrado."
+     ShowFooter="true"
+    PagerStyle-CssClass="pager-footer"
+    PagerStyle-HorizontalAlign="Right"
+    AllowPaging="true"
+    PageSize="15"
+    OnPageIndexChanging="GridAssociados_PageIndexChanging">
+    <Columns>
 
-                        <asp:TemplateField HeaderText="Código">
-                            <ItemTemplate>
-                                <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Registro">
-                            <ItemTemplate>
-                                <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Associado">
-                            <ItemTemplate>
-                                <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Plano">
-                            <ItemTemplate>
-                                <asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Operadora">
-                            <ItemTemplate>
-                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Vencimento">
-                            <ItemTemplate>
-                                <asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Valor">
-                            <ItemTemplate>
-                                <asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Telefone">
-                            <ItemTemplate>
-                                <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                </asp:GridView>
+        <asp:TemplateField HeaderText="">
+            <HeaderTemplate>
+                <div class="checkbox-header">
+                    <asp:CheckBox ID="chkSelecionarTodos" runat="server" CssClass="form-check-input" onclick="selecionarTodos(this);" />
+                    <span>Todos</span>
+                </div>
+            </HeaderTemplate>
+            <ItemTemplate>
+                <div>
+                    <asp:CheckBox ID="chkSelecionar" runat="server" CssClass="form-check-input" onclick="alternarSelecao(this);" />
+                </div>
+            </ItemTemplate>
+            <ItemStyle CssClass="col-selecao" />
+            <HeaderStyle CssClass="col-selecao" />
+        </asp:TemplateField>
+
+        <asp:TemplateField HeaderText="Código">
+            <ItemTemplate><asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' /></ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Registro">
+            <ItemTemplate><asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' /></ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Associado">
+            <ItemTemplate><asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' /></ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Plano">
+            <ItemTemplate><asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' /></ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Operadora">
+            <ItemTemplate><asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' /></ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Vencimento">
+            <ItemTemplate><asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' /></ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Valor">
+            <ItemTemplate><asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' /></ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="Telefone">
+            <ItemTemplate><asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' /></ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
+</asp:GridView>
+
             </div>
         </div>
     </div>
