@@ -14,21 +14,15 @@
             font-size: 13px;
             color: #333;
         }
-
-        .container {
-            max-width: 1100px;
-            margin: 32px auto;
-            padding: 0 16px;
-        }
-
-        .titulo-pagina {
-            font-size: 26px;
-            font-weight: 600;
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-        }
+.titulo-pagina {
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 8px;
+    position: relative;
+}
 
         .titulo-pagina::after {
             content: "";
@@ -82,14 +76,14 @@
             font-weight: 500;
         }
 
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            margin-top: 4px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 13px;
-        }
+.privacy-settings-page .form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+}
 
         .btn-salvar {
             width: 100%;
@@ -124,7 +118,8 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <div class="container">
+    <div class="privacy-settings-page">
+   <div class="px-4 pt-4">
         <h2 class="titulo-pagina">
             <i class="fa-solid fa-user-shield me-2" style="color:#4CB07A;"></i>
             Configurações & Privacidade
@@ -165,4 +160,5 @@
             </div>
         </div>
     </div>
+        </div>
 </asp:Content>
