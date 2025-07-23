@@ -164,6 +164,11 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <!-- Bootstrap JS carregado no final para garantir que o DOM esteja pronto -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
     <div class="container">
         <h2 class="titulo-pagina"><i class="fa-solid fa-file-csv me-2" style="color:#83CEEE;"></i> Envio de Mensagens Fixo via CSV</h2>
 

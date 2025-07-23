@@ -431,6 +431,10 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
+    <!-- Bootstrap JS carregado no final para garantir que o DOM esteja pronto -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
     <!-- Modal de Resultado -->
     <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">

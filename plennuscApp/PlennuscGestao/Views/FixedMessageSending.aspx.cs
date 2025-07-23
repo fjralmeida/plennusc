@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -99,8 +100,15 @@ namespace appWhatsapp.PlennuscGestao.Views
             // Guardar no ViewState para usar depois no botão de download
             ViewState["ResultadoEnvio"] = resultadoCsv;
 
-            // Exibir o modal com o resultado final e ativar botão de download
-            ScriptManager.RegisterStartupScript(this, GetType(), "mostrarModal", $"mostrarResultadoModal(`{resultadoFinal.ToString().Replace("`", "'")}`);", true);
+            //// Exibir o modal com o resultado final e ativar botão de download
+            //ScriptManager.RegisterStartupScript(this, GetType(), "mostrarModal", $"mostrarResultadoModal(`{resultadoFinal.ToString().Replace("`", "'")}`);", true);
+
+            string resultadoFinalTexto = resultadoFinal.ToString();
+            string resultadoEscapado = HttpUtility.JavaScriptStringEncode(resultadoFinalTexto);
+
+            ScriptManager.RegisterStartupScript(
+                Page, Page.GetType(), "MostrarResultado",
+                $"mostrarResultadoModal('{resultadoEscapado}');", true);
         }
 
         protected List<DadosMensagemCsv> ObterLinhasSelecionadasFixo(Stream csvStream)
