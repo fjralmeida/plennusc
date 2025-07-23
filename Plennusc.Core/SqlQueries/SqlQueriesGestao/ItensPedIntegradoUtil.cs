@@ -135,5 +135,52 @@ namespace appWhatsapp.SqlQueries
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(sql, parametros);
         }
+        public void GravarLogEnvio(
+             string telefoneDestino,
+             int? codAssociado,
+             string statusEnvio,
+             string idResposta,
+             string conteudoApi,
+             string mensagemFinal,
+             string numeroEnvio = null
+         )
+        {
+            string sql = @"
+                INSERT INTO LOG_ENVIO_MENSAGEM (
+                    CODIGO_ASSOCIADO,
+                    TELEFONE_DESTINO,
+                    NUMERO_ENVIO,
+                    DATA_ENVIO,
+                    DATA_CONFIRMACAO,
+                    STATUS_ENVIO,
+                    ID_RESPOSTA_API,
+                    STATUS_API_JSON,
+                    MENSAGEM
+                )
+                VALUES (
+                    @CodigoAssociado,
+                    @TelefoneDestino,
+                    @NumeroEnvio,
+                    GETDATE(),
+                    GETDATE(),
+                    @StatusEnvio,
+                    @IdResposta,
+                    @StatusApiJson,
+                    @MensagemFinal
+                )";
+
+            var parametros = new Dictionary<string, object>
+            {
+                ["@CodigoAssociado"] = codAssociado.HasValue ? (object)codAssociado.Value : DBNull.Value,
+                ["@TelefoneDestino"] = telefoneDestino,
+                ["@NumeroEnvio"] = !string.IsNullOrEmpty(numeroEnvio) ? (object)numeroEnvio : DBNull.Value,
+                ["@StatusEnvio"] = statusEnvio,
+                ["@IdResposta"] = !string.IsNullOrEmpty(idResposta) ? (object)idResposta : DBNull.Value,
+                ["@StatusApiJson"] = conteudoApi ?? "",
+                ["@MensagemFinal"] = mensagemFinal ?? ""
+            };
+
+            new Banco_Dados_SQLServer().ExecutarAlianca(sql, parametros);
+        }
     }
 }

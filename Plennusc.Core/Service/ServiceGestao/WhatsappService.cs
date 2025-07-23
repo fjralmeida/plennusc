@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using appWhatsapp.SqlQueries;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,8 +90,9 @@ namespace appWhatsapp.Service
 
         public async Task<string> ConexaoApiSuspensao(List<string> telefones, string pdfUrl,
                                                     string field1, string field2, string field3,
-                                                    string field4)
+                                                    string field4, string mensagemFinal)
         {
+            var util = new ItensPedIntegradoUtil();
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
@@ -136,8 +138,19 @@ namespace appWhatsapp.Service
 
                         if (!string.IsNullOrEmpty(id))
                         {
-                            // Faz o GET para verificar status da mensagem enviada
                             var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+
+                            // ✅ Grava no banco a mensagem enviada
+                            util.GravarLogEnvio(
+                                telefoneDestino: telefone,
+                                codAssociado: null,                 // se tiver, preencha
+                                statusEnvio: "ENVIADO",
+                                idResposta: id,
+                                conteudoApi: statusResponse,
+                                mensagemFinal: mensagemFinal,     // <<< a mensagem do template já montada
+                                numeroEnvio: null                   // ou o número do remetente, se aplicável
+                            );
+
                             resultadoFinal.AppendLine(statusResponse);
                         }
                         else
@@ -160,8 +173,9 @@ namespace appWhatsapp.Service
 
         public async Task<string> ConexaoApiDefinitivo(List<string> telefones, string pdfUrl,
                                                     string field1, string field2, string field3,
-                                                    string field4)
+                                                    string field4, string mensagemFinal)
         {
+            var util = new ItensPedIntegradoUtil();
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
@@ -207,8 +221,19 @@ namespace appWhatsapp.Service
 
                         if (!string.IsNullOrEmpty(id))
                         {
-                            // Faz o GET para verificar status da mensagem enviada
                             var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+
+                            // ✅ Grava no banco a mensagem enviada
+                            util.GravarLogEnvio(
+                                telefoneDestino: telefone,
+                                codAssociado: null,                 // se tiver, preencha
+                                statusEnvio: "ENVIADO",
+                                idResposta: id,
+                                conteudoApi: statusResponse,
+                                mensagemFinal: mensagemFinal,     // <<< a mensagem do template já montada
+                                numeroEnvio: null                   // ou o número do remetente, se aplicável
+                            );
+
                             resultadoFinal.AppendLine(statusResponse);
                         }
                         else

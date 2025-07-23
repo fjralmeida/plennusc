@@ -148,7 +148,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                 string resultado = string.Empty;
 
                 switch (escolhaTemplate)
-                {
+                    {
                     case "Suspensao":
                         resultado = await api.ConexaoApiSuspensao(
                             telefones,
@@ -156,7 +156,8 @@ namespace PlennuscApp.PlennuscGestao.Views
                             dados.Field1,
                             dados.Field2,
                             dados.Field3,
-                            dados.Field4
+                            dados.Field4,
+                            escolhaTemplate
                         );
                         break;
 
@@ -167,7 +168,8 @@ namespace PlennuscApp.PlennuscGestao.Views
                             dados.Field1,
                             dados.Field2,
                             dados.Field3,
-                            dados.Field4
+                            dados.Field4,
+                           escolhaTemplate
                         );
                         break;
 
@@ -192,7 +194,13 @@ namespace PlennuscApp.PlennuscGestao.Views
 
                 resultadoFinal.AppendLine(resultado);
             }
-            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "MostrarResultado", $"mostrarResultadoModal(`{resultadoFinal}`);", true);
+
+            string resultadoFinalTexto = resultadoFinal.ToString();
+            string resultadoEscapado = HttpUtility.JavaScriptStringEncode(resultadoFinalTexto);
+
+            ScriptManager.RegisterStartupScript(
+                Page, Page.GetType(), "MostrarResultado",
+                $"mostrarResultadoModal('{resultadoEscapado}');", true);
 
             //lblResultado.Text = resultadoFinal.ToString().Replace("\n", "<br/>");
         }

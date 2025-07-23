@@ -16,6 +16,9 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+
     <style>
         * {
             font-family: 'Poppins', sans-serif;
@@ -263,47 +266,47 @@
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
-                                <span><i class="bi bi-person-badge"></i>Gestão de Pessoas</span>
+                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuGestaoPessoas">
-                                <a href="employeeManagement.aspx">Colaboradores</a>
-                                <a href="employeeDepartment.aspx">Departamentos</a>
-                                <a href="employeePosition.aspx">Cargos</a>
+                                <a href="employeeManagement.aspx"> Colaboradores</a>
+                                <a href="employeeDepartment.aspx"> Departamentos</a>
+                                <a href="employeePosition.aspx"> Cargos</a>
                                 <a href="#">Documentos</a>
                             </div>
                         </li>
 
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot">
-                                <span><i class="bi bi-robot"></i>Chatbot</span>
+                                <span><i class="bi bi-robot"></i> Chatbot</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuChatbot">
-                                <a href="sendMessageBeneficiary.aspx">Beneficiário</a>
-                                <a href="FixedMessageSending.aspx">Mensagem Fixa</a>
+                                <a href="sendMessageBeneficiary.aspx"> Beneficiário</a>
+                                <a href="FixedMessageSending.aspx"> Mensagem Fixa</a>
                                 <a href="#">Empresa</a>
                             </div>
                         </li>
 
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium">
-                                <span><i class="bi bi-upload"></i>Importação Planium</span>
+                                <span><i class="bi bi-upload"></i> Importação Planium</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="importPlanium">
-                                <a href="csvImportPlanium.aspx">Importar Csv</a>
-                                <a href="#">Importar Pdf</a>
+                                <a href="csvImportPlanium.aspx"> Importar Csv</a>
+                                <a href="#"> Importar Pdf</a>
                             </div>
                         </li>
 
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">
-                                <span><i class="bi bi-envelope"></i>Email</span>
+                                <span><i class="bi bi-envelope"></i> Email</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuEmail">
-                                <a href="#">Enviar Email</a>
+                                <a href="#"> Enviar Email</a>
                             </div>
                         </li>
 
