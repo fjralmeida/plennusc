@@ -6,7 +6,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+ 
 
 
     <style>
@@ -110,19 +110,19 @@
             margin-bottom: 16px;
         }
 
-            .filter-panel .form-select {
-                padding: 6px 12px;
-                border-radius: 8px;
-                border: 1px solid #ced4da;
-                background-color: #fff;
-                transition: border-color 0.3s;
-            }
+        .filter-panel .form-select {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            background-color: #fff;
+            transition: border-color 0.3s;
+        }
 
-                .filter-panel .form-select:focus {
-                    border-color: #4CB07A;
-                    outline: none;
-                    box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
-                }
+        .filter-panel .form-select:focus {
+            border-color: #4CB07A;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
+        }
 
 
         .table thead {
