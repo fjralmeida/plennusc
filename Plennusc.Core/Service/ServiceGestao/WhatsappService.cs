@@ -148,6 +148,7 @@ namespace appWhatsapp.Service
                                 idResposta: id,
                                 conteudoApi: statusResponse,
                                 mensagemFinal: mensagemFinal,     // <<< a mensagem do template já montada
+                                codEmpresa: 400,
                                 numeroEnvio: null                   // ou o número do remetente, se aplicável
                             );
 
@@ -231,6 +232,7 @@ namespace appWhatsapp.Service
                                 idResposta: id,
                                 conteudoApi: statusResponse,
                                 mensagemFinal: mensagemFinal,     // <<< a mensagem do template já montada
+                                codEmpresa: 400,
                                 numeroEnvio: null                   // ou o número do remetente, se aplicável
                             );
 

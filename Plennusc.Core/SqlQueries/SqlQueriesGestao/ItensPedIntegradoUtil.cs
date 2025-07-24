@@ -136,38 +136,41 @@ namespace appWhatsapp.SqlQueries
             return db.LerPlennus(sql, parametros);
         }
         public void GravarLogEnvio(
-             string telefoneDestino,
-             int? codAssociado,
-             string statusEnvio,
-             string idResposta,
-             string conteudoApi,
-             string mensagemFinal,
-             string numeroEnvio = null
-         )
+              string telefoneDestino,
+              int? codAssociado,
+              string statusEnvio,
+              string idResposta,
+              string conteudoApi,
+              string mensagemFinal,
+              int codEmpresa = 400,
+              string numeroEnvio = null
+          )
         {
             string sql = @"
-                INSERT INTO LOG_ENVIO_MENSAGEM (
-                    CODIGO_ASSOCIADO,
-                    TELEFONE_DESTINO,
-                    NUMERO_ENVIO,
-                    DATA_ENVIO,
-                    DATA_CONFIRMACAO,
-                    STATUS_ENVIO,
-                    ID_RESPOSTA_API,
-                    STATUS_API_JSON,
-                    MENSAGEM
-                )
-                VALUES (
-                    @CodigoAssociado,
-                    @TelefoneDestino,
-                    @NumeroEnvio,
-                    GETDATE(),
-                    GETDATE(),
-                    @StatusEnvio,
-                    @IdResposta,
-                    @StatusApiJson,
-                    @MensagemFinal
-                )";
+        INSERT INTO LOG_ENVIO_MENSAGEM (
+            CODIGO_ASSOCIADO,
+            TELEFONE_DESTINO,
+            NUMERO_ENVIO,
+            DATA_ENVIO,
+            DATA_CONFIRMACAO,
+            STATUS_ENVIO,
+            ID_RESPOSTA_API,
+            STATUS_API_JSON,
+            MENSAGEM,
+            CODIGO_EMPRESA
+        )
+        VALUES (
+            @CodigoAssociado,
+            @TelefoneDestino,
+            @NumeroEnvio,
+            GETDATE(),
+            GETDATE(),
+            @StatusEnvio,
+            @IdResposta,
+            @StatusApiJson,
+            @MensagemFinal,
+            @CodEmpresa
+        )";
 
             var parametros = new Dictionary<string, object>
             {
@@ -177,7 +180,8 @@ namespace appWhatsapp.SqlQueries
                 ["@StatusEnvio"] = statusEnvio,
                 ["@IdResposta"] = !string.IsNullOrEmpty(idResposta) ? (object)idResposta : DBNull.Value,
                 ["@StatusApiJson"] = conteudoApi ?? "",
-                ["@MensagemFinal"] = mensagemFinal ?? ""
+                ["@MensagemFinal"] = mensagemFinal ?? "",
+                ["@CodEmpresa"] = codEmpresa
             };
 
             new Banco_Dados_SQLServer().ExecutarAlianca(sql, parametros);
