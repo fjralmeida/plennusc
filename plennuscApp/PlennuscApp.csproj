@@ -151,6 +151,8 @@
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
+    <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
+    <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
     <Content Include="PlennuscGestao\Views\employeeDepartment.aspx" />
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
@@ -164,6 +166,8 @@
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
+    <Content Include="PlennuscMedic\Views\privacySettingsMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\profileMedic.aspx" />
     <Content Include="public\uploadfinance\docs\Pros e Contras de cada arquitetura.txt" />
     <Content Include="public\uploadfinance\images\DSCN1684_Original.JPEG" />
     <Content Include="public\uploadfinance\images\logoVallor.png" />
@@ -268,6 +272,20 @@
     <Compile Include="PlennuscFinance\Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscFinance\Views\privacySettingsFinance.aspx.cs">
+      <DependentUpon>privacySettingsFinance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscFinance\Views\privacySettingsFinance.aspx.designer.cs">
+      <DependentUpon>privacySettingsFinance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscFinance\Views\profileFinance.aspx.cs">
+      <DependentUpon>profileFinance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscFinance\Views\profileFinance.aspx.designer.cs">
+      <DependentUpon>profileFinance.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscGestao\Views\csvImportPlanium.aspx.cs">
       <DependentUpon>csvImportPlanium.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -364,6 +382,20 @@
     </Compile>
     <Compile Include="PlennuscMedic\Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\privacySettingsMedic.aspx.cs">
+      <DependentUpon>privacySettingsMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\privacySettingsMedic.aspx.designer.cs">
+      <DependentUpon>privacySettingsMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\profileMedic.aspx.cs">
+      <DependentUpon>profileMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\profileMedic.aspx.designer.cs">
+      <DependentUpon>profileMedic.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewsApp\erro.aspx.cs">
       <DependentUpon>erro.aspx</DependentUpon>

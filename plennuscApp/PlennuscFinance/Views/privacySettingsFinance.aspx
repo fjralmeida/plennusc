@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="privacySettings.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.privacySettings" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscFinance/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="privacySettingsFinance.aspx.cs" Inherits="appWhatsapp.PlennuscFinance.Views.privacySettingsFinance" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -162,3 +162,4 @@
     </div>
         </div>
 </asp:Content>
+
