@@ -6,74 +6,201 @@
     <meta charset="utf-8" />
     <title>Dashboard</title>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Estilo personalizado -->
-    <link href="assets/css/custom-notifications.css" rel="stylesheet" />
-
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet" />
 
-    <!-- Custom CSS -->
     <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+            background-color: #f5f7fb;
+        }
+
         .nome-sistema {
             font-weight: 600;
-            background: linear-gradient(to right, #e96969, #dbb809);
+            background: linear-gradient(to right, #4CB07A, #83CEEE);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
         }
 
         .user-avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             object-fit: cover;
+            border-radius: 50%;
             cursor: pointer;
         }
 
         .sidebar {
-            width: 250px;
-            background-color: #fff;
-            border-right: 1px solid #ddd;
-            padding: 1rem;
-            height: calc(100vh - 70px);
-            /* overflow-y removido para tirar scroll */
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #e3e6ef;
+            padding: 1.5rem 0.5rem;
+            height: 100%;
+            font-size: 13.5px;
+            overflow-y: auto;
         }
 
         .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-decoration: none;
-            color: #333;
+            color: #3b3f5c;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
             font-weight: 500;
-            display: block;
-            padding: 0.25rem 0;
         }
 
         .sidebar a:hover {
-            color: #0d6efd;
+            background-color: #f1f5ff;
+            color: #1d4ed8;
+        }
+
+        .sidebar a.active {
+            background-color: #e0edff;
+            color: #1d4ed8;
+            font-weight: 600;
         }
 
         .sidebar .collapse a {
-            font-size: 0.95rem;
+            font-size: 13px;
+            padding-left: 32px;
             font-weight: 400;
-            padding-left: 1rem;
         }
 
-        body {
-            overflow: hidden; /* previne scroll da janela */
+        .sidebar .bi {
+            font-size: 15px;
+            color: #9ca3af;
         }
 
-           /* Hover AZUL para todos os dropdowns, exceto o "Sair" */
-        .dropdown-menu .dropdown-item:hover,
-        .dropdown-menu .dropdown-item:focus {
+        .topbar {
+            height: 70px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 24px;
+        }
+
+        .highlight {
+            color: #000;               /* Texto escuro */
+            font-weight: 600;
+            padding: 1px 3px;
+            border-radius: 3px;
+        }
+        .dropdown-menu .dropdown-item:hover {
             background-color: #83CEEE !important;
-            color: #000 !important; /* cor preta para texto */
+            color: #000 !important;
         }
 
-        /* Hover VERMELHO para o item "Sair" */
-        .dropdown-menu .dropdown-item.text-danger:hover,
-        .dropdown-menu .dropdown-item.text-danger:focus {
+        .dropdown-menu .dropdown-item.text-danger:hover {
             background-color: #f8d7da !important;
             color: #842029 !important;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+        }
+
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 0 16px;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+        }
+
+        /* 🌟 USER DROPDOWN MODERNO */
+        .user-dropdown {
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            min-width: 280px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            transform-origin: top right;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        .dropdown-menu {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+
+        .user-dropdown-avatar {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #4CB07A;
+            box-shadow: 0 0 5px rgba(0,0,0,0.05);
+        }
+
+        .user-dropdown .form-control-sm {
+            font-size: 13px;
+            border-radius: 8px;
+        }
+
+        .user-dropdown .dropdown-item {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .user-dropdown .dropdown-item i {
+            font-size: 16px;
+            color: #4CB07A;
+            margin-right: 8px;
+        }
+
+        .user-dropdown .dropdown-item:hover {
+            background-color: #f0fdf4;
+            color: #1e3a34;
+        }
+
+        .user-dropdown .btn-outline-danger {
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            margin-top: 6px;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 
@@ -81,100 +208,115 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="container-fluid position-relative p-0 m-0">
-
-            <!-- 🔝 Barra superior -->
-            <div class="d-flex justify-content-between align-items-center py-2 px-3 border-bottom bg-light w-100" style="height: 70px;">
-                <!-- Logo -->
-                <div class="d-flex align-items-center gap-2">
-                    <asp:Image ID="imgLogo" runat="server" CssClass="me-2" Style="height: 50px; width: auto;" />
+        <div class="container-fluid p-0">
+            <!-- Top Bar -->
+            <div class="d-flex justify-content-between align-items-center topbar">
+                <div class="d-flex align-items-center gap-2" style="cursor: pointer;"
+                    onclick="limparMenuESeguir('<%= ResolveUrl("~/PlennuscMedic/Views/homeDoctor.aspx") %>')">
+                    <asp:Image ID="imgLogo" runat="server" Style="height: 45px; width: auto;" />
                     <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
                 </div>
 
-                <!-- Busca -->
+
                 <div class="flex-grow-1 px-4">
                     <div class="input-group shadow-sm" style="max-width: 400px; margin: 0 auto;">
                         <span class="input-group-text bg-white border-end-0">
                             <i class="bi bi-search"></i>
                         </span>
-                        <asp:TextBox ID="txtBusca" runat="server" CssClass="form-control border-start-0" Placeholder="Search..." />
+                        <asp:TextBox ID="txtBusca" runat="server" 
+                                     TextMode="SingleLine"
+                                     ClientIDMode="Static"
+                                     CssClass="form-control border-start-0"
+                                     placeholder="Buscar..." />
+
                     </div>
                 </div>
 
-                <!-- Ícones e usuário -->
-                <div class="d-flex align-items-center gap-2">
-    <button class="btn btn-light rounded-circle p-1" title="Apps">
-        <i class="bi bi-grid-3x3-gap-fill"></i>
-    </button>
-
-    <div class="dropdown">
-        <img src='<%= ResolveUrl("~/assets/img/team/40x40/usuario.webp") %>'
-             class="rounded-circle dropdown-toggle user-avatar"
-             data-bs-toggle="dropdown"
-             aria-expanded="false" />
-
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li class="dropdown-header text-center fw-semibold">
-                <asp:Label ID="lblUsuario" runat="server" />
-            </li>
-            <li><a class="dropdown-item" href="#">Perfil</a></li>
-            <li><a class="dropdown-item" href="#">Configurações</a></li>
-            <li><hr class="dropdown-divider" /></li>
-
-            <li>
-                <asp:LinkButton ID="btnLogout"
-                                runat="server"
-                                CssClass="dropdown-item text-danger"
-                                OnClick="btnLogout_Click">
-                    Sair
-                </asp:LinkButton>
-            </li>
-        </ul>
-    </div>
-</div>
+                <div class="dropdown">
+                    <asp:Image ID="imgAvatarUsuario" runat="server" CssClass="user-avatar dropdown-toggle"
+                        data-bs-toggle="dropdown" AlternateText="Avatar do Usuário" />
+                    <ul class="dropdown-menu dropdown-menu-end user-dropdown p-3 shadow" style="min-width: 280px;">
+                        <li class="text-center mb-2">
+                            <asp:Image ID="imgAvatarUsuarioDropdown" runat="server" CssClass="user-dropdown-avatar" />
+                            <div class="fw-semibold mt-2">
+                                <asp:Label ID="lblUsuario" runat="server" />
+                            </div>
+                        </li>
+                        <hr class="dropdown-divider" />
+                        <li><a class="dropdown-item" href="profile.aspx"><i class="bi bi-person me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Posts & Atividade</a></li>
+                        <li><a class="dropdown-item" href="privacySettings.aspx"><i class="bi bi-gear me-2"></i>Configurações & Privacidade</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>Central de Ajuda</a></li>
+                        <hr class="dropdown-divider" />
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person-plus me-2"></i>Adicionar conta</a></li>
+                        <li class="text-center mt-2">
+                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="btn btn-outline-danger w-100" OnClick="LogoutUsuario">
+                                <i class="bi bi-box-arrow-right me-1"></i> Sair
+                            </asp:LinkButton>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- 🧱 Corpo: Sidebar + Conteúdo -->
             <div class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
                 <!-- Sidebar -->
                 <nav class="sidebar">
                     <ul class="list-unstyled">
-                        <li>
-                            <a class="d-flex justify-content-between align-items-center gap-2" data-bs-toggle="collapse" href="#menuEcommerce" role="button" aria-expanded="false">
-                                <span><i class="bi bi-shop"></i> E-commerce</span>
-                                <i class="bi bi-chevron-down toggle-icon"></i>
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
+                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
+                                <i class="bi bi-chevron-right"></i>
                             </a>
-                            <div class="collapse" id="menuEcommerce">
-                                <a href="#">Dashboard</a>
-                                <a href="#">Orders</a>
+                            <div class="collapse" id="menuGestaoPessoas">
+                                <a href="employeeManagement.aspx"> Colaboradores</a>
+                                <a href="employeeDepartment.aspx"> Departamentos</a>
+                                <a href="employeePosition.aspx"> Cargos</a>
+                                <a href="#">Documentos</a>
                             </div>
                         </li>
-                       <li class="mt-2">
-                            <a class="d-flex justify-content-between align-items-center gap-2" data-bs-toggle="collapse" href="#menuChatbot" role="button" aria-expanded="false">
+
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot">
                                 <span><i class="bi bi-robot"></i> Chatbot</span>
-                                <i class="bi bi-chevron-down toggle-icon"></i>
+                                <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuChatbot">
-                                <a href="EnvioMensagemBeneficiario.aspx">Beneficiário</a>
+                                <a href="sendMessageBeneficiary.aspx"> Beneficiário</a>
+                                <a href="FixedMessageSending.aspx"> Mensagem Fixa</a>
                                 <a href="#">Empresa</a>
                             </div>
                         </li>
 
-                        <li class="mt-2">
-                            <a class="d-flex align-items-center gap-2" href="#">
-                                <i class="bi bi-chat-dots"></i> Chat
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium">
+                                <span><i class="bi bi-upload"></i> Importação Planium</span>
+                                <i class="bi bi-chevron-right"></i>
                             </a>
+                            <div class="collapse" id="importPlanium">
+                                <a href="csvImportPlanium.aspx"> Importar Csv</a>
+                                <a href="#"> Importar Pdf</a>
+                            </div>
                         </li>
-                        <li class="mt-2">
-                            <a class="d-flex align-items-center gap-2" href="#">
-                                <i class="bi bi-envelope"></i> Email
+
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">
+                                <span><i class="bi bi-envelope"></i> Email</span>
+                                <i class="bi bi-chevron-right"></i>
                             </a>
+                            <div class="collapse" id="menuEmail">
+                                <a href="#"> Enviar Email</a>
+                            </div>
+                        </li>
+
+                        <li>
+                            <a class="d-flex align-items-center" href="#"><i class="bi bi-chat-dots"></i><span>Chat</span></a>
                         </li>
                     </ul>
                 </nav>
 
-                <!-- Conteúdo -->
-                <div class="flex-grow-1 p-3 overflow-auto">
+                <!-- Main Content -->
+                <div class="flex-grow-1 p-4 overflow-auto">
                     <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
                 </div>
             </div>
@@ -183,5 +325,116 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para manter menu e seta -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            function getCollapseToggler(collapseId) {
+                return document.querySelector(`[data-bs-target="#${collapseId}"]`)
+                    || document.querySelector(`a[href="#${collapseId}"]`);
+            }
+
+            let openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
+
+            document.querySelectorAll('.collapse').forEach(function (collapseEl) {
+                const collapseId = collapseEl.id;
+                const toggler = getCollapseToggler(collapseId);
+                if (!collapseId || !toggler) return;
+
+                collapseEl.addEventListener('show.bs.collapse', function () {
+
+                    const icon = toggler.querySelector('.bi-chevron-right, .bi-chevron-down');
+                    if (icon) {
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-down');
+                    }
+                    openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
+                    if (!openMenus.includes(collapseId)) {
+                        openMenus.push(collapseId);
+                        localStorage.setItem('openMenuIds', JSON.stringify(openMenus));
+                    }
+                });
+
+
+                collapseEl.addEventListener('hide.bs.collapse', function () {
+                    const icon = toggler.querySelector('.bi-chevron-right, .bi-chevron-down');
+                    if (icon) {
+                        icon.classList.replace('bi-chevron-down', 'bi-chevron-right');
+                    }
+                    openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
+                    const idx = openMenus.indexOf(collapseId);
+                    if (idx !== -1) {
+                        openMenus.splice(idx, 1);
+                        localStorage.setItem('openMenuIds', JSON.stringify(openMenus));
+                    }
+                });
+            });
+
+            openMenus.forEach(function (menuId) {
+                const menuEl = document.getElementById(menuId);
+                if (menuEl) {
+                    bootstrap.Collapse.getOrCreateInstance(menuEl).show();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function limparMenuESeguir(url) {
+            localStorage.removeItem('openMenuIds');
+            window.location.href = url;
+        }
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputBusca = document.getElementById('txtBusca');
+        if (!inputBusca) return;
+
+        inputBusca.addEventListener('input', function () {
+            const termo = inputBusca.value.trim();
+            const regex = new RegExp(`(${termo})`, 'gi');
+
+            // 🔁 LIMPA DESTAQUES ANTIGOS
+            document.querySelectorAll('.highlight').forEach(span => {
+                span.outerHTML = span.innerText;
+            });
+
+            if (!termo) return;
+
+            // Usa TreeWalker para andar só por textos visíveis
+            const walker = document.createTreeWalker(
+                document.querySelector('.sidebar'),
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function (node) {
+                        return node.parentNode && node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                    }
+                },
+                false
+            );
+
+            const nodes = [];
+            while (walker.nextNode()) {
+                nodes.push(walker.currentNode);
+            }
+
+            nodes.forEach(node => {
+                const texto = node.nodeValue;
+                if (regex.test(texto)) {
+                    const span = document.createElement('span');
+                    span.innerHTML = texto.replace(regex, '<span class="highlight">$1</span>');
+                    const fragment = document.createDocumentFragment();
+                    while (span.firstChild) {
+                        fragment.appendChild(span.firstChild);
+                    }
+                    node.parentNode.replaceChild(fragment, node);
+                }
+            });
+        });
+    });
+</script>
+
+
 </body>
 </html>

@@ -76,17 +76,7 @@ namespace appWhatsapp.Views
 
             if (dtUser.Rows.Count > 0)
             {
-                // Filtra somente os dados do sistema selecionado
-                DataRow[] linhasFiltradas = dtUser.Select($"CodSistema = {codSistemaSelecionado}");
-
-                if (linhasFiltradas.Length == 0)
-                {
-                    LabelErro.Text = "Não há acesso para o sistema selecionado.";
-                    LabelErro.Visible = true;
-                    return;
-                }
-
-                var row = linhasFiltradas[0];
+                var row = dtUser.Rows[0]; // ✅ já é do sistema certo por causa do filtro na SQL
 
                 // Verifica se está liberado para uso
                 bool usuarioAtivo = Convert.ToBoolean(row["UsuarioAtivo"]);
@@ -120,10 +110,11 @@ namespace appWhatsapp.Views
                 // Login validado, salvar dados na sessão
                 Session["CodUsuario"] = row["CodAutenticacaoAcesso"];
                 Session["NomeUsuario"] = row["NomeUsuario"];
-                Session["CodEmpresa"] = row["CodEmpresa"];
+                Session["CodEmpresa"] = row.Field<int>("CodEmpresa");
                 Session["NomeEmpresa"] = row["NomeFantasia"];
                 Session["CodSistema"] = row["CodSistema"];
                 Session["CodPessoa"] = row["CodPessoa"];
+
 
                 // Redireciona para a home correta
                 switch (codSistemaSelecionado)

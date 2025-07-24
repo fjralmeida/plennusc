@@ -19,10 +19,10 @@ namespace PlennuscGestao.Views.Masters
                 lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
                 lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
 
-                if (Session["CodEmpresa"] != null)
+                if (Session["CodSistema"] != null)
                 {
-                    int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
-                    CarregarInfoEmpresa(codEmpresa);
+                    int codSistema = Convert.ToInt32(Session["CodSistema"]);
+                    CarregarInfoEmpresa(codSistema);
                 }
 
                 int codUsuario = Convert.ToInt32(Session["codUsuario"]);

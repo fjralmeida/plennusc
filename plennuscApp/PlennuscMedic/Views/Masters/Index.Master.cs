@@ -1,4 +1,5 @@
 ﻿using appWhatsapp.SqlQueries;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,11 +19,28 @@ namespace PlunnuscMedic.Views.Masters
                 lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
                 lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
 
-                // Se tiver o CodEmpresa na sessão, carrega a logo correta
                 if (Session["CodSistema"] != null)
                 {
                     int codSistema = Convert.ToInt32(Session["CodSistema"]);
                     CarregarInfoEmpresa(codSistema);
+                }
+
+                int codUsuario = Convert.ToInt32(Session["codUsuario"]);
+                PessoaDAO pessoaDao = new PessoaDAO();
+                DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
+
+                if (pessoa != null)
+                {
+                    string foto = pessoa["ImagemFoto"]?.ToString().Trim();
+
+                    imgAvatarUsuario.ImageUrl = string.IsNullOrWhiteSpace(foto)
+                     ? ResolveUrl("~/assets/img/team/40x40/usuario.webp")
+                     : ResolveUrl("~/public/uploadgestao/images/" + foto);
+                    imgAvatarUsuarioDropdown.ImageUrl = imgAvatarUsuario.ImageUrl;
+                }
+                else
+                {
+                    imgAvatarUsuario.ImageUrl = ResolveUrl("~/assets/img/team/40x40/usuario.webp");
                 }
             }
         }
@@ -39,9 +57,8 @@ namespace PlunnuscMedic.Views.Masters
             }
         }
 
-        protected void btnLogout_Click(object sender, EventArgs e)
+        protected void LogoutUsuario(object sender, EventArgs e)
         {
-
             Session.Clear();
             Session.Abandon();
 
@@ -55,7 +72,7 @@ namespace PlunnuscMedic.Views.Masters
             else
             {
                 // Ambiente de produção — endereço do PlennuscApp no servidor
-                baseUrl = "https://app.plennus.com.br";
+                baseUrl = "http://plennuschomo.vallorbeneficios.com.br";
             }
 
             string redirectUrl = $"{baseUrl}/ViewsApp/SignIn";

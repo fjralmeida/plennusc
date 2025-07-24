@@ -64,7 +64,7 @@ namespace appWhatsapp.SqlQueries
             string senhaHash = CriptografiaUtil.CalcularHashSHA512(senha);
 
             string sql = @"
-                           SELECT 
+        SELECT 
             AA.CodAutenticacaoAcesso,
             AA.CodPessoa,
             AA.NomeUsuario,
@@ -90,16 +90,18 @@ namespace appWhatsapp.SqlQueries
             ON E.CodEmpresa = SE.CodEmpresa
         INNER JOIN Sistema SI 
             ON SI.CodSistema = SE.CodSistema
-        WHERE AA.UsrNomeLogin = @login
-          AND AA.UsrPasswd = @senhaHash
+        WHERE 
+            AA.UsrNomeLogin = @login
+            AND AA.UsrPasswd = @senhaHash
+            AND SI.CodSistema = @CodSistema -- ✅ Filtro adicionado aqui
     ";
 
             var parametros = new Dictionary<string, object>
-                        {
-                            { "@login", login },
-                            { "@senhaHash", senhaHash },
-                            { "@CodSistema", codSistema }
-                        };
+    {
+        { "@login", login },
+        { "@senhaHash", senhaHash },
+        { "@CodSistema", codSistema }
+    };
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(sql, parametros);
