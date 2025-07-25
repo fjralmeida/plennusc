@@ -3,6 +3,7 @@ using Plennusc.Core.Models.ModelsGestao;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -74,7 +75,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                     {
                         string nomeCampo = cabecalho[i].Trim();
 
-                        //Remove acentos e caracteres especiais
+                        // Remove acentos e caracteres especiais
                         nomeCampo = nomeCampo.Normalize(System.Text.NormalizationForm.FormD);
                         nomeCampo = new string(nomeCampo
                             .Where(c => System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark)
@@ -83,6 +84,18 @@ namespace appWhatsapp.PlennuscGestao.Views
                         nomeCampo = System.Text.RegularExpressions.Regex.Replace(nomeCampo, @"[^\w]", "_");
 
                         string valor = colunas.ElementAtOrDefault(i)?.Trim();
+
+                        // Remover aspas duplas, se existirem
+                        if (valor.StartsWith("\"") && valor.EndsWith("\""))
+                        {
+                            valor = valor.Substring(1, valor.Length - 2); // Remove as aspas duplas
+                        }
+
+                        // Verifica se o valor parece ser um número em notação científica
+                        if (double.TryParse(valor, NumberStyles.Any, CultureInfo.InvariantCulture, out double numero))
+                        {
+                            valor = numero.ToString("F0", CultureInfo.InvariantCulture);  // Converte para número normal
+                        }
 
                         var prop = typeof(DadosMensagensCsvPlanium).GetProperty(nomeCampo);
                         if (prop != null && prop.CanWrite)
