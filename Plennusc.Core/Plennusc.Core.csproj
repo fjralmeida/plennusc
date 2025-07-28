@@ -57,6 +57,7 @@
     <Compile Include="SqlQueries\SqlQueriesFinance\profileFinance\PessoaDAOFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\settingsFinance\PrivacySettingsFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\department\EmpDepartment.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\import\importCVSPlannium.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\ItensPedIntegradoUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\OperadoraUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\position\EmpPosition.cs" />
