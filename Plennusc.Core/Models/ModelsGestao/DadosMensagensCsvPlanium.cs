@@ -8,6 +8,7 @@ namespace Plennusc.Core.Models.ModelsGestao
 {
     public class DadosMensagensCsvPlanium
     {
+        public string CODIGO_ASSOCIADO { get; set; }
         public string NOME { get; set; }
         public string ID { get; set; }
         public string ORG_EXP { get; set; }

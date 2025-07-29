@@ -2,6 +2,7 @@
 using Plennusc.Core.Models.ModelsGestao;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,18 +11,37 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.import
 {
     public class importCVSPlannium
     {
+        public int BuscarProximoCodigoAssociado()
+        {
+            string sql = "SELECT ISNULL(MAX(CODIGO_ASSOCIADO), 0) FROM VND1000_ON";
+
+            Banco_Dados_SQLServer bd = new Banco_Dados_SQLServer();
+            DataTable resultado = bd.LerAlianca(sql);
+
+            if (resultado.Rows.Count > 0)
+            {
+                return Convert.ToInt32(resultado.Rows[0][0]); // retorna o MAIOR código
+            }
+
+            return 0;
+        }
+
+
+
         public void InserirTMP1000Net(DadosMensagensCsvPlanium item)
         {
+            string codigoAssociado = "1";
+
             string sql = @"
         INSERT INTO TMP1000_NET (
-            NOME_ASSOCIADO, NUMERO_RG, ORGAO_EMISSOR_RG, NUMERO_CPF, CODIGO_CNS,
+            CODIGO_ASSOCIADO, NOME_ASSOCIADO, NUMERO_RG, ORGAO_EMISSOR_RG, NUMERO_CPF, CODIGO_CNS,
             DATA_NASCIMENTO, SEXO, CODIGO_ESTADO_CIVIL, CODIGO_PLANO, DATA_ADMISSAO,
             DATA_VALIDA_CARENCIA, CODIGO_EMPRESA, NOME_MAE, CODIGO_TITULAR,
             CODIGO_PARENTESCO, NUMERO_DECLARACAO_NASC_VIVO, CODIGO_VENDEDOR,
             PROFISSAO, CODIGO_CADASTRO_ANS
         )
         VALUES (
-            @Nome, @RG, @OrgaoExp, @CPF, @CNS,
+              @CodAssociado, @Nome, @RG, @OrgaoExp, @CPF, @CNS,
             @DataNascimento, @Sexo, @EstadoCivil, @CodPlano, @DtInclusao,
             @DtVigencia, @CodEmpresa, @NomeMae, @CodResp,
             @Parentesco, @NrDeclNascVivo, @CodVend,
@@ -30,6 +50,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.import
 
             var parametros = new Dictionary<string, object>
             {
+                ["@CodAssociado"] = codigoAssociado,
                 ["@Nome"] = item.NOME,
                 ["@RG"] = item.ID,
                 ["@OrgaoExp"] = item.ORG_EXP,
@@ -37,7 +58,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.import
                 ["@CNS"] = item.CNS,
                 ["@DataNascimento"] = item.DT_NASC,
                 ["@Sexo"] = item.SEXO,
-                ["@EstadoCivil"] = item.EST_CIVIL,
+                ["@EstadoCivil"] = item.RESPF_ESTADOCIVIL,
                 ["@CodPlano"] = item.COD_PLANO,
                 ["@DtInclusao"] = item.DT_INCL,
                 ["@DtVigencia"] = item.DT_VIGENCIA,
@@ -46,7 +67,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.import
                 ["@CodResp"] = item.COD_RESP,
                 ["@Parentesco"] = item.PARENT,
                 ["@NrDeclNascVivo"] = item.NR_DEC_NASC_VIVO,
-                ["@CodVend"] = item.COD_VEND,
+                ["@CodVend"] = "1",
                 ["@Profissao"] = item.COD_PROFISSAO,
                 ["@CodANS"] = item.COD_ANS_OPERADORA
             };
@@ -57,11 +78,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.import
         {
             string sql = @"
                 INSERT INTO TMP1001 (
-                    NUMERO_CPF, ENDERECO, BAIRRO, CIDADE,
+                    ENDERECO, BAIRRO, CIDADE,
                     ESTADO, CEP, ENDERECO_EMAIL
                 )
                 VALUES (
-                    @CPF, @Endereco, @Bairro, @Cidade,
+                  @Endereco, @Bairro, @Cidade,
                     @Estado, @CEP, @Email
                 )";
 
@@ -69,7 +90,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.import
 
             var parametros = new Dictionary<string, object>
             {
-                ["@CPF"] = item.CPF,
                 ["@Endereco"] = endereco,
                 ["@Bairro"] = item.BAIRRO,
                 ["@Cidade"] = item.CIDADE,
@@ -122,5 +142,52 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.import
 
             new Banco_Dados_SQLServer().ExecutarAlianca(sql, parametros);
         }
+
+        public void InserirVND1000_ON(DadosMensagensCsvPlanium item)
+        {
+            string sql = @"
+            INSERT INTO VND1000_ON (
+                CODIGO_ASSOCIADO, CODIGO_EMPRESA, CODIGO_CARENCIA, NOME_ASSOCIADO, CODIGO_TABELA_PRECO,
+                CODIGO_PLANO, DATA_NASCIMENTO, DATA_ADMISSAO, DATA_DIGITACAO, SEXO, FLAG_PLANOFAMILIAR,
+                NOME_MAE, CODIGO_PARENTESCO, VALOR_NOMINAL, CODIGO_ESTADO_CIVIL, CODIGO_TITULAR,
+                FLAG_ISENTO_PAGTO, TIPO_ASSOCIADO, NUMERO_CPF, NUMERO_RG, ORGAO_EMISSOR_RG,
+                CODIGO_CNS, NUMERO_DECLARACAO_NASC_VIVO, ULTIMO_STATUS, CODIGO_VENDEDOR,
+                DATA_VALIDA_CARENCIA, DATA_VIGENCIA
+            )
+            VALUES (
+                @CodAssociado, @CodEmpresa, 0, @Nome, 0,
+                @CodPlano, @DataNascimento, @DtAdmissao, GETDATE(), @Sexo, 'S',
+                @NomeMae, @Parentesco, NULL, @EstadoCivil, @CodTitular,
+                NULL, 'T', @CPF, @RG, @OrgaoExp,
+                @CNS, @NrDeclNascVivo, 'AGUARDANDO_AVALIACAO', @CodVend,
+                @DtValidaCarencia, @DtVigencia
+            )";
+
+            var parametros = new Dictionary<string, object>
+            {
+                ["@CodAssociado"] = item.CODIGO_ASSOCIADO,
+                ["@CodEmpresa"] = item.COD_EMPRESA ?? "400",
+                ["@Nome"] = item.NOME,
+                ["@CodPlano"] = item.COD_PLANO,
+                ["@DataNascimento"] = item.DT_NASC,
+                ["@DtAdmissao"] = item.DT_INCL,
+                ["@Sexo"] = item.SEXO,
+                ["@NomeMae"] = item.NOME_MAE,
+                ["@Parentesco"] = item.PARENT,
+                ["@EstadoCivil"] = item.RESPF_ESTADOCIVIL,
+                ["@CodTitular"] = item.COD_RESP,
+                ["@CPF"] = item.CPF,
+                ["@RG"] = item.ID,
+                ["@OrgaoExp"] = item.ORG_EXP,
+                ["@CNS"] = item.CNS,
+                ["@NrDeclNascVivo"] = item.NR_DEC_NASC_VIVO,
+                ["@CodVend"] = "1",
+                ["@DtValidaCarencia"] = item.DT_VIGENCIA,
+                ["@DtVigencia"] = item.DT_VIGENCIA
+            };
+
+            new Banco_Dados_SQLServer().ExecutarAlianca(sql, parametros);
+        }
+
     }
 }
