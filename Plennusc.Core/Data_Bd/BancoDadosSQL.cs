@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 namespace appWhatsapp.Data_Bd
 {
     class Banco_Dados_SQLServer
@@ -168,6 +169,22 @@ namespace appWhatsapp.Data_Bd
                 }
 
                 cmd.ExecuteNonQuery();
+            }
+
+            DesconectarPlennus();
+        }
+        public async Task ExecutarPlennusAsync(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                await cmd.ExecuteNonQueryAsync();
             }
 
             DesconectarPlennus();

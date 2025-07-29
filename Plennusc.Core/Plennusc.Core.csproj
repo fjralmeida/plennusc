@@ -51,6 +51,7 @@
     <Compile Include="Models\ModelsGestao\DadosMensagemCsv.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagensCsvPlanium.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
+    <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceGestao\WhatsappService.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesMedic\import\importCVSPlanniumMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\profileMedic\PessoaDAOMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\settingsMedic\PrivacySettingsMedic.cs" />
   </ItemGroup>
@@ -72,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ModelsFinance\" />
-    <Folder Include="Models\ModelsMedic\" />
     <Folder Include="Service\ServiceFinance\" />
     <Folder Include="Service\ServiceMedic\" />
   </ItemGroup>
