@@ -65,7 +65,9 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesMedic\department\EmpDepartmentMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\import\importCVSPlanniumMedic.cs" />
+    <Compile Include="SqlQueries\SqlQueriesMedic\position\EmpPositionMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\profileMedic\PessoaDAOMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\settingsMedic\PrivacySettingsMedic.cs" />
   </ItemGroup>

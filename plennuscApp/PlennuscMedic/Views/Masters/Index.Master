@@ -269,9 +269,9 @@
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuGestaoPessoas">
-                                <a href="employeeManagement.aspx"> Colaboradores</a>
-                                <a href="employeeDepartment.aspx"> Departamentos</a>
-                                <a href="employeePosition.aspx"> Cargos</a>
+                                <a href="employeeManagementMedic.aspx"> Colaboradores</a>
+                                <a href="employeeDepartmentMedic.aspx"> Departamentos</a>
+                                <a href="employeePositionMedic.aspx"> Cargos</a>
                                 <a href="#">Documentos</a>
                             </div>
                         </li>

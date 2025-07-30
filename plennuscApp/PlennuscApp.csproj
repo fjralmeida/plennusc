@@ -165,6 +165,9 @@
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\employeeManagementMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\employeePositionMedic.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="PlennuscMedic\Views\privacySettingsMedic.aspx" />
@@ -376,6 +379,27 @@
     </Compile>
     <Compile Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx.designer.cs">
       <DependentUpon>csvImportPlaniumMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx.cs">
+      <DependentUpon>employeeDepartmentMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx.designer.cs">
+      <DependentUpon>employeeDepartmentMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeeManagementMedic.aspx.cs">
+      <DependentUpon>employeeManagementMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeeManagementMedic.aspx.designer.cs">
+      <DependentUpon>employeeManagementMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeePositionMedic.aspx.cs">
+      <DependentUpon>employeePositionMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeePositionMedic.aspx.designer.cs">
+      <DependentUpon>employeePositionMedic.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\homeDoctor.aspx.cs">
       <DependentUpon>homeDoctor.aspx</DependentUpon>
