@@ -170,6 +170,8 @@
     <Content Include="PlennuscMedic\Views\employeePositionMedic.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
+    <Content Include="PlennuscMedic\Views\interviewIa.aspx" />
+    <Content Include="PlennuscMedic\Views\medicalInterview.aspx" />
     <Content Include="PlennuscMedic\Views\privacySettingsMedic.aspx" />
     <Content Include="PlennuscMedic\Views\profileMedic.aspx" />
     <Content Include="public\uploadfinance\docs\Pros e Contras de cada arquitetura.txt" />
@@ -408,12 +410,26 @@
     <Compile Include="PlennuscMedic\Views\homeDoctor.aspx.designer.cs">
       <DependentUpon>homeDoctor.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscMedic\Views\interviewIa.aspx.cs">
+      <DependentUpon>interviewIa.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\interviewIa.aspx.designer.cs">
+      <DependentUpon>interviewIa.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscMedic\Views\Masters\Index.Master.cs">
       <DependentUpon>Index.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="PlennuscMedic\Views\Masters\Index.Master.designer.cs">
       <DependentUpon>Index.Master</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\medicalInterview.aspx.cs">
+      <DependentUpon>medicalInterview.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\medicalInterview.aspx.designer.cs">
+      <DependentUpon>medicalInterview.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\privacySettingsMedic.aspx.cs">
       <DependentUpon>privacySettingsMedic.aspx</DependentUpon>
