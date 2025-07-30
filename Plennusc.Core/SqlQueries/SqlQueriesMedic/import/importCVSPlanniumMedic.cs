@@ -204,7 +204,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesMedic.import
             UfOrgao, CodigoGrupo, CodigoSupervisor, CodigoProfissao, CnpjOperadora, CodigoAnsOperadora, NomeOperadora,
             Idade, RespfMae, RespfNascimento, RespfEmail, RespfIdade, RespfSexo, RespfEstadoCivil, RespfRg,
             RespfOrgaoExp, RespfCns, NomeVendedor, CpfVendedor, EmailVendedor, TelefoneVendedor, MensalidadeTit,
-            MensalidadeDep, Acessorios
+            MensalidadeDep, Acessorios, Informacoes_Log_I,Informacoes_Log_A
         )
         VALUES (
             @Nome, @IdDocumento, @OrgaoExpedidor, @Cpf, @Pis, @Cns, @DataNascimento, @Naturalidade, @Sexo, @EstadoCivil,
@@ -217,7 +217,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesMedic.import
             @UfOrgao, @CodigoGrupo, @CodigoSupervisor, @CodigoProfissao, @CnpjOperadora, @CodigoAnsOperadora, @NomeOperadora,
             @Idade, @RespfMae, @RespfNascimento, @RespfEmail, @RespfIdade, @RespfSexo, @RespfEstadoCivil, @RespfRg,
             @RespfOrgaoExp, @RespfCns, @NomeVendedor, @CpfVendedor, @EmailVendedor, @TelefoneVendedor, @MensalidadeTit,
-            @MensalidadeDep, @Acessorios
+            @MensalidadeDep, @Acessorios, @Informacoes_Log_I, @Informacoes_Log_A
         )";
 
             var parametros = new Dictionary<string, object>
@@ -302,7 +302,9 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesMedic.import
                 ["@TelefoneVendedor"] = item.TELEFONE_VENDEDOR ?? (object)DBNull.Value,
                 ["@MensalidadeTit"] = ParseNullableDecimal(item.MENSALIDADE_TIT),
                 ["@MensalidadeDep"] = ParseNullableDecimal(item.MENSALIDADE_DEP),
-                ["@Acessorios"] = item.ACESSORIOS ?? (object)DBNull.Value
+                ["@Acessorios"] = item.ACESSORIOS ?? (object)DBNull.Value,
+                ["@Informacoes_Log_I"] = DateTime.Now,
+                ["@Informacoes_Log_A"] = DBNull.Value
             };
 
             new Banco_Dados_SQLServer().ExecutarPlennus(sql, parametros);
