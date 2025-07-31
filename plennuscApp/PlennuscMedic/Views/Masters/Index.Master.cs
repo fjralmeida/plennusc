@@ -24,6 +24,12 @@ namespace PlunnuscMedic.Views.Masters
                     int codSistema = Convert.ToInt32(Session["CodSistema"]);
                     CarregarInfoEmpresa(codSistema);
                 }
+                if (Session["CodPessoa"] == null)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "erroSessao",
+                        "Swal.fire('Sessão Expirada', 'Por favor, faça login novamente.', 'warning').then(() => { window.location = 'login.aspx'; });",
+                        true);
+                }
 
                 int codUsuario = Convert.ToInt32(Session["codUsuario"]);
                 PessoaDAO pessoaDao = new PessoaDAO();

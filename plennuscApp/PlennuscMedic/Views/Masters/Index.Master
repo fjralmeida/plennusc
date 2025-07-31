@@ -243,7 +243,11 @@
                             </div>
                         </li>
                         <hr class="dropdown-divider" />
-                        <li><a class="dropdown-item" href="profileMedic.aspx"><i class="bi bi-person me-2"></i>Perfil</a></li>
+                       <li>
+    <a class="dropdown-item" href="javascript:void(0);" onclick="abrirPerfil()">
+        <i class="bi bi-person me-2"></i>Perfil
+    </a>
+</li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Posts & Atividade</a></li>
                         <li><a class="dropdown-item" href="privacySettingsMedic.aspx"><i class="bi bi-gear me-2"></i>Configurações & Privacidade</a></li>
@@ -394,6 +398,12 @@
         function limparMenuESeguir(url) {
             localStorage.removeItem('openMenuIds');
             window.location.href = url;
+        }
+    </script>
+
+    <script>
+        function abrirPerfil() {
+            limparMenuESeguir('<%= ResolveUrl("~/PlennuscMedic/Views/profileMedic.aspx") %>');
         }
     </script>
 
