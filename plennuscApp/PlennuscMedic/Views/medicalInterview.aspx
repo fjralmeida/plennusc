@@ -85,53 +85,10 @@
                                 <%# Eval("STATUS") %>
                             </span>
                         </ItemTemplate>
-                    </asp:TemplateField>
-                    <%--<asp:TemplateField HeaderText="Ações">
-                        <ItemTemplate>
-                            <asp:LinkButton 
-                                runat="server" 
-                                CssClass="btn btn-info btn-sm"
-                                Text="Detalhes"
-                                CommandName="VerDetalhes"
-                                CausesValidation="false"
-                                CommandArgument='<%# Eval("CODIGO_ASSOCIADO") %>'>
-                            </asp:LinkButton>
-                        </ItemTemplate>
-                    </asp:TemplateField>--%>
+                    </asp:TemplateField>   
                 </Columns>
             </asp:GridView>
         </div>
     </div>
 </div>
-
-<%--<!-- Modal Detalhes -->
-<div class="modal fade" id="detalhesModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Detalhes do Associado</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="detalhesConteudo" runat="server">
-                <!-- Preenchido pelo C# -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
- <script type="text/javascript">
-     // Garantir que modal funciona sem conflito com master
-     $(document).ready(function () {
-         console.log("Scripts da página filha carregados sem conflito.");
-
-         window.abrirModalDetalhes = function () {
-             var modal = new bootstrap.Modal(document.getElementById('detalhesModal'));
-             modal.show();
-         };
-     });
- </script>--%>
-
 </asp:Content>
