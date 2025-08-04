@@ -26,13 +26,13 @@ namespace appWhatsapp.PlennuscMedic.Views
         private void CarregarDados()
         {
             string status = ddlStatus.SelectedValue;
-            string empresa = ddlEmpresa.SelectedValue;
-            string plano = ddlPlano.SelectedValue;
+            //string empresa = ddlEmpresa.SelectedValue;
+            //string plano = ddlPlano.SelectedValue;
             string busca = txtBusca.Text.Trim();
 
 
             MedicalInterview InterviewMedical = new MedicalInterview();
-            DataTable dtInterview = InterviewMedical.GetInterview(status, empresa, plano, busca);
+            DataTable dtInterview = InterviewMedical.GetInterview(status, busca);
 
             gvAssociados.DataSource = dtInterview;
             gvAssociados.DataBind();

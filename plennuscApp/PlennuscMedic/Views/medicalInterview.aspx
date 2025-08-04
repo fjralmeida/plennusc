@@ -37,7 +37,7 @@
 
     <!-- Filtros -->
     <div class="filters row g-3">
-        <div class="col-md-3 col-6">
+        <div class="col-md-4 col-6">
             <label class="form-label">Status</label>
             <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select">
                 <asp:ListItem Value="">Todos</asp:ListItem>
@@ -46,7 +46,7 @@
                 <asp:ListItem Value="APROVADO">Aprovado</asp:ListItem>
             </asp:DropDownList>
         </div>
-        <div class="col-md-2 col-6">
+       <%-- <div class="col-md-2 col-6">
             <label class="form-label">Empresa</label>
             <asp:DropDownList ID="ddlEmpresa" runat="server" CssClass="form-select">
                 <asp:ListItem Value="">Todas</asp:ListItem>
@@ -57,12 +57,12 @@
             <asp:DropDownList ID="ddlPlano" runat="server" CssClass="form-select">
                 <asp:ListItem Value="">Todos</asp:ListItem>
             </asp:DropDownList>
-        </div>
-        <div class="col-md-3 col-6">
+        </div>--%>
+        <div class="col-md-4 col-6">
             <label class="form-label">Nome ou CPF</label>
             <asp:TextBox ID="txtBusca" runat="server" CssClass="form-control" placeholder="Buscar..." />
         </div>
-        <div class="col-md-2 col-12 d-flex align-items-end">
+        <div class="col-md-4 col-12 d-flex align-items-end">
             <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-100" OnClick="btnFiltrar_Click" />
         </div>
     </div>
@@ -76,8 +76,8 @@
                     <asp:BoundField DataField="CODIGO_ASSOCIADO" HeaderText="Cód. Associado" />
                     <asp:BoundField DataField="NOME" HeaderText="Nome" />
                     <asp:BoundField DataField="CPF" HeaderText="CPF" />
-                    <asp:BoundField DataField="PLANO" HeaderText="Plano" />
-                    <asp:BoundField DataField="EMPRESA" HeaderText="Empresa" />
+                   <%-- <asp:BoundField DataField="PLANO" HeaderText="Plano" />
+                    <asp:BoundField DataField="EMPRESA" HeaderText="Empresa" />--%>
                     <asp:BoundField DataField="DATA_NASC" HeaderText="Data Nasc." DataFormatString="{0:dd/MM/yyyy}" />
                     <asp:TemplateField HeaderText="Status">
                         <ItemTemplate>
