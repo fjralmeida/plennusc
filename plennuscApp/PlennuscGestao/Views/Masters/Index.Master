@@ -324,7 +324,7 @@
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
-                                <span><i class="bi bi-person-badge"></i>Gestão de Pessoas</span>
+                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuGestaoPessoas">
@@ -337,7 +337,7 @@
 
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot">
-                                <span><i class="bi bi-robot"></i>Chatbot</span>
+                                <span><i class="bi bi-robot"></i> Chatbot</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuChatbot">
@@ -349,12 +349,22 @@
 
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium">
-                                <span><i class="bi bi-upload"></i>Importação Planium</span>
+                                <span><i class="bi bi-upload"></i> Importação Planium</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="importPlanium">
                                 <a href="csvImportPlanium.aspx">Importar Csv</a>
                                 <a href="#">Importar Pdf</a>
+                            </div>
+                        </li>
+
+                        <li class="mb-2">
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPrice">
+                                <span><i class="bi bi-upload"></i> Tabela de Preço</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <div class="collapse" id="importPrice">
+                                <a href="priceTable.aspx">Importar XLS</a>
                             </div>
                         </li>
 

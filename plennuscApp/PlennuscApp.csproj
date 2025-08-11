@@ -47,6 +47,12 @@
     <Reference Include="AspNet.ScriptManager.jQuery, Version=3.7.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AspNet.ScriptManager.jQuery.3.7.1\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.7.0\lib\net462\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.7.0\lib\net462\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -62,6 +68,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
@@ -158,6 +165,7 @@
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
+    <Content Include="PlennuscGestao\Views\priceTable.aspx" />
     <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
@@ -326,6 +334,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\FixedMessageSending.aspx.designer.cs">
       <DependentUpon>FixedMessageSending.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\priceTable.aspx.cs">
+      <DependentUpon>priceTable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\priceTable.aspx.designer.cs">
+      <DependentUpon>priceTable.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\privacySettings.aspx.cs">
       <DependentUpon>privacySettings.aspx</DependentUpon>
