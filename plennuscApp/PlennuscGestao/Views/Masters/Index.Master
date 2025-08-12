@@ -361,15 +361,17 @@
                             </div>
                         </li>
 
-                        <li class="mb-2">
+                       <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPrice">
-                                <span><i class="bi bi-upload"></i> Tabela de Preço</span>
+                                <span><i class="bi bi-upload"></i> Tabela de Preços</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="importPrice">
-                                <a href="priceTable.aspx">Importar XLS</a>
+                                <a href="priceTable.aspx">Importar XLS – Adicionar Nova Tabela</a>
+                                <a href="updatePriceTable.aspx">Atualizar Valores da Tabela</a>
                             </div>
                         </li>
+
 
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">

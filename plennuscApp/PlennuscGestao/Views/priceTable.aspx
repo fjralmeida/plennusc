@@ -100,6 +100,32 @@
          font-size: 13px;
          text-align: center;
      }
+    .grid-wrapper {
+        max-height: 530px;
+        overflow-y: auto;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: 1px  #ddd;
+    }
+
+    .grid-wrapper table {
+        min-width: 1200px;
+    }
+
+    .table th {
+        white-space: nowrap;
+        padding: 10px 16px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .table td {
+        white-space: nowrap;
+        padding: 8px 14px;
+        font-size: 13px;
+        text-align: center;
+    }
+
 
  </style>
 
@@ -126,10 +152,32 @@
             </div>
         </div>
 
-        <div class="grid-wrapper">
-            <asp:GridView ID="gridXsl" runat="server" AutoGenerateColumns="true"
-                CssClass="table table-striped table-bordered shadow-sm rounded mb-0" />
-        </div>
+           <div class="grid-wrapper">
+                <asp:GridView ID="gridXsl" 
+                              runat="server" 
+                              AutoGenerateColumns="False" 
+                              CssClass="table table-striped table-bordered table-hover"
+                              HeaderStyle-BackColor="#4CB07A" 
+                              HeaderStyle-ForeColor="White" 
+                              HeaderStyle-Font-Bold="True"
+                              RowStyle-VerticalAlign="Middle"
+                              GridLines="None">
+                    <Columns>
+                        <asp:BoundField DataField="CODIGO_PLANO" HeaderText="CODIGO_PLANO" />
+                        <asp:BoundField DataField="CODIGO_TABELA_PRECO" HeaderText="CODIGO_TABELA_PRECO" />
+                        <asp:BoundField DataField="IDADE_MINIMA" HeaderText="IDADE_MINIMA" />
+                        <asp:BoundField DataField="IDADE_MAXIMA" HeaderText="IDADE_MAXIMA" />
+                        <asp:BoundField DataField="VALOR_PLANO" HeaderText="VALOR_PLANO"
+                                        DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="TIPO_RELACAO_DEPENDENCIA" HeaderText="TIPO_RELACAO_DEPENDENCIA" />
+                        <asp:BoundField DataField="CODIGO_GRUPO_CONTRATO" HeaderText="CODIGO_GRUPO_CONTRATO" />
+                        <asp:BoundField DataField="NOME_TABELA" HeaderText="NOME_TABELA" />
+                        <asp:BoundField DataField="VALOR_NET" HeaderText="VALOR_NET"
+                                        DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="TIPO_CONTRATO_ESTIPULADO" HeaderText="TIPO_CONTRATO_ESTIPULADO" />
+                    </Columns>
+                </asp:GridView>
+            </div>
 
         <div class="text-end">
             <asp:Button ID="btnEnviar" runat="server" Text="Upload Arquivo"
