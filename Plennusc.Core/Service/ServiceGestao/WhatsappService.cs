@@ -143,13 +143,13 @@ namespace appWhatsapp.Service
                             // ✅ Grava no banco a mensagem enviada
                             util.GravarLogEnvio(
                                 telefoneDestino: telefone,
-                                codAssociado: null,                 // se tiver, preencha
+                                codAssociado: null,             
                                 statusEnvio: "ENVIADO",
                                 idResposta: id,
                                 conteudoApi: statusResponse,
-                                mensagemFinal: mensagemFinal,     // <<< a mensagem do template já montada
+                                mensagemFinal: mensagemFinal,    
                                 codEmpresa: 400,
-                                numeroEnvio: null                   // ou o número do remetente, se aplicável
+                                numeroEnvio: null 
                             );
 
                             resultadoFinal.AppendLine(statusResponse);

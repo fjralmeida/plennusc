@@ -1,5 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscMedic/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="profileMedic.aspx.cs" Inherits="appWhatsapp.PlennuscMedic.Views.profileMedic" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    
+    <title>Perfil Médico</title>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

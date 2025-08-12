@@ -8,6 +8,9 @@
 %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+
+    <title>Dashboard</title>
+
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

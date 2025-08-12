@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscFinance/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="profileFinance.aspx.cs" Inherits="appWhatsapp.PlennuscFinance.Views.profileFinance" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    
+    <title>Perfil Financeiro</title>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

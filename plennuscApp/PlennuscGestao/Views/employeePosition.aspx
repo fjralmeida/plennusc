@@ -4,92 +4,57 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
+    <title>Cargos</title>
+
     <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-            box-sizing: border-box;
+        body { font-family: 'Poppins', sans-serif; background-color: #f9f9f9; color:#333; }
+        .container { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
+
+        /* Título clean, leve e moderno */
+        .titulo-pagina{
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin: 24px 0 20px;
+            color:#2c3e50;
+            display:flex; align-items:center; gap:10px;
+        }
+        .titulo-pagina i{
+            font-size:1.6rem;
+            background:#eef2f6; /* fundo sutil */
+            color:#2c3e50;
+            padding:8px; border-radius:8px;
         }
 
-        body {
-            background-color: #f2f4f8;
-            font-size: 13px;
-            color: #333;
+        /* Card/Wrapper do grid */
+        .card-container{ margin-top: 8px; }
+        .table-responsive{
+            border:1px solid #ddd;
+            background:#fff;
+            border-radius:8px;
+            overflow:hidden;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 32px auto;
-            padding: 0 16px;
+        /* Grid no padrão minimalista */
+        .table{ font-size:.95rem; margin-bottom:0; }
+        .table thead th{
+            background:#f5f5f5 !important;
+            color:#333 !important;
+            font-weight:600;
+            border-bottom:1px solid #ddd;
+            padding:12px 10px;
         }
-
-     .titulo-pagina {
-    font-size: 22px;
-    font-weight: 600;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-        .titulo-pagina::after {
-            content: "";
-            width: 60px;
-            height: 3px;
-            background-color: #c06ed4;
-            display: block;
-            margin: 0.5rem auto 0 auto;
-            border-radius: 2px;
+        .table tbody td{
+            padding:12px 10px;
+            color:#444;
+            border-bottom:1px solid #eee;
+            background:#fff;
         }
+        .table-hover>tbody>tr:hover>*{ background:#fafafa; }
+        .table> :not(caption)>*>*{ color:#333; }
 
-        .card-container {
-            background: white;
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-        }
-
-        .table-positions {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 16px;
-        }
-
-        .table-positions thead {
-            background-color: #c06ed4;
-            color: white;
-        }
-
-        .table-positions th, .table-positions td {
-            padding: 12px 14px;
-            text-align: left;
-            vertical-align: middle;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .table-positions tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .table-positions tbody tr:hover {
-            background-color: #f4e9f7;
-        }
-
-        .table-positions th:first-child,
-        .table-positions td:first-child {
-            border-top-left-radius: 10px;
-        }
-
-        .table-positions th:last-child,
-        .table-positions td:last-child {
-            border-top-right-radius: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .table-positions th, .table-positions td {
-                font-size: 12px;
-                padding: 10px;
-            }
+        @media (max-width: 900px){
+            .table thead th, .table tbody td{ font-size:13px; padding:10px 8px; }
+            .titulo-pagina{ font-size:1.1rem; }
         }
     </style>
 </asp:Content>
@@ -97,20 +62,28 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container">
         <h2 class="titulo-pagina">
-            <i class="fa-solid fa-briefcase me-2" style="color:#c06ed4;"></i>
+            <i class="fa-solid fa-briefcase" style="color:#c06ed4;"></i>
             Cargos
         </h2>
+
         <div class="card-container">
-            <asp:GridView ID="gvPositions" runat="server" CssClass="table-positions" AutoGenerateColumns="false" GridLines="None">
-                <Columns>
-                    <asp:BoundField DataField="CodCargo" HeaderText="Código" />
-                    <asp:BoundField DataField="Nome" HeaderText="Nome" />
-                    <asp:BoundField DataField="Descricacao" HeaderText="Descrição" />
-                    <asp:BoundField DataField="CodCBO" HeaderText="Cod CBO" />
-                    <asp:BoundField DataField="Conf_TipoGestor" HeaderText="Tipo Cargo" />
-                    <asp:BoundField DataField="Informacoes_Log_I" HeaderText="Informações Log" />
-                </Columns>
-            </asp:GridView>
+            <div class="table-responsive">
+                <asp:GridView ID="gvPositions"
+                    runat="server"
+                    AutoGenerateColumns="false"
+                    GridLines="None"
+                    CssClass="table table-hover align-middle">
+
+                    <Columns>
+                        <asp:BoundField DataField="CodCargo"          HeaderText="Código" />
+                        <asp:BoundField DataField="Nome"              HeaderText="Nome" />
+                        <asp:BoundField DataField="Descricacao"       HeaderText="Descrição" />
+                        <asp:BoundField DataField="CodCBO"            HeaderText="Cod CBO" />
+                        <asp:BoundField DataField="Conf_TipoGestor"   HeaderText="Tipo Cargo" />
+                        <asp:BoundField DataField="Informacoes_Log_I" HeaderText="Informações Log" />
+                    </Columns>
+                </asp:GridView>
+            </div>
         </div>
     </div>
-</asp:Content>
+ </asp:Content>

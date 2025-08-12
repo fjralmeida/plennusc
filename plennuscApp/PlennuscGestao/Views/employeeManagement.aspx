@@ -13,6 +13,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
+    <title>Gestão de Funcionários</title>
+
     <style>
 
         * {

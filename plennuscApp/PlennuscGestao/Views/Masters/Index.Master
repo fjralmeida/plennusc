@@ -4,8 +4,7 @@
 <html>
 <head runat="server">
     <meta charset="utf-8" />
-    <title>Dashboard</title>
-
+    <link rel="icon" type="image/png"  sizes="180x180" href="<%= ResolveUrl("~/Uploads/logo_Plennus.png") %>" />
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -49,48 +48,53 @@
         }
 
         .sidebar {
-            width: 240px;
-            background-color: #ffffff;
-            border-right: 1px solid #e3e6ef;
-            padding: 1.5rem 0.5rem;
-            height: 100%;
-            font-size: 13.5px;
-            overflow-y: auto;
+        width: 240px;
+        background-color: #ffffff;
+        border-right: 1px solid #e3e6ef;
+        padding: 1.5rem 0.5rem;
+        height: 100%;
+        font-size: 13.5px;
+        overflow-y: auto;
+        flex-shrink: 0; /* Impede que a sidebar encolha */
         }
 
-            .sidebar a {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                text-decoration: none;
-                color: #3b3f5c;
-                padding: 8px 16px;
-                border-radius: 6px;
-                transition: background-color 0.2s, color 0.2s;
-                font-weight: 500;
-            }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #3b3f5c;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+        }
 
-                .sidebar a:hover {
-                    background-color: #f1f5ff;
-                    color: #1d4ed8;
-                }
+        .sidebar a:hover {
+            background-color: #f1f5ff;
+            color: #1d4ed8;
+        }
 
-                .sidebar a.active {
-                    background-color: #e0edff;
-                    color: #1d4ed8;
-                    font-weight: 600;
-                }
+        .sidebar a.active {
+            background-color: #e0edff;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
 
-            .sidebar .collapse a {
-                font-size: 13px;
-                padding-left: 32px;
-                font-weight: 400;
-            }
+        .sidebar .collapse a {
+            font-size: 13px;
+            padding-left: 47px;
+            font-weight: 400;
+        }
 
-            .sidebar .bi {
-                font-size: 15px;
-                color: #9ca3af;
-            }
+        .sidebar .bi {
+            font-size: 15px;
+            color: #9ca3af;
+        }
+
+        .sidebar span {
+            padding-left: 6px; /* Espaço entre ícone e texto */
+        }
 
         .topbar {
             height: 70px;
@@ -173,16 +177,16 @@
             transition: background-color 0.2s ease-in-out;
         }
 
-            .user-dropdown .dropdown-item i {
-                font-size: 16px;
-                color: #4CB07A;
-                margin-right: 8px;
-            }
+        .user-dropdown .dropdown-item i {
+            font-size: 16px;
+            color: #4CB07A;
+            margin-right: 8px;
+        }
 
-            .user-dropdown .dropdown-item:hover {
-                background-color: #f0fdf4;
-                color: #1e3a34;
-            }
+        .user-dropdown .dropdown-item:hover {
+            background-color: #f0fdf4;
+            color: #1e3a34;
+        }
 
         .user-dropdown .btn-outline-danger {
             font-size: 14px;
@@ -224,9 +228,9 @@
             color: #333;
         }
 
-            .dropdown-item:hover {
-                background: #f1f1f1;
-            }
+        .dropdown-item:hover {
+            background: #f1f1f1;
+        }
     </style>
 
     <script>
@@ -331,7 +335,6 @@
                                 <a href="employeeManagement.aspx">Colaboradores</a>
                                 <a href="employeeDepartment.aspx">Departamentos</a>
                                 <a href="employeePosition.aspx">Cargos</a>
-                                <a href="#">Documentos</a>
                             </div>
                         </li>
 
@@ -370,16 +373,12 @@
 
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">
-                                <span><i class="bi bi-envelope"></i>Email</span>
+                                <span><i class="bi bi-envelope"></i> Email</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuEmail">
                                 <a href="#">Enviar Email</a>
                             </div>
-                        </li>
-
-                        <li>
-                            <a class="d-flex align-items-center" href="#"><i class="bi bi-chat-dots"></i><span>Chat</span></a>
                         </li>
                     </ul>
                 </nav>

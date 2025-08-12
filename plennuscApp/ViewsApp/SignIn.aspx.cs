@@ -31,7 +31,6 @@ namespace appWhatsapp.Views
                     if (!string.IsNullOrEmpty(simbolo))
                     {
                         imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + simbolo);
-
                     }
                 }
                 CarregarSistemas();
