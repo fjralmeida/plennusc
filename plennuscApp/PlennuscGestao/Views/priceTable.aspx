@@ -125,9 +125,28 @@
         font-size: 13px;
         text-align: center;
     }
-
-
  </style>
+
+     <script>
+         function abrirConfirmacaoInserir() {
+         var modal = new bootstrap.Modal(document.getElementById('confirmUpdate'));
+         modal.show();
+         return false; // cancela o postback do clique original
+     }
+
+         function confirmarInsercao() {
+         // evita duplo clique
+         var btn = document.getElementById('<%= btnEnviar.ClientID %>');
+     if (btn) btn.disabled = true;
+
+     // fecha o modal e faz o postback do btnEnviar
+     var modalEl = document.getElementById('confirmUpdate');
+     var instance = bootstrap.Modal.getInstance(modalEl);
+     if (instance) instance.hide();
+
+       __doPostBack('<%= btnEnviar.UniqueID %>', '');
+   }
+     </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -151,6 +170,19 @@
                 </div>
             </div>
         </div>
+
+          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+               <div class="flex-grow-1">
+                 <asp:Literal ID="lblResultado" runat="server" Mode="PassThrough"></asp:Literal>
+               </div>
+
+            <asp:Button ID="btnEnviar" runat="server" Text="Inserir Tabela de Preço"
+                         CssClass="btn btn-success btn-pill"
+                         Enabled="false"
+                         OnClick="btnEnviar_Click"
+                         OnClientClick="return abrirConfirmacaoInserir();"
+                         UseSubmitBehavior="false" />
+         </div>
 
            <div class="grid-wrapper">
                 <asp:GridView ID="gridXsl" 
@@ -178,16 +210,36 @@
                     </Columns>
                 </asp:GridView>
             </div>
-
-        <div class="text-end">
-            <asp:Button ID="btnEnviar" runat="server" Text="Inserir Tabela de Preço"
-                CssClass="btn btn-success btn-pill"
-                Enabled="false"
-                OnClick="btnEnviar_Click" />
-        </div>
-
-        <asp:Literal ID="lblResultado" runat="server" Mode="PassThrough"></asp:Literal>
     </div>
+</div>
+
+        <!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmUpdate" tabindex="-1" aria-labelledby="confirmUpdateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px;">
+      <div class="modal-header" style="border-bottom:0;">
+        <h5 class="modal-title" id="confirmUpdateLabel">
+          <i class="fa-solid fa-circle-exclamation me-2" style="color:#83CEEE;"></i>
+          Confirmar inserção
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+
+      <div class="modal-body">
+        Isso vai <b>inserir os registros</b> da planilha na tabela <code>PS1032</code>.<br/>
+        Deseja continuar?
+      </div>
+
+      <div class="modal-footer" style="border-top:0;">
+        <button type="button" class="btn btn-light btn-pill" data-bs-dismiss="modal">Cancelar</button>
+
+        <!-- Botão que confirma e dispara o mesmo postback do btnEnviar -->
+        <button type="button" class="btn btn-success btn-pill" onclick="confirmarInsercao()">
+          Sim, atualizar
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 </asp:Content>

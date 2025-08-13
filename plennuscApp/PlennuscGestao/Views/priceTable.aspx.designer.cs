@@ -33,13 +33,13 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Button btnLerXls;
 
         /// <summary>
-        /// Controle gridXsl.
+        /// Controle lblResultado.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gridXsl;
+        protected global::System.Web.UI.WebControls.Literal lblResultado;
 
         /// <summary>
         /// Controle btnEnviar.
@@ -51,12 +51,12 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Button btnEnviar;
 
         /// <summary>
-        /// Controle lblResultado.
+        /// Controle gridXsl.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblResultado;
+        protected global::System.Web.UI.WebControls.GridView gridXsl;
     }
 }

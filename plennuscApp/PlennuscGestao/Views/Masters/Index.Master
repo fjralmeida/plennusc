@@ -368,7 +368,7 @@
                       </a>
                       <div class="collapse" id="importPrice">
                         <a href="priceTable.aspx" title="Importar XLS – Adicionar Nova Tabela">Nova Tabela (XLS)</a>
-                        <a href="updatePriceTable.aspx" title="Atualizar Valores da Tabela">Atualizar Valores</a>
+                        <a href="updatePriceTable.aspx" title="Atualizar Valores da Tabela">Atualizar Valores (XLS)</a>
                       </div>
                     </li>
 
