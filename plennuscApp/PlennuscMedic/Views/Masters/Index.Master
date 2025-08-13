@@ -49,13 +49,14 @@
         }
 
         .sidebar {
-            width: 240px;
-            background-color: #ffffff;
-            border-right: 1px solid #e3e6ef;
-            padding: 1.5rem 0.5rem;
-            height: 100%;
-            font-size: 13.5px;
-            overflow-y: auto;
+        width: 250px;
+        background-color: #ffffff;
+        border-right: 1px solid #e3e6ef;
+        padding: 1.0rem 0.5rem;
+        height: 100%;
+        font-size: 13.5px;
+        overflow-y: auto;
+        flex-shrink: 0; /* Impede que a sidebar encolha */
         }
 
         .sidebar a {
@@ -83,13 +84,17 @@
 
         .sidebar .collapse a {
             font-size: 13px;
-            padding-left: 32px;
+            padding-left: 47px;
             font-weight: 400;
         }
 
         .sidebar .bi {
             font-size: 15px;
             color: #9ca3af;
+        }
+
+        .sidebar span {
+            padding-left: 6px; /* Espaço entre ícone e texto */
         }
 
         .topbar {
@@ -100,11 +105,12 @@
         }
 
         .highlight {
-            color: #000;               /* Texto escuro */
+            color: #000; /* Texto escuro */
             font-weight: 600;
             padding: 1px 3px;
             border-radius: 3px;
         }
+
         .dropdown-menu .dropdown-item:hover {
             background-color: #83CEEE !important;
             color: #000 !important;
@@ -203,29 +209,30 @@
             }
         }
 
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-    .user-dropdown-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-    }
-    .dropdown-item {
-        display: block;
-        padding: 8px 10px;
-        text-decoration: none;
-        color: #333;
-    }
-    .dropdown-item:hover {
-        background: #f1f1f1;
-    }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
+        .user-dropdown-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 8px 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f1f1;
+        }
     </style>
-
     <script>
         // Função para abrir/fechar menu
         function toggleUserMenu() {
@@ -277,110 +284,98 @@
         AlternateText="Avatar do Usuário" onclick="toggleUserMenu()" />
 
     <!-- Menu customizado -->
-    <div id="userDropdown" class="user-dropdown p-3 shadow" style="display: none; min-width: 280px; position: absolute; right: 0; background: white; border: 1px solid #ddd; border-radius: 5px; z-index: 999;">
-        <li class="text-center mb-2" style="list-style:none;">
-            <asp:Image ID="imgAvatarUsuarioDropdown" runat="server" CssClass="user-dropdown-avatar" />
-            <div class="fw-semibold mt-2">
-                <asp:Label ID="lblUsuario" runat="server" />
+                <div id="userDropdown" class="user-dropdown p-3 shadow" style="display: none; min-width: 280px; position: absolute; right: 0; background: white; border: 1px solid #ddd; border-radius: 5px; z-index: 999;">
+                    <li class="text-center mb-2" style="list-style:none;">
+                        <asp:Image ID="imgAvatarUsuarioDropdown" runat="server" CssClass="user-dropdown-avatar" />
+                        <div class="fw-semibold mt-2">
+                            <asp:Label ID="lblUsuario" runat="server" />
+                        </div>
+                    </li>
+                    <hr class="dropdown-divider" />
+                    <li style="list-style:none;">
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="abrirPerfil()">
+                            <i class="bi bi-person me-2"></i>Perfil
+                        </a>
+                    </li>
+                    <li style="list-style:none;">
+                        <a class="dropdown-item" href="#"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+                    </li>
+                    <li style="list-style:none;">
+                        <a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Posts & Atividade</a>
+                    </li>
+                    <li style="list-style:none;">
+                        <a class="dropdown-item" href="privacySettingsMedic.aspx"><i class="bi bi-gear me-2"></i>Configurações & Privacidade</a>
+                    </li>
+                    <li style="list-style:none;">
+                        <a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>Central de Ajuda</a>
+                    </li>
+                    <hr class="dropdown-divider" />
+                    <li style="list-style:none;">
+                        <a class="dropdown-item" href="#"><i class="bi bi-person-plus me-2"></i>Adicionar conta</a>
+                    </li>
+                    <li class="text-center mt-2" style="list-style:none;">
+                        <asp:LinkButton ID="btnLogout" runat="server" CssClass="btn btn-outline-danger w-100" OnClick="LogoutUsuario">
+                            <i class="bi bi-box-arrow-right me-1"></i> Sair
+                        </asp:LinkButton>
+                    </li>
+                </div>
             </div>
-        </li>
-        <hr class="dropdown-divider" />
-        <li style="list-style:none;">
-            <a class="dropdown-item" href="javascript:void(0);" onclick="abrirPerfil()">
-                <i class="bi bi-person me-2"></i>Perfil
-            </a>
-        </li>
-        <li style="list-style:none;">
-            <a class="dropdown-item" href="#"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
-        </li>
-        <li style="list-style:none;">
-            <a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Posts & Atividade</a>
-        </li>
-        <li style="list-style:none;">
-            <a class="dropdown-item" href="privacySettingsMedic.aspx"><i class="bi bi-gear me-2"></i>Configurações & Privacidade</a>
-        </li>
-        <li style="list-style:none;">
-            <a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>Central de Ajuda</a>
-        </li>
-        <hr class="dropdown-divider" />
-        <li style="list-style:none;">
-            <a class="dropdown-item" href="#"><i class="bi bi-person-plus me-2"></i>Adicionar conta</a>
-        </li>
-        <li class="text-center mt-2" style="list-style:none;">
-            <asp:LinkButton ID="btnLogout" runat="server" CssClass="btn btn-outline-danger w-100" OnClick="LogoutUsuario">
-                <i class="bi bi-box-arrow-right me-1"></i> Sair
-            </asp:LinkButton>
-        </li>
-    </div>
-</div>
-            </div>
-
+         </div>
             <div class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
                 <!-- Sidebar -->
-                <nav class="sidebar">
+                  <nav class="sidebar">
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
-                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas" title="Gestão de Pessoas">
+                                <span><i class="bi bi-person-badge"></i> Pessoas</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuGestaoPessoas">
-                                <a href="employeeManagementMedic.aspx"> Colaboradores</a>
-                                <a href="employeeDepartmentMedic.aspx"> Departamentos</a>
-                                <a href="employeePositionMedic.aspx"> Cargos</a>
-                                <a href="#">Documentos</a>
+                                <a href="employeeManagementMedic.aspx" title="Colaboradores">Colaboradores</a>
+                                <a href="employeeDepartmentMedic.aspx" title="Departamentos">Departamentos</a>
+                                <a href="employeePositionMedic.aspx" title="Cargos">Cargos</a>
+                                <a href="#" title="Documentos">Documentos</a>
                             </div>
                         </li>
 
                         <%--<li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot">
-                                <span><i class="bi bi-robot"></i> Chatbot</span>
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium" title="Importação de Propostas">
+                                <span><i class="bi bi-upload"></i> Propostas</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
-                            <div class="collapse" id="menuChatbot">
-                                <a href="sendMessageBeneficiary.aspx"> Beneficiário</a>
-                                <a href="FixedMessageSending.aspx"> Mensagem Fixa</a>
-                                <a href="#">Empresa</a>
+                            <div class="collapse" id="importPlanium">
+                                <a href="csvImportPlaniumMedic.aspx" title="Importar CSV">Importar CSV</a>
+                                <a href="#" title="Importar PDF">Importar PDF</a>
                             </div>
                         </li>--%>
 
                         <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium">
-                                <span><i class="bi bi-upload"></i> Importação Proposta</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                            <div class="collapse" id="importPlanium">
-                                <a href="csvImportPlaniumMedic.aspx"> Importar Csv</a>
-                                <a href="#"> Importar Pdf</a>
-                            </div>
-                        </li>
-
-                        <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#entrevistaMedica">
-                                <span><i class="bi bi-chat-text"></i> Entrevista Médica</span>
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#entrevistaMedica" title="Entrevista Médica">
+                                <span><i class="bi bi-chat-text"></i> Entrevistas</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="entrevistaMedica">
-                                <a href="medicalInterview.aspx">Entrevista</a>
-                                <a href="interviewIa.aspx">Entrevista IA</a>
+                                <a href="medicalInterview.aspx" title="Entrevista">Entrevista</a>
+                                <a href="interviewIa.aspx" title="Entrevista com IA">IA</a>
                             </div>
                         </li>
 
                         <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">
-                                <span><i class="bi bi-envelope"></i> Email</span>
+                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail" title="Email">
+                                <span><i class="bi bi-envelope"></i> E-mail</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <div class="collapse" id="menuEmail">
-                                <a href="interviewIa"> Enviar Email</a>
+                                <a href="interviewIa" title="Enviar E-mail">Enviar</a>
                             </div>
                         </li>
 
                         <li>
-                            <a class="d-flex align-items-center" href="#"><i class="bi bi-chat-dots"></i><span>Chat</span></a>
+                            <a class="d-flex align-items-center" href="#" title="Chat"><i class="bi bi-chat-dots"></i><span>Chat</span></a>
                         </li>
                     </ul>
                 </nav>
+
 
                 <!-- Main Content -->
                 <div class="flex-grow-1 p-4 overflow-auto">

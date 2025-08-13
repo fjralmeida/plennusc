@@ -48,10 +48,10 @@
         }
 
         .sidebar {
-        width: 240px;
+        width: 250px;
         background-color: #ffffff;
         border-right: 1px solid #e3e6ef;
-        padding: 1.5rem 0.5rem;
+        padding: 1.0rem 0.5rem;
         height: 100%;
         font-size: 13.5px;
         overflow-y: auto;
@@ -325,66 +325,64 @@
             <div class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
                 <!-- Sidebar -->
                 <nav class="sidebar">
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas">
-                                <span><i class="bi bi-person-badge"></i> Gestão de Pessoas</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                            <div class="collapse" id="menuGestaoPessoas">
-                                <a href="employeeManagement.aspx">Colaboradores</a>
-                                <a href="employeeDepartment.aspx">Departamentos</a>
-                                <a href="employeePosition.aspx">Cargos</a>
-                            </div>
-                        </li>
+                  <ul class="list-unstyled">
+                    <li class="mb-2">
+                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas" title="Gestão de Pessoas">
+                        <span><i class="bi bi-person-badge"></i> Pessoas</span>
+                        <i class="bi bi-chevron-right"></i>
+                      </a>
+                      <div class="collapse" id="menuGestaoPessoas">
+                        <a href="employeeManagement.aspx" title="Colaboradores">Colaboradores</a>
+                        <a href="employeeDepartment.aspx" title="Departamentos">Departamentos</a>
+                        <a href="employeePosition.aspx" title="Cargos">Cargos</a>
+                      </div>
+                    </li>
 
-                        <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot">
-                                <span><i class="bi bi-robot"></i> Chatbot</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                            <div class="collapse" id="menuChatbot">
-                                <a href="sendMessageBeneficiary.aspx">Beneficiário</a>
-                                <a href="FixedMessageSending.aspx">Mensagem Fixa</a>
-                                <a href="#">Empresa</a>
-                            </div>
-                        </li>
+                    <li class="mb-2">
+                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot" title="Chatbot">
+                        <span><i class="bi bi-robot"></i> Chatbot</span>
+                        <i class="bi bi-chevron-right"></i>
+                      </a>
+                      <div class="collapse" id="menuChatbot">
+                        <a href="sendMessageBeneficiary.aspx" title="Mensagens para Beneficiários">Beneficiários</a>
+                        <a href="FixedMessageSending.aspx" title="Mensagem Fixa">Msg Fixa</a>
+                        <a href="#" title="Empresa">Empresa</a>
+                      </div>
+                    </li>
 
-                        <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium">
-                                <span><i class="bi bi-upload"></i> Importação Planium</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                            <div class="collapse" id="importPlanium">
-                                <a href="csvImportPlanium.aspx">Importar Csv</a>
-                                <a href="#">Importar Pdf</a>
-                            </div>
-                        </li>
+                 <%--   <li class="mb-2">
+                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium" title="Importação Planium">
+                        <span><i class="bi bi-upload"></i> Planium</span>
+                        <i class="bi bi-chevron-right"></i>
+                      </a>
+                      <div class="collapse" id="importPlanium">
+                        <a href="csvImportPlanium.aspx" title="Importar CSV do Planium">Importar CSV</a>
+                        <a href="#" title="Importar PDF do Planium">Importar PDF</a>
+                      </div>
+                    </li>--%>
 
-                       <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPrice">
-                                <span><i class="bi bi-upload"></i> Tabela de Preços</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                            <div class="collapse" id="importPrice">
-                                <a href="priceTable.aspx">Importar XLS – Adicionar Nova Tabela</a>
-                                <a href="updatePriceTable.aspx">Atualizar Valores da Tabela</a>
-                            </div>
-                        </li>
+                    <li class="mb-2">
+                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPrice" title="Tabela de Preços">
+                        <span><i class="bi bi-upload"></i> Preços</span>
+                        <i class="bi bi-chevron-right"></i>
+                      </a>
+                      <div class="collapse" id="importPrice">
+                        <a href="priceTable.aspx" title="Importar XLS – Adicionar Nova Tabela">Nova Tabela (XLS)</a>
+                        <a href="updatePriceTable.aspx" title="Atualizar Valores da Tabela">Atualizar Valores</a>
+                      </div>
+                    </li>
 
-
-                        <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail">
-                                <span><i class="bi bi-envelope"></i> Email</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                            <div class="collapse" id="menuEmail">
-                                <a href="#">Enviar Email</a>
-                            </div>
-                        </li>
-                    </ul>
+                    <li class="mb-2">
+                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail" title="Email">
+                        <span><i class="bi bi-envelope"></i> E-mail</span>
+                        <i class="bi bi-chevron-right"></i>
+                      </a>
+                      <div class="collapse" id="menuEmail">
+                        <a href="#" title="Enviar E-mail">Enviar E-mail</a>
+                      </div>
+                    </li>
+                  </ul>
                 </nav>
-
                 <!-- Main Content -->
                 <div class="flex-grow-1 p-4 overflow-auto">
                     <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />

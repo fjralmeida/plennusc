@@ -134,7 +134,7 @@
 
     <div class="container">
     <h2 class="titulo-pagina">
-        <i class="fa-solid fa-file-csv me-2" style="color:#83CEEE;"></i> Importação de Arquivo XLS
+        <i class="fa-solid fa-file me-2" style="color:#83CEEE;"></i> Inserção de Tabela de Preço
     </h2>
 
     <div class="card-container">
@@ -180,7 +180,7 @@
             </div>
 
         <div class="text-end">
-            <asp:Button ID="btnEnviar" runat="server" Text="Upload Arquivo"
+            <asp:Button ID="btnEnviar" runat="server" Text="Inserir Tabela de Preço"
                 CssClass="btn btn-success btn-pill"
                 Enabled="false"
                 OnClick="btnEnviar_Click" />

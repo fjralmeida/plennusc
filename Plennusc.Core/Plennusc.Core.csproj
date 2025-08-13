@@ -47,11 +47,13 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Data_Bd\BancoDadosSQL.cs" />
+    <Compile Include="Mappers\MappersGestao\InsertionIntoTheMapperPriceTable.cs" />
     <Compile Include="Mappers\MappersGestao\TablePriceMapper.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagem.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemCsv.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemPriceTable.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagensCsvPlanium.cs" />
+    <Compile Include="Models\ModelsGestao\DataInsertionPriceTableMessage.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
