@@ -20,7 +20,13 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                var url = ResolveUrl("~/public/uploadgestao/docs/ModeloDeInserçãoTabPreços%20-%20PS1032.xlsx");
+                lnkModeloXls.NavigateUrl = url;
+                lnkModeloXls.Target = ""; // garante que não abre nova aba
+                lnkModeloXls.Attributes["download"] = "Modelo_Tabela_Preco_PS1032 - Inserção.xlsx"; // força download
+            }
         }
         private DataTable TabelaXls
         {
