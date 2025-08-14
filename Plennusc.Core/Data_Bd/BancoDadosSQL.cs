@@ -135,6 +135,27 @@ namespace appWhatsapp.Data_Bd
             DesconectarAlianca();
         }
 
+        public int ExecutarAliancaLinhasAfetadas(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarAlianca();
+
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conAlianca))
+                {
+                    foreach (var p in parametros)
+                        cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
+
+                    return cmd.ExecuteNonQuery(); // ← retorna 0 ou 1+
+                }
+            }
+            finally
+            {
+                DesconectarAlianca();
+            }
+        }
+
+
         public DataTable LerPlennus(string sql, Dictionary<string, object> parametros)
         {
             ConectarPlennus();

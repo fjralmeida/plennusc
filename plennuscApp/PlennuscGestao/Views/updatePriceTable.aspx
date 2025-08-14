@@ -176,6 +176,14 @@
             __doPostBack('<%= btnEnviar.UniqueID %>', '');
         }
     </script>
+
+    <script>
+        function abrirModalErro() {
+            var m = new bootstrap.Modal(document.getElementById('erroLinhaModal'));
+            m.show();
+        }
+    </script>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -212,17 +220,23 @@
             </div>
 
 
-            <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                <div class="flex-grow-1">
-                    <asp:Literal ID="lblResultado" runat="server" Mode="PassThrough"></asp:Literal>
-                </div>
+          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+              <div class="flex-grow-1">
+                <asp:Literal ID="lblResultado" runat="server" Mode="PassThrough"></asp:Literal>
+              </div>
 
-                <asp:Button ID="btnEnviar" runat="server" Text="Atualizar Tabela de Preço"
-                    CssClass="btn btn-success btn-pill"
-                    Enabled="false"
-                    OnClick="btnEnviar_Click"
-                    OnClientClick="return abrirConfirmacaoAtualizar();"
-                    UseSubmitBehavior="false" />
+              <asp:Button ID="btnMostrarErro" runat="server"
+                  Text="Ver linha com erro"
+                  CssClass="btn btn-outline-danger btn-pill"
+                  Visible="false"
+                  OnClientClick="abrirModalErro(); return false;" />
+
+              <asp:Button ID="btnEnviar" runat="server" Text="Atualizar Tabela de Preço"
+                  CssClass="btn btn-success btn-pill"
+                  Enabled="false"
+                  OnClick="btnEnviar_Click"
+                  OnClientClick="return abrirConfirmacaoAtualizar();"
+                  UseSubmitBehavior="false" />
             </div>
 
             <div class="grid-wrapper">
@@ -283,5 +297,25 @@
         </div>
     </div>
 
+      <!-- Modal de Erro -->
+        <div class="modal fade" id="erroLinhaModal" tabindex="-1" aria-labelledby="erroLinhaLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:16px;">
+              <div class="modal-header" style="border-bottom:0;">
+                <h5 class="modal-title" id="erroLinhaLabel">
+                  <i class="fa-solid fa-triangle-exclamation me-2" style="color:#dc3545;"></i>
+                  Linha com erro
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+              </div>
+              <div class="modal-body">
+                <asp:Literal ID="litErroLinha" runat="server"></asp:Literal>
+              </div>
+              <div class="modal-footer" style="border-top:0;">
+                <button type="button" class="btn btn-light btn-pill" data-bs-dismiss="modal">Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
 </asp:Content>

@@ -60,19 +60,21 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.price
 
             new Banco_Dados_SQLServer().ExecutarAlianca(sql, parametros);
         }
-        public void updatePriceTable(DataInsertionPriceTableMessage item)
+        public int updatePriceTable(DataInsertionPriceTableMessage item)
         {
             string sql = @"
-             UPDATE dbo.PS1032
-                SET
-                    VALOR_PLANO               = @VALOR_PLANO,
-                    Tipo_Relacao_Dependencia  = @TIPO_RELACAO_DEPENDENCIA,
-                    INFORMACOES_LOG_A         = GETDATE(),
-                    VALOR_NET                 = @VALOR_NET,
-                    CODIGO_GRUPO_CONTRATO     = @CODIGO_GRUPO_CONTRATO,
-                    NOME_TABELA               = @NOME_TABELA
-                WHERE
-                    NUMERO_REGISTRO = @NUMERO_REGISTRO;
+                UPDATE dbo.PS1032
+                   SET
+                       VALOR_PLANO              = @VALOR_PLANO,
+                       Tipo_Relacao_Dependencia = @TIPO_RELACAO_DEPENDENCIA,
+                       INFORMACOES_LOG_A        = GETDATE(),
+                       VALOR_NET                = @VALOR_NET,
+                       NOME_TABELA              = @NOME_TABELA
+                 WHERE
+                       NUMERO_REGISTRO       = @NUMERO_REGISTRO
+                   AND CODIGO_PLANO          = @CODIGO_PLANO
+                   AND CODIGO_TABELA_PRECO   = @CODIGO_TABELA_PRECO
+                   AND CODIGO_GRUPO_CONTRATO = @CODIGO_GRUPO_CONTRATO;
             ";
 
             var parametros = new Dictionary<string, object>
@@ -80,12 +82,16 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.price
                 ["@VALOR_PLANO"] = item.VALOR_PLANO,
                 ["@TIPO_RELACAO_DEPENDENCIA"] = item.TIPO_RELACAO_DEPENDENCIA,
                 ["@VALOR_NET"] = item.VALOR_NET,
-                ["@CODIGO_GRUPO_CONTRATO"] = item.CODIGO_GRUPO_CONTRATO,
                 ["@NOME_TABELA"] = item.NOME_TABELA,
-                ["@NUMERO_REGISTRO"] = item.NUMERO_REGISTRO
+
+                ["@NUMERO_REGISTRO"] = item.NUMERO_REGISTRO,
+                ["@CODIGO_PLANO"] = item.CODIGO_PLANO,
+                ["@CODIGO_TABELA_PRECO"] = item.CODIGO_TABELA_PRECO,
+                ["@CODIGO_GRUPO_CONTRATO"] = item.CODIGO_GRUPO_CONTRATO
             };
 
-            new Banco_Dados_SQLServer().ExecutarAlianca(sql, parametros);
+            return new Banco_Dados_SQLServer().ExecutarAliancaLinhasAfetadas(sql, parametros);
         }
+
     }
 }

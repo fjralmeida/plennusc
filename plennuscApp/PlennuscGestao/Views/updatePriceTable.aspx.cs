@@ -1,5 +1,6 @@
 ﻿using ExcelDataReader;
 using Plennusc.Core.Mappers.MappersGestao;
+using Plennusc.Core.Models.ModelsGestao;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.price;
 using System;
 using System.Collections.Generic;
@@ -102,22 +103,66 @@ namespace appWhatsapp.PlennuscGestao.Views
                     return;
                 }
 
-                int inseridos = 0;
+                int atualizados = 0;
+                int linhaPlanilha = 0;
 
                 foreach (DataRow row in TabelaXls.Rows)
                 {
+                    linhaPlanilha++;
                     var item = InsertionIntoTheMapperPriceTable.FromDataRow(row);
-                    tablePrice.updatePriceTable(item);
-                    inseridos++;
+
+                    var afetadas = tablePrice.updatePriceTable(item);
+
+                    if (afetadas == 0)
+                    {
+                        // guarda info para o modal
+                        Session["UpdateErroItem"] = item;
+                        Session["UpdateErroLinha"] = linhaPlanilha;
+
+                        // preenche o conteúdo do modal nesta mesma resposta
+                        PreencherModalErro();
+
+                        // mostra o botão "Ver linha com erro"
+                        btnMostrarErro.Visible = true;
+
+                        lblResultado.Text = $"<span style='color:red;'>Linha {linhaPlanilha}: registro não encontrado com as chaves informadas. Clique em <b>Ver linha com erro</b> para detalhes.</span>";
+                        return; // para no primeiro erro
+                    }
+
+                    atualizados++;
                 }
 
-                lblResultado.Text = $"<span style='color:green;'>{inseridos} registro(s) atualizado(s) na PS1032.</span>";
-
+                lblResultado.Text = $"<span style='color:green;'>{atualizados} registro(s) atualizado(s) na PS1032.</span>";
+                btnMostrarErro.Visible = false; // garante oculto se não houve erro
             }
             catch (Exception ex)
             {
                 lblResultado.Text = "<span style='color:red;'>Erro ao enviar dados: " + ex.Message + "</span>";
             }
+        }
+
+        private void PreencherModalErro()
+        {
+            var item = Session["UpdateErroItem"] as DataInsertionPriceTableMessage;
+            var linhaObj = Session["UpdateErroLinha"];
+            int linha = (linhaObj is int i) ? i : 0;
+
+            if (item == null) return;
+
+            litErroLinha.Text = $@"
+            <div class='small'>
+                <div><b>Linha:</b> {linha} <b>Com Erro:</b></div>
+                <hr/>
+                <div><b>NUMERO_REGISTRO:</b> {item.NUMERO_REGISTRO}</div>
+                <div><b>CODIGO_PLANO:</b> {item.CODIGO_PLANO}</div>
+                <div><b>CODIGO_TABELA_PRECO:</b> {item.CODIGO_TABELA_PRECO}</div>
+                <div><b>CODIGO_GRUPO_CONTRATO:</b> {item.CODIGO_GRUPO_CONTRATO}</div>
+                <hr/>
+                <div><b>VALOR_PLANO:</b> {item.VALOR_PLANO:N2}</div>
+                <div><b>VALOR_NET:</b> {item.VALOR_NET:N2}</div>
+                <div><b>TIPO_RELACAO_DEPENDENCIA:</b> {item.TIPO_RELACAO_DEPENDENCIA}</div>
+                <div><b>NOME_TABELA:</b> {item.NOME_TABELA}</div>
+            </div>";
         }
     }
 }
