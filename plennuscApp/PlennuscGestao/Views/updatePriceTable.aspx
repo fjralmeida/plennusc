@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 960px;
+            max-width: 1300px;
             margin: auto;
             padding: 32px 16px;
         }
@@ -262,6 +262,7 @@
                         <asp:BoundField DataField="NOME_TABELA" HeaderText="NOME_TABELA" />
                         <asp:BoundField DataField="VALOR_NET" HeaderText="VALOR_NET"
                             DataFormatString="{0:N2}" HtmlEncode="false" />
+                          <asp:BoundField DataField="TIPO_CONTRATO_ESTIPULADO" HeaderText="TIPO_CONTRATO" />
                     </Columns>
                 </asp:GridView>
             </div>

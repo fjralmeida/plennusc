@@ -63,6 +63,7 @@ namespace Plennusc.Core.Mappers.MappersGestao
                 CODIGO_GRUPO_CONTRATO = ToInt(r["CODIGO_GRUPO_CONTRATO"]),
                 NOME_TABELA = ToStr(r["NOME_TABELA"]),
                 VALOR_NET = ToMoney2(r["VALOR_NET"]),
+                TIPO_CONTRATO_ESTIPULADO = ToStr(r["TIPO_CONTRATO_ESTIPULADO"]),
             };
         }
     }

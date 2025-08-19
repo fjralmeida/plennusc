@@ -20,7 +20,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (!IsPostBack)
             {
-                var url = ResolveUrl("~/public/uploadgestao/docs/ModeloDeAtualizaçãoTabPreços - PS1032.xlsx");
+                var url = ResolveUrl("~/public/uploadgestao/docs/ModeloDeAtualizaçãoTabelaPreços%20-%20PS1032.xlsx");
                 lnkModeloXls.NavigateUrl = url;
                 lnkModeloXls.Target = ""; // garante que não abre nova aba
                 lnkModeloXls.Attributes["download"] = "Modelo_Tabela_Preco_PS1032 - Atualização.xlsx"; // força download
@@ -162,6 +162,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 <div><b>VALOR_NET:</b> {item.VALOR_NET:N2}</div>
                 <div><b>TIPO_RELACAO_DEPENDENCIA:</b> {item.TIPO_RELACAO_DEPENDENCIA}</div>
                 <div><b>NOME_TABELA:</b> {item.NOME_TABELA}</div>
+                div><b>TIPO_CONTRATO_ESTIPULADO:</b> {item.TIPO_CONTRATO_ESTIPULADO}</div>
             </div>";
         }
     }

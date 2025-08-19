@@ -194,8 +194,8 @@
     <Content Include="PlennuscMedic\Views\employeeManagementMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeePositionMedic.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
-    <Content Include="public\uploadgestao\docs\ModeloDeAtualizaçãoTabPreços - PS1032.xlsx" />
     <Content Include="public\uploadgestao\docs\ModeloDeInserçãoTabPreços - PS1032.xlsx" />
+    <Content Include="public\uploadgestao\docs\ModeloDeAtualizaçãoTabelaPreços - PS1032.xlsx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="PlennuscMedic\Views\interviewIa.aspx" />
     <Content Include="PlennuscMedic\Views\medicalInterview.aspx" />

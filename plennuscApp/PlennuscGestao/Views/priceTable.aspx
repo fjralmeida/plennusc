@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 960px;
+            max-width: 1300px;
             margin: auto;
             padding: 32px 16px;
         }
@@ -275,7 +275,7 @@
 
                     <!-- Botão que confirma e dispara o mesmo postback do btnEnviar -->
                     <button type="button" class="btn btn-success btn-pill" onclick="confirmarInsercao()">
-                        Sim, atualizar
+                        Sim, inserir
                     </button>
                 </div>
             </div>

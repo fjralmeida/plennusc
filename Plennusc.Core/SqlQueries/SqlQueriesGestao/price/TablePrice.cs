@@ -69,7 +69,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.price
                        Tipo_Relacao_Dependencia = @TIPO_RELACAO_DEPENDENCIA,
                        INFORMACOES_LOG_A        = GETDATE(),
                        VALOR_NET                = @VALOR_NET,
-                       NOME_TABELA              = @NOME_TABELA
+                       NOME_TABELA              = @NOME_TABELA,
+                       TIPO_CONTRATO_ESTIPULADO = @TIPO_CONTRATO_ESTIPULADO
                  WHERE
                        NUMERO_REGISTRO       = @NUMERO_REGISTRO
                    AND CODIGO_PLANO          = @CODIGO_PLANO
@@ -83,6 +84,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.price
                 ["@TIPO_RELACAO_DEPENDENCIA"] = item.TIPO_RELACAO_DEPENDENCIA,
                 ["@VALOR_NET"] = item.VALOR_NET,
                 ["@NOME_TABELA"] = item.NOME_TABELA,
+                ["@TIPO_CONTRATO_ESTIPULADO"] = item.TIPO_CONTRATO_ESTIPULADO,
 
                 ["@NUMERO_REGISTRO"] = item.NUMERO_REGISTRO,
                 ["@CODIGO_PLANO"] = item.CODIGO_PLANO,
