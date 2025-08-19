@@ -345,8 +345,8 @@
                       </a>
                       <div class="collapse" id="menuChatbot">
                         <a href="sendMessageBeneficiary.aspx" title="Mensagens para Beneficiários">Beneficiários</a>
-                        <a href="FixedMessageSending.aspx" title="Mensagem Fixa">Msg Fixa</a>
                         <a href="#" title="Empresa">Empresa</a>
+                        <a href="FixedMessageSending.aspx" title="Mensagem Fixa">Msg Fixa Comercial</a>
                       </div>
                     </li>
 
