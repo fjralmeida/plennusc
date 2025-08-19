@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -24,6 +25,8 @@ namespace PlennuscApp.PlennuscGestao.Views
 
         private void CarregarOperadoras()
         {
+            int codAutenticacao = Convert.ToInt32(Session["codUsuario"]);
+
             OperadoraUtil util = new OperadoraUtil();
             DataTable dtOperadora = util.consultaOperadora();
 
@@ -142,6 +145,8 @@ namespace PlennuscApp.PlennuscGestao.Views
 
             var resultadoFinal = new StringBuilder();
 
+            int codAutenticacao = Convert.ToInt32(Session["codUsuario"]);
+
             foreach (var dados in mensagens)
             {
                 List<string> telefones = new List<string> { dados.Telefone };
@@ -157,7 +162,9 @@ namespace PlennuscApp.PlennuscGestao.Views
                             dados.Field2,
                             dados.Field3,
                             dados.Field4,
-                            escolhaTemplate
+                            escolhaTemplate,
+                            dados.CodigoAssociado,
+                            codAutenticacao
                         );
                         break;
 
@@ -169,7 +176,9 @@ namespace PlennuscApp.PlennuscGestao.Views
                             dados.Field2,
                             dados.Field3,
                             dados.Field4,
-                           escolhaTemplate
+                           escolhaTemplate,
+                           dados.CodigoAssociado,
+                           codAutenticacao
                         );
                         break;
 
@@ -213,6 +222,10 @@ namespace PlennuscApp.PlennuscGestao.Views
                 CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
                 if (chk != null && chk.Checked)
                 {
+                    var lblCodigo = row.FindControl("lblCodigo") as Label;
+
+                    string codigoAssociado = Convert.ToString(lblCodigo?.Text)?.Trim();
+
                     string telefone = "553173069983";
                     //string telefone = FormatTelefone(telefoneBruto);
 
@@ -261,6 +274,7 @@ namespace PlennuscApp.PlennuscGestao.Views
 
                     lista.Add(new DadosMensagem
                     {
+                        CodigoAssociado = codigoAssociado,
                         Telefone = telefone, // Já vem formatado com 5531...
                         Field1 = nome,
                         Field2 = nomeMes,

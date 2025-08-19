@@ -3,7 +3,9 @@ using appWhatsapp.Models.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace appWhatsapp.SqlQueries
@@ -33,6 +35,7 @@ namespace appWhatsapp.SqlQueries
                             LEFT JOIN ESP0002 C ON B.CODIGO_GRUPO_CONTRATO = C.CODIGO_GRUPO_CONTRATO
                             LEFT JOIN PS1030 D ON D.CODIGO_PLANO = B.CODIGO_PLANO
                             OUTER APPLY (
+
                                 SELECT TOP 1 NUMERO_TELEFONE 
                                 FROM PS1006 
                                 WHERE PS1006.CODIGO_ASSOCIADO = A.CODIGO_ASSOCIADO
@@ -64,44 +67,44 @@ namespace appWhatsapp.SqlQueries
             string senhaHash = CriptografiaUtil.CalcularHashSHA512(senha);
 
             string sql = @"
-        SELECT 
-            AA.CodAutenticacaoAcesso,
-            AA.CodPessoa,
-            AA.NomeUsuario,
-            AA.UsrNomeLogin,
-            AA.Conf_Ativo AS UsuarioAtivo,
-            SE.CodEmpresa,
-            E.RazaoSocial,
-            E.NomeFantasia,
-            E.Conf_Ativo AS EmpresaAtiva,
-            E.Conf_LiberaAcesso,
-            SE.Conf_LiberaAcesso AS LiberacaoVinculoSistemaEmpresa,
-            SEU.Conf_LiberaAcesso AS LiberacaoUsuarioSistema,
-            SEU.Conf_BloqueiaAcesso AS BloqueioUsuarioSistema, 
-            SI.CodSistema,
-            SI.Nome AS NomeSistema,
-            SI.NomeDisplay AS NomeDisplaySistema
-        FROM AutenticacaoAcesso AA
-        INNER JOIN SistemaEmpresaUsuario SEU 
-            ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
-        INNER JOIN SistemaEmpresa SE 
-            ON SE.CodSistemaEmpresa = SEU.CodSistemaEmpresa
-        INNER JOIN Empresa E 
-            ON E.CodEmpresa = SE.CodEmpresa
-        INNER JOIN Sistema SI 
-            ON SI.CodSistema = SE.CodSistema
-        WHERE 
-            AA.UsrNomeLogin = @login
-            AND AA.UsrPasswd = @senhaHash
-            AND SI.CodSistema = @CodSistema -- ✅ Filtro adicionado aqui
-    ";
+                        SELECT 
+                            AA.CodAutenticacaoAcesso,
+                            AA.CodPessoa,
+                            AA.NomeUsuario,
+                            AA.UsrNomeLogin,
+                            AA.Conf_Ativo AS UsuarioAtivo,
+                            SE.CodEmpresa,
+                            E.RazaoSocial,
+                            E.NomeFantasia,
+                            E.Conf_Ativo AS EmpresaAtiva,
+                            E.Conf_LiberaAcesso,
+                            SE.Conf_LiberaAcesso AS LiberacaoVinculoSistemaEmpresa,
+                            SEU.Conf_LiberaAcesso AS LiberacaoUsuarioSistema,
+                            SEU.Conf_BloqueiaAcesso AS BloqueioUsuarioSistema, 
+                            SI.CodSistema,
+                            SI.Nome AS NomeSistema,
+                            SI.NomeDisplay AS NomeDisplaySistema
+                        FROM AutenticacaoAcesso AA
+                        INNER JOIN SistemaEmpresaUsuario SEU 
+                            ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
+                        INNER JOIN SistemaEmpresa SE 
+                            ON SE.CodSistemaEmpresa = SEU.CodSistemaEmpresa
+                        INNER JOIN Empresa E 
+                            ON E.CodEmpresa = SE.CodEmpresa
+                        INNER JOIN Sistema SI 
+                            ON SI.CodSistema = SE.CodSistema
+                        WHERE 
+                            AA.UsrNomeLogin = @login
+                            AND AA.UsrPasswd = @senhaHash
+                            AND SI.CodSistema = @CodSistema -- ✅ Filtro adicionado aqui
+                    ";
 
             var parametros = new Dictionary<string, object>
-    {
-        { "@login", login },
-        { "@senhaHash", senhaHash },
-        { "@CodSistema", codSistema }
-    };
+            {
+                { "@login", login },
+                { "@senhaHash", senhaHash },
+                { "@CodSistema", codSistema }
+            };
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(sql, parametros);
@@ -137,47 +140,110 @@ namespace appWhatsapp.SqlQueries
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(sql, parametros);
         }
-        public void GravarLogEnvio( string telefoneDestino, int? codAssociado, string statusEnvio, string idResposta, string conteudoApi, string mensagemFinal, int codEmpresa = 400, string numeroEnvio = null)
+        public int GravarEnvioMensagem(string telefoneDestino, string codAssociado, string mensagemFinal, int codUsuarioEnvio, int codEmpresa = 400)
         {
             string sql = @"
-                            INSERT INTO LogEnvioMensagem (
-                                CodLogEnvioMensagem,
-                                TELEFONE_DESTINO,
-                                NUMERO_ENVIO,
-                                DATA_ENVIO,
-                                DATA_CONFIRMACAO,
-                                STATUS_ENVIO,
-                                ID_RESPOSTA_API,
-                                STATUS_API_JSON,
-                                MENSAGEM,
-                                CODIGO_EMPRESA
+                            INSERT INTO API_EnvioMensagemWpp  (
+                                CodigoEmpresa,
+                                CodigoAssociado,
+                                NumTelefoneDestino,
+                                DataEnvio,
+                                Mensagem,
+                                StatusEnvio,
+                                CodUsuarioEnvio,
+                                Informacoes_Log_I
                             )
-                            VALUES (
-                                @CodLogEnvioMensagem,
+                            OUTPUT INSERTED.CodEnvioMensagemWpp
+                           VALUES (
+                                @CodEmpresa,
+                                @CodAssociado,
                                 @TelefoneDestino,
-                                @NumeroEnvio,
                                 GETDATE(),
-                                GETDATE(),
-                                @StatusEnvio,
-                                @IdResposta,
-                                @StatusApiJson,
                                 @MensagemFinal,
-                                @CodEmpresa
+                                'ENVIADO',
+                                @CodUsuarioEnvio,
+                                GETDATE()
                             )";
 
             var parametros = new Dictionary<string, object>
             {
-                ["@CodLogEnvioMensagem"] = codAssociado.HasValue ? (object)codAssociado.Value : DBNull.Value,
+                ["@CodEmpresa"] = codEmpresa,
+                ["@CodAssociado"] = codAssociado,
                 ["@TelefoneDestino"] = telefoneDestino,
-                ["@NumeroEnvio"] = !string.IsNullOrEmpty(numeroEnvio) ? (object)numeroEnvio : DBNull.Value,
-                ["@StatusEnvio"] = statusEnvio,
-                ["@IdResposta"] = !string.IsNullOrEmpty(idResposta) ? (object)idResposta : DBNull.Value,
-                ["@StatusApiJson"] = conteudoApi ?? "",
                 ["@MensagemFinal"] = mensagemFinal ?? "",
-                ["@CodEmpresa"] = codEmpresa
+                ["@CodUsuarioEnvio"] = codUsuarioEnvio
             };
 
-            new Banco_Dados_SQLServer().ExecutarAlianca(sql, parametros);
+            return Convert.ToInt32(new Banco_Dados_SQLServer().ExecutarPlennusScalar(sql, parametros));
+        }
+
+        public void GravarRetornoMensagem(int codEnvioMensagemWpp, string statusEnvio, string idResposta, string conteudoApi, int codUsuarioEnvio)
+        {
+            // --- filtra o texto: pega apenas "Enviado: dd/MM/yyyy HH:mm:ss" e "Recebido: dd/MM/yyyy HH:mm:ss"
+            string filtrado = null;
+            if (!string.IsNullOrWhiteSpace(conteudoApi))
+            {
+                var mEnviado = Regex.Match(conteudoApi, @"Enviado:\s*\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2}");
+                var mRecebido = Regex.Match(conteudoApi, @"Recebido:\s*\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2}");
+
+                var partes = new List<string>(2);
+                if (mEnviado.Success) partes.Add(mEnviado.Value);
+                if (mRecebido.Success) partes.Add(mRecebido.Value);
+
+                // quebra de linha entre eles (troque para " | " se preferir)
+                filtrado = partes.Count == 0 ? null : string.Join(Environment.NewLine, partes);
+            }
+
+            // garante tamanho do ID (coluna VARCHAR(50))
+            string idResp = string.IsNullOrWhiteSpace(idResposta) ? null : idResposta.Trim();
+            if (!string.IsNullOrEmpty(idResp) && idResp.Length > 50)
+                idResp = idResp.Substring(0, 50);
+
+            string sql = @"
+                        INSERT INTO [dbo].[API_RetornoMensagemWpp] (
+                            CodEnvioMensagemWpp,
+                            DataConfirmacao,
+                            StatusEnvio,
+                            ID_RESPOSTA_API,
+                            STATUS_API_JSON,
+                            CodUsuarioEnvio,
+                            Informacoes_Log_I
+                        )
+                        VALUES (
+                            @CodEnvioMensagemWpp,
+                            GETDATE(),
+                            @StatusEnvio,
+                            @IdResposta,
+                            CASE 
+                              WHEN @StatusApiJson IS NULL THEN NULL
+                              ELSE LEFT(
+                                     @StatusApiJson,
+                                     CASE 
+                                       WHEN (SELECT DATA_TYPE 
+                                             FROM INFORMATION_SCHEMA.COLUMNS 
+                                             WHERE TABLE_SCHEMA='dbo' 
+                                               AND TABLE_NAME='API_RetornoMensagemWpp' 
+                                               AND COLUMN_NAME='STATUS_API_JSON') LIKE N'n%' 
+                                       THEN COL_LENGTH('dbo.API_RetornoMensagemWpp','STATUS_API_JSON')/2
+                                       ELSE COL_LENGTH('dbo.API_RetornoMensagemWpp','STATUS_API_JSON')
+                                     END
+                                   )
+                            END,
+                            @CodUsuarioEnvio,
+                            GETDATE()
+                        )";
+
+
+            var parametros = new Dictionary<string, object>
+            {
+                ["@CodEnvioMensagemWpp"] = codEnvioMensagemWpp,
+                ["@StatusEnvio"] = statusEnvio ?? (object)DBNull.Value,
+                ["@IdResposta"] = (idResp ?? (object)DBNull.Value),
+                ["@StatusApiJson"] = (filtrado ?? (object)DBNull.Value),
+                ["@CodUsuarioEnvio"] = codUsuarioEnvio
+            };
+
+            new Banco_Dados_SQLServer().ExecutarPlennus(sql, parametros);
         }
     }
 }

@@ -7,6 +7,8 @@ namespace appWhatsapp.Models
 {
     public class DadosMensagem
     {
+        public int CodigoPessoa { get; set; }
+        public string CodigoAssociado { get; set; }
         public string Telefone { get; set; }
         public string Field1 { get; set; } 
         public string Field2 { get; set; } 

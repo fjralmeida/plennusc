@@ -48,7 +48,105 @@ namespace appWhatsapp.Data_Bd
                 conPlennus.Close();
         }
 
-        // ==== Métodos de Acesso Simples ====
+        // ==== Métodos de Acesso PLENNUSC ====
+        public DataTable LerPlennus(string cmdsql)
+        {
+            ConectarPlennus();
+            DataTable dt = new DataTable();
+            using (SqlDataAdapter da = new SqlDataAdapter(cmdsql, conPlennus))
+            {
+                da.Fill(dt);
+            }
+            DesconectarPlennus();
+            return dt;
+        }
+
+        public void ExecutarPlennus(string cmdsql)
+        {
+            ConectarPlennus();
+            using (SqlCommand comando = new SqlCommand(cmdsql, conPlennus))
+            {
+                comando.ExecuteNonQuery();
+            }
+            DesconectarPlennus();
+        }
+
+
+        public DataTable LerPlennus(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+            DataTable dt = new DataTable();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+            }
+
+            DesconectarPlennus();
+            return dt;
+        }
+
+        public void ExecutarPlennus(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                cmd.ExecuteNonQuery();
+            }
+
+            DesconectarPlennus();
+        }
+        public async Task ExecutarPlennusAsync(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+
+            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            {
+                foreach (var param in parametros)
+                {
+                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+
+            DesconectarPlennus();
+        }
+
+        public object ExecutarPlennusScalar(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+                {
+                    foreach (var p in parametros)
+                        cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
+
+                    return cmd.ExecuteScalar();
+                }
+            }
+            finally
+            {
+                DesconectarPlennus();
+            }
+        }
+
+        // ==== Métodos de Acesso ALIANCA ====
 
         public DataTable LerAlianca(string cmdsql)
         {
@@ -72,29 +170,6 @@ namespace appWhatsapp.Data_Bd
             DesconectarAlianca();
         }
 
-        public DataTable LerPlennus(string cmdsql)
-        {
-            ConectarPlennus();
-            DataTable dt = new DataTable();
-            using (SqlDataAdapter da = new SqlDataAdapter(cmdsql, conPlennus))
-            {
-                da.Fill(dt);
-            }
-            DesconectarPlennus();
-            return dt;
-        }
-
-        public void ExecutarPlennus(string cmdsql)
-        {
-            ConectarPlennus();
-            using (SqlCommand comando = new SqlCommand(cmdsql, conPlennus))
-            {
-                comando.ExecuteNonQuery();
-            }
-            DesconectarPlennus();
-        }
-
-        // ==== Métodos de Acesso com Parâmetros ====
 
         public DataTable LerAlianca(string sql, Dictionary<string, object> parametros)
         {
@@ -155,60 +230,46 @@ namespace appWhatsapp.Data_Bd
             }
         }
 
-
-        public DataTable LerPlennus(string sql, Dictionary<string, object> parametros)
+        public object ExecutarAliancaScalar(string sql, Dictionary<string, object> parametros)
         {
-            ConectarPlennus();
-            DataTable dt = new DataTable();
-
-            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            ConectarAlianca();
+            try
             {
-                foreach (var param in parametros)
+                using (SqlCommand cmd = new SqlCommand(sql, conAlianca))
                 {
-                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
-                }
+                    foreach (var p in parametros)
+                        cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
 
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    da.Fill(dt);
+                    return cmd.ExecuteScalar(); // retorna o valor do OUTPUT/SELECT
                 }
             }
-
-            DesconectarPlennus();
-            return dt;
-        }
-
-        public void ExecutarPlennus(string sql, Dictionary<string, object> parametros)
-        {
-            ConectarPlennus();
-
-            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            finally
             {
-                foreach (var param in parametros)
-                {
-                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
-                }
-
-                cmd.ExecuteNonQuery();
+                DesconectarAlianca();
             }
-
-            DesconectarPlennus();
         }
-        public async Task ExecutarPlennusAsync(string sql, Dictionary<string, object> parametros)
+
+        // (Opcional, async)
+        public async Task<object> ExecutarAliancaScalarAsync(string sql, Dictionary<string, object> parametros)
         {
-            ConectarPlennus();
-
-            using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+            ConectarAlianca();
+            try
             {
-                foreach (var param in parametros)
+                using (SqlCommand cmd = new SqlCommand(sql, conAlianca))
                 {
-                    cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    foreach (var p in parametros)
+                        cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
+
+                    return await cmd.ExecuteScalarAsync();
                 }
-
-                await cmd.ExecuteNonQueryAsync();
             }
-
-            DesconectarPlennus();
+            finally
+            {
+                DesconectarAlianca();
+            }
         }
+
+
+
     }
 }

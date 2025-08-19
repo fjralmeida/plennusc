@@ -90,7 +90,7 @@ namespace appWhatsapp.Service
 
         public async Task<string> ConexaoApiSuspensao(List<string> telefones, string pdfUrl,
                                                     string field1, string field2, string field3,
-                                                    string field4, string mensagemFinal)
+                                                    string field4, string mensagemFinal, string codigoAssociado, int codAutenticacao)
         {
             var util = new ItensPedIntegradoUtil();
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
@@ -141,15 +141,20 @@ namespace appWhatsapp.Service
                             var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
 
                             // ✅ Grava no banco a mensagem enviada
-                            util.GravarLogEnvio(
+                            int codEnvio = util.GravarEnvioMensagem(
                                 telefoneDestino: telefone,
-                                codAssociado: null,             
+                               codAssociado: codigoAssociado,
+                                mensagemFinal: mensagemFinal,
+                                codEmpresa: 400,
+                                codUsuarioEnvio: codAutenticacao
+                            );
+
+                            util.GravarRetornoMensagem(
+                                codEnvioMensagemWpp: codEnvio,
                                 statusEnvio: "ENVIADO",
                                 idResposta: id,
                                 conteudoApi: statusResponse,
-                                mensagemFinal: mensagemFinal,    
-                                codEmpresa: 400,
-                                numeroEnvio: null 
+                                codUsuarioEnvio: codAutenticacao
                             );
 
                             resultadoFinal.AppendLine(statusResponse);
@@ -174,7 +179,7 @@ namespace appWhatsapp.Service
 
         public async Task<string> ConexaoApiDefinitivo(List<string> telefones, string pdfUrl,
                                                     string field1, string field2, string field3,
-                                                    string field4, string mensagemFinal)
+                                                    string field4, string mensagemFinal, string codigoAssociado, int codAutenticacao)
         {
             var util = new ItensPedIntegradoUtil();
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
@@ -224,16 +229,21 @@ namespace appWhatsapp.Service
                         {
                             var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
 
-                            // ✅ Grava no banco a mensagem enviada
-                            util.GravarLogEnvio(
+                          // ✅ Grava no banco a mensagem enviada
+                            int codEnvio = util.GravarEnvioMensagem(
                                 telefoneDestino: telefone,
-                                codAssociado: null,                 // se tiver, preencha
+                               codAssociado: codigoAssociado,
+                                mensagemFinal: mensagemFinal,
+                                codEmpresa: 400,
+                                 codUsuarioEnvio: codAutenticacao
+                            );
+
+                            util.GravarRetornoMensagem(
+                                codEnvioMensagemWpp: codEnvio,
                                 statusEnvio: "ENVIADO",
                                 idResposta: id,
                                 conteudoApi: statusResponse,
-                                mensagemFinal: mensagemFinal,     // <<< a mensagem do template já montada
-                                codEmpresa: 400,
-                                numeroEnvio: null                   // ou o número do remetente, se aplicável
+                                codUsuarioEnvio: codAutenticacao
                             );
 
                             resultadoFinal.AppendLine(statusResponse);
