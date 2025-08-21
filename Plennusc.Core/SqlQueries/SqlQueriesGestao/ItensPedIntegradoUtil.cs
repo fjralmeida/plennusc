@@ -69,10 +69,49 @@ namespace appWhatsapp.SqlQueries
                 // ATENÇÃO: você precisa garantir que esse caminho não traga tudo
                 return new DataTable(); // ← não retorna nada
             }
+            string sql = @"
+SELECT
+    A.NUMERO_REGISTRO,
+    A.CODIGO_EMPRESA,
+    E.NOME_EMPRESA AS NOME_ASSOCIADO,            
+    A.DATA_VENCIMENTO,
+    A.VALOR_FATURA,
+    C.NOME_OPERADORA,
+    D.NOME_PLANO_EMPRESAS AS NOME_PLANO_EMPRESA,   
+    T.NUMERO_TELEFONE
+FROM PS1020 A
+INNER JOIN PS1010 E                      
+        ON E.CODIGO_EMPRESA = A.CODIGO_EMPRESA
+LEFT JOIN ESP0002 C                          
+        ON C.CODIGO_GRUPO_CONTRATO = E.codigo_grupo_contrato
+OUTER APPLY (                                  
+    SELECT TOP 1 P1.CODIGO_PLANO
+    FROM PS1000 P1
+    WHERE P1.CODIGO_EMPRESA = A.CODIGO_EMPRESA
+      AND P1.CODIGO_MOTIVO_EXCLUSAO IS NULL
+      AND P1.DATA_EXCLUSAO IS NULL
+    ORDER BY 
+      CASE WHEN P1.CODIGO_TITULAR IS NULL OR P1.CODIGO_TITULAR = P1.CODIGO_ASSOCIADO THEN 0 ELSE 1 END,
+      P1.DATA_ULTIMA_ALTERACAO DESC
+) PL
+LEFT JOIN PS1030 D                            
+       ON D.CODIGO_PLANO = PL.CODIGO_PLANO
+OUTER APPLY (                                  
+    SELECT TOP 1 P.NUMERO_TELEFONE
+    FROM PS1006 P
+    WHERE P.CODIGO_EMPRESA = A.CODIGO_EMPRESA
+    ORDER BY P.INDICE_TELEFONE DESC, P.DATA_ALTERACAO_CADASTRAL DESC
+) T
+WHERE
+      A.CODIGO_EMPRESA <> 400             
+  AND A.DATA_VENCIMENTO BETWEEN @DataIni AND @DataFim
+  AND A.DATA_CANCELAMENTO IS NULL
+  AND A.DATA_PAGAMENTO IS NULL
+  AND (A.VALOR_PAGO IS NULL OR A.VALOR_PAGO = 0)   
+  AND E.CODIGO_MOTIVO_EXCLUSAO IS NULL       
+  AND E.DATA_EXCLUSAO IS NULL
+  AND (@CodigoOperadora IS NULL OR C.CODIGO_GRUPO_CONTRATO = @CodigoOperadora)
 
-            string sql = @" 
-
-                                AND (@CodigoOperadora IS NULL OR C.CODIGO_GRUPO_CONTRATO = @CodigoOperadora)
                         ";
 
             var parametros = new Dictionary<string, object>

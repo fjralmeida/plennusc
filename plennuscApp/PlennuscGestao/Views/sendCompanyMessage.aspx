@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="sendCompanyMessage.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sendCompanyMessage" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="sendCompanyMessage.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sendCompanyMessage" Async="true"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
      <title>Enviar Mensagem ao Beneficiário</title>
@@ -13,7 +13,6 @@
             font-size: 13px; /* Ajuste aqui o tamanho global da fonte */
             color: #333;
         }
-
 
         .card-container {
             background: #fff;
@@ -38,9 +37,9 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
-            .btn-pill .fa {
-                margin-right: 8px;
-            }
+        .btn-pill .fa {
+            margin-right: 8px;
+        }
 
         .btn-success {
             background-color: #4CB07A;
@@ -48,9 +47,9 @@
             color: #fff;
         }
 
-            .btn-success:hover {
-                background-color: #3B8B65;
-            }
+        .btn-success:hover {
+            background-color: #3B8B65;
+        }
 
         .btn-danger {
             background-color: #DC8689;
@@ -58,9 +57,9 @@
             color: #fff;
         }
 
-            .btn-danger:hover {
-                background-color: #b75963;
-            }
+        .btn-danger:hover {
+            background-color: #b75963;
+        }
 
         .btn-info {
             background-color: #83CEEE;
@@ -68,10 +67,10 @@
             color: #fff;
         }
 
-            .btn-info:hover {
-                background-color: #6AB9E0;
-                color: white;
-            }
+        .btn-info:hover {
+            background-color: #6AB9E0;
+            color: white;
+        }
 
         .btn-purple {
             background-color: #C06ED4;
@@ -79,11 +78,11 @@
             color: #fff;
         }
 
-            .btn-purple:hover {
-                background-color: #a14db8;
-                border-color: #a14db8;
-                color: #fff;
-            }
+        .btn-purple:hover {
+            background-color: #a14db8;
+            border-color: #a14db8;
+            color: #fff;
+        }
 
         .botoes-acoes {
             display: flex;
@@ -148,25 +147,25 @@
         }
 
         #GridAssociados > tbody{
-  display: block;
-  max-height: 520px;     /* altura visível do grid */
-  overflow-y: auto;      /* scroll só de subir/descer */
-}
+          display: block;
+          max-height: 520px;     /* altura visível do grid */
+          overflow-y: auto;      /* scroll só de subir/descer */
+        }
 
-#GridAssociados > thead,
-#GridAssociados > tbody tr{
-  display: table;
-  width: 100%;
-  table-layout: fixed;   /* mantém alinhamento das colunas */
-}
+        #GridAssociados > thead,
+        #GridAssociados > tbody tr{
+          display: table;
+          width: 100%;
+          table-layout: fixed;   /* mantém alinhamento das colunas */
+        }
 
-/* Se o Grid emitir THEAD, o header ainda gruda no topo do grid */
-#GridAssociados thead th{
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: #fff;      /* neutro, não mexe nas outras cores */
-}
+        /* Se o Grid emitir THEAD, o header ainda gruda no topo do grid */
+        #GridAssociados thead th{
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          background: #fff;      /* neutro, não mexe nas outras cores */
+        }
 
         /* ESTILO DO CHECKBOX - APENAS APARÊNCIA PADRÃO, SEM FUNDO COLORIDO */
         input[type="checkbox"].form-check-input {
@@ -653,8 +652,8 @@
             <HeaderStyle CssClass="col-selecao" />
         </asp:TemplateField>
 
-        <asp:TemplateField HeaderText="Código">
-            <ItemTemplate><asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' /></ItemTemplate>
+        <asp:TemplateField HeaderText="Empresa">
+            <ItemTemplate><asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_EMPRESA") %>' /></ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="Registro">
             <ItemTemplate><asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' /></ItemTemplate>
@@ -662,8 +661,11 @@
         <asp:TemplateField HeaderText="Associado">
             <ItemTemplate><asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' /></ItemTemplate>
         </asp:TemplateField>
-        <asp:TemplateField HeaderText="Plano">
-            <ItemTemplate><asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' /></ItemTemplate>
+          <asp:TemplateField HeaderText="Plano">
+            <ItemTemplate>
+                <asp:Label ID="lblPlano" runat="server" 
+                    Text='<%# Eval("NOME_PLANO_EMPRESA") %>' />
+            </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="Operadora">
             <ItemTemplate><asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' /></ItemTemplate>
