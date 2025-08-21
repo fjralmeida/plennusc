@@ -34,15 +34,15 @@
             position: relative;
         }
 
-            .titulo-pagina::after {
-                content: "";
-                width: 60px;
-                height: 3px;
-                background-color: #83CEEE;
-                display: block;
-                margin: 0.5rem auto 0 auto;
-                border-radius: 2px;
-            }
+        .titulo-pagina::after {
+            content: "";
+            width: 60px;
+            height: 3px;
+            background-color: #83CEEE;
+            display: block;
+            margin: 0.5rem auto 0 auto;
+            border-radius: 2px;
+        }
 
         .card-container {
             background: white;
@@ -65,9 +65,9 @@
             color: #fff;
         }
 
-            .btn-success:hover {
-                background-color: #3B8B65;
-            }
+        .btn-success:hover {
+            background-color: #3B8B65;
+        }
 
         .btn-purple {
             background-color: #C06ED4;
@@ -75,9 +75,9 @@
             color: #fff;
         }
 
-            .btn-purple:hover {
-                background-color: #a14db8;
-            }
+        .btn-purple:hover {
+            background-color: #a14db8;
+        }
 
         .filter-panel {
             background: #f0f2f5;
@@ -93,9 +93,9 @@
             margin-bottom: 20px;
         }
 
-            .grid-wrapper table {
-                min-width: 1200px;
-            }
+        .grid-wrapper table {
+            min-width: 1200px;
+        }
 
         .table th, .table td {
             white-space: nowrap;
@@ -112,9 +112,9 @@
             border: 1px #ddd;
         }
 
-            .grid-wrapper table {
-                min-width: 1200px;
-            }
+        .grid-wrapper table {
+            min-width: 1200px;
+        }
 
         .table th {
             white-space: nowrap;
@@ -130,6 +130,33 @@
             text-align: center;
         }
 
+        .grid-wrapper {
+            max-height: 530px;
+            overflow: auto;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 0px solid #ddd; /* você tinha sem 'solid' */
+        }
+
+        /* garante alinhamento e sticky funcionando bem */
+        .grid-wrapper table {
+            min-width: 1200px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        /* Header fixo, neutro */
+        .grid-wrapper thead th {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: #f8f9fa !important; /* tom claro tipo Bootstrap */
+            color: #333 !important;
+            box-shadow: none;                /* sem sombra */
+            border-bottom: 1px solid #e6e7eb;/* linha sutil */
+            font-weight: 600;                /* leve destaque só na fonte */
+        }
+
         .btn-outline-excel {
             border: 1px solid #dbe7e1;
             color: #107C41;
@@ -137,11 +164,11 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
 
-            .btn-outline-excel:hover {
-                background: #107C41;
-                color: #fff;
-                border-color: #107C41;
-            }
+        .btn-outline-excel:hover {
+            background: #107C41;
+            color: #fff;
+            border-color: #107C41;
+        }
 
         .hint-line {
             font-size: 12px;
@@ -226,14 +253,15 @@
 
             <div class="grid-wrapper">
                 <asp:GridView ID="gridXsl"
-                    runat="server"
-                    AutoGenerateColumns="False"
-                    CssClass="table table-striped table-bordered table-hover"
-                    HeaderStyle-BackColor="#4CB07A"
-                    HeaderStyle-ForeColor="White"
-                    HeaderStyle-Font-Bold="True"
-                    RowStyle-VerticalAlign="Middle"
-                    GridLines="None">
+                        runat="server"
+                        AutoGenerateColumns="False"
+                        CssClass="table table-striped table-bordered table-hover"
+                        HeaderStyle-BackColor="#4CB07A"
+                        HeaderStyle-ForeColor="White"
+                        HeaderStyle-Font-Bold="True"
+                        RowStyle-VerticalAlign="Middle"
+                        GridLines="None"
+                        OnPreRender="gridXsl_PreRender">
                     <Columns>
                         <asp:BoundField DataField="CODIGO_PLANO" HeaderText="CODIGO_PLANO" />
                         <asp:BoundField DataField="CODIGO_TABELA_PRECO" HeaderText="CODIGO_TABELA_PRECO" />

@@ -1,19 +1,20 @@
 ﻿using appWhatsapp.Models;
 using appWhatsapp.Service;
 using appWhatsapp.SqlQueries;
+using Plennusc.Core.Models.ModelsGestao;
+using Plennusc.Core.Service.ServiceGestao;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace PlennuscApp.PlennuscGestao.Views
+namespace appWhatsapp.PlennuscGestao.Views
 {
-    public partial class EnvioMensagemBeneficiario : System.Web.UI.Page
+    public partial class sendCompanyMessage : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -93,7 +94,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                     var temp = ini; ini = fim; fim = temp;
                 }
 
-                GridAssociados.DataSource = ItensAssoci.ConsultaAssociados(ini, fim, operadoraSel);
+                GridAssociados.DataSource = ItensAssoci.ConsultaAssociadosPME(ini, fim, operadoraSel);
                 btnTestarApi.Enabled = true;
             }
             else
@@ -104,49 +105,11 @@ namespace PlennuscApp.PlennuscGestao.Views
             GridAssociados.DataBind();
         }
 
-
-        #region USAR PARA IMPORTAR PDF
-        //protected void btnUpload_Click(object sender, EventArgs e)
-        //{
-        //    if (FileUpload1.HasFile && FileUpload1.PostedFile.ContentType == "application/pdf")
-        //    {
-        //        try
-        //        {
-        //            string fileName = Path.GetFileName(FileUpload1.FileName);
-        //            string savePath = Server.MapPath("~/Uploads/") + fileName;
-
-        //            FileUpload1.SaveAs(savePath);
-
-        //            // Gera a URL do PDF
-        //            string fileUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/Uploads/" + fileName;
-
-        //            // Salva o link em ViewState para ser usado depois
-        //            ViewState["PdfUrl"] = fileUrl;
-
-        //            lblStatus.Text = "Arquivo enviado com sucesso! Link: " + fileUrl;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            lblStatus.Text = "Erro ao enviar o arquivo: " + ex.Message;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        lblStatus.Text = "Por favor, envie um arquivo PDF válido.";
-        //    }
-        //}
-
-        //if (ViewState["PdfUrl"] == null)
-        //{
-        //    lblResultado.Text = "Você precisa enviar um PDF antes de testar a API.";
-        //    return;
-        //}
-        #endregion
         protected async void btnTestarApi_Click(object sender, EventArgs e)
         {
             var mensagens = ObterLinhasSelecionadas();
 
-            var api = new WhatsappService();
+            var api = new WhatsappServicePME();
 
             string escolhaTemplate = hfTemplateEscolhido.Value;
 
@@ -160,7 +123,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                 string resultado = string.Empty;
 
                 switch (escolhaTemplate)
-                    {
+                {
                     case "Suspensao":
                         resultado = await api.ConexaoApiSuspensao(
                             telefones,
@@ -220,9 +183,9 @@ namespace PlennuscApp.PlennuscGestao.Views
 
             //lblResultado.Text = resultadoFinal.ToString().Replace("\n", "<br/>");
         }
-        protected List<DadosMensagem> ObterLinhasSelecionadas()
+        protected List<DadosMensagemPME> ObterLinhasSelecionadas()
         {
-            var lista = new List<DadosMensagem>();
+            var lista = new List<DadosMensagemPME>();
 
             foreach (GridViewRow row in GridAssociados.Rows)
             {
@@ -279,7 +242,7 @@ namespace PlennuscApp.PlennuscGestao.Views
 
                     string pdfUrl = $"https://portaldocliente.vallorbeneficios.com.br/ServidorAl2/boletos/boleto_itau_Vallor.php?numeroRegistro={registro}";
 
-                    lista.Add(new DadosMensagem
+                    lista.Add(new DadosMensagemPME
                     {
                         CodigoAssociado = codigoAssociado,
                         Telefone = telefone, // Já vem formatado com 5531...

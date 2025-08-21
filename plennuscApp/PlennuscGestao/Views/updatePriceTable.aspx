@@ -34,15 +34,15 @@
             position: relative;
         }
 
-            .titulo-pagina::after {
-                content: "";
-                width: 60px;
-                height: 3px;
-                background-color: #83CEEE;
-                display: block;
-                margin: 0.5rem auto 0 auto;
-                border-radius: 2px;
-            }
+        .titulo-pagina::after {
+            content: "";
+            width: 60px;
+            height: 3px;
+            background-color: #83CEEE;
+            display: block;
+            margin: 0.5rem auto 0 auto;
+            border-radius: 2px;
+        }
 
         .card-container {
             background: white;
@@ -65,9 +65,9 @@
             color: #fff;
         }
 
-            .btn-success:hover {
-                background-color: #3B8B65;
-            }
+        .btn-success:hover {
+            background-color: #3B8B65;
+        }
 
         .btn-purple {
             background-color: #C06ED4;
@@ -75,9 +75,9 @@
             color: #fff;
         }
 
-            .btn-purple:hover {
-                background-color: #a14db8;
-            }
+        .btn-purple:hover {
+            background-color: #a14db8;
+        }
 
         .filter-panel {
             background: #f0f2f5;
@@ -91,30 +91,27 @@
             overflow: auto;
             border-radius: 12px;
             margin-bottom: 20px;
+            border: 0px solid #ddd; /* você tinha sem 'solid' */
         }
 
-            .grid-wrapper table {
-                min-width: 1200px;
-            }
-
-        .table th, .table td {
-            white-space: nowrap;
-            padding: 10px 16px;
-            font-size: 13px;
-            text-align: center;
+        /* garante alinhamento e sticky funcionando bem */
+        .grid-wrapper table {
+            min-width: 1200px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-        .grid-wrapper {
-            max-height: 530px;
-            overflow-y: auto;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px #ddd;
+        /* Header fixo, neutro */
+        .grid-wrapper thead th {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: #f8f9fa !important; /* tom claro tipo Bootstrap */
+            color: #333 !important;
+            box-shadow: none;                /* sem sombra */
+            border-bottom: 1px solid #e6e7eb;/* linha sutil */
+            font-weight: 600;                /* leve destaque só na fonte */
         }
-
-            .grid-wrapper table {
-                min-width: 1200px;
-            }
 
         .table th {
             white-space: nowrap;
@@ -137,11 +134,11 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
 
-            .btn-outline-excel:hover {
-                background: #107C41;
-                color: #fff;
-                border-color: #107C41;
-            }
+        .btn-outline-excel:hover {
+            background: #107C41;
+            color: #fff;
+            border-color: #107C41;
+        }
 
         .hint-line {
             font-size: 12px;
@@ -248,7 +245,8 @@
                     HeaderStyle-ForeColor="White"
                     HeaderStyle-Font-Bold="True"
                     RowStyle-VerticalAlign="Middle"
-                    GridLines="None">
+                    GridLines="None"
+                    OnPreRender="gridXsl_PreRender">
                     <Columns>
                         <asp:BoundField DataField="NUMERO_REGISTRO" HeaderText="NUMERO_REGISTRO" />
                         <asp:BoundField DataField="CODIGO_PLANO" HeaderText="CODIGO_PLANO" />

@@ -62,6 +62,29 @@ namespace appWhatsapp.SqlQueries
         }
 
 
+        public DataTable ConsultaAssociadosPME(DateTime? dataIni = null, DateTime? dataFim = null, int? codigoOperadora = null)
+        {
+            if (!dataIni.HasValue || !dataFim.HasValue)
+            {
+                // ATENÇÃO: você precisa garantir que esse caminho não traga tudo
+                return new DataTable(); // ← não retorna nada
+            }
+
+            string sql = @" 
+
+                                AND (@CodigoOperadora IS NULL OR C.CODIGO_GRUPO_CONTRATO = @CodigoOperadora)
+                        ";
+
+            var parametros = new Dictionary<string, object>
+            {
+                ["@DataIni"] = dataIni.Value.Date,
+                ["@DataFim"] = dataFim.Value.Date,
+                ["@CodigoOperadora"] = (object)codigoOperadora ?? DBNull.Value
+            };
+
+            return new Banco_Dados_SQLServer().LerAlianca(sql, parametros);
+        }
+
         public DataTable ConsultaLoginComEmpresa(string login, string senha, string codSistema)
         {
             string senhaHash = CriptografiaUtil.CalcularHashSHA512(senha);

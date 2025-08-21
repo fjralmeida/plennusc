@@ -1,8 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master"
-    AutoEventWireup="true" CodeBehind="sendMessageBeneficiary.aspx.cs"
-    Inherits="PlennuscApp.PlennuscGestao.Views.EnvioMensagemBeneficiario"
-    Async="true" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="sendCompanyMessage.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sendCompanyMessage" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
      <title>Enviar Mensagem ao Beneficiário</title>
@@ -451,10 +447,9 @@
     </script>
 
 </asp:Content>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <!-- Bootstrap JS carregado no final para garantir que o DOM esteja pronto -->
+        <!-- Bootstrap JS carregado no final para garantir que o DOM esteja pronto -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
@@ -569,7 +564,7 @@
     <div class="container-fluid p-4">
         <div class="card-container">
             <div class="card-header">
-                <h5 class="mb-0">Envio de Mensagens</h5>
+                <h5 class="mb-0">Envio de Mensagens PME - Empresas</h5>
                 <asp:Button ID="btnTestarApi" runat="server"
                     CssClass="btn btn-success btn-pill"
                     Text='Enviar mensagem'
@@ -688,4 +683,5 @@
             </div>
         </div>
     </div>
+
 </asp:Content>

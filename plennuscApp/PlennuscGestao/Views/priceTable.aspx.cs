@@ -34,6 +34,15 @@ namespace appWhatsapp.PlennuscGestao.Views
             set { Session["TabelaXls"] = value; }
         }
 
+        protected void gridXsl_PreRender(object sender, EventArgs e)
+        {
+            if (gridXsl.HeaderRow != null)
+            {
+                gridXsl.UseAccessibleHeader = true;
+                gridXsl.HeaderRow.TableSection = TableRowSection.TableHeader;
+            }
+        }
+
         protected void btnLerXls_Click(object sender, EventArgs e)
         {
             lblResultado.Text = "";
