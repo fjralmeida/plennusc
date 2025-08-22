@@ -130,12 +130,13 @@ WHERE
             string senhaHash = CriptografiaUtil.CalcularHashSHA512(senha);
 
             string sql = @"
-                        SELECT 
+                       SELECT 
                             AA.CodAutenticacaoAcesso,
                             AA.CodPessoa,
                             AA.NomeUsuario,
                             AA.UsrNomeLogin,
                             AA.Conf_Ativo AS UsuarioAtivo,
+
                             SE.CodEmpresa,
                             E.RazaoSocial,
                             E.NomeFantasia,
@@ -144,9 +145,14 @@ WHERE
                             SE.Conf_LiberaAcesso AS LiberacaoVinculoSistemaEmpresa,
                             SEU.Conf_LiberaAcesso AS LiberacaoUsuarioSistema,
                             SEU.Conf_BloqueiaAcesso AS BloqueioUsuarioSistema, 
+
                             SI.CodSistema,
-                            SI.Nome AS NomeSistema,
-                            SI.NomeDisplay AS NomeDisplaySistema
+                            SI.Nome        AS NomeSistema,
+                            SI.NomeDisplay AS NomeDisplaySistema,
+
+                            -- 👇 novos campos
+                            P.CodDepartamento,
+                            D.DescDepartamento AS NomeDepartamento
                         FROM AutenticacaoAcesso AA
                         INNER JOIN SistemaEmpresaUsuario SEU 
                             ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
@@ -156,10 +162,16 @@ WHERE
                             ON E.CodEmpresa = SE.CodEmpresa
                         INNER JOIN Sistema SI 
                             ON SI.CodSistema = SE.CodSistema
+
+                        LEFT JOIN Pessoa P
+                            ON P.CodPessoa = AA.CodPessoa
+                        LEFT JOIN Departamento D
+                            ON D.CodDepartamento = P.CodDepartamento
+
                         WHERE 
                             AA.UsrNomeLogin = @login
                             AND AA.UsrPasswd = @senhaHash
-                            AND SI.CodSistema = @CodSistema -- ✅ Filtro adicionado aqui
+                            AND SI.CodSistema = @CodSistema;
                     ";
 
             var parametros = new Dictionary<string, object>

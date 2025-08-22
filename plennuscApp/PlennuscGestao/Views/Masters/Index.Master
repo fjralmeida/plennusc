@@ -17,37 +17,38 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet" />
 
-    <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
+<style>
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
 
-        body {
-            overflow: hidden;
-            background-color: #f5f7fb;
-        }
+    body {
+        overflow: hidden;
+        background-color: #f5f7fb;
+    }
 
-        .nome-sistema {
-            font-weight: 600;
-            background: linear-gradient(to right, #4CB07A, #83CEEE);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 18px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
+    .nome-sistema {
+        font-weight: 600;
+        background: linear-gradient(to right, #4CB07A, #83CEEE);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
 
-        .user-avatar {
-            width: 38px;
-            height: 38px;
-            object-fit: cover;
-            border-radius: 50%;
-            cursor: pointer;
-        }
+    .user-avatar {
+        width: 38px;
+        height: 38px;
+        object-fit: cover;
+        border-radius: 50%;
+        cursor: pointer;
+    }
 
-        .sidebar {
+    /* === SIDEBAR === */
+    .sidebar {
         width: 250px;
         background-color: #ffffff;
         border-right: 1px solid #e3e6ef;
@@ -56,182 +57,202 @@
         font-size: 13.5px;
         overflow-y: auto;
         flex-shrink: 0; /* Impede que a sidebar encolha */
-        }
+    }
 
-        .sidebar a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: #3b3f5c;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: background-color 0.2s, color 0.2s;
-            font-weight: 500;
-        }
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #3b3f5c;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: background-color 0.2s, color 0.2s;
+        font-weight: 500;
 
-        .sidebar a:hover {
-            background-color: #f1f5ff;
-            color: #1d4ed8;
-        }
+        /* >>> PREVINE QUEBRA <<< */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        .sidebar a.active {
-            background-color: #e0edff;
-            color: #1d4ed8;
-            font-weight: 600;
-        }
+    .sidebar a:hover {
+        background-color: #f1f5ff;
+        color: #1d4ed8;
+    }
 
-        .sidebar .collapse a {
-            font-size: 13px;
-            padding-left: 47px;
-            font-weight: 400;
-        }
+    .sidebar a.active {
+        background-color: #e0edff;
+        color: #1d4ed8;
+        font-weight: 600;
+    }
 
-        .sidebar .bi {
-            font-size: 15px;
-            color: #9ca3af;
-        }
+    .sidebar .collapse a {
+        font-size: 13px;
+        padding-left: 16px;
+        font-weight: 400;
+    }
 
-        .sidebar span {
-            padding-left: 6px; /* Espaço entre ícone e texto */
-        }
+    .sidebar .bi {
+        font-size: 15px;
+        color: #9ca3af;
+        flex-shrink: 0; /* Ícone nunca encolhe */
+    }
 
-        .topbar {
-            height: 70px;
-            background-color: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 0 24px;
-        }
+    .sidebar span {
+        padding-left: 6px; /* Espaço entre ícone e texto */
+    }
 
-        .highlight {
-            color: #000; /* Texto escuro */
-            font-weight: 600;
-            padding: 1px 3px;
-            border-radius: 3px;
-        }
+    .topbar {
+        height: 70px;
+        background-color: #fff;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 0 24px;
+    }
 
-        .dropdown-menu .dropdown-item:hover {
-            background-color: #83CEEE !important;
-            color: #000 !important;
-        }
+    .highlight {
+        color: #000; /* Texto escuro */
+        font-weight: 600;
+        padding: 1px 3px;
+        border-radius: 3px;
+    }
 
-        .dropdown-menu .dropdown-item.text-danger:hover {
-            background-color: #f8d7da !important;
-            color: #842029 !important;
-        }
+    .dropdown-menu .dropdown-item:hover {
+        background-color: #83CEEE !important;
+        color: #000 !important;
+    }
 
-        .input-group .form-control {
-            border-left: none;
-        }
+    .dropdown-menu .dropdown-item.text-danger:hover {
+        background-color: #f8d7da !important;
+        color: #842029 !important;
+    }
 
-        .section-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            padding: 0 16px;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            color: #6b7280;
-        }
+    .input-group .form-control {
+        border-left: none;
+    }
 
-        /* 🌟 USER DROPDOWN MODERNO */
-        .user-dropdown {
-            border-radius: 12px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            min-width: 280px;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-            transform-origin: top right;
-        }
+    .section-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        padding: 0 16px;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #6b7280;
+    }
 
-        .dropdown-menu.show {
-            display: block;
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
+    /* 🌟 USER DROPDOWN MODERNO */
+    .user-dropdown {
+        border-radius: 12px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        min-width: 280px;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+        transform-origin: top right;
+    }
 
-        .dropdown-menu {
+    .dropdown-menu.show {
+        display: block;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    .dropdown-menu {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .user-dropdown-avatar {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #4CB07A;
+        box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    }
+
+    .user-dropdown .form-control-sm {
+        font-size: 13px;
+        border-radius: 8px;
+    }
+
+    .user-dropdown .dropdown-item {
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .user-dropdown .dropdown-item i {
+        font-size: 16px;
+        color: #4CB07A;
+        margin-right: 8px;
+    }
+
+    .user-dropdown .dropdown-item:hover {
+        background-color: #f0fdf4;
+        color: #1e3a34;
+    }
+
+    .user-dropdown .btn-outline-danger {
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        margin-top: 6px;
+        width: 100%;
+    }
+
+    @keyframes fadeIn {
+        from {
             opacity: 0;
             transform: translateY(10px);
         }
 
-
-        .user-dropdown-avatar {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid #4CB07A;
-            box-shadow: 0 0 5px rgba(0,0,0,0.05);
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
-        .user-dropdown .form-control-sm {
-            font-size: 13px;
-            border-radius: 8px;
-        }
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
 
-        .user-dropdown .dropdown-item {
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            transition: background-color 0.2s ease-in-out;
-        }
+    .user-dropdown-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
 
-        .user-dropdown .dropdown-item i {
-            font-size: 16px;
-            color: #4CB07A;
-            margin-right: 8px;
-        }
+    .dropdown-item {
+        display: block;
+        padding: 8px 10px;
+        text-decoration: none;
+        color: #333;
+    }
 
-        .user-dropdown .dropdown-item:hover {
-            background-color: #f0fdf4;
-            color: #1e3a34;
-        }
+    .dropdown-item:hover {
+        background: #f1f1f1;
+    }
 
-        .user-dropdown .btn-outline-danger {
-            font-size: 14px;
-            padding: 6px 12px;
-            border-radius: 8px;
-            margin-top: 6px;
-            width: 100%;
-        }
+/* seta gira suave baseado no aria-expanded do cabeçalho */
+.toggle-icon {
+  transition: transform .18s ease;
+  transform-origin: 50% 50%;
+  transform: rotate(0deg);            /* fechado = seta para a direita */
+  will-change: transform;
+}
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
+/* aberto = seta apontando para baixo (90°), sem voltar “pelo outro lado” */
+a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon {
+  transform: rotate(90deg);
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+</style>
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .user-dropdown-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-        }
-
-        .dropdown-item {
-            display: block;
-            padding: 8px 10px;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .dropdown-item:hover {
-            background: #f1f1f1;
-        }
-    </style>
 
     <script>
         // Função para abrir/fechar menu
@@ -324,65 +345,82 @@
 
             <div class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
                 <!-- Sidebar -->
-                <nav class="sidebar">
-                  <ul class="list-unstyled">
-                    <li class="mb-2">
-                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuGestaoPessoas" title="Gestão de Pessoas">
-                        <span><i class="bi bi-person-badge"></i> Pessoas</span>
-                        <i class="bi bi-chevron-right"></i>
-                      </a>
-                      <div class="collapse" id="menuGestaoPessoas">
-                        <a href="employeeManagement.aspx" title="Colaboradores">Colaboradores</a>
-                        <a href="employeeDepartment.aspx" title="Departamentos">Departamentos</a>
-                        <a href="employeePosition.aspx" title="Cargos">Cargos</a>
-                      </div>
-                    </li>
+<nav class="sidebar">
+  <ul class="list-unstyled">
 
-                    <li class="mb-2">
-                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuChatbot" title="Chatbot">
-                        <span><i class="bi bi-robot"></i> Chatbot</span>
-                        <i class="bi bi-chevron-right"></i>
-                      </a>
-                      <div class="collapse" id="menuChatbot">
-                        <a href="sendMessageBeneficiary.aspx" title="Mensagens para Beneficiários">Beneficiários</a>
-                        <a href="sendCompanyMessage.aspx" title="Empresa">PME</a>
-                        <a href="FixedMessageSending.aspx" title="Mensagem Fixa">Msg Fixa Comercial</a>
-                      </div>
-                    </li>
+    <!-- Pessoas -->
+    <li class="mb-2">
+      <a class="d-flex justify-content-between align-items-center menu-head"
+         data-bs-toggle="collapse" href="#menuGestaoPessoas"
+         role="button" aria-expanded="false" aria-controls="menuGestaoPessoas"
+         title="Gestão de Pessoas">
+        <span><i class="bi bi-person-badge me-2"></i><strong>Pessoas</strong></span>
+        <i class="bi bi-chevron-right toggle-icon"></i>
+      </a>
+      <div class="collapse ms-3" id="menuGestaoPessoas">
+        <ul class="list-unstyled ps-3 submenu">
+          <li><a href="employeeManagement.aspx" title="Colaboradores"><i class="bi bi-people me-2"></i>Colaboradores</a></li>
+          <li><a href="employeeDepartment.aspx" title="Departamentos"><i class="bi bi-diagram-3 me-2"></i>Departamentos</a></li>
+          <li><a href="employeePosition.aspx" title="Cargos"><i class="bi bi-briefcase me-2"></i>Cargos</a></li>
+        </ul>
+      </div>
+    </li>
 
-                 <%--   <li class="mb-2">
-                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPlanium" title="Importação Planium">
-                        <span><i class="bi bi-upload"></i> Planium</span>
-                        <i class="bi bi-chevron-right"></i>
-                      </a>
-                      <div class="collapse" id="importPlanium">
-                        <a href="csvImportPlanium.aspx" title="Importar CSV do Planium">Importar CSV</a>
-                        <a href="#" title="Importar PDF do Planium">Importar PDF</a>
-                      </div>
-                    </li>--%>
+    <!-- Chatbot -->
+    <li class="mb-2">
+      <a class="d-flex justify-content-between align-items-center menu-head"
+         data-bs-toggle="collapse" href="#menuChatbot"
+         role="button" aria-expanded="false" aria-controls="menuChatbot"
+         title="Chatbot">
+        <span><i class="bi bi-robot me-2"></i><strong>Chatbot</strong></span>
+        <i class="bi bi-chevron-right toggle-icon"></i>
+      </a>
+      <div class="collapse ms-3" id="menuChatbot">
+        <ul class="list-unstyled ps-3 submenu">
+          <li><a href="sendMessageBeneficiary.aspx" title="Mensagens para Beneficiários"><i class="bi bi-person-lines-fill me-2"></i>Beneficiários</a></li>
+          <li><a href="sendCompanyMessage.aspx" title="Empresa"><i class="bi bi-building me-2"></i>PME</a></li>
+          <li><a href="FixedMessageSending.aspx" title="Mensagem Fixa"><i class="bi bi-pin-angle me-2"></i>Msg Fixa Comercial</a></li>
+        </ul>
+      </div>
+    </li>
 
-                    <li class="mb-2">
-                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#importPrice" title="Tabela de Preços">
-                        <span><i class="bi bi-upload"></i> Preços</span>
-                        <i class="bi bi-chevron-right"></i>
-                      </a>
-                      <div class="collapse" id="importPrice">
-                        <a href="priceTable.aspx" title="Importar XLS – Adicionar Nova Tabela">Nova Tabela (XLS)</a>
-                        <a href="updatePriceTable.aspx" title="Atualizar Valores da Tabela">Atualizar Valores (XLS)</a>
-                      </div>
-                    </li>
+    <!-- Preços -->
+    <li class="mb-2">
+      <a class="d-flex justify-content-between align-items-center menu-head"
+         data-bs-toggle="collapse" href="#importPrice"
+         role="button" aria-expanded="false" aria-controls="importPrice"
+         title="Tabela de Preços">
+        <span><i class="bi bi-upload me-2"></i><strong>Preços</strong></span>
+        <i class="bi bi-chevron-right toggle-icon"></i>
+      </a>
+      <div class="collapse ms-3" id="importPrice">
+        <ul class="list-unstyled ps-3 submenu">
+          <li><a href="priceTable.aspx" title="Importar XLS – Adicionar Nova Tabela"><i class="bi bi-file-earmark-spreadsheet me-2"></i>Nova Tabela (XLS)</a></li>
+          <li><a href="updatePriceTable.aspx" title="Atualizar Valores da Tabela"><i class="bi bi-arrow-repeat me-2"></i>Atualizar Valores (XLS)</a></li>
+        </ul>
+      </div>
+    </li>
 
-                    <li class="mb-2">
-                      <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuEmail" title="Email">
-                        <span><i class="bi bi-envelope"></i> E-mail</span>
-                        <i class="bi bi-chevron-right"></i>
-                      </a>
-                      <div class="collapse" id="menuEmail">
-                        <a href="#" title="Enviar E-mail">Enviar E-mail</a>
-                      </div>
-                    </li>
-                  </ul>
-                </nav>
+    <!-- Demanda -->
+    <li class="mb-2">
+      <a class="d-flex justify-content-between align-items-center menu-head"
+         data-bs-toggle="collapse" href="#menuDemanda"
+         role="button" aria-expanded="false" aria-controls="menuDemanda"
+         title="Demanda">
+        <span><i class="bi bi-envelope me-2"></i><strong>Demanda</strong></span>
+        <i class="bi bi-chevron-right toggle-icon"></i>
+      </a>
+      <div class="collapse ms-3" id="menuDemanda">
+        <ul class="list-unstyled ps-3 submenu">
+          <li><a href="demand.aspx" title="Criar Demanda"><i class="bi bi-plus-circle me-2"></i>Criar Demanda</a></li>
+          <li><a href="listarDemanda.aspx" title="Listar Demandas"><i class="bi bi-list-ul me-2"></i>Listar Demandas</a></li>
+        </ul>
+      </div>
+    </li>
+
+  </ul>
+</nav>
+
                 <!-- Main Content -->
                 <div class="flex-grow-1 p-4 overflow-auto">
                     <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
@@ -390,118 +428,160 @@
             </div>
         </div>
     </form>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Script para manter menu e seta -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            function getCollapseToggler(collapseId) {
-                return document.querySelector(`[data-bs-target="#${collapseId}"]`)
-                    || document.querySelector(`a[href="#${collapseId}"]`);
-            }
-
-            let openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
-
-            document.querySelectorAll('.collapse').forEach(function (collapseEl) {
-                const collapseId = collapseEl.id;
-                const toggler = getCollapseToggler(collapseId);
-                if (!collapseId || !toggler) return;
-
-                collapseEl.addEventListener('show.bs.collapse', function () {
-
-                    const icon = toggler.querySelector('.bi-chevron-right, .bi-chevron-down');
-                    if (icon) {
-                        icon.classList.replace('bi-chevron-right', 'bi-chevron-down');
-                    }
-                    openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
-                    if (!openMenus.includes(collapseId)) {
-                        openMenus.push(collapseId);
-                        localStorage.setItem('openMenuIds', JSON.stringify(openMenus));
-                    }
-                });
-
-
-                collapseEl.addEventListener('hide.bs.collapse', function () {
-                    const icon = toggler.querySelector('.bi-chevron-right, .bi-chevron-down');
-                    if (icon) {
-                        icon.classList.replace('bi-chevron-down', 'bi-chevron-right');
-                    }
-                    openMenus = JSON.parse(localStorage.getItem('openMenuIds') || '[]');
-                    const idx = openMenus.indexOf(collapseId);
-                    if (idx !== -1) {
-                        openMenus.splice(idx, 1);
-                        localStorage.setItem('openMenuIds', JSON.stringify(openMenus));
-                    }
-                });
-            });
-
-            openMenus.forEach(function (menuId) {
-                const menuEl = document.getElementById(menuId);
-                if (menuEl) {
-                    bootstrap.Collapse.getOrCreateInstance(menuEl).show();
-                }
-            });
-        });
-    </script>
-
-    <script>
-        function limparMenuESeguir(url) {
-            localStorage.removeItem('openMenuIds');
-            window.location.href = url;
+<!-- Bootstrap JS (carrega só se ainda não estiver disponível; evita dupla carga com a página filha) -->
+<script>
+    (function ensureBootstrapOnce() {
+        if (!(window.bootstrap && window.bootstrap.Collapse)) {
+            var s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js';
+            s.async = false;
+            document.head.appendChild(s);
         }
-    </script>
+    })();
+</script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const inputBusca = document.getElementById('txtBusca');
-            if (!inputBusca) return;
+<!-- Sidebar: estado, ícone e toggle robusto (anti-dupla carga) -->
+<script>
+    (function () {
+        if (window.__SIDEBAR_INIT_DONE__) return;
+        window.__SIDEBAR_INIT_DONE__ = true;
 
-            inputBusca.addEventListener('input', function () {
-                const termo = inputBusca.value.trim();
-                const regex = new RegExp(`(${termo})`, 'gi');
+        const STORAGE_KEY = 'openMenuIds';
 
-                // 🔁 LIMPA DESTAQUES ANTIGOS
-                document.querySelectorAll('.highlight').forEach(span => {
-                    span.outerHTML = span.innerText;
-                });
+        function getHeadByCollapseId(id) {
+            return document.querySelector(`[data-bs-target="#${id}"]`)
+                || document.querySelector(`a[href="#${id}"]`);
+        }
 
-                if (!termo) return;
+        function setIconByHead(head, isOpen) {
+            if (!head) return;
+            head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 
-                // Usa TreeWalker para andar só por textos visíveis
-                const walker = document.createTreeWalker(
-                    document.querySelector('.sidebar'),
-                    NodeFilter.SHOW_TEXT,
-                    {
-                        acceptNode: function (node) {
-                            return node.parentNode && node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-                        }
-                    },
-                    false
-                );
+            // garante que o glyph é sempre o mesmo; rotação fica por conta do CSS
+            const icon = head.querySelector('.toggle-icon');
+            if (!icon) return;
+            icon.classList.remove('bi-chevron-down');
+            icon.classList.add('bi', 'bi-chevron-right');
+        }
 
-                const nodes = [];
-                while (walker.nextNode()) {
-                    nodes.push(walker.currentNode);
+
+        window.addEventListener('load', function () {
+            // Garante instâncias sem auto-toggle
+            document.querySelectorAll('.collapse[id]').forEach(el => {
+                bootstrap.Collapse.getOrCreateInstance(el, { toggle: false });
+            });
+
+            // Toggle MANUAL em CAPTURA (bloqueia data-API duplicada)
+            document.addEventListener('click', function (ev) {
+                const head = ev.target.closest('a[data-bs-toggle="collapse"]');
+                if (!head) return;
+                const sel = head.getAttribute('data-bs-target') || head.getAttribute('href');
+                if (!sel || !sel.startsWith('#')) return;
+
+                ev.preventDefault();
+                ev.stopPropagation();
+                if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+
+                const target = document.querySelector(sel);
+                if (!target) return;
+                const inst = bootstrap.Collapse.getOrCreateInstance(target, { toggle: false });
+                target.classList.contains('show') ? inst.hide() : inst.show();
+                // Ícone será atualizado pelos eventos "shown/hidden" abaixo
+            }, true);
+
+            // Eventos finais (estado garantido): atualizam ícone e storage
+            document.addEventListener('shown.bs.collapse', function (e) {
+                const head = getHeadByCollapseId(e.target.id);
+                setIconByHead(head, true);
+                const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                if (!list.includes(e.target.id)) {
+                    list.push(e.target.id);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
                 }
+            });
 
-                nodes.forEach(node => {
-                    const texto = node.nodeValue;
-                    if (regex.test(texto)) {
-                        const span = document.createElement('span');
-                        span.innerHTML = texto.replace(regex, '<span class="highlight">$1</span>');
-                        const fragment = document.createDocumentFragment();
-                        while (span.firstChild) {
-                            fragment.appendChild(span.firstChild);
-                        }
-                        node.parentNode.replaceChild(fragment, node);
+            document.addEventListener('hidden.bs.collapse', function (e) {
+                const head = getHeadByCollapseId(e.target.id);
+                setIconByHead(head, false);
+                const list = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')).filter(x => x !== e.target.id);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+            });
+
+            // Restaura menus abertos
+            let open = [];
+            try { open = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { }
+            open.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                bootstrap.Collapse.getOrCreateInstance(el, { toggle: false }).show();
+                const head = getHeadByCollapseId(id);
+                setIconByHead(head, true);
+            });
+        }, { once: true });
+    })();
+</script>
+
+<!-- Navegar limpando estado dos menus -->
+<script>
+    function limparMenuESeguir(url) {
+        localStorage.removeItem('openMenuIds');
+        window.location.href = url;
+    }
+</script>
+
+<!-- Busca na sidebar (sem interferir nos cabeçalhos/ícones) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputBusca = document.getElementById('txtBusca');
+        if (!inputBusca) return;
+
+        inputBusca.addEventListener('input', function () {
+            const termo = inputBusca.value.trim();
+            const esc = termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${esc})`, 'gi');
+
+            // limpa destaques antigos
+            document.querySelectorAll('.highlight').forEach(span => {
+                span.outerHTML = span.innerText;
+            });
+
+            if (!termo) return;
+
+            const sidebar = document.querySelector('.sidebar');
+            if (!sidebar) return;
+
+            const walker = document.createTreeWalker(
+                sidebar,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode(node) {
+                        const p = node.parentNode;
+                        if (!p) return NodeFilter.FILTER_REJECT;
+                        // não destacar textos dentro do cabeçalho do menu / ícone
+                        if (p.closest && p.closest('a[data-bs-toggle="collapse"]')) return NodeFilter.FILTER_REJECT;
+                        if (p.classList && p.classList.contains('toggle-icon')) return NodeFilter.FILTER_REJECT;
+                        return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
                     }
-                });
+                }
+            );
+
+            const nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+
+            nodes.forEach(node => {
+                const texto = node.nodeValue;
+                if (regex.test(texto)) {
+                    const wrap = document.createElement('span');
+                    wrap.innerHTML = texto.replace(regex, '<span class="highlight">$1</span>');
+                    const frag = document.createDocumentFragment();
+                    while (wrap.firstChild) frag.appendChild(wrap.firstChild);
+                    node.parentNode.replaceChild(frag, node);
+                }
             });
         });
-    </script>
+    });
+</script>
+
 
 
 </body>

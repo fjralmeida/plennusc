@@ -114,6 +114,9 @@ namespace appWhatsapp.Views
                 Session["CodSistema"] = row["CodSistema"];
                 Session["CodPessoa"] = row["CodPessoa"];
 
+                int? codDepto = row.IsNull("CodDepartamento") ? (int?)null : row.Field<int>("CodDepartamento");
+                Session["CodDepartamento"] = codDepto;
+
 
                 // Redireciona para a home correta
                 switch (codSistemaSelecionado)
