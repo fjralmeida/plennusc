@@ -16,6 +16,13 @@ namespace Plennusc.Core.Service.ServiceGestao
                                                   string field4, string mensagemFinal, string codigoAssociado, int codAutenticacao)
         {
             var util = new ItensPedIntegradoUtil();
+
+            if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            {
+                return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            }
+
+
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
@@ -105,6 +112,12 @@ namespace Plennusc.Core.Service.ServiceGestao
                                                     string field4, string mensagemFinal, string codigoAssociado, int codAutenticacao)
         {
             var util = new ItensPedIntegradoUtil();
+
+            if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            {
+                return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            }
+
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
@@ -193,6 +206,12 @@ namespace Plennusc.Core.Service.ServiceGestao
                                                    string field4, string field5, string field6, string field7)
         {
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
+
+            //if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            //{
+            //    return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            //}
+
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
 

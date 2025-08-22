@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -306,6 +307,25 @@ WHERE
             };
 
             new Banco_Dados_SQLServer().ExecutarPlennus(sql, parametros);
+        }
+
+        public bool EnviadosUltimas24H(string codigoAssociado, string template)
+        {
+            string sql = @"
+                        SELECT TOP 1 1
+                        FROM API_EnvioMensagemWpp
+                        WHERE CodigoAssociado = @CodigoAssociado
+                          AND Mensagem = @Template
+                          AND DataEnvio >= DATEADD(HOUR, -24, GETDATE())";
+
+            var parametros = new Dictionary<string, object>
+            {
+                ["@CodigoAssociado"] = codigoAssociado,
+                ["@Template"] = template
+            };
+
+            object result = new Banco_Dados_SQLServer().LerPlennus(sql, parametros);
+            return result != null;
         }
     }
 }

@@ -93,6 +93,12 @@ namespace appWhatsapp.Service
                                                     string field4, string mensagemFinal, string codigoAssociado, int codAutenticacao)
         {
             var util = new ItensPedIntegradoUtil();
+
+            if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            {
+                return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            }
+
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
@@ -182,6 +188,12 @@ namespace appWhatsapp.Service
                                                     string field4, string mensagemFinal, string codigoAssociado, int codAutenticacao)
         {
             var util = new ItensPedIntegradoUtil();
+
+            if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            {
+                return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            }
+
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
@@ -342,7 +354,14 @@ namespace appWhatsapp.Service
         public async Task<string> ConexaoApifixo(List<string> telefones,
                                            string field1, string field2, string field3, string field4)
         {
+          
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
+
+            //if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            //{
+            //    return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            //}
+
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
 

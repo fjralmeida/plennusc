@@ -259,7 +259,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                     {
                         vencimento = txtDataDefinitivo.Text;
                     }
-                    else if (hfTemplateEscolhido.Value == "NovaOpcao") // novo template
+                    else if (hfTemplateEscolhido.Value == "DoisBoletos") 
                     {
                         vencimento = txtDataNovaOpcao.Text;
                     }

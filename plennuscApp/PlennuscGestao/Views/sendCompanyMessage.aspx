@@ -1,7 +1,8 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="sendCompanyMessage.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sendCompanyMessage" Async="true"%>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="sendCompanyMessage.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sendCompanyMessage" Async="true" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
-     <title>Enviar Mensagem ao Beneficiário</title>
+    <title>Enviar Mensagem ao Beneficiário</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
@@ -37,9 +38,9 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
-        .btn-pill .fa {
-            margin-right: 8px;
-        }
+            .btn-pill .fa {
+                margin-right: 8px;
+            }
 
         .btn-success {
             background-color: #4CB07A;
@@ -47,9 +48,9 @@
             color: #fff;
         }
 
-        .btn-success:hover {
-            background-color: #3B8B65;
-        }
+            .btn-success:hover {
+                background-color: #3B8B65;
+            }
 
         .btn-danger {
             background-color: #DC8689;
@@ -57,9 +58,9 @@
             color: #fff;
         }
 
-        .btn-danger:hover {
-            background-color: #b75963;
-        }
+            .btn-danger:hover {
+                background-color: #b75963;
+            }
 
         .btn-info {
             background-color: #83CEEE;
@@ -67,10 +68,10 @@
             color: #fff;
         }
 
-        .btn-info:hover {
-            background-color: #6AB9E0;
-            color: white;
-        }
+            .btn-info:hover {
+                background-color: #6AB9E0;
+                color: white;
+            }
 
         .btn-purple {
             background-color: #C06ED4;
@@ -78,11 +79,11 @@
             color: #fff;
         }
 
-        .btn-purple:hover {
-            background-color: #a14db8;
-            border-color: #a14db8;
-            color: #fff;
-        }
+            .btn-purple:hover {
+                background-color: #a14db8;
+                border-color: #a14db8;
+                color: #fff;
+            }
 
         .botoes-acoes {
             display: flex;
@@ -106,19 +107,19 @@
             margin-bottom: 16px;
         }
 
-        .filter-panel .form-select {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
-            background-color: #fff;
-            transition: border-color 0.3s;
-        }
+            .filter-panel .form-select {
+                padding: 6px 12px;
+                border-radius: 8px;
+                border: 1px solid #ced4da;
+                background-color: #fff;
+                transition: border-color 0.3s;
+            }
 
-        .filter-panel .form-select:focus {
-            border-color: #4CB07A;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
-        }
+                .filter-panel .form-select:focus {
+                    border-color: #4CB07A;
+                    outline: none;
+                    box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
+                }
 
 
         .table thead {
@@ -146,25 +147,25 @@
             background-color: rgba(76, 176, 122, 0.2) !important;
         }
 
-        #GridAssociados > tbody{
-          display: block;
-          max-height: 520px;     /* altura visível do grid */
-          overflow-y: auto;      /* scroll só de subir/descer */
+        #GridAssociados > tbody {
+            display: block;
+            max-height: 520px; /* altura visível do grid */
+            overflow-y: auto; /* scroll só de subir/descer */
         }
 
-        #GridAssociados > thead,
-        #GridAssociados > tbody tr{
-          display: table;
-          width: 100%;
-          table-layout: fixed;   /* mantém alinhamento das colunas */
-        }
+            #GridAssociados > thead,
+            #GridAssociados > tbody tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed; /* mantém alinhamento das colunas */
+            }
 
         /* Se o Grid emitir THEAD, o header ainda gruda no topo do grid */
-        #GridAssociados thead th{
-          position: sticky;
-          top: 0;
-          z-index: 2;
-          background: #fff;      /* neutro, não mexe nas outras cores */
+        #GridAssociados thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #fff; /* neutro, não mexe nas outras cores */
         }
 
         /* ESTILO DO CHECKBOX - APENAS APARÊNCIA PADRÃO, SEM FUNDO COLORIDO */
@@ -224,7 +225,7 @@
             outline: 2px solid #4CB07A;
             outline-offset: 2px;
         }
-      /* PAGINAÇÃO DO GRID */
+        /* PAGINAÇÃO DO GRID */
         /* 🔧 Estilo simples e elegante para a paginação do GridView */
         #GridAssociados .pager-footer {
             padding: 10px 16px;
@@ -234,27 +235,27 @@
             text-align: right;
         }
 
-        #GridAssociados .pager-footer a,
-        #GridAssociados .pager-footer span {
-            display: inline-block;
-            padding: 4px 10px;
-            margin: 0 2px;
-            text-decoration: none;
-            font-weight: 500;
-            color: #4CB07A;
-            border-radius: 4px;
-            transition: all 0.2s ease-in-out;
-        }
+            #GridAssociados .pager-footer a,
+            #GridAssociados .pager-footer span {
+                display: inline-block;
+                padding: 4px 10px;
+                margin: 0 2px;
+                text-decoration: none;
+                font-weight: 500;
+                color: #4CB07A;
+                border-radius: 4px;
+                transition: all 0.2s ease-in-out;
+            }
 
-        #GridAssociados .pager-footer a:hover {
-            background-color: #4CB07A;
-            color: white;
-        }
+                #GridAssociados .pager-footer a:hover {
+                    background-color: #4CB07A;
+                    color: white;
+                }
 
-        #GridAssociados .pager-footer span {
-            background-color: #4CB07A;
-            color: white;
-        }
+            #GridAssociados .pager-footer span {
+                background-color: #4CB07A;
+                color: white;
+            }
 
         #modalResultadoConteudo {
             font-family: 'Inter', sans-serif;
@@ -285,37 +286,37 @@
             padding: 60px 20px;
         }
 
-        #modalEscolherMensagem .modal-content {
-            background-color: #fff;
-            border-radius: 16px;
-            max-width: 900px;
-            margin: auto;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s;
-        }
+            #modalEscolherMensagem .modal-content {
+                background-color: #fff;
+                border-radius: 16px;
+                max-width: 900px;
+                margin: auto;
+                padding: 24px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                animation: fadeIn 0.3s;
+            }
 
-        #modalEscolherMensagem .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #4CB07A;
-            color: white;
-            border-radius: 12px 12px 0 0;
-            padding: 12px 20px;
-            margin: 3px;
-        }
+            #modalEscolherMensagem .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #4CB07A;
+                color: white;
+                border-radius: 12px 12px 0 0;
+                padding: 12px 20px;
+                margin: 3px;
+            }
 
-        #modalEscolherMensagem .modal-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
+                #modalEscolherMensagem .modal-header h2 {
+                    margin: 0;
+                    font-size: 20px;
+                }
 
-        #modalEscolherMensagem .close {
-            cursor: pointer;
-            font-size: 24px;
-            color: white;
-        }
+            #modalEscolherMensagem .close {
+                cursor: pointer;
+                font-size: 24px;
+                color: white;
+            }
 
         .template-opcao {
             border: 2px solid #ccc;
@@ -327,15 +328,15 @@
             background-color: #f9f9f9;
         }
 
-        .template-opcao:hover {
-            border-color: #4CB07A;
-            background-color: #e6f5ee;
-        }
+            .template-opcao:hover {
+                border-color: #4CB07A;
+                background-color: #e6f5ee;
+            }
 
-        .template-opcao h4 {
-            color: #4CB07A;
-            margin-top: 0;
-        }
+            .template-opcao h4 {
+                color: #4CB07A;
+                margin-top: 0;
+            }
 
         .data-pequena {
             max-width: 200px; /* ajustável, você pode testar com 180px ou 150px */
@@ -358,11 +359,11 @@
             transition: border-color 0.3s ease;
         }
 
-        .campo-data:focus {
-            border-color: #4CB07A;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
-        }
+            .campo-data:focus {
+                border-color: #4CB07A;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
+            }
 
         @keyframes fadeIn {
             from {
@@ -445,11 +446,49 @@
 
     </script>
 
+    <script>
+        // mapeia template -> id do input date
+        const mapInputPorTemplate = {
+            "Suspensao": "txtDataSuspensao",
+            "Definitivo": "txtDataDefinitivo",
+            "DoisBoletos": "txtDataNovaOpcao"
+        };
+
+        function selecionarTemplate(template) {
+            const inputId = mapInputPorTemplate[template];
+            const input = document.getElementById(inputId);
+
+            if (!input) {
+                // fallback raro: se o input não existir, não bloqueia a escolha
+                document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
+                fecharModal();
+                return;
+            }
+
+            // limpa estado de erro anterior
+            input.classList.remove('is-invalid');
+
+            const val = (input.value || "").trim();
+            if (!val) {
+                // marca como inválido e foca — NÃO fecha o modal
+                input.classList.add('is-invalid');
+                input.focus();
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // data ok → grava e fecha
+            document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
+            fecharModal();
+        }
+    </script>
+
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-        <!-- Bootstrap JS carregado no final para garantir que o DOM esteja pronto -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS carregado no final para garantir que o DOM esteja pronto -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
     <!-- Modal de Resultado -->
@@ -484,6 +523,7 @@
 
             <div class="modal-body">
 
+                <!-- SUSPENSÃO -->
                 <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
                     <h4>Suspensão</h4>
                     <p>
@@ -492,10 +532,18 @@
                         Prezado(a) beneficiário(a) ****<br>
                         Segue abaixo o boleto para pagamento referente ao vencimento MAIO do seu plano de saúde UNIMED BH.<br>
                         Prazo para efetuar o pagamento e evitar o cancelamento COM PROBABILIDADE DE REATIVAÇÃO do seu plano é:
-        <asp:TextBox ID="txtDataSuspensao" runat="server" TextMode="Date"
-            CssClass="form-control campo-data" ClientIDMode="Static"
-            onclick="event.stopPropagation();"></asp:TextBox><br>
-                        <br>
+                    </p>
+
+                    <!-- input de data; o onclick impede de selecionar o card enquanto escolhe a data -->
+                    <div class="mb-2">
+                        <asp:TextBox ID="txtDataSuspensao" runat="server" TextMode="Date"
+                            CssClass="form-control campo-data"
+                            ClientIDMode="Static"
+                            onclick="event.stopPropagation();"></asp:TextBox>
+                        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+                    </div>
+
+                    <p>
                         Gentileza conferir os dados do boleto antes de realizar o pagamento.<br>
                         <br>
                         Dúvidas, seguimos à disposição.<br>
@@ -503,6 +551,7 @@
                     </p>
                 </div>
 
+                <!-- DEFINITIVO -->
                 <div class="template-opcao" onclick="selecionarTemplate('Definitivo')">
                     <h4>Definitivo</h4>
                     <p>
@@ -511,10 +560,17 @@
                         Prezado(a) beneficiário(a) *****<br>
                         Segue abaixo o boleto para pagamento referente ao vencimento ABRIL do seu plano de saúde VOCE TOTAL.<br>
                         Prazo para efetuar o pagamento e evitar o cancelamento DEFINITIVO do seu plano é:
-        <asp:TextBox ID="txtDataDefinitivo" runat="server" TextMode="Date"
-            CssClass="form-control campo-data" ClientIDMode="Static"
-            onclick="event.stopPropagation();"></asp:TextBox><br>
-                        <br>
+                    </p>
+
+                    <div class="mb-2">
+                        <asp:TextBox ID="txtDataDefinitivo" runat="server" TextMode="Date"
+                            CssClass="form-control campo-data"
+                            ClientIDMode="Static"
+                            onclick="event.stopPropagation();"></asp:TextBox>
+                        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+                    </div>
+
+                    <p>
                         O não pagamento poderá acarretar a inclusão do seu nome nos órgãos de proteção ao crédito SPC/SERASA.<br>
                         Após o pagamento, gentileza enviar o comprovante.<br>
                         <br>
@@ -525,6 +581,7 @@
                     </p>
                 </div>
 
+                <!-- DOIS BOLETOS -->
                 <div class="template-opcao" onclick="selecionarTemplate('DoisBoletos')">
                     <h4>Dois Boletos</h4>
                     <p>
@@ -535,10 +592,17 @@
                         Para sua comodidade, seguem em anexo os boletos referentes às mensalidades de ABRIL e MAIO em atraso do seu plano de saúde AURORA, cujo vencimento original foi 05/04/2025.<br>
                         <br>
                         Ambos os boletos devem ser pagos até o dia:
-        <asp:TextBox ID="txtDataNovaOpcao" runat="server" TextMode="Date"
-            CssClass="form-control campo-data" ClientIDMode="Static"
-            onclick="event.stopPropagation();"></asp:TextBox><br>
-                        <br>
+                    </p>
+
+                    <div class="mb-2">
+                        <asp:TextBox ID="txtDataNovaOpcao" runat="server" TextMode="Date"
+                            CssClass="form-control campo-data"
+                            ClientIDMode="Static"
+                            onclick="event.stopPropagation();"></asp:TextBox>
+                        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+                    </div>
+
+                    <p>
                         Para evitar o cancelamento definitivo do seu plano.<br>
                         <br>
                         Gentileza conferir os dados dos boletos antes de realizar o pagamento.<br>
@@ -548,8 +612,6 @@
                         Atenciosamente.
                     </p>
                 </div>
-
-
 
             </div>
         </div>
@@ -623,65 +685,71 @@
                 </div>
 
                 <asp:GridView ID="GridAssociados" runat="server"
-                        AutoGenerateColumns="False"
-                        CssClass="table table-hover align-middle mb-0"
-                        ClientIDMode="Static"
-                        EmptyDataText="Nenhum registro encontrado."
-                         ShowFooter="true"
-                        PagerStyle-CssClass="pager-footer"
-                        PagerStyle-HorizontalAlign="Right"
-                        AllowPaging="true"
-                        PageSize="15"
-                        OnPageIndexChanging="GridAssociados_PageIndexChanging"
-                        OnPreRender="GridAssociados_PreRender">
-    <Columns>
+                    AutoGenerateColumns="False"
+                    CssClass="table table-hover align-middle mb-0"
+                    ClientIDMode="Static"
+                    EmptyDataText="Nenhum registro encontrado."
+                    ShowFooter="true"
+                    PagerStyle-CssClass="pager-footer"
+                    PagerStyle-HorizontalAlign="Right"
+                    AllowPaging="true"
+                    PageSize="15"
+                    OnPageIndexChanging="GridAssociados_PageIndexChanging"
+                    OnPreRender="GridAssociados_PreRender">
+                    <Columns>
 
-        <asp:TemplateField HeaderText="">
-            <HeaderTemplate>
-                <div class="checkbox-header">
-                    <asp:CheckBox ID="chkSelecionarTodos" runat="server" CssClass="form-check-input" onclick="selecionarTodos(this);" />
-                    <span>Todos</span>
-                </div>
-            </HeaderTemplate>
-            <ItemTemplate>
-                <div>
-                    <asp:CheckBox ID="chkSelecionar" runat="server" CssClass="form-check-input" onclick="alternarSelecao(this);" />
-                </div>
-            </ItemTemplate>
-            <ItemStyle CssClass="col-selecao" />
-            <HeaderStyle CssClass="col-selecao" />
-        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="">
+                            <HeaderTemplate>
+                                <div class="checkbox-header">
+                                    <asp:CheckBox ID="chkSelecionarTodos" runat="server" CssClass="form-check-input" onclick="selecionarTodos(this);" />
+                                    <span>Todos</span>
+                                </div>
+                            </HeaderTemplate>
+                            <ItemTemplate>
+                                <div>
+                                    <asp:CheckBox ID="chkSelecionar" runat="server" CssClass="form-check-input" onclick="alternarSelecao(this);" />
+                                </div>
+                            </ItemTemplate>
+                            <ItemStyle CssClass="col-selecao" />
+                            <HeaderStyle CssClass="col-selecao" />
+                        </asp:TemplateField>
 
-        <asp:TemplateField HeaderText="Empresa">
-            <ItemTemplate><asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_EMPRESA") %>' /></ItemTemplate>
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Registro">
-            <ItemTemplate><asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' /></ItemTemplate>
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Associado">
-            <ItemTemplate><asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' /></ItemTemplate>
-        </asp:TemplateField>
-          <asp:TemplateField HeaderText="Plano">
-            <ItemTemplate>
-                <asp:Label ID="lblPlano" runat="server" 
-                    Text='<%# Eval("NOME_PLANO_EMPRESA") %>' />
-            </ItemTemplate>
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Operadora">
-            <ItemTemplate><asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' /></ItemTemplate>
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Vencimento">
-            <ItemTemplate><asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' /></ItemTemplate>
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Valor">
-            <ItemTemplate><asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' /></ItemTemplate>
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Telefone">
-            <ItemTemplate><asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' /></ItemTemplate>
-        </asp:TemplateField>
-    </Columns>
-</asp:GridView>
-
+                        <asp:TemplateField HeaderText="Empresa">
+                            <ItemTemplate>
+                                <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_EMPRESA") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Registro">
+                            <ItemTemplate>
+                                <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Associado">
+                            <ItemTemplate>
+                                <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Plano">
+                            <ItemTemplate>
+                                <asp:Label ID="lblPlano" runat="server"
+                                    Text='<%# Eval("NOME_PLANO_EMPRESA") %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Operadora">
+                            <ItemTemplate>
+                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Vencimento">
+                            <ItemTemplate>
+                                <asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Valor">
+                            <ItemTemplate>
+                                <asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Telefone">
+                            <ItemTemplate>
+                                <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
             </div>
         </div>
     </div>
