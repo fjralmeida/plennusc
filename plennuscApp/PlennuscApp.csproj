@@ -177,6 +177,7 @@
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
+    <Content Include="PlennuscGestao\Views\demand.aspx" />
     <Content Include="PlennuscGestao\Views\employeeDepartment.aspx" />
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
@@ -326,6 +327,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\csvImportPlanium.aspx.designer.cs">
       <DependentUpon>csvImportPlanium.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\demand.aspx.cs">
+      <DependentUpon>demand.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\demand.aspx.designer.cs">
+      <DependentUpon>demand.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\employeeDepartment.aspx.cs">
       <DependentUpon>employeeDepartment.aspx</DependentUpon>
