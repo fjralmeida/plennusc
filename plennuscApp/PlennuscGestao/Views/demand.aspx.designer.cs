@@ -15,15 +15,6 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
-        /// Controle btnSalvar.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSalvar;
-
-        /// <summary>
         /// Controle lblMsg.
         /// </summary>
         /// <remarks>
@@ -31,6 +22,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsg;
+
+        /// <summary>
+        /// Controle btnSalvar.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSalvar;
 
         /// <summary>
         /// Controle txtTitulo.
@@ -57,7 +57,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPrazo;
+        protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl txtPrazo;
 
         /// <summary>
         /// Controle ddlOrigem.
@@ -78,13 +78,22 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.DropDownList ddlDestino;
 
         /// <summary>
-        /// Controle ddlTipo.
+        /// Controle ddlTipoGrupo.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlTipo;
+        protected global::System.Web.UI.WebControls.DropDownList ddlTipoGrupo;
+
+        /// <summary>
+        /// Controle ddlTipoDetalhe.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTipoDetalhe;
 
         /// <summary>
         /// Controle chkAprova.

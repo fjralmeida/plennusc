@@ -150,9 +150,8 @@ WHERE
                             SI.Nome        AS NomeSistema,
                             SI.NomeDisplay AS NomeDisplaySistema,
 
-                            -- 👇 novos campos
                             P.CodDepartamento,
-                            D.DescDepartamento AS NomeDepartamento
+                            D.Nome AS NomeDepartamento
                         FROM AutenticacaoAcesso AA
                         INNER JOIN SistemaEmpresaUsuario SEU 
                             ON SEU.CodAutenticacaoAcesso = AA.CodAutenticacaoAcesso
