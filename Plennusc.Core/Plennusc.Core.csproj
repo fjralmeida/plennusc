@@ -83,6 +83,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\OperadoraUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\position\EmpPosition.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\price\TablePrice.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\profile\AutenticacaoDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />

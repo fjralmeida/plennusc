@@ -656,7 +656,6 @@ input:focus, select:focus, textarea:focus {
                     ValidationGroup="Cadastro" OnClick="btnSalvarUsuario_Click" />
             </div>
         </asp:Panel>
-
         <asp:Panel ID="PanelConsulta" runat="server" CssClass="form-panel mt-4" Visible="false">
             <!-- Título principal -->
             <h4 class="titulo-cadastro">Consultar Usuário</h4>

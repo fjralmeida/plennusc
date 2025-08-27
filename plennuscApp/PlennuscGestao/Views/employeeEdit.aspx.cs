@@ -1,8 +1,13 @@
-﻿using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
+﻿using appWhatsapp.Models.Utils;
+using Microsoft.Ajax.Utilities;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -239,16 +244,18 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnCriarLogin_Click(object sender, EventArgs e)
         {
+            // precisa estar editando alguém
             if (!int.TryParse(hfCodPessoa.Value, out int codPessoa))
             {
                 ScriptManager.RegisterStartupScript(this, GetType(), "NoId",
-                     "Swal.fire('Aviso','Nenhuma pessoa selecionada.','warning');", true);
+                    "Swal.fire('Aviso','Nenhuma pessoa selecionada.','warning');", true);
                 return;
             }
 
             var authDao = new AutenticacaoDAO();
             var pessoaDao = new PessoaDAO();
 
+            // 1) verifica se já tem login
             var existente = authDao.ObterLoginPorPessoa(codPessoa);
             if (existente != null)
             {
@@ -258,7 +265,268 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
+            // 2) carrega dados básicos da pessoa
+            var p = pessoaDao.ObterPessoaBasico(codPessoa); // Nome, Sobrenome, Email
+            if (p == null)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "SemPessoa",
+                    "Swal.fire('Erro','Não foi possível carregar os dados da pessoa.','error');", true);
+                return;
+            }
+
             string nome = p["Nome"]?.ToString() ?? "";
+            string sobrenome = p["Sobrenome"]?.ToString() ?? "";
+            string email = p["Email"]?.ToString() ?? "";
+
+            // 3) sugere login (nome.sobrenome, minúsculo, sem acentos) e garante unicidade
+            string baseLogin = GerarSlugLogin(nome, sobrenome, email);
+            string sugestao = authDao.SugerirLoginDisponivel(baseLogin);
+
+            // 4) preenche os campos do modal
+            hfCodPessoaLogin.Value = codPessoa.ToString();
+            txtLoginNome.Text = nome;
+            txtLoginSobrenome.Text = sobrenome;
+            txtLoginEmail.Text = email;
+            txtLoginUsuario.Text = sugestao;
+            ddlPerfilUsuario.SelectedValue = ""; 
+            chkLoginAtivo.Checked = true;
+            chkLoginPermiteAcesso.Checked = true;
+
+            CarregarSistemasParaEmpresa();
+            ScriptManager.RegisterStartupScript(this, GetType(), "ShowCriarLogin",
+                "new bootstrap.Modal(document.getElementById('modalCriarLogin')).show();", true);
+        }
+        private void CarregarSistemasParaEmpresa()
+        {
+            var acessoDao = new AutenticacaoDAO();
+            // lista TODOS os sistemas ativos (Conf_LiberaUtilizacao = 1)
+            var dt = acessoDao.ListarSistemasAtivos();
+
+            cblSistemas.DataSource = dt;
+            cblSistemas.DataTextField = "NomeDisplay";
+            cblSistemas.DataValueField = "CodSistema";
+            cblSistemas.DataBind();
+
+            // (opcional) pré-selecionar o sistema atual da sessão
+            if (Session["CodSistema"] != null)
+            {
+                var item = cblSistemas.Items.FindByValue(Session["CodSistema"].ToString());
+                if (item != null) item.Selected = true;
+            }
+        }
+
+
+        // gera base do login: nome.sobrenome (sem acento, minúsculo); fallback para parte antes do @ do e-mail
+        private string GerarSlugLogin(string nome, string sobrenome, string email)
+        {
+            string Limpar(string input)
+            {
+                if (string.IsNullOrWhiteSpace(input)) return "";
+
+                input = input.Trim().ToLowerInvariant();
+
+                var normalized = input.Normalize(NormalizationForm.FormD);
+                var sb = new StringBuilder();
+
+                foreach (var ch in normalized)
+                {
+                    var uc = CharUnicodeInfo.GetUnicodeCategory(ch);
+                    if (uc != UnicodeCategory.NonSpacingMark)
+                    {
+                        if (char.IsLetterOrDigit(ch) || ch == '.')
+                            sb.Append(ch);
+                        else if (char.IsWhiteSpace(ch) || ch == '-' || ch == '_')
+                            sb.Append('.');
+                    }
+                }
+
+                var res = sb.ToString().Normalize(NormalizationForm.FormC);
+
+                while (res.Contains("..")) res = res.Replace("..", ".");
+                return res.Trim('.');
+            }
+
+            // primeiro nome
+            var partesNome = (nome ?? "").Trim()
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string n = Limpar(partesNome.Length > 0 ? partesNome[0] : "");
+
+            // último sobrenome (sem LINQ)
+            var partesSobrenome = (sobrenome ?? "").Trim()
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string ultimoSobrenome = partesSobrenome.Length > 0
+                ? partesSobrenome[partesSobrenome.Length - 1]
+                : "";
+            string sob = Limpar(ultimoSobrenome);
+
+            string baseLogin;
+            if (string.IsNullOrEmpty(n) && string.IsNullOrEmpty(sob))
+            {
+                // fallback: parte antes do @ do e-mail
+                var userEmail = (email ?? "").Split('@')[0];
+                baseLogin = Limpar(userEmail);
+            }
+            else
+            {
+                baseLogin = string.IsNullOrEmpty(sob) ? n : $"{n}.{sob}";
+            }
+
+            return string.IsNullOrEmpty(baseLogin) ? "usuario" : baseLogin;
+        }
+
+        protected void btnConfirmarCriarLogin_Click(object sender, EventArgs e)
+        {
+            // 1) Ler campos do modal
+            if (!int.TryParse(hfCodPessoaLogin.Value, out int codPessoa) || codPessoa <= 0)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "SemPessoa",
+                    "Swal.fire('Aviso','Pessoa inválida para criar login.','warning');", true);
+                return;
+            }
+
+            string nome = (txtLoginNome.Text ?? "").Trim();
+            string sobrenome = (txtLoginSobrenome.Text ?? "").Trim();
+            string email = (txtLoginEmail.Text ?? "").Trim();
+            string usuario = (txtLoginUsuario.Text ?? "").Trim().ToLowerInvariant();
+            bool ativo = chkLoginAtivo.Checked;
+            bool permite = chkLoginPermiteAcesso.Checked;
+
+            if (!int.TryParse(ddlPerfilUsuario.SelectedValue, out int codPerfilUsuario) || codPerfilUsuario <= 0)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "SemPerfil",
+                    "Swal.fire('Aviso','Selecione um perfil de acesso.','warning');", true);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(usuario))
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "SemUsuario",
+                    "Swal.fire('Aviso','Informe um nome de usuário (login).','warning');", true);
+                return;
+            }
+
+            var sistemasSelecionados = cblSistemas.Items
+              .Cast<ListItem>()
+              .Where(i => i.Selected)
+              .Select(i => int.Parse(i.Value))
+              .ToList();
+            if (sistemasSelecionados.Count == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "SemSistema",
+                    "Swal.fire('Aviso','Selecione ao menos um sistema para liberar o acesso.','warning');", true);
+                return;
+            }
+
+            try
+            {
+                var authDao = new AutenticacaoDAO();
+
+                // 2) Revalidar: já tem login para essa pessoa?
+                var existentePorPessoa = authDao.ObterLoginPorPessoa(codPessoa);
+                if (existentePorPessoa != null)
+                {
+                    string usr = existentePorPessoa["UsrNomeLogin"].ToString();
+                    ScriptManager.RegisterStartupScript(this, GetType(), "JaTem",
+                        $"Swal.fire('Já possui login','Usuário já cadastrado: <b>{usr}</b>.','info');", true);
+                    return;
+                }
+
+                // 3) Revalidar: esse login já existe?
+                if (authDao.LoginExiste(usuario))
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "LoginDuplicado",
+                        "Swal.fire('Atenção','Este nome de usuário já está em uso. Escolha outro.','warning');", true);
+                    return;
+                }
+
+                // 4) Gerar senha temporária + hash
+                string senhaTemp = GerarSenhaTemporaria(10);
+                string senhaHash = CriptografiaUtil.CalcularHashSHA512(senhaTemp);
+
+                 //5) Inserir
+                int novoId = authDao.InserirLogin(
+                    codPerfilUsuario: codPerfilUsuario,
+                    nomeUsuario: nome,
+                    sobrenomeUsuario: sobrenome,
+                    usrNomeLogin: usuario,
+                    usrPasswdHash: senhaHash,
+                    confPermiteAcesso: permite ? 1 : 0,
+                    confAtivo: ativo ? 1 : 0,
+                    confRestrito: 0,
+                    confMaster: 0,
+                    codPessoa: codPessoa
+                );
+
+                if (novoId > 0)
+                {
+                    // 5.1) vínculos com sistemas
+                    int codEmpresa = 0;
+                    int.TryParse(Convert.ToString(Session["CodEmpresa"]), out codEmpresa);
+
+                    authDao.ConcederAcessoSistemas(
+                        codAutenticacaoAcesso: novoId,
+                        codPessoa: codPessoa,
+                        codEmpresa: codEmpresa,
+                        codSistemas: sistemasSelecionados
+                    );
+
+                    // 5.2) e-mail
+                    string assunto = $"[Plennusc] Novo acesso criado para {nome} {sobrenome}";
+                    string corpoHtml = $@"
+                    <html>
+                      <body>
+                        <h2>Olá, {nome}!</h2>
+                        <p>Seu acesso ao sistema Plennusc foi criado com sucesso.</p>
+                        <p><b>Usuário:</b> {usuario}</p>
+                        <p><b>Senha temporária:</b> {senhaTemp}</p>
+                        <p>Recomendamos que altere sua senha no primeiro login.</p>
+                        <br>
+                        <p>Atenciosamente,<br>Equipe Vallor Benefícios</p>
+                      </body>
+                    </html>";
+
+                    authDao.EnviarEmailNovoAcesso(email, assunto, corpoHtml);
+
+                    // 5.3) feedback com a senha
+                    string safeUser = usuario.Replace("'", "\\'");
+                    string safePwd = senhaTemp.Replace("'", "\\'");
+                    ScriptManager.RegisterStartupScript(this, GetType(), "CriarLoginOK", $@"
+                        Swal.fire({{
+                          icon: 'success',
+                          title: 'Login criado!',
+                          html: 'Usuário: <b>{safeUser}</b><br/>Senha temporária: <b>{safePwd}</b>',
+                          confirmButtonText: 'Ok'
+                        }});", true);
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "FalhaInsert",
+                        "Swal.fire('Erro','Não foi possível criar o login.','error');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = (ex.Message ?? "").Replace("'", "\\'");
+                ScriptManager.RegisterStartupScript(this, GetType(), "ErroCriarLogin",
+                    $"Swal.fire('Erro','{msg}','error');", true);
+            }
+        }
+        private string GerarSenhaTemporaria(int length = 10)
+        {
+            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789@#$%";
+            var data = new byte[length];
+
+            // .NET Framework / WebForms compatível
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(data);
+            }
+
+            var sb = new StringBuilder(length);
+            for (int i = 0; i < length; i++)
+                sb.Append(chars[data[i] % chars.Length]);
+
+            return sb.ToString();
         }
     }
 }

@@ -12,6 +12,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
+    <!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+<!-- Bootstrap 5 JS (bundle = com Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
     <title>Gestão de Funcionários</title>
 
     <style>
@@ -72,24 +79,30 @@
         .btn-inativar:hover { background-color: #c95b60; }
     </style>
 
-    <script type="text/javascript">
-        // Máscaras específicas para a página de edição
-        function aplicarMascarasEdit() {
-            const cpf = $('#<%= txtDocCPF.ClientID %>');
-            const tel1 = $('#<%= txtTelefone1.ClientID %>');
-            const tel2 = $('#<%= txtTelefone2.ClientID %>');
-            const tel3 = $('#<%= txtTelefone3.ClientID %>');
+   <script>
+       function showModalCriarLogin() {
+           var el = document.getElementById('modalCriarLogin');
+           if (!el) return;
 
-            if (cpf.length)  cpf.unmask().mask('000.000.000-00', { reverse: true });
-            if (tel1.length) tel1.unmask().mask('(00) 00000-0000');
-            if (tel2.length) tel2.unmask().mask('(00) 00000-0000');
-            if (tel3.length) tel3.unmask().mask('(00) 00000-0000');
-        }
+           // Bootstrap 5
+           if (window.bootstrap && bootstrap.Modal) {
+               var m = bootstrap.Modal.getOrCreateInstance(el);
+               m.show();
+               return;
+           }
+           // Bootstrap 4
+           if (window.jQuery && $('#modalCriarLogin').modal) {
+               $('#modalCriarLogin').modal('show');
+               return;
+           }
+           // fallback tosco (só pra debug se nada carregou)
+           el.classList.add('show');
+           el.style.display = 'block';
+           el.removeAttribute('aria-hidden');
+           document.body.classList.add('modal-open');
+       }
+   </script>
 
-        $(document).ready(function () {
-            aplicarMascarasEdit();
-        });
-    </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
@@ -375,6 +388,16 @@
                           <asp:ListItem Value="4">Colaborador</asp:ListItem>
                         </asp:DropDownList>
                       </div>
+                        <div class="col-md-12">
+                          <label class="form-label">Sistemas com acesso</label>
+                          <asp:CheckBoxList ID="cblSistemas" runat="server"
+                              RepeatDirection="Horizontal" RepeatColumns="2"
+                              CssClass="form-check">
+                          </asp:CheckBoxList>
+                          <small class="text-muted d-block mt-1">
+                            Marque os sistemas que este usuário poderá acessar.
+                          </small>
+                        </div>
                       <div class="col-md-6">
                         <label class="form-label d-flex align-items-center gap-2">
                           <asp:CheckBox ID="chkLoginAtivo" runat="server" Checked="true" /> Ativo

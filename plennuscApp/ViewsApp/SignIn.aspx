@@ -33,8 +33,11 @@
 
                     <div class="divider">ou use seu e-mail</div>
 
-                    <label>Endereço de E-mail</label>
-                    <asp:TextBox ID="TextBoxEmail" runat="server" CssClass="form-control" TextMode="Email" placeholder="nome@exemplo.com" />
+                  <asp:TextBox ID="TextBoxEmail" runat="server"
+                         CssClass="form-control"
+                         TextMode="SingleLine"
+                         inputmode="email" autocomplete="email"
+                         placeholder="nome@exemplo.com" />
 
                     <label>Senha</label>
                     <asp:TextBox ID="TextBoxPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Digite sua senha" />

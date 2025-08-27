@@ -475,5 +475,18 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             var db = new Banco_Dados_SQLServer();
             return db.LerPlennus(sql, parametros);
         }
+        public DataRow ObterPessoaBasico(int codPessoa)
+        {
+            string sql = @"
+                SELECT TOP 1 CodPessoa, Nome, Sobrenome, Email
+                FROM Pessoa
+                WHERE CodPessoa = @CodPessoa;
+            ";
+            var pars = new Dictionary<string, object> { { "@CodPessoa", codPessoa } };
+            var db = new Banco_Dados_SQLServer();
+            var dt = db.LerPlennus(sql, pars);
+            return (dt != null && dt.Rows.Count > 0) ? dt.Rows[0] : null;
+        }
+
     }
 }
