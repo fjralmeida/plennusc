@@ -106,7 +106,6 @@ namespace appWhatsapp.Views
                     return;
                 }
 
-                // Login validado, salvar dados na sessão
                 Session["CodUsuario"] = row["CodAutenticacaoAcesso"];
                 Session["NomeUsuario"] = row["NomeUsuario"];
                 Session["CodEmpresa"] = row.Field<int>("CodEmpresa");
@@ -117,6 +116,14 @@ namespace appWhatsapp.Views
                 int? codDepto = row.IsNull("CodDepartamento") ? (int?)null : row.Field<int>("CodDepartamento");
                 Session["CodDepartamento"] = codDepto;
 
+                // [ADICIONADO] cargo e flag de gestor
+                int? codCargo = row.IsNull("CodCargo") ? (int?)null : row.Field<int>("CodCargo");
+                Session["CodCargo"] = codCargo;
+                Session["NomeCargo"] = row.IsNull("NomeCargo") ? null : row["NomeCargo"];
+
+                // Conf_TipoGestor: 1 = gestor; 0/null = não gestor
+                int confTipoGestor = row.IsNull("Conf_TipoGestor") ? 0 : Convert.ToInt32(row["Conf_TipoGestor"]);
+                Session["IsGestor"] = (confTipoGestor == 1);
 
                 // Redireciona para a home correta
                 switch (codSistemaSelecionado)

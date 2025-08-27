@@ -11,7 +11,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 {
 
 
-    public partial class employeeManagement
+    public partial class employeeEdit
     {
 
         /// <summary>
@@ -24,22 +24,13 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblTitGestao;
 
         /// <summary>
-        /// Controle btnIncluirUsuario.
+        /// Controle hfCodPessoa.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnIncluirUsuario;
-
-        /// <summary>
-        /// Controle btnConsultarUsuario.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnConsultarUsuario;
+        protected global::System.Web.UI.WebControls.HiddenField hfCodPessoa;
 
         /// <summary>
         /// Controle PanelCadastro.
@@ -438,111 +429,93 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Button btnSalvarUsuario;
 
         /// <summary>
-        /// Controle PanelConsulta.
+        /// Controle btnCriarLogin.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel PanelConsulta;
+        protected global::System.Web.UI.WebControls.Button btnCriarLogin;
 
         /// <summary>
-        /// Controle txtBuscaNome.
+        /// Controle hfCodPessoaLogin.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBuscaNome;
+        protected global::System.Web.UI.WebControls.HiddenField hfCodPessoaLogin;
 
         /// <summary>
-        /// Controle btnBuscarPorNome.
+        /// Controle txtLoginNome.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnBuscarPorNome;
+        protected global::System.Web.UI.WebControls.TextBox txtLoginNome;
 
         /// <summary>
-        /// Controle txtBuscaCPF.
+        /// Controle txtLoginSobrenome.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBuscaCPF;
+        protected global::System.Web.UI.WebControls.TextBox txtLoginSobrenome;
 
         /// <summary>
-        /// Controle btnBuscarPorCPF.
+        /// Controle txtLoginEmail.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnBuscarPorCPF;
+        protected global::System.Web.UI.WebControls.TextBox txtLoginEmail;
 
         /// <summary>
-        /// Controle TxtBuscaDepartamento.
+        /// Controle txtLoginUsuario.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtBuscaDepartamento;
+        protected global::System.Web.UI.WebControls.TextBox txtLoginUsuario;
 
         /// <summary>
-        /// Controle btnBuscarDepartamento.
+        /// Controle ddlPerfilUsuario.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnBuscarDepartamento;
+        protected global::System.Web.UI.WebControls.DropDownList ddlPerfilUsuario;
 
         /// <summary>
-        /// Controle PanelResultado.
+        /// Controle chkLoginAtivo.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel PanelResultado;
+        protected global::System.Web.UI.WebControls.CheckBox chkLoginAtivo;
 
         /// <summary>
-        /// Controle gvUsuarios.
+        /// Controle chkLoginPermiteAcesso.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvUsuarios;
+        protected global::System.Web.UI.WebControls.CheckBox chkLoginPermiteAcesso;
 
         /// <summary>
-        /// Controle hfCodPessoaInativa.
+        /// Controle btnConfirmarCriarLogin.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hfCodPessoaInativa;
-
-        /// <summary>
-        /// Controle txtMotivoInativacao.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMotivoInativacao;
-
-        /// <summary>
-        /// Controle btnConfirmarInativar.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnConfirmarInativar;
+        protected global::System.Web.UI.WebControls.Button btnConfirmarCriarLogin;
     }
 }

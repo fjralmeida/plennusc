@@ -179,6 +179,7 @@
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
     <Content Include="PlennuscGestao\Views\demand.aspx" />
     <Content Include="PlennuscGestao\Views\employeeDepartment.aspx" />
+    <Content Include="PlennuscGestao\Views\employeeEdit.aspx" />
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
@@ -341,6 +342,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\employeeDepartment.aspx.designer.cs">
       <DependentUpon>employeeDepartment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\employeeEdit.aspx.cs">
+      <DependentUpon>employeeEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\employeeEdit.aspx.designer.cs">
+      <DependentUpon>employeeEdit.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\employeeManagement.aspx.cs">
       <DependentUpon>employeeManagement.aspx</DependentUpon>

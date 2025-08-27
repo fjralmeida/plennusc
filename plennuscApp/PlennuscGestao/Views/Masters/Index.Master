@@ -329,11 +329,7 @@ a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon {
                         </li>
                         <li style="list-style: none;">
                             <a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>Central de Ajuda</a>
-                        </li>
-                        <hr class="dropdown-divider" />
-                        <li style="list-style: none;">
-                            <a class="dropdown-item" href="#"><i class="bi bi-person-plus me-2"></i>Adicionar conta</a>
-                        </li>
+                        </li>                        
                         <li class="text-center mt-2" style="list-style: none;">
                             <asp:LinkButton ID="btnLogout" runat="server" CssClass="btn btn-outline-danger w-100" OnClick="LogoutUsuario">
                 <i class="bi bi-box-arrow-right me-1"></i> Sair

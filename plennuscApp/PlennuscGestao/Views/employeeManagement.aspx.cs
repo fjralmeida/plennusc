@@ -16,12 +16,34 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (!IsPostBack)
             {
+                CarregarPerfilSessao();
                 CarregarPerfilPessoa();
                 CarregarCargo();
                 CarregarDepartamento();
             }
         }
 
+        private void CarregarPerfilSessao()
+        {
+            var codPessoa = Session["CodPessoa"];
+            var codCargo = Session["CodCargo"];
+            var nomeCargo = Session["NomeCargo"];
+            var isGestor = Session["IsGestor"];
+        }
+
+        protected void gvUsuarios_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                bool isGestor = (Session["IsGestor"] as bool?) == true;
+
+                var phEditar = e.Row.FindControl("phEditar") as PlaceHolder;
+                var phInativar = e.Row.FindControl("phInativar") as PlaceHolder;
+
+                if (phEditar != null) phEditar.Visible = isGestor;
+                if (phInativar != null) phInativar.Visible = isGestor;
+            }
+        }
         private void CarregarPerfilPessoa()
         {
             PessoaDAO daoPessoa = new PessoaDAO();
@@ -205,45 +227,64 @@ namespace appWhatsapp.PlennuscGestao.Views
                 PanelResultado.Visible = false;
             }
         }
-        protected void btnSaveUser_Click(object sender, EventArgs e)
+
+        protected void btnBuscarDepartamento_Click(object sender, EventArgs e)
         {
             PessoaDAO dao = new PessoaDAO();
+            DataTable dt = dao.BuscarUsuarioPorDepartamento(TxtBuscaDepartamento.Text.Trim());
 
-            int codPessoa;
-            if (!int.TryParse(hfCodPessoa.Value, out codPessoa))
-                return;
-
-            string nomeCompleto = txtModalNome.Text.Trim();
-            string cpf = txtModalCPF.Text.Trim();
-            string rg = txtModalRG.Text.Trim();
-            string email = txtModalEmail.Text.Trim();
-            string telefone = txtModalTelefone.Text.Trim();
-            string cargo = txtModalCargo.Text.Trim();
-
-            try
+            if (dt != null && dt.Rows.Count > 0)
             {
-                dao.AtualizarUsuario(codPessoa, nomeCompleto, cpf, rg, email, telefone, cargo);
-
-                // Verifica qual campo foi usado na busca
-                if (!string.IsNullOrWhiteSpace(txtBuscaNome.Text))
-                {
-                    btnBuscarPorNome_Click(null, null);
-                }
-                else if (!string.IsNullOrWhiteSpace(txtBuscaCPF.Text))
-                {
-                    btnBuscarPorCPF_Click(null, null);
-                }
-
-                ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
-                    "Swal.fire('Sucesso', 'Usuário atualizado com sucesso.', 'success');", true);
+                gvUsuarios.DataSource = dt;
+                gvUsuarios.DataBind();
+                PanelResultado.Visible = true;
             }
-            catch (Exception ex)
+            else
             {
-                // Logar erro, se necessário
-                ScriptManager.RegisterStartupScript(this, GetType(), "Erro",
-                    "Swal.fire('Erro', 'Erro ao atualizar o usuário.', 'error');", true);
+                gvUsuarios.DataSource = null;
+                gvUsuarios.DataBind();
+                PanelResultado.Visible = false;
             }
         }
+        //protected void btnSaveUser_Click(object sender, EventArgs e)
+        //{
+        //    PessoaDAO dao = new PessoaDAO();
+
+        //    int codPessoa;
+        //    if (!int.TryParse(hfCodPessoa.Value, out codPessoa))
+        //        return;
+
+        //    string nomeCompleto = txtModalNome.Text.Trim();
+        //    string cpf = txtModalCPF.Text.Trim();
+        //    string rg = txtModalRG.Text.Trim();
+        //    string email = txtModalEmail.Text.Trim();
+        //    string telefone = txtModalTelefone.Text.Trim();
+        //    string cargo = txtModalCargo.Text.Trim();
+
+        //    try
+        //    {
+        //        dao.AtualizarUsuario(codPessoa, nomeCompleto, cpf, rg, email, telefone, cargo);
+
+        //        // Verifica qual campo foi usado na busca
+        //        if (!string.IsNullOrWhiteSpace(txtBuscaNome.Text))
+        //        {
+        //            btnBuscarPorNome_Click(null, null);
+        //        }
+        //        else if (!string.IsNullOrWhiteSpace(txtBuscaCPF.Text))
+        //        {
+        //            btnBuscarPorCPF_Click(null, null);
+        //        }
+
+        //        ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
+        //            "Swal.fire('Sucesso', 'Usuário atualizado com sucesso.', 'success');", true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Logar erro, se necessário
+        //        ScriptManager.RegisterStartupScript(this, GetType(), "Erro",
+        //            "Swal.fire('Erro', 'Erro ao atualizar o usuário.', 'error');", true);
+        //    }
+        //}
         protected void btnConfirmarInativar_Click(object sender, EventArgs e)
         {
             int codPessoa;

@@ -77,7 +77,7 @@ body, html {
     padding: 30px;
     border-radius: 18px;
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-    max-width: 1200px;
+    max-width: 1900px;
     margin: 0 auto 40px auto;
 }
 
@@ -372,7 +372,7 @@ input:focus, select:focus, textarea:focus {
     </style>
 
 <script type="text/javascript">
-    // 🧠 ABRE MODAL DE EDIÇÃO
+  <%--  // 🧠 ABRE MODAL DE EDIÇÃO
     function abrirModalEdicao(codPessoa, nome, cpf, rg, email, telefone, cargo) {
         $('#<%= hfCodPessoa.ClientID %>').val(codPessoa);
         $('#<%= txtModalNome.ClientID %>').val(nome);
@@ -384,7 +384,7 @@ input:focus, select:focus, textarea:focus {
 
         var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
         modal.show();
-    }
+    }--%>
 
     // ❌ ABRE MODAL DE INATIVAR
     function abrirModalInativar(codPessoa, nome) {
@@ -398,7 +398,7 @@ input:focus, select:focus, textarea:focus {
         const campoCPF = $('#<%= txtDocCPF.ClientID %>');
         const campoRG = $('#<%= txtDocRG.ClientID %>');
         const campoBuscaCPF = $('#<%= txtBuscaCPF.ClientID %>');
-        const campoModalCPF = $('#<%= txtModalCPF.ClientID %>');
+<%--        const campoModalCPF = $('#<%= txtModalCPF.ClientID %>');--%>
 
         if (campoCPF.length) campoCPF.unmask().mask('000.000.000-00', { reverse: true });
         if (campoRG.length) campoRG.unmask().mask('00.000.000-0');
@@ -615,34 +615,34 @@ input:focus, select:focus, textarea:focus {
 
             <!-- CONFIGURAÇÕES -->
                   <div class="section-block bg-gray-section">
-<h5>Configurações</h5>
-          <div class="row px-2">
-    <div class="col-md-3">
-        <label class="d-flex align-items-center gap-2">
-            <asp:CheckBox ID="chkCriaContaAD" runat="server" />
-            Criar conta no AD
-        </label>
-    </div>
-    <div class="col-md-3">
-        <label class="d-flex align-items-center gap-2">
-            <asp:CheckBox ID="chkCadastraPonto" runat="server" />
-            Cadastrar no ponto
-        </label>
-    </div>
-    <div class="col-md-3">
-        <label class="d-flex align-items-center gap-2">
-            <asp:CheckBox ID="chkAtivo" runat="server" Checked="true" />
-            Ativo *
-        </label>
-    </div>
-    <div class="col-md-3">
-        <label class="d-flex align-items-center gap-2">
-            <asp:CheckBox ID="chkPermiteAcesso" runat="server" />
-            Permite Acesso
-        </label>
-    </div>
-</div>
-</div>
+                    <h5>Configurações</h5>
+                              <div class="row px-2">
+                        <div class="col-md-3">
+                            <label class="d-flex align-items-center gap-2">
+                                <asp:CheckBox ID="chkCriaContaAD" runat="server" />
+                                Criar conta no AD
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="d-flex align-items-center gap-2">
+                                <asp:CheckBox ID="chkCadastraPonto" runat="server" />
+                                Cadastrar no ponto
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="d-flex align-items-center gap-2">
+                                <asp:CheckBox ID="chkAtivo" runat="server" Checked="true" />
+                                Ativo *
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="d-flex align-items-center gap-2">
+                                <asp:CheckBox ID="chkPermiteAcesso" runat="server" />
+                                Permite Acesso
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
             <!-- OBSERVAÇÕES -->
             <div class="section-block bg-white-section">
@@ -685,65 +685,80 @@ input:focus, select:focus, textarea:focus {
                         <asp:Button ID="btnBuscarPorCPF" runat="server" Text="Buscar por CPF" CssClass="btn btn-busca-cpf w-100" OnClick="btnBuscarPorCPF_Click" />
                     </div>
                 </div>
+
+                 <!-- BLOCO DE DEPARTAMENTO -->
+                 <div class="row g-3 align-items-end">
+                     <div class="col-md-6">
+                         <label>Buscar  <asp:TextBox ID="TxtBuscaDepartamento" runat="server" CssClass="form-control" placeholder="Informe o departamento" />  </label>
+                     </div>
+                     <div class="col-md-3">
+                         <asp:Button ID="btnBuscarDepartamento" runat="server" Text="Buscar por Departamento" CssClass="btn btn-busca-cpf w-100" OnClick="btnBuscarDepartamento_Click" />
+                     </div>
+                 </div>
             </div>
 
             <!-- 📋 RESULTADOS -->
             <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
                 <h5>Resultados</h5>
                  <div class="table-responsive">
-        <asp:GridView 
-            ID="gvUsuarios" 
-            runat="server" 
-            CssClass="table-custom" 
-            AutoGenerateColumns="False" 
-            GridLines="None" 
-            ShowHeaderWhenEmpty="False" 
-            EmptyDataText="Nenhum usuário encontrado.">
-            
-            <HeaderStyle CssClass="table-custom-header" />
-            <Columns>
-                <asp:BoundField DataField="CodPessoa" HeaderText="CodPessoa" />
-                <asp:BoundField DataField="NomeCompleto" HeaderText="Nome" />
-                <asp:BoundField DataField="CPF" HeaderText="CPF" />
-                <asp:BoundField DataField="RG" HeaderText="RG" />
-                <asp:BoundField DataField="Email" HeaderText="Email" />
-                <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
-                <asp:BoundField DataField="Cargo" HeaderText="Cargo" />
-                <asp:BoundField DataField="Conf_Ativo" HeaderText="Ativo" />
-                <asp:TemplateField HeaderText="Editar">
-                    <ItemTemplate>
-                        <button type="button" class="btn-editar"
-                            onclick='abrirModalEdicao(
-                                <%# Eval("CodPessoa") %>,
-                                "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>",
-                                "<%# Eval("CPF").ToString() %>",
-                                "<%# Eval("RG").ToString() %>",
-                                "<%# Eval("Email").ToString() %>",
-                                "<%# Eval("Telefone1").ToString() %>",
-                                "<%# Eval("Cargo").ToString().Replace("\"", "\\\"") %>"
-                            )'>
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                    </ItemTemplate>
-                </asp:TemplateField>
-                <asp:TemplateField HeaderText="Inativar">
-                    <ItemTemplate>
-                        <button type="button" class="btn-inativar"
-                            onclick='abrirModalInativar(
-                                <%# Eval("CodPessoa") %>,
-                                "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>"
-                            )'>
-                            <i class="fa-solid fa-user-slash"></i>
-                        </button>
-                    </ItemTemplate>
-                </asp:TemplateField>
-            </Columns>
-        </asp:GridView>
+                    <asp:GridView 
+                        ID="gvUsuarios" 
+                        runat="server" 
+                        CssClass="table-custom" 
+                        AutoGenerateColumns="False" 
+                        GridLines="None" 
+                        ShowHeaderWhenEmpty="False" 
+                        EmptyDataText="Nenhum usuário encontrado."
+                        DataKeyNames="CodPessoa,CodDepartamento,CodCargo"
+                        OnRowDataBound="gvUsuarios_RowDataBound">
+
+                        <HeaderStyle CssClass="table-custom-header" />
+                        <Columns>
+                            <asp:BoundField DataField="CodPessoa" HeaderText="CodPessoa" />
+                            <asp:BoundField DataField="NomeCompleto" HeaderText="Nome" />
+                            <asp:BoundField DataField="CPF" HeaderText="CPF" />
+                            <asp:BoundField DataField="RG" HeaderText="RG" />
+                            <asp:BoundField DataField="Email" HeaderText="Email" />
+                            <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
+
+                            <asp:BoundField DataField="NomeDepartamento" HeaderText="Departamento" />
+                            <asp:BoundField DataField="NomeCargo" HeaderText="Cargo" />
+
+                            <asp:BoundField DataField="Conf_Ativo" HeaderText="Ativo" />
+
+                       <asp:TemplateField HeaderText="Editar">
+                          <ItemTemplate>
+                            <a class="btn-editar"
+                               href='<%# "employeeEdit.aspx?id=" + Eval("CodPessoa") %>'>
+                              <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                          </ItemTemplate>
+                        </asp:TemplateField>
+
+
+                            <asp:TemplateField HeaderText="Inativar">
+                              <ItemTemplate>
+                                <asp:PlaceHolder ID="phInativar" runat="server">
+                                  <button type="button" class="btn-inativar"
+                                    onclick='abrirModalInativar(
+                                      <%# Eval("CodPessoa") %>,
+                                      "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>",
+                                      "<%# Eval("Conf_Ativo") %>"
+                                    )'>
+                                    <i class="fa-solid fa-user-slash"></i>
+                                  </button>
+                                </asp:PlaceHolder>
+                              </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+
+
     </div>
 
 
                 <!-- Modal Edição -->
-                    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
+        <%--            <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content rounded-4 shadow">
                                 <div class="modal-header bg-info text-white">
@@ -797,7 +812,7 @@ input:focus, select:focus, textarea:focus {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>--%>
 
                 <!-- Modal de Inativação -->
                     <div class="modal fade" id="modalInativarUsuario" tabindex="-1" aria-labelledby="modalInativarUsuarioLabel" aria-hidden="true">
