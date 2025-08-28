@@ -17,355 +17,164 @@
 
     <style>
 
-        * {
-    font-family: 'Poppins', sans-serif;
-    box-sizing: border-box;
+  /* ====== Base ====== */
+* { font-family: 'Poppins', sans-serif; box-sizing: border-box; }
+html, body { background:#f2f4f8; color:#333; font-size:14px; }
+
+/* ====== Títulos / barras ====== */
+.titulo-gestao { font-size:26px; font-weight:600; margin-bottom:30px; color:#413a3a; text-align:center; }
+.titulo-cadastro {
+  font-size:20px; color:#4CB07A; font-weight:600; margin-bottom:24px;
+  text-align:center; border-bottom:2px solid #ddd; padding-bottom:10px;
 }
 
-body, html {
-    background-color: #f2f4f8;
-    color: #333;
-    font-size: 14px;
+/* ====== Painéis / seções ====== */
+.form-panel { background:#fff; padding:30px; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,.08); max-width:1900px; margin:0 auto 40px; }
+.section-block { margin-bottom:40px; }
+.section-block h5 {
+  font-size:16px; font-weight:600; color:#353030; margin-bottom:20px;
+  border-left:5px solid #c06ed4; padding-left:12px;
 }
 
-.titulo-gestao {
-    font-size: 26px;
-    font-weight: 600;
-    margin-bottom: 30px;
-    color: #413a3a;
-    text-align: center;
+/* ====== Grid flex simplificado ====== */
+.row.g-3 { display:flex; flex-wrap:wrap; gap:20px; }
+.row.g-3 > .col-md-4, .row.g-3 > .col-md-6, .row.g-3 > .col-md-12 {
+  flex:1 1 calc(33% - 20px); min-width:250px;
 }
 
-.container-gestao {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
+/* ====== Formulários ====== */
+label { display:block; margin-bottom:6px; font-weight:500; color:#333; }
+input[type="text"], input[type="date"], input[type="email"], select, textarea {
+  width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px; background:#fff; transition:all .2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color:#83ceee; outline:none; box-shadow:0 0 0 3px rgba(131,206,238,.25);
 }
 
+/* Campos somente leitura (área de auditoria) */
+.input-readonly { background:#f4f6f9 !important; color:#6b7280; }
+
+/* Deixa checkbox verdinho sem precisar mudar markup */
+input[type="checkbox"] { accent-color:#4CB07A; }
+
+/* ====== Botões topo ====== */
+.container-gestao { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:30px; }
 .btn-gestao {
-    padding: 6px 14px;
+  padding:6px 14px; border:none; border-radius:10px; font-size:15px; font-weight:500; color:#fff;
+  cursor:pointer; transition:all .2s ease-in-out;
+}
+.btn-gestao:hover { transform:translateY(-1px); filter:brightness(.95); }
+.btn-incluir   { background:#4CB07A; }
+.btn-consultar { background:#83ceee; }
+.btn-desativar { background:#DC8689; }
+
+/* ====== Botões gerais ====== */
+.btn-success {
+  background:#83ceee; border:none; padding:10px 24px; border-radius:10px; font-weight:500; font-size:14px; color:#fff;
+  cursor:pointer; box-shadow:0 3px 8px rgba(76,176,122,.25);
+}
+.btn-success:hover { background:#67b7da; }
+
+.btn-secondary {
+  background:#ccc; color:#333; padding:10px 24px; border:none; border-radius:10px; font-weight:500; cursor:pointer;
+}
+.btn-secondary:hover { background:#bbb; }
+
+/* Remover sublinhado de anchors usados como botão */
+.btn, a.btn, a.btn:link, a.btn:visited, a.btn:hover, a.btn:active { text-decoration:none !important; display:inline-block; }
+
+/* ====== Tabela de resultados ====== */
+.table-responsive { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.table-custom { width:100%; border-collapse:collapse; border:1px solid #ddd; background:#fff; border-radius:8px; overflow:hidden; }
+.table-custom th, .table-custom td { padding:12px 16px; text-align:left; }
+.table-custom th { background:#f4f7fb; color:#444; font-weight:600; }
+.table-custom tr:nth-child(even) { background:#fafafa; }
+
+/* ====== Ações na grid ====== */
+.btn-editar {
+  background:#4CB07A; color:#fff; border:none; padding:6px 12px; font-size:13px; border-radius:50px; transition:background-color .3s;
+}
+.btn-editar:hover { background:#3A9E68 !important; }
+.btn-inativar {
+  background:#DC8689; color:#fff; border:none; padding:6px 12px; font-size:13px; border-radius:50px; transition:background-color .3s;
+}
+.btn-inativar:hover { background:#c95b60; }
+.bg-info { background:#4CB07A !important; margin:10px; border-radius:20px; }
+
+/* ====== Modal (cores iguais ao resto) ====== */
+.modal-header { background:#4CB07A; border-top-left-radius:10px; border-top-right-radius:10px; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+.modal-title { font-size:16px; font-weight:600; color:#fff; display:flex; align-items:center; gap:8px; margin:0; }
+.modal-title i { font-size:16px; }
+.btn-close { filter:brightness(0) invert(1); opacity:.85; transition:.2s; }
+.btn-close:hover { opacity:1; }
+.modal-body { padding:24px; background:#fff; }
+.modal-body .form-control {
+  background:#fff; border:1px solid #ccc; border-radius:10px; padding:10px 14px; font-size:14px; color:#333; height:42px;
+  box-shadow:0 1px 2px rgba(0,0,0,.05); transition:border-color .3s, box-shadow .3s;
+}
+.modal-body .form-control:focus { border-color:#4CB07A; box-shadow:0 0 0 3px rgba(76,176,122,.25); }
+.modal-body label.form-label { font-weight:500; color:#444; font-size:13px; margin-bottom:4px; }
+.modal-footer { background:#f5f7fa; padding:18px 24px; border-bottom-left-radius:14px; border-bottom-right-radius:14px; display:flex; justify-content:flex-end; gap:10px; }
+
+/* ====== Utilidades ====== */
+.text-danger { color:#f44336; font-size:13px; }
+
+/* ====== Responsividade ====== */
+@media (max-width: 768px) {
+  .modal-body .row.g-3 > .col-md-6 { flex:1 1 100%; }
+  .row.g-3 > .col-md-4, .row.g-3 > .col-md-6, .row.g-3 > .col-md-12 { flex:1 1 100%; }
+}
+
+/*CAMPO DE FILTROS*/
+.filter-bar{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0,1fr));
+  gap:12px;
+  align-items:end;
+}
+
+.filter-item{
+  grid-column: span 4;     /* 3 colunas por linha no desktop */
+}
+
+.filter-actions{
+  grid-column: span 12;    /* ações embaixo no mobile/tablet */
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+}
+
+/* Desktop largo: ações ocupam 3 colunas (e sobem para a mesma linha) */
+@media (min-width: 992px){
+  .filter-actions{ grid-column: span 4; }
+}
+
+/* Mobile: cada item ocupa a linha inteira */
+@media (max-width: 768px){
+  .filter-item,
+  .filter-actions{ grid-column: span 12; }
+}
+
+/* Label mais discreto */
+.filter-bar label{
+  margin-bottom:6px;
+  font-weight:500;
+  color:#555;
+}
+.btn-search {
+    background: linear-gradient(135deg, #83ceee, #67b7da);
     border: none;
-    border-radius: 10px;
-    font-size: 15px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
     font-weight: 500;
     color: white;
-    cursor: pointer;
     transition: all 0.2s ease-in-out;
 }
 
-.btn-incluir {
-    background-color: #4CB07A;
-}
-
-.btn-consultar {
-    background-color: #83ceee;
-}
-
-.btn-desativar {
-    background-color: #DC8689;
-}
-
-.btn-gestao:hover {
+.btn-search:hover {
+    background: linear-gradient(135deg, #6cbfe0, #56a6c7);
     transform: translateY(-1px);
-    filter: brightness(0.95);
-}
-
-.form-panel {
-    background: white;
-    padding: 30px;
-    border-radius: 18px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-    max-width: 1900px;
-    margin: 0 auto 40px auto;
-}
-
-.section-block {
-    margin-bottom: 40px;
-}
-
-.section-block h5 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #353030;
-    margin-bottom: 20px;
-    border-left: 5px solid #c06ed4;
-    padding-left: 12px;
-}
-
-.row.g-3 {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.row.g-3 > .col-md-4,
-.row.g-3 > .col-md-6,
-.row.g-3 > .col-md-12 {
-    flex: 1 1 calc(33% - 20px);
-    min-width: 250px;
-}
-
-label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #333;
-}
-
-input[type="text"],
-input[type="date"],
-input[type="email"],
-select,
-textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    transition: all 0.2s;
-}
-
-input:focus, select:focus, textarea:focus {
-    border-color: #83ceee;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(131, 206, 238, 0.25);
-}
-
-.btn-success {
-    background-color: #83ceee;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 10px;
-    font-weight: 500;
-    font-size: 14px;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 3px 8px rgba(76, 176, 122, 0.25);
-}
-
-.btn-success:hover {
-    background-color: #67b7da;
-}
-
-.btn-secondary {
-    background-color: #ccc;
-    color: #333;
-    padding: 10px 24px;
-    border: none;
-    border-radius: 10px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.btn-secondary:hover {
-    background-color: #bbb;
-}
-
-.text-danger {
-    color: #f44336;
-    font-size: 13px;
-}
-
-.table-custom {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ddd;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.table-custom th, .table-custom td {
-    padding: 12px 16px;
-    text-align: left;
-}
-
-.table-custom th {
-    background-color: #f4f7fb;
-    color: #444;
-    font-weight: 600;
-}
-
-.table-custom tr:nth-child(even) {
-    background-color: #fafafa;
-}
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.titulo-cadastro {
-    font-size: 20px;
-    color: #4CB07A;
-    font-weight: 600;
-    margin-bottom: 24px;
-    text-align: center;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
-}
-
-.btn-busca-nome {
-    background-color: #83ceee;
-    color: white;
-    font-weight: 500;
-    font-size: 13px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-busca-cpf {
-    background-color: #c06ed4;
-    color: white;
-    font-weight: 500;
-    font-size: 13px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-busca-nome:hover {
-    background-color: #67b7da;
-}
-
-.btn-busca-cpf:hover {
-    background-color: #ad4fbb;
-}
-
-
-.btn-editar {
-    background-color: #4CB07A;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    font-size: 13px;
-    border-radius: 50px;
-    transition: background-color 0.3s;
-}
-
-.btn-editar:hover {
-    background-color: #3A9E68 !important;
-}
-.bg-info {
-    background-color: #4CB07A !important;
-        margin: 10px;
-    border-radius: 20px;
-}
-/* ================= Modal Edição ================= */
-
-/* ===== MODAL HEADER ===== */
-.modal-header {
-    background-color: #4CB07A;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.modal-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0; /* tira a quebra horrorosa */
-}
-
-.modal-title i {
-    font-size: 16px;
-}
-
-/* ===== BOTÃO DE FECHAR ===== */
-.btn-close {
-    filter: brightness(0) invert(1);
-    opacity: 0.85;
-    transition: 0.2s;
-}
-
-.btn-close:hover {
-    opacity: 1;
-}
-
-/* ===== MODAL BODY ===== */
-.modal-body {
-    padding: 24px;
-    background-color: #fff;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-/* Campos do formulário */
-.modal-body .form-control {
-    font-family: 'Poppins', sans-serif;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
-    color: #333;
-    height: 42px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.modal-body .form-control:focus {
-    border-color: #4CB07A;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(76, 176, 122, 0.25);
-}
-
-.modal-body label.form-label {
-    font-weight: 500;
-    color: #444;
-    font-size: 13px;
-    margin-bottom: 4px;
-}
-
-/* ===== MODAL FOOTER ===== */
-.modal-footer {
-    background-color: #f5f7fa;
-    padding: 18px 24px;
-    border-bottom-left-radius: 14px;
-    border-bottom-right-radius: 14px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-/* ===== BOTÃO DE EDIÇÃO (ícone verde na GridView) ===== */
-
-
-/* Responsividade modal */
-@media (max-width: 768px) {
-    .modal-body .row.g-3 > .col-md-6 {
-        flex: 1 1 100%;
-    }
-}
-
-
-.btn-inativar {
-    background-color: #DC8689;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    font-size: 13px;
-    border-radius: 50px;
-    transition: background-color 0.3s;
-}
-
-.btn-inativar:hover {
-    background-color: #c95b60;
 }
 
 
@@ -656,45 +465,38 @@ input:focus, select:focus, textarea:focus {
                     ValidationGroup="Cadastro" OnClick="btnSalvarUsuario_Click" />
             </div>
         </asp:Panel>
+
         <asp:Panel ID="PanelConsulta" runat="server" CssClass="form-panel mt-4" Visible="false">
             <!-- Título principal -->
             <h4 class="titulo-cadastro">Consultar Usuário</h4>
 
-            <!-- 🔎 BLOCO DE BUSCA -->
-            <div class="section-block">
-                <h5>Buscar por Nome ou CPF</h5>
+<div class="section-block">
+    <h5>Filtros</h5>
+    <div class="row g-3 align-items-end">
 
-                <!-- BLOCO DE NOME -->
-                <div class="row g-3 align-items-end mb-3">
-                    <div class="col-md-6">
-                        <label>Buscar por Nome</label>
-                        <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Digite o nome" />
-                    </div>
-                    <div class="col-md-3">
-                        <asp:Button ID="btnBuscarPorNome" runat="server" Text="Buscar por Nome" CssClass="btn btn-busca-nome w-100" OnClick="btnBuscarPorNome_Click" />
-                    </div>
-                </div>
+        <div class="col-md-4">
+            <label for="txtBuscaNome">Nome</label>
+            <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Digite o nome" />
+        </div>
 
-                <!-- BLOCO DE CPF -->
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-6">
-                        <label>Buscar  <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Digite o CPF (somente números)" MaxLength="11" />  </label>
-                    </div>
-                    <div class="col-md-3">
-                        <asp:Button ID="btnBuscarPorCPF" runat="server" Text="Buscar por CPF" CssClass="btn btn-busca-cpf w-100" OnClick="btnBuscarPorCPF_Click" />
-                    </div>
-                </div>
+        <div class="col-md-3">
+            <label for="txtBuscaCPF">CPF</label>
+            <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Somente números" MaxLength="11" />
+        </div>
 
-                 <!-- BLOCO DE DEPARTAMENTO -->
-                 <div class="row g-3 align-items-end">
-                     <div class="col-md-6">
-                         <label>Buscar  <asp:TextBox ID="TxtBuscaDepartamento" runat="server" CssClass="form-control" placeholder="Informe o departamento" />  </label>
-                     </div>
-                     <div class="col-md-3">
-                         <asp:Button ID="btnBuscarDepartamento" runat="server" Text="Buscar por Departamento" CssClass="btn btn-busca-cpf w-100" OnClick="btnBuscarDepartamento_Click" />
-                     </div>
-                 </div>
-            </div>
+        <div class="col-md-3">
+            <label for="TxtBuscaDepartamento">Departamento</label>
+            <asp:TextBox ID="TxtBuscaDepartamento" runat="server" CssClass="form-control" placeholder="Informe o departamento" />
+        </div>
+
+        <div class="col-md-2 d-flex gap-2">
+            <asp:Button ID="btnBuscarPorNome" runat="server" Text="Buscar Nome" CssClass="btn btn-search flex-fill" OnClick="btnBuscarPorNome_Click" />
+            <asp:Button ID="btnBuscarPorCPF" runat="server" Text="Buscar CPF" CssClass="btn btn-search flex-fill" OnClick="btnBuscarPorCPF_Click" />
+            <asp:Button ID="btnBuscarDepartamento" runat="server" Text="Buscar Depto." CssClass="btn btn-search flex-fill" OnClick="btnBuscarDepartamento_Click" />
+        </div>
+
+    </div>
+</div>
 
             <!-- 📋 RESULTADOS -->
             <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
