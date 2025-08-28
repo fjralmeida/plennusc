@@ -32,8 +32,9 @@ html, body { background:#f2f4f8; color:#333; font-size:14px; }
 .form-panel { background:#fff; padding:30px; border-radius:18px; box-shadow:0 3px 12px rgba(0,0,0,.08); max-width:1900px; margin:0 auto 40px; }
 .section-block { margin-bottom:40px; }
 .section-block h5 {
-  font-size:16px; font-weight:600; color:#353030; margin-bottom:20px;
-  border-left:5px solid #c06ed4; padding-left:12px;
+  border-left:5px solid #c06ed4; padding-left:12px; 
+  font-size:16px; font-weight:600; color:#353030;  margin-top:20px;
+  border-left:5px solid #c06ed4; padding-left:12px; 
 }
 
 /* ====== Grid flex simplificado ====== */
@@ -126,57 +127,149 @@ input[type="checkbox"] { accent-color:#4CB07A; }
 }
 
 /*CAMPO DE FILTROS*/
-.filter-bar{
-  display:grid;
-  grid-template-columns: repeat(12, minmax(0,1fr));
-  gap:12px;
-  align-items:end;
+/* =======================
+   Tokens / base
+======================= */
+:root{
+  --brand:#4CB07A;
+  --accent:#83ceee;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --panel:#ffffff;
+  --panel-border:#e5e7eb;
+  --shadow:0 6px 14px rgba(0,0,0,.06);
+  --radius:14px;
 }
 
-.filter-item{
-  grid-column: span 4;     /* 3 colunas por linha no desktop */
+/* Painel dos filtros (cart) */
+.filters-block{
+  background:var(--panel);
+  border:1px solid var(--panel-border);
+  border-radius:var(--radius);
+  padding:22px 24px;
+  box-shadow:var(--shadow);
 }
 
-.filter-actions{
-  grid-column: span 12;    /* ações embaixo no mobile/tablet */
+/* Título interno "Filtros" */
+.filters-block .filters-title{
+  display:flex; align-items:center; gap:10px;
+  font-weight:600; color:var(--ink); margin:0 0 14px 0;
+}
+.filters-block .filters-title::before{
+  content:""; width:6px; height:18px; border-radius:3px; background:var(--brand);
+}
+
+/* Inputs */
+.filters-block .form-label{ font-weight:500; color:#444; }
+.filters-block .form-control{
+  height:44px;
+  border:1px solid #dfe3ea;
+  border-radius:10px;
+  box-shadow:0 1px 2px rgba(0,0,0,.03);
+}
+.filters-block .form-control:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(131,206,238,.25);
+  outline:0;
+}
+
+/* barra dos botões dos filtros */
+.filters-btnbar{
   display:flex;
-  gap:8px;
-  justify-content:flex-end;
+  gap:12px;
+  align-items:center;
+  margin-top:10px;
+justify-content: space-around;
 }
 
-/* Desktop largo: ações ocupam 3 colunas (e sobem para a mesma linha) */
-@media (min-width: 992px){
-  .filter-actions{ grid-column: span 4; }
-}
-
-/* Mobile: cada item ocupa a linha inteira */
-@media (max-width: 768px){
-  .filter-item,
-  .filter-actions{ grid-column: span 12; }
-}
-
-/* Label mais discreto */
-.filter-bar label{
-  margin-bottom:6px;
+/* botão “flat”, minimalista */
+.btn-filter{
+  appearance:none;
+  background:#fff;
+  color:#2b3543;
+  border:1px solid #E7ECF2;
+  padding:10px 18px;
+  height:44px;          /* altura consistente */
+  min-width:140px;      /* todos com largura boa */
+  border-radius:12px;   /* cantos suaves */
   font-weight:500;
-  color:#555;
-}
-.btn-search {
-    background: linear-gradient(135deg, #83ceee, #67b7da);
-    border: none;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    color: white;
-    transition: all 0.2s ease-in-out;
+  letter-spacing:.2px;
+  box-shadow:0 1px 2px rgba(16,24,40,.06);
+  transition:background .2s,border-color .2s,box-shadow .2s,transform .06s;
 }
 
-.btn-search:hover {
-    background: linear-gradient(135deg, #6cbfe0, #56a6c7);
-    transform: translateY(-1px);
+.btn-filter:hover{
+  background:#fbfdff;
+  border-color:#cbd5e1;
+  box-shadow:0 4px 12px rgba(16,24,40,.08);
 }
 
+.btn-filter:active{ 
+  transform:translateY(1px);
+  box-shadow:0 2px 6px rgba(16,24,40,.12);
+}
+
+.btn-filter:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 4px rgba(131,206,238,.25); /* foco acessível */
+}
+
+/* variante destaque (verde) – deixe só 1 ou use em todos se quiser */
+.btn-filter-primary{
+  background:var(--brand, #4CB07A);
+  border-color:var(--brand, #4CB07A);
+  color:#fff;
+  box-shadow:0 6px 14px rgba(76,176,122,.20);
+}
+.btn-filter-primary:hover{
+  background:#3A9E68;
+  border-color:#3A9E68;
+  box-shadow:0 10px 18px rgba(76,176,122,.22);
+}
+
+/* responsivo: empilha e deixa largura total no celular */
+@media (max-width:768px){
+  .filters-btnbar .btn{ width:100%; }
+}
+
+/* =======================
+   Grid moderno
+======================= */
+.table-modern{
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--panel-border);
+  border-radius:var(--radius);
+  overflow:hidden; /* cantos arredondados no header */
+  box-shadow:var(--shadow);
+  font-size:.96rem;
+}
+.table-modern thead th{
+  background:#f6f8fb;
+  color:#4b5563;
+  font-weight:600;
+  padding:14px 16px;
+  border-bottom:1px solid var(--panel-border);
+}
+.table-modern td{
+  padding:14px 16px;
+  border-top:1px solid var(--panel-border);
+  vertical-align:middle;
+}
+.table-modern tbody tr:hover{ background:#f9fdfb; }
+
+/* Aumenta um pouco a área clicável do ícone de editar */
+.table-modern .btn-editar{
+  background:var(--brand); color:#fff; border:none;
+  padding:8px 12px; border-radius:999px;
+}
+.table-modern .btn-editar:hover{ background:#3A9E68; }
+
+/* Responsivo */
+@media (max-width: 992px){
+  .filters-block{ padding:16px; }
+  .table-modern{ font-size:.92rem; }
+}
 
     </style>
 
@@ -219,10 +312,7 @@ input[type="checkbox"] { accent-color:#4CB07A; }
     $(document).ready(function () {
         aplicarMascaras();
 
-        // Também reaplica quando clica no botão de inclusão
-        $('#<%= btnIncluirUsuario.ClientID %>').on('click', function () {
-            setTimeout(aplicarMascaras, 300);
-        });
+   
     });
 </script>
 
@@ -231,13 +321,6 @@ input[type="checkbox"] { accent-color:#4CB07A; }
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container py-4">
-        <h2 class="titulo-gestao" runat="server" id="lblTitGestao">Gestão de Colaboradores</h2>
-
-        <div class="container-gestao">
-            <asp:Button ID="btnIncluirUsuario" runat="server" Text="Incluir Usuário" CssClass="btn-gestao btn-incluir" OnClick="btnIncluirUsuario_Click" />
-            <asp:Button ID="btnConsultarUsuario" runat="server" Text="Consultar Usuário" CssClass="btn-gestao btn-consultar" OnClick="btnConsultarUsuario_Click" />
-          <%--  <asp:Button ID="btnDesativarUsuario" runat="server" Text="Desativar Usuário" CssClass="btn-gestao btn-desativar" OnClick="btnDesativarUsuario_Click" />--%>
-        </div>
 
        <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="false">
             <h4 class="titulo-cadastro">Cadastro de Novo Colaborador</h4>
@@ -469,49 +552,60 @@ input[type="checkbox"] { accent-color:#4CB07A; }
         <asp:Panel ID="PanelConsulta" runat="server" CssClass="form-panel mt-4" Visible="false">
             <!-- Título principal -->
             <h4 class="titulo-cadastro">Consultar Usuário</h4>
+<div class="filters-block">
+  <h5 class="filters-title">Filtros</h5>
 
-<div class="section-block">
-    <h5>Filtros</h5>
-    <div class="row g-3 align-items-end">
-
-        <div class="col-md-4">
-            <label for="txtBuscaNome">Nome</label>
-            <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Digite o nome" />
-        </div>
-
-        <div class="col-md-3">
-            <label for="txtBuscaCPF">CPF</label>
-            <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Somente números" MaxLength="11" />
-        </div>
-
-        <div class="col-md-3">
-            <label for="TxtBuscaDepartamento">Departamento</label>
-            <asp:TextBox ID="TxtBuscaDepartamento" runat="server" CssClass="form-control" placeholder="Informe o departamento" />
-        </div>
-
-        <div class="col-md-2 d-flex gap-2">
-            <asp:Button ID="btnBuscarPorNome" runat="server" Text="Buscar Nome" CssClass="btn btn-search flex-fill" OnClick="btnBuscarPorNome_Click" />
-            <asp:Button ID="btnBuscarPorCPF" runat="server" Text="Buscar CPF" CssClass="btn btn-search flex-fill" OnClick="btnBuscarPorCPF_Click" />
-            <asp:Button ID="btnBuscarDepartamento" runat="server" Text="Buscar Depto." CssClass="btn btn-search flex-fill" OnClick="btnBuscarDepartamento_Click" />
-        </div>
-
+  <div class="row g-3 align-items-end">
+    <div class="col-lg-4 col-md-6">
+      <label class="form-label">Nome</label>
+      <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Digite o nome" />
     </div>
+
+    <div class="col-lg-4 col-md-6">
+      <label class="form-label">CPF</label>
+      <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Somente números" MaxLength="11" />
+    </div>
+
+    <div class="col-lg-4">
+      <label class="form-label">Departamento</label>
+      <asp:TextBox ID="TxtBuscaDepartamento" runat="server" CssClass="form-control" placeholder="Informe o departamento" />
+    </div>
+<div class="filters-btnbar">
+  <asp:Button ID="btnBuscarPorNome" runat="server"
+      Text="Buscar Nome"
+      CssClass="btn btn-filter btn-filter-primary"
+      OnClick="btnBuscarPorNome_Click" />
+
+  <asp:Button ID="btnBuscarPorCPF" runat="server"
+      Text="Buscar CPF"
+      CssClass="btn btn-filter"
+      OnClick="btnBuscarPorCPF_Click" />
+
+  <asp:Button ID="btnBuscarDepartamento" runat="server"
+      Text="Buscar Depto."
+      CssClass="btn btn-filter"
+      OnClick="btnBuscarDepartamento_Click" />
 </div>
+
+
+  </div>
+</div>
+
 
             <!-- 📋 RESULTADOS -->
             <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
                 <h5>Resultados</h5>
                  <div class="table-responsive">
                     <asp:GridView 
-                        ID="gvUsuarios" 
-                        runat="server" 
-                        CssClass="table-custom" 
-                        AutoGenerateColumns="False" 
-                        GridLines="None" 
-                        ShowHeaderWhenEmpty="False" 
-                        EmptyDataText="Nenhum usuário encontrado."
-                        DataKeyNames="CodPessoa,CodDepartamento,CodCargo"
-                        OnRowDataBound="gvUsuarios_RowDataBound">
+                         ID="gvUsuarios" 
+    runat="server" 
+    CssClass="table table-modern"
+    AutoGenerateColumns="False" 
+    GridLines="None" 
+    ShowHeaderWhenEmpty="False" 
+    EmptyDataText="Nenhum usuário encontrado."
+    DataKeyNames="CodPessoa,CodDepartamento,CodCargo"
+    OnRowDataBound="gvUsuarios_RowDataBound">
 
                         <HeaderStyle CssClass="table-custom-header" />
                         <Columns>

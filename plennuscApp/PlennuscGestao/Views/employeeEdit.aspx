@@ -75,6 +75,144 @@
             .modal-body .row.g-3 > .col-md-6 { flex: 1 1 100%; }
         }
 
+      /* ===== MODAL VISUAL ===== */
+#modalCriarLogin .modal-content {
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+#modalCriarLogin .modal-header {
+  background: linear-gradient(90deg, #4CB07A, #3A9E68);
+  color: #fff;
+  border: 0;
+}
+#modalCriarLogin .modal-footer {
+  background: #f9fafb;
+  border: 0;
+}
+
+/* Campos modernos */
+#modalCriarLogin .form-control,
+#modalCriarLogin .form-select {
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  transition: all .2s;
+}
+#modalCriarLogin .form-control:focus,
+#modalCriarLogin .form-select:focus {
+  border-color: #4CB07A;
+  box-shadow: 0 0 0 3px rgba(76,176,122,.25);
+}
+
+/* Botões */
+#modalCriarLogin .btn-login {
+  background-color: #4CB07A;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(76,176,122,.25);
+}
+#modalCriarLogin .btn-login:hover { background-color: #3A9E68; }
+#modalCriarLogin .btn-secondary {
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-weight: 500;
+}
+
+/* ===== GRID COM DIVISÓRIAS ===== */
+#modalCriarLogin .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;           /* mobile */
+  border: 1px solid #e5e7eb;            /* borda externa */
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+#modalCriarLogin .cell {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;        /* linha horizontal */
+}
+#modalCriarLogin .cell:last-child {
+  border-bottom: none;                   /* última célula da grade */
+}
+
+/* 2 colunas >=768px */
+@media (min-width: 768px) {
+  #modalCriarLogin .form-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+  #modalCriarLogin .cell {
+    border-right: 1px solid #eee;       /* linha vertical */
+  }
+  #modalCriarLogin .cell:nth-child(2n) {
+    border-right: none;                  /* última coluna não tem borda à direita */
+  }
+  /* última linha em 2 colunas: remova a borda inferior */
+  #modalCriarLogin .cell:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+  #modalCriarLogin .span-3 {
+    grid-column: 1 / -1;                 /* ocupa as 2 colunas */
+    border-right: none;
+    border-bottom: none;
+  }
+}
+
+/* 3 colunas >=992px */
+@media (min-width: 992px) {
+  #modalCriarLogin .form-grid {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+  #modalCriarLogin .cell {
+    border-right: 1px solid #eee;
+  }
+  #modalCriarLogin .cell:nth-child(3n) {
+    border-right: none;                  /* última coluna */
+  }
+  /* última linha em 3 colunas: remova a borda inferior */
+  #modalCriarLogin .cell:nth-last-child(-n+3) {
+    border-bottom: none;
+  }
+  #modalCriarLogin .span-3 {
+    grid-column: 1 / -1;                 /* ocupa as 3 colunas */
+    border-right: none;
+    border-bottom: none;
+  }
+}
+
+/* ===== CheckBoxList em 2 colunas bem espaçado ===== */
+#modalCriarLogin .check-grid {
+  width: 100%;
+  table-layout: fixed;                   /* cada coluna ocupa 50% */
+  border-collapse: separate;
+  border-spacing: 16px 8px;              /* HORIZONTAL, VERTICAL */
+}
+#modalCriarLogin .check-grid td {
+  width: 50%;
+  padding: 0;
+  vertical-align: middle;
+  white-space: normal;                   /* permite quebra */
+}
+#modalCriarLogin .check-grid input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Flags lado a lado */
+#modalCriarLogin .flags {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+#modalCriarLogin .flag-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+
         .btn-inativar { background-color: #DC8689; color: white; border: none; padding: 6px 12px; font-size: 13px; border-radius: 50px; transition: background-color 0.3s; }
         .btn-inativar:hover { background-color: #c95b60; }
     </style>
@@ -348,75 +486,94 @@
         </asp:Panel>
 
          <!-- MODAL: Criar Login -->
-            <div class="modal fade" id="modalCriarLogin" tabindex="-1" aria-labelledby="modalCriarLoginLabel" aria-hidden="true">
-              <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content rounded-4 shadow">
-                  <div class="modal-header" style="background:#4CB07A; color:#fff;">
-                    <h5 class="modal-title" id="modalCriarLoginLabel">
-                      <i class="fa-solid fa-user-plus me-2"></i>Criar Login do Colaborador
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                  </div>
+<div class="modal fade" id="modalCriarLogin" tabindex="-1" aria-labelledby="modalCriarLoginLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
 
-                  <div class="modal-body">
-                    <asp:HiddenField ID="hfCodPessoaLogin" runat="server" />
-                    <div class="row g-3">
-                      <div class="col-md-6">
-                        <label class="form-label">Nome</label>
-                        <asp:TextBox ID="txtLoginNome" runat="server" CssClass="form-control" ReadOnly="true" />
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label">Sobrenome</label>
-                        <asp:TextBox ID="txtLoginSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label">E-mail</label>
-                        <asp:TextBox ID="txtLoginEmail" runat="server" CssClass="form-control" />
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label">Usuário (login)</label>
-                        <asp:TextBox ID="txtLoginUsuario" runat="server" CssClass="form-control" />
-                        <small class="text-muted">Ex.: nome.sobrenome</small>
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label">Perfil de Acesso</label>
-                        <asp:DropDownList ID="ddlPerfilUsuario" runat="server" CssClass="form-control">
-                          <asp:ListItem Value="">Selecione</asp:ListItem>
-                          <asp:ListItem Value="1">Administrador</asp:ListItem>
-                          <asp:ListItem Value="2">Gestor</asp:ListItem>
-                          <asp:ListItem Value="3">Diretor</asp:ListItem>
-                          <asp:ListItem Value="4">Colaborador</asp:ListItem>
-                        </asp:DropDownList>
-                      </div>
-                        <div class="col-md-12">
-                          <label class="form-label">Sistemas com acesso</label>
-                          <asp:CheckBoxList ID="cblSistemas" runat="server"
-                              RepeatDirection="Horizontal" RepeatColumns="2"
-                              CssClass="form-check">
-                          </asp:CheckBoxList>
-                          <small class="text-muted d-block mt-1">
-                            Marque os sistemas que este usuário poderá acessar.
-                          </small>
-                        </div>
-                      <div class="col-md-6">
-                        <label class="form-label d-flex align-items-center gap-2">
-                          <asp:CheckBox ID="chkLoginAtivo" runat="server" Checked="true" /> Ativo
-                        </label>
-                        <label class="form-label d-flex align-items-center gap-2">
-                          <asp:CheckBox ID="chkLoginPermiteAcesso" runat="server" Checked="true" /> Permite acesso
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCriarLoginLabel">
+          <i class="fa-solid fa-user-plus me-2"></i>Criar Login do Colaborador
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
 
-                  <div class="modal-footer" style="background:#f5f7fa;">
-                    <asp:Button ID="btnConfirmarCriarLogin" runat="server"
-                      CssClass="btn btn-login" Text="Criar login"
-                      OnClick="btnConfirmarCriarLogin_Click" />
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                  </div>
-                </div>
-              </div>
+      <div class="modal-body">
+        <asp:HiddenField ID="hfCodPessoaLogin" runat="server" />
+
+        <!-- GRADE COM DIVISÓRIAS -->
+        <div class="form-grid">
+
+          <!-- Linha 1 -->
+          <div class="cell">
+            <label class="form-label">Nome</label>
+            <asp:TextBox ID="txtLoginNome" runat="server" CssClass="form-control" ReadOnly="true" />
+          </div>
+
+          <div class="cell">
+            <label class="form-label">Sobrenome</label>
+            <asp:TextBox ID="txtLoginSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
+          </div>
+
+          <div class="cell">
+            <label class="form-label">E-mail</label>
+            <asp:TextBox ID="txtLoginEmail" runat="server" CssClass="form-control" TextMode="Email" placeholder="nome@empresa.com" />
+          </div>
+
+          <!-- Linha 2 -->
+          <div class="cell">
+            <label class="form-label">Usuário (login)</label>
+            <asp:TextBox ID="txtLoginUsuario" runat="server" CssClass="form-control" placeholder="ex.: nome.sobrenome" />
+            <small class="form-text text-muted">Ex.: nome.sobrenome</small>
+          </div>
+
+          <div class="cell">
+            <label class="form-label">Perfil de Acesso</label>
+            <asp:DropDownList ID="ddlPerfilUsuario" runat="server" CssClass="form-select">
+              <asp:ListItem Value="">Selecione</asp:ListItem>
+              <asp:ListItem Value="1">Administrador</asp:ListItem>
+              <asp:ListItem Value="2">Gestor</asp:ListItem>
+              <asp:ListItem Value="3">Diretor</asp:ListItem>
+              <asp:ListItem Value="4">Colaborador</asp:ListItem>
+            </asp:DropDownList>
+          </div>
+
+          <div class="cell">
+            <label class="form-label">Sistemas com acesso</label>
+            <asp:CheckBoxList ID="cblSistemas" runat="server"
+              RepeatDirection="Horizontal" RepeatColumns="2" RepeatLayout="Table"
+              CssClass="check-grid">
+            </asp:CheckBoxList>
+            <small class="text-muted d-block mt-1">Marque os sistemas que este usuário poderá acessar.</small>
+          </div>
+
+          <!-- Linha 3 (span em toda largura) -->
+          <div class="cell span-3">
+            <div class="flags">
+              <label class="flag-line">
+                <asp:CheckBox ID="chkLoginAtivo" runat="server" Checked="true" /> Ativo
+              </label>
+              <label class="flag-line">
+                <asp:CheckBox ID="chkLoginPermiteAcesso" runat="server" Checked="true" /> Permite acesso
+              </label>
             </div>
+          </div>
+
+        </div>
+        <!-- /form-grid -->
+      </div>
+
+      <div class="modal-footer">
+        <asp:Button ID="btnConfirmarCriarLogin" runat="server"
+          CssClass="btn btn-login" Text="Criar login"
+          OnClick="btnConfirmarCriarLogin_Click" />
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
     </div>
 </asp:Content>

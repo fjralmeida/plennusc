@@ -16,6 +16,17 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (!IsPostBack)
             {
+                var acao = (Request.QueryString["acao"] ?? "").ToLowerInvariant();
+                switch (acao)
+                {
+                    case "incluir":
+                        AbrirInclusaoUsuario();
+                        break;
+                    case "consultar":
+                        AbrirConsultaUsuario();
+                        break;
+                }
+
                 CarregarPerfilSessao();
                 CarregarPerfilPessoa();
                 CarregarCargo();
@@ -79,28 +90,25 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlDepartamento.Items.Insert(0, new ListItem("Selecione", ""));
         }
 
-        protected void btnIncluirUsuario_Click(object sender, EventArgs e)
+        private void AbrirInclusaoUsuario()
         {
+            // mostra painel de cadastro
             PanelCadastro.Visible = true;
-            lblTitGestao.Visible = false;
-            btnConsultarUsuario.Visible = false;
-            //btnDesativarUsuario.Visible = false;
-            btnIncluirUsuario.Visible = false;
+            // esconde os outros
+            PanelConsulta.Visible = false;
+
         }
 
-        protected void btnConsultarUsuario_Click(object sender, EventArgs e)
+        private void AbrirConsultaUsuario()
         {
+            // mostra painel de consulta
             PanelConsulta.Visible = true;
-            lblTitGestao.Visible = false;
-            btnConsultarUsuario.Visible = false;
-            //btnDesativarUsuario.Visible = false;
-            btnIncluirUsuario.Visible = false;
+            // esconde os outros
+            PanelCadastro.Visible = false;
+
         }
 
-        //protected void btnDesativarUsuario_Click(object sender, EventArgs e)
-        //{
-        //    // Abrir tela/modal de seleção para desativação
-        //}
+       
 
         protected void btnSalvarUsuario_Click(object sender, EventArgs e)
         {
