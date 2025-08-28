@@ -276,7 +276,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             string nome = p["Nome"]?.ToString() ?? "";
             string sobrenome = p["Sobrenome"]?.ToString() ?? "";
-            string email = p["Email"]?.ToString() ?? "";
+            string email = p["EmailAlt"]?.ToString() ?? "";
 
             // 3) sugere login (nome.sobrenome, minúsculo, sem acentos) e garante unicidade
             string baseLogin = GerarSlugLogin(nome, sobrenome, email);
@@ -287,6 +287,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             txtLoginNome.Text = nome;
             txtLoginSobrenome.Text = sobrenome;
             txtLoginEmail.Text = email;
+
             txtLoginUsuario.Text = sugestao;
             ddlPerfilUsuario.SelectedValue = ""; 
             chkLoginAtivo.Checked = true;
@@ -386,10 +387,18 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             string nome = (txtLoginNome.Text ?? "").Trim();
             string sobrenome = (txtLoginSobrenome.Text ?? "").Trim();
-            string email = (txtLoginEmail.Text ?? "").Trim();
+            string emailAlt = (txtLoginEmail.Text ?? "").Trim();
             string usuario = (txtLoginUsuario.Text ?? "").Trim().ToLowerInvariant();
             bool ativo = chkLoginAtivo.Checked;
             bool permite = chkLoginPermiteAcesso.Checked;
+            string cpf = txtDocCPF.Text.Trim();
+
+            if (emailAlt == null || emailAlt == "")
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "Sem Email",
+                    "Swal.fire('Aviso','Informe um email.','warning');", true);
+                return;
+            }
 
             if (!int.TryParse(ddlPerfilUsuario.SelectedValue, out int codPerfilUsuario) || codPerfilUsuario <= 0)
             {
@@ -421,6 +430,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 var authDao = new AutenticacaoDAO();
 
+
                 // 2) Revalidar: já tem login para essa pessoa?
                 var existentePorPessoa = authDao.ObterLoginPorPessoa(codPessoa);
                 if (existentePorPessoa != null)
@@ -440,7 +450,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }
 
                 // 4) Gerar senha temporária + hash
-                string senhaTemp = GerarSenhaTemporaria(10);
+                string senhaTemp = GerarSenhaComSobrenomeCpf(sobrenome, cpf);
                 string senhaHash = CriptografiaUtil.CalcularHashSHA512(senhaTemp);
 
                  //5) Inserir
@@ -485,7 +495,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                       </body>
                     </html>";
 
-                    authDao.EnviarEmailNovoAcesso(email, assunto, corpoHtml);
+                    authDao.EnviarEmailNovoAcesso(emailAlt, assunto, corpoHtml);
 
                     // 5.3) feedback com a senha
                     string safeUser = usuario.Replace("'", "\\'");
@@ -511,22 +521,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                     $"Swal.fire('Erro','{msg}','error');", true);
             }
         }
-        private string GerarSenhaTemporaria(int length = 10)
+        private string GerarSenhaComSobrenomeCpf(string sobrenome, string cpf)
         {
-            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789@#$%";
-            var data = new byte[length];
+            if (string.IsNullOrWhiteSpace(sobrenome) || string.IsNullOrWhiteSpace(cpf))
+                return "SenhaTemo123";
 
-            // .NET Framework / WebForms compatível
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(data);
-            }
+            string ultimoNome = sobrenome.Trim().Split(' ').Last();
 
-            var sb = new StringBuilder(length);
-            for (int i = 0; i < length; i++)
-                sb.Append(chars[data[i] % chars.Length]);
+            cpf = System.Text.RegularExpressions.Regex.Replace(cpf, @"\D", "");
 
-            return sb.ToString();
+            string ultimosDig = cpf.Length >= 4 ? cpf.Substring(cpf.Length - 4) : cpf;
+
+           return ultimoNome + ultimosDig;
+
         }
     }
 }

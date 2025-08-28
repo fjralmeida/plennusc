@@ -398,7 +398,7 @@
                         <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" MaxLength="15" />
                     </div>
                     <div class="col-md-6">
-                        <label>Email *</label>
+                        <label>Email Coorporativo *</label>
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email" />
                         <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>

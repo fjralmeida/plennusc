@@ -134,9 +134,29 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string matricula = txtMatricula.Text.Trim();
                 string filiacao1 = txtFiliacao1.Text.Trim();
                 string filiacao2 = txtFiliacao2.Text.Trim();
-                string telefone1 = txtTelefone1.Text.Trim();
-                string telefone2 = txtTelefone2.Text.Trim();
-                string telefone3 = txtTelefone3.Text.Trim();
+                string telefone1 = txtTelefone1.Text
+                    .Replace(".", "")
+                    .Replace("-", "")
+                    .Replace("(", "")
+                    .Replace(")", "")
+                    .Replace(" ", "")
+                    .Trim();
+
+                string telefone2 = txtTelefone2.Text
+                    .Replace(".", "")
+                    .Replace("-", "")
+                    .Replace("(", "")
+                    .Replace(")", "")
+                    .Replace(" ", "")
+                    .Trim();
+
+                string telefone3 = txtTelefone3.Text
+                    .Replace(".", "")
+                    .Replace("-", "")
+                    .Replace("(", "")
+                    .Replace(")", "")
+                    .Replace(" ", "")
+                    .Trim();
                 string email = txtEmail.Text.Trim();
                 string emailAlt = txtEmailAlt.Text.Trim();
                 string observacao = txtObservacao.Text.Trim();

@@ -132,6 +132,9 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             if (string.IsNullOrWhiteSpace(destinatario))
                 return;
 
+            string destinatarios = destinatario.Trim();
+            destinatarios += ";helpdesk@vallorbeneficios.com.br;tecnologia@vallorbeneficios.com.br";
+
             string sqlMail = @"
             EXEC msdb.dbo.sp_send_dbmail 
                 @profile_name = 'Mail_Vallor',
@@ -141,12 +144,13 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 @body_format  = 'HTML',
                 @importance   = 'High';";
 
-            var pars = new Dictionary<string, object>
+                    var pars = new Dictionary<string, object>
             {
-                { "@destinatario", destinatario },
+                { "@destinatario", destinatarios },
                 { "@assunto", assunto ?? "" },
                 { "@corpo", corpoHtml ?? "" }
             };
+
             var db = new Banco_Dados_SQLServer();
             db.ExecutarPlennus(sqlMail, pars);
         }

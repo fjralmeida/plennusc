@@ -395,14 +395,70 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
 
         public void InactivateUser(int codPessoa, string motivo)
         {
-            string sql = "UPDATE Pessoa SET Conf_Ativo = 0, Observacao = @Motivo WHERE CodPessoa = @CodPessoa";
+            const string sql = @"
+            BEGIN TRY
+                BEGIN TRAN;
 
-            Dictionary<string, object> parametros = new Dictionary<string, object>
+                -- 1) Pessoa
+                UPDATE P
+                   SET P.Conf_Ativo = 0,
+                       P.Observacao =
+                            COALESCE(NULLIF(RTRIM(P.Observacao), ''), '')
+                            + CASE WHEN COALESCE(NULLIF(RTRIM(P.Observacao), ''), '') = '' THEN '' ELSE CHAR(13)+CHAR(10) END
+                            + CONVERT(varchar(19), GETDATE(), 120) + ' - Inativação: ' + @Motivo
+                 FROM Pessoa P
+                WHERE P.CodPessoa = @CodPessoa;
+
+                -- 2) AutenticacaoAcesso: bloqueia login
+                UPDATE AA
+                   SET AA.Conf_Ativo = 0,
+                       AA.Conf_PermiteAcesso = 0
+                 FROM AutenticacaoAcesso AA
+                WHERE AA.CodPessoa = @CodPessoa;
+
+                -- Se a coluna de log existir, atualiza
+                IF COL_LENGTH('AutenticacaoAcesso','Informacoes_log_a') IS NOT NULL
+                BEGIN
+                    UPDATE AA
+                       SET AA.Informacoes_log_a = GETDATE()
+                     FROM AutenticacaoAcesso AA
+                    WHERE AA.CodPessoa = @CodPessoa;
+                END
+
+                -- 3) SistemaEmpresaUsuario: bloqueia em todos os vínculos
+                UPDATE SEU
+                   SET SEU.Conf_LiberaAcesso = 0,
+                       SEU.Conf_BloqueiaAcesso = 1
+                  FROM SistemaEmpresaUsuario SEU
+                  INNER JOIN AutenticacaoAcesso AA
+                          ON AA.CodAutenticacaoAcesso = SEU.CodAutenticacaoAcesso
+                 WHERE AA.CodPessoa = @CodPessoa;
+
+                -- Se a coluna de log existir, atualiza
+                IF COL_LENGTH('SistemaEmpresaUsuario','Informacoes_log_a') IS NOT NULL
+                BEGIN
+                    UPDATE SEU
+                       SET SEU.Informacoes_log_a = GETDATE()
+                      FROM SistemaEmpresaUsuario SEU
+                      INNER JOIN AutenticacaoAcesso AA
+                              ON AA.CodAutenticacaoAcesso = SEU.CodAutenticacaoAcesso
+                     WHERE AA.CodPessoa = @CodPessoa;
+                END
+
+                COMMIT;
+            END TRY
+            BEGIN CATCH
+                IF @@TRANCOUNT > 0 ROLLBACK;
+                DECLARE @ErrMsg nvarchar(4000) = ERROR_MESSAGE(),
+                        @ErrNum int = ERROR_NUMBER();
+                RAISERROR('InactivateUser failed (%d): %s', 16, 1, @ErrNum, @ErrMsg);
+            END CATCH;";
+
+            var parametros = new Dictionary<string, object>
             {
-                { "@Motivo", motivo },
-                { "@CodPessoa", codPessoa }
+                { "@CodPessoa", codPessoa },
+                { "@Motivo", motivo ?? string.Empty }
             };
-
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             db.ExecutarPlennus(sql, parametros);
         }
@@ -478,7 +534,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
         public DataRow ObterPessoaBasico(int codPessoa)
         {
             string sql = @"
-                SELECT TOP 1 CodPessoa, Nome, Sobrenome, Email
+                SELECT TOP 1 CodPessoa, Nome, Sobrenome, EmailAlt
                 FROM Pessoa
                 WHERE CodPessoa = @CodPessoa;
             ";

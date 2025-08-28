@@ -274,20 +274,6 @@ justify-content: space-around;
     </style>
 
 <script type="text/javascript">
-  <%--  // 🧠 ABRE MODAL DE EDIÇÃO
-    function abrirModalEdicao(codPessoa, nome, cpf, rg, email, telefone, cargo) {
-        $('#<%= hfCodPessoa.ClientID %>').val(codPessoa);
-        $('#<%= txtModalNome.ClientID %>').val(nome);
-        $('#<%= txtModalCPF.ClientID %>').val(cpf);
-        $('#<%= txtModalRG.ClientID %>').val(rg);
-        $('#<%= txtModalEmail.ClientID %>').val(email);
-        $('#<%= txtModalTelefone.ClientID %>').val(telefone);
-        $('#<%= txtModalCargo.ClientID %>').val(cargo);
-
-        var modal = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
-        modal.show();
-    }--%>
-
     // ❌ ABRE MODAL DE INATIVAR
     function abrirModalInativar(codPessoa, nome) {
         $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
@@ -297,23 +283,44 @@ justify-content: space-around;
 
     // ✅ FUNÇÃO ÚNICA DE MÁSCARAS
     function aplicarMascaras() {
-        const campoCPF = $('#<%= txtDocCPF.ClientID %>');
-        const campoRG = $('#<%= txtDocRG.ClientID %>');
-        const campoBuscaCPF = $('#<%= txtBuscaCPF.ClientID %>');
-<%--        const campoModalCPF = $('#<%= txtModalCPF.ClientID %>');--%>
+        const campoCPF       = $('#<%= txtDocCPF.ClientID %>');
+        const campoRG        = $('#<%= txtDocRG.ClientID %>');
+        const campoBuscaCPF  = $('#<%= txtBuscaCPF.ClientID %>');
 
-        if (campoCPF.length) campoCPF.unmask().mask('000.000.000-00', { reverse: true });
-        if (campoRG.length) campoRG.unmask().mask('00.000.000-0');
+        if (campoCPF.length)      campoCPF.unmask().mask('000.000.000-00', { reverse: true });
+        if (campoRG.length)       campoRG.unmask().mask('00.000.000-0');
         if (campoBuscaCPF.length) campoBuscaCPF.unmask().mask('000.000.000-00', { reverse: true });
-        if (campoModalCPF.length) campoModalCPF.unmask().mask('000.000.000-00', { reverse: true });
+
+        const phoneBehavior = function (val) {
+            const nums = val.replace(/\D/g, '').slice(0, 11);
+            return nums.length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+        };
+        const phoneOptions = {
+            onKeyPress: function (val, e, field, options) {
+                field.mask(phoneBehavior.apply({}, arguments), options);
+            }
+        };
+
+        const tel1 = $('#<%= txtTelefone1.ClientID %>');
+        const tel2 = $('#<%= txtTelefone2.ClientID %>');
+        const tel3 = $('#<%= txtTelefone3.ClientID %>');
+
+        if (tel1.length) tel1.attr('maxlength', 15).unmask().mask(phoneBehavior, phoneOptions);
+        if (tel2.length) tel2.attr('maxlength', 15).unmask().mask(phoneBehavior, phoneOptions);
+        if (tel3.length) tel3.attr('maxlength', 15).unmask().mask(phoneBehavior, phoneOptions);
     }
 
     // ✅ APLICA MÁSCARAS QUANDO A PÁGINA CARREGA
     $(document).ready(function () {
         aplicarMascaras();
-
-   
     });
+
+    // ✅ (Opcional) Se usar UpdatePanel, re-aplica após postback parcial
+    if (typeof (Sys) !== "undefined" && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            aplicarMascaras();
+        });
+    }
 </script>
 
 </asp:Content>
