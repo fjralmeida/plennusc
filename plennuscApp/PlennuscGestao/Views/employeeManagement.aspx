@@ -654,29 +654,31 @@ justify-content: space-around;
                         <ItemStyle Width="80px" />
                     </asp:BoundField>
 
-                    <asp:TemplateField HeaderText="Editar">
-                        <ItemStyle Width="90px" HorizontalAlign="Center" />
-                        <ItemTemplate>
-                            <a class="btn-editar" href='<%# "employeeEdit.aspx?id=" + Eval("CodPessoa") %>'>
-                              <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                        </ItemTemplate>
+                  <asp:TemplateField HeaderText="Editar">
+                      <ItemStyle Width="90px" HorizontalAlign="Center" />
+                      <ItemTemplate>
+                        <asp:PlaceHolder ID="phEditar" runat="server">
+                          <a class="btn-editar" href='<%# "employeeEdit.aspx?id=" + Eval("CodPessoa") %>'>
+                            <i class="fa-solid fa-pen-to-square"></i>
+                          </a>
+                        </asp:PlaceHolder>
+                      </ItemTemplate>
                     </asp:TemplateField>
 
                     <asp:TemplateField HeaderText="Inativar">
-                        <ItemStyle Width="110px" HorizontalAlign="Center" />
-                        <ItemTemplate>
-                            <asp:PlaceHolder ID="phInativar" runat="server">
-                              <button type="button" class="btn-inativar"
-                                onclick='abrirModalInativar(
-                                  <%# Eval("CodPessoa") %>,
-                                  "<%# System.Web.HttpUtility.JavaScriptStringEncode(Eval("NomeCompleto") as string, true) %>",
-                                  "<%# (Eval("Conf_Ativo") ?? "0").ToString() %>"
-                                )'>
-                                <i class="fa-solid fa-user-slash"></i>
-                              </button>
-                            </asp:PlaceHolder>
-                        </ItemTemplate>
+                      <ItemStyle Width="110px" HorizontalAlign="Center" />
+                      <ItemTemplate>
+                        <asp:PlaceHolder ID="phInativar" runat="server">
+                          <button type="button" class="btn-inativar"
+                            onclick='abrirModalInativar(
+                              <%# Eval("CodPessoa") %>,
+                              "<%# System.Web.HttpUtility.JavaScriptStringEncode(Eval("NomeCompleto") as string, true) %>",
+                              "<%# (Eval("Conf_Ativo") ?? "0").ToString() %>"
+                            )'>
+                            <i class="fa-solid fa-user-slash"></i>
+                          </button>
+                        </asp:PlaceHolder>
+                      </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>

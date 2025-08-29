@@ -43,6 +43,39 @@ namespace appWhatsapp.PlennuscGestao.Views
             var isGestor = Session["IsGestor"];
         }
 
+        private static int ToInt(object v)
+        {
+            if (v == null) return 0;
+            if (v is int i) return i;
+            int.TryParse(v.ToString(), out var n);
+            return n;
+        }
+
+        private static bool ToBool(object v)
+        {
+            if (v == null) return false;
+            if (v is bool b) return b;
+            var s = v.ToString().Trim();
+            if (int.TryParse(s, out var n)) return n != 0;
+            return s.Equals("true", StringComparison.OrdinalIgnoreCase)
+               || s.Equals("sim", StringComparison.OrdinalIgnoreCase)
+               || s.Equals("yes", StringComparison.OrdinalIgnoreCase)
+               || s.Equals("y", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool UsuarioAtualEhAdmin()
+        {
+            // considere qualquer uma dessas chaves de sessão (use as que existir no seu login)
+            var codPerfil = ToInt(Session["CodPerfilUsuario"]);           // 1 = Administrador
+            var confMaster = ToBool(Session["Conf_Master"]);              // master tem poderes de admin
+            var nomeCargo = (Session["NomeCargo"] ?? "").ToString();      // "Administrador"
+            var perfilNome = (Session["PerfilUsuarioNome"] ?? "").ToString();
+
+            return codPerfil == 1
+                || confMaster
+                || nomeCargo.Equals("Administrador", StringComparison.OrdinalIgnoreCase)
+                || perfilNome.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
+        }
 
         private static bool ParseBool(object v)
         {
@@ -66,15 +99,27 @@ namespace appWhatsapp.PlennuscGestao.Views
             var phEditar = e.Row.FindControl("phEditar") as PlaceHolder;
             var phInativar = e.Row.FindControl("phInativar") as PlaceHolder;
 
-            // quem está logado é gestor?
+            // --- admin ---
+            int codPerfilUsuario = 0; int.TryParse(Convert.ToString(Session["CodPerfilUsuario"]), out codPerfilUsuario);
+            bool confMaster = ParseBool(Session["Conf_Master"]);
+            bool flagIsAdmin = ParseBool(Session["IsAdmin"]);
+            string perfilNome = Convert.ToString(Session["PerfilUsuarioNome"] ?? "");
+            string nomeCargo = Convert.ToString(Session["NomeCargo"] ?? "");
+            bool isAdmin = (codPerfilUsuario == 1) || confMaster || flagIsAdmin
+                        || (!string.IsNullOrWhiteSpace(perfilNome) && perfilNome.IndexOf("admin", StringComparison.OrdinalIgnoreCase) >= 0)
+                        || (!string.IsNullOrWhiteSpace(nomeCargo) && nomeCargo.IndexOf("admin", StringComparison.OrdinalIgnoreCase) >= 0);
+
+            // --- gestor também pode ---
             bool isGestor = ParseBool(Session["IsGestor"]);
+            bool canManage = isAdmin || isGestor;
 
-            // o colaborador desta linha está ativo?
-            bool colaboradorAtivo = ParseBool(DataBinder.Eval(e.Row.DataItem, "Conf_Ativo"));
+            int codPessoaLogado = 0; int.TryParse(Convert.ToString(Session["CodPessoa"]), out codPessoaLogado);
+            int codPessoaLinha = 0; int.TryParse(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "CodPessoa")), out codPessoaLinha);
+            bool ativoLinha = ParseBool(DataBinder.Eval(e.Row.DataItem, "Conf_Ativo"));
+            bool ehProprioReg = (codPessoaLinha == codPessoaLogado);
 
-            // visibilidade
-            if (phEditar != null) phEditar.Visible = isGestor;
-            if (phInativar != null) phInativar.Visible = isGestor && colaboradorAtivo;
+            if (phEditar != null) phEditar.Visible = canManage;
+            if (phInativar != null) phInativar.Visible = canManage && !ehProprioReg && ativoLinha;
         }
         private void CarregarPerfilPessoa()
         {
@@ -336,24 +381,47 @@ namespace appWhatsapp.PlennuscGestao.Views
         //}
         protected void btnConfirmarInativar_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(hfCodPessoaInativa.Value, out int codPessoa))
+            if (!int.TryParse(hfCodPessoaInativa.Value, out int codPessoaAlvo) || codPessoaAlvo <= 0) return;
+
+            int codPessoaLogado = 0; int.TryParse(Convert.ToString(Session["CodPessoa"]), out codPessoaLogado);
+            if (codPessoaAlvo == codPessoaLogado)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "BloqueioProprio",
+                    "Swal.fire('Ação não permitida','Você não pode inativar o próprio usuário.','warning');", true);
                 return;
+            }
+
+            // admin OU gestor podem inativar
+            int codPerfilUsuario = 0; int.TryParse(Convert.ToString(Session["CodPerfilUsuario"]), out codPerfilUsuario);
+            bool confMaster = ParseBool(Session["Conf_Master"]);
+            bool flagIsAdmin = ParseBool(Session["IsAdmin"]);
+            string perfilNome = Convert.ToString(Session["PerfilUsuarioNome"] ?? "");
+            string nomeCargo = Convert.ToString(Session["NomeCargo"] ?? "");
+            bool isAdmin = (codPerfilUsuario == 1) || confMaster || flagIsAdmin
+                        || (!string.IsNullOrWhiteSpace(perfilNome) && perfilNome.IndexOf("admin", StringComparison.OrdinalIgnoreCase) >= 0)
+                        || (!string.IsNullOrWhiteSpace(nomeCargo) && nomeCargo.IndexOf("admin", StringComparison.OrdinalIgnoreCase) >= 0);
+            bool isGestor = ParseBool(Session["IsGestor"]);
+            bool canManage = isAdmin || isGestor;
+
+            if (!canManage)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "SomenteAdminOuGestor",
+                    "Swal.fire('Acesso negado','Apenas administradores ou gestores podem inativar usuários.','error');", true);
+                return;
+            }
 
             string motivo = txtMotivoInativacao.Text.Trim();
 
             try
             {
                 var dao = new PessoaDAO();
-                dao.InactivateUser(codPessoa, motivo);
+                dao.InactivateUser(codPessoaAlvo, motivo);
 
-                // Fecha o modal no cliente
                 ScriptManager.RegisterStartupScript(this, GetType(), "fecharModalInativar",
                     "var el=document.getElementById('modalInativarUsuario');if(el){var m=bootstrap.Modal.getInstance(el)||new bootstrap.Modal(el);m.hide();}", true);
 
-                // Recarrega o grid conforme o filtro que estiver ativo
                 AtualizarGridPosAcao();
 
-                // Toast de sucesso
                 ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
                     "Swal.fire('Inativado','Usuário inativado com sucesso.','success');", true);
             }
@@ -363,6 +431,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                     "Swal.fire('Erro','Erro ao inativar o usuário.','error');", true);
             }
         }
+
 
         private void AtualizarGridPosAcao()
         {
