@@ -37,16 +37,29 @@ namespace PlennuscGestao.Views.Masters
 
                 if (pessoa != null)
                 {
-                    string foto = pessoa["ImagemFoto"]?.ToString().Trim();
+                    var foto = (pessoa["ImagemFoto"] ?? "").ToString().Trim();
 
-                    imgAvatarUsuario.ImageUrl = string.IsNullOrWhiteSpace(foto)
-                     ? ResolveUrl("~/assets/img/team/40x40/usuario.webp")
-                     : ResolveUrl("~/public/uploadgestao/images/" + foto);
-                    imgAvatarUsuarioDropdown.ImageUrl = imgAvatarUsuario.ImageUrl;
+                    var defaultAvatar = ResolveUrl("~/public/uploadgestao/images/imgDefultAvatar.jpg"); // <-- seu ícone padrão
+                    var fotoUrl = string.IsNullOrWhiteSpace(foto)
+                        ? defaultAvatar
+                        : ResolveUrl("~/public/uploadgestao/images/" + foto);
+
+                    imgAvatarUsuario.ImageUrl = fotoUrl;
+                    imgAvatarUsuario.AlternateText = "Avatar do Usuário";
+                    imgAvatarUsuario.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+
+                    imgAvatarUsuarioDropdown.ImageUrl = fotoUrl;
+                    imgAvatarUsuarioDropdown.AlternateText = "Avatar do Usuário";
+                    imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
                 }
                 else
                 {
-                    imgAvatarUsuario.ImageUrl = ResolveUrl("~/assets/img/team/40x40/usuario.webp");
+                    var defaultAvatar = ResolveUrl("~/public/uploadgestao/images/imgDefultAvatar.jpg");
+                    imgAvatarUsuario.ImageUrl = defaultAvatar;
+                    imgAvatarUsuario.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+
+                    imgAvatarUsuarioDropdown.ImageUrl = defaultAvatar;
+                    imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
                 }
             }
         }

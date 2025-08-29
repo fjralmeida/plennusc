@@ -209,6 +209,7 @@
     <Content Include="public\uploadfinance\images\logoVallor.png" />
     <Content Include="public\uploadfinance\images\logo_vallor.png" />
     <Content Include="public\uploadgestao\images\DSCN1684_Original.JPEG" />
+    <Content Include="public\uploadgestao\images\imgDefultAvatar.jpg" />
     <Content Include="public\uploadgestao\images\logoVallor.png" />
     <Content Include="public\uploadmedic\docs\Pros e Contras de cada arquitetura.txt" />
     <Content Include="public\uploadmedic\images\DSCN1684_Original.JPEG" />
