@@ -1,4 +1,5 @@
-﻿using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
+﻿using Microsoft.Ajax.Utilities;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -42,18 +43,38 @@ namespace appWhatsapp.PlennuscGestao.Views
             var isGestor = Session["IsGestor"];
         }
 
+
+        private static bool ParseBool(object v)
+        {
+            if (v == null) return false;
+            if (v is bool b) return b;
+            if (v is byte by) return by != 0;
+            if (v is short sh) return sh != 0;
+            if (v is int i) return i != 0;
+
+            var s = v.ToString().Trim();
+            if (int.TryParse(s, out var n)) return n != 0;
+            return s.Equals("true", StringComparison.OrdinalIgnoreCase)
+                || s.Equals("sim", StringComparison.OrdinalIgnoreCase)
+                || s.Equals("yes", StringComparison.OrdinalIgnoreCase)
+                || s.Equals("y", StringComparison.OrdinalIgnoreCase);
+        }
         protected void gvUsuarios_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                bool isGestor = (Session["IsGestor"] as bool?) == true;
+            if (e.Row.RowType != DataControlRowType.DataRow) return;
 
-                var phEditar = e.Row.FindControl("phEditar") as PlaceHolder;
-                var phInativar = e.Row.FindControl("phInativar") as PlaceHolder;
+            var phEditar = e.Row.FindControl("phEditar") as PlaceHolder;
+            var phInativar = e.Row.FindControl("phInativar") as PlaceHolder;
 
-                if (phEditar != null) phEditar.Visible = isGestor;
-                if (phInativar != null) phInativar.Visible = isGestor;
-            }
+            // quem está logado é gestor?
+            bool isGestor = ParseBool(Session["IsGestor"]);
+
+            // o colaborador desta linha está ativo?
+            bool colaboradorAtivo = ParseBool(DataBinder.Eval(e.Row.DataItem, "Conf_Ativo"));
+
+            // visibilidade
+            if (phEditar != null) phEditar.Visible = isGestor;
+            if (phInativar != null) phInativar.Visible = isGestor && colaboradorAtivo;
         }
         private void CarregarPerfilPessoa()
         {
@@ -315,36 +336,58 @@ namespace appWhatsapp.PlennuscGestao.Views
         //}
         protected void btnConfirmarInativar_Click(object sender, EventArgs e)
         {
-            int codPessoa;
-            if (!int.TryParse(hfCodPessoaInativa.Value, out codPessoa))
+            if (!int.TryParse(hfCodPessoaInativa.Value, out int codPessoa))
                 return;
 
             string motivo = txtMotivoInativacao.Text.Trim();
 
-            PessoaDAO dao = new PessoaDAO();
-
             try
             {
+                var dao = new PessoaDAO();
                 dao.InactivateUser(codPessoa, motivo);
 
-                // Verifica qual campo foi usado na busca
-                if (!string.IsNullOrWhiteSpace(txtBuscaNome.Text))
-                {
-                    btnBuscarPorNome_Click(null, null);
-                }
-                else if (!string.IsNullOrWhiteSpace(txtBuscaCPF.Text))
-                {
-                    btnBuscarPorCPF_Click(null, null);
-                }
+                // Fecha o modal no cliente
+                ScriptManager.RegisterStartupScript(this, GetType(), "fecharModalInativar",
+                    "var el=document.getElementById('modalInativarUsuario');if(el){var m=bootstrap.Modal.getInstance(el)||new bootstrap.Modal(el);m.hide();}", true);
 
+                // Recarrega o grid conforme o filtro que estiver ativo
+                AtualizarGridPosAcao();
+
+                // Toast de sucesso
                 ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
-                    "Swal.fire('Inativado', 'Usuário inativado com sucesso.', 'success');", true);
+                    "Swal.fire('Inativado','Usuário inativado com sucesso.','success');", true);
             }
-            catch (Exception ex)
+            catch
             {
                 ScriptManager.RegisterStartupScript(this, GetType(), "Erro",
-                    "Swal.fire('Erro', 'Erro ao inativar o usuário.', 'error');", true);
+                    "Swal.fire('Erro','Erro ao inativar o usuário.','error');", true);
             }
+        }
+
+        private void AtualizarGridPosAcao()
+        {
+            if (!string.IsNullOrWhiteSpace(txtBuscaNome.Text))
+            {
+                btnBuscarPorNome_Click(null, null);
+            }
+            else if (!string.IsNullOrWhiteSpace(txtBuscaCPF.Text))
+            {
+                btnBuscarPorCPF_Click(null, null);
+            }
+            else if (!string.IsNullOrWhiteSpace(TxtBuscaDepartamento.Text))
+            {
+                btnBuscarDepartamento_Click(null, null);
+            }
+            else
+            {
+                var dao = new PessoaDAO();
+                var dt = dao.BuscarUsuarioPorNome("");
+                gvUsuarios.DataSource = dt;
+                gvUsuarios.DataBind();
+                PanelResultado.Visible = dt != null && dt.Rows.Count > 0;
+            }
+            var up = this.FindControl("upResultado") as System.Web.UI.UpdatePanel;
+            if (up != null) up.Update();
         }
     }
 }

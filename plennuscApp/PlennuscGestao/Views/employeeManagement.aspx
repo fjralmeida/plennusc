@@ -235,40 +235,65 @@ justify-content: space-around;
 /* =======================
    Grid moderno
 ======================= */
-.table-modern{
-  width:100%;
-  background:var(--panel);
-  border:1px solid var(--panel-border);
-  border-radius:var(--radius);
-  overflow:hidden; /* cantos arredondados no header */
-  box-shadow:var(--shadow);
-  font-size:.96rem;
+./* 🔓 Aumenta a largura do container principal desta página */
+.container.py-4{
+  max-width: 1600px !important;   /* ajuste p/ 1500, 1700 etc. */
 }
+
+/* Em telas bem grandes dá mais folga ainda (opcional) */
+@media (min-width: 1800px){
+  .container.py-4{ max-width: 1720px !important; }
+}
+
+/* 🧱 Painel ocupa toda a largura do container */
+.form-panel{ width: 100%; }
+
+/* 🧭 Grid mais largo (sem espremer colunas) */
+.table-modern{
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  overflow: hidden;              /* cantos arredondados no header */
+  box-shadow: var(--shadow);
+  font-size: .96rem;
+  min-width: 1400px;             /* base do grid — ajuste se quiser */
+}
+
+/* Cabeçalho e células */
 .table-modern thead th{
-  background:#f6f8fb;
-  color:#4b5563;
-  font-weight:600;
-  padding:14px 16px;
-  border-bottom:1px solid var(--panel-border);
+  background: #f6f8fb;
+  color: #4b5563;
+  font-weight: 600;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--panel-border);
 }
 .table-modern td{
-  padding:14px 16px;
-  border-top:1px solid var(--panel-border);
-  vertical-align:middle;
+  padding: 16px 18px;
+  border-top: 1px solid var(--panel-border);
+  vertical-align: middle;
 }
 .table-modern tbody tr:hover{ background:#f9fdfb; }
 
-/* Aumenta um pouco a área clicável do ícone de editar */
+/* Nome NÃO quebra linha (email pode quebrar) */
+.table-modern th,
+.table-modern td{ white-space: nowrap; }
+.table-modern td:nth-child(5){ white-space: normal; }  /* E-mail */
+
+/* Botão editar com área maior */
 .table-modern .btn-editar{
-  background:var(--brand); color:#fff; border:none;
-  padding:8px 12px; border-radius:999px;
+  background: var(--brand); color: #fff; border: none;
+  padding: 8px 12px; border-radius: 999px;
 }
 .table-modern .btn-editar:hover{ background:#3A9E68; }
 
+/* Respiro acima do grid */
+#<%= PanelResultado.ClientID %>{ margin-top: 16px; }
+
 /* Responsivo */
 @media (max-width: 992px){
-  .filters-block{ padding:16px; }
-  .table-modern{ font-size:.92rem; }
+  .filters-block{ padding: 16px; }
+  .table-modern{ font-size: .92rem; }
 }
 
     </style>
@@ -556,201 +581,140 @@ justify-content: space-around;
             </div>
         </asp:Panel>
 
-        <asp:Panel ID="PanelConsulta" runat="server" CssClass="form-panel mt-4" Visible="false">
-            <!-- Título principal -->
-            <h4 class="titulo-cadastro">Consultar Usuário</h4>
-<div class="filters-block">
-  <h5 class="filters-title">Filtros</h5>
+      <asp:Panel ID="PanelConsulta" runat="server" CssClass="form-panel mt-4" Visible="false">
+    <!-- Título principal -->
+    <h4 class="titulo-cadastro">Consultar Usuário</h4>
 
-  <div class="row g-3 align-items-end">
-    <div class="col-lg-4 col-md-6">
-      <label class="form-label">Nome</label>
-      <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Digite o nome" />
+    <div class="filters-block">
+      <h5 class="filters-title">Filtros</h5>
+
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label">Nome</label>
+          <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Digite o nome" />
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label">CPF</label>
+          <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Somente números" MaxLength="11" />
+        </div>
+
+        <div class="col-lg-4">
+          <label class="form-label">Departamento</label>
+          <asp:TextBox ID="TxtBuscaDepartamento" runat="server" CssClass="form-control" placeholder="Informe o departamento" />
+        </div>
+
+        <!-- barra de botões dentro de coluna -->
+        <div class="col-12">
+          <div class="filters-btnbar">
+            <asp:Button ID="btnBuscarPorNome" runat="server"
+                Text="Buscar Nome" CssClass="btn btn-filter btn-filter-primary"
+                OnClick="btnBuscarPorNome_Click" />
+            <asp:Button ID="btnBuscarPorCPF" runat="server"
+                Text="Buscar CPF" CssClass="btn btn-filter"
+                OnClick="btnBuscarPorCPF_Click" />
+            <asp:Button ID="btnBuscarDepartamento" runat="server"
+                Text="Buscar Depto." CssClass="btn btn-filter"
+                OnClick="btnBuscarDepartamento_Click" />
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="col-lg-4 col-md-6">
-      <label class="form-label">CPF</label>
-      <asp:TextBox ID="txtBuscaCPF" runat="server" CssClass="form-control" placeholder="Somente números" MaxLength="11" />
-    </div>
+    <!-- 📋 RESULTADOS -->
+    <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
+        <h5>Resultados</h5>
+        <div class="table-responsive">
+            <asp:GridView 
+                 ID="gvUsuarios" 
+                 runat="server" 
+                 CssClass="table table-modern"
+                 AutoGenerateColumns="False" 
+                 GridLines="None" 
+                 ShowHeaderWhenEmpty="False" 
+                 EmptyDataText="Nenhum usuário encontrado."
+                 DataKeyNames="CodPessoa,CodDepartamento,CodCargo"
+                 OnRowDataBound="gvUsuarios_RowDataBound">
 
-    <div class="col-lg-4">
-      <label class="form-label">Departamento</label>
-      <asp:TextBox ID="TxtBuscaDepartamento" runat="server" CssClass="form-control" placeholder="Informe o departamento" />
-    </div>
-<div class="filters-btnbar">
-  <asp:Button ID="btnBuscarPorNome" runat="server"
-      Text="Buscar Nome"
-      CssClass="btn btn-filter btn-filter-primary"
-      OnClick="btnBuscarPorNome_Click" />
+                <HeaderStyle CssClass="table-custom-header" />
+                <Columns>
+                    <asp:BoundField DataField="CodPessoa" HeaderText="CodPessoa" />
+                    <asp:BoundField DataField="NomeCompleto" HeaderText="Nome">
+                        <ItemStyle CssClass="col-nome-nowrap" />
+                    </asp:BoundField>
+                    <asp:BoundField DataField="CPF" HeaderText="CPF" />
+                    <asp:BoundField DataField="RG" HeaderText="RG" />
+                    <asp:BoundField DataField="Email" HeaderText="Email" />
+                    <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
 
-  <asp:Button ID="btnBuscarPorCPF" runat="server"
-      Text="Buscar CPF"
-      CssClass="btn btn-filter"
-      OnClick="btnBuscarPorCPF_Click" />
+                    <asp:BoundField DataField="NomeDepartamento" HeaderText="Departamento" />
+                    <asp:BoundField DataField="NomeCargo" HeaderText="Cargo" />
 
-  <asp:Button ID="btnBuscarDepartamento" runat="server"
-      Text="Buscar Depto."
-      CssClass="btn btn-filter"
-      OnClick="btnBuscarDepartamento_Click" />
-</div>
+                    <asp:BoundField DataField="Conf_Ativo" HeaderText="Ativo">
+                        <ItemStyle Width="80px" />
+                    </asp:BoundField>
 
-
-  </div>
-</div>
-
-
-            <!-- 📋 RESULTADOS -->
-            <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
-                <h5>Resultados</h5>
-                 <div class="table-responsive">
-                    <asp:GridView 
-                         ID="gvUsuarios" 
-    runat="server" 
-    CssClass="table table-modern"
-    AutoGenerateColumns="False" 
-    GridLines="None" 
-    ShowHeaderWhenEmpty="False" 
-    EmptyDataText="Nenhum usuário encontrado."
-    DataKeyNames="CodPessoa,CodDepartamento,CodCargo"
-    OnRowDataBound="gvUsuarios_RowDataBound">
-
-                        <HeaderStyle CssClass="table-custom-header" />
-                        <Columns>
-                            <asp:BoundField DataField="CodPessoa" HeaderText="CodPessoa" />
-                            <asp:BoundField DataField="NomeCompleto" HeaderText="Nome" />
-                            <asp:BoundField DataField="CPF" HeaderText="CPF" />
-                            <asp:BoundField DataField="RG" HeaderText="RG" />
-                            <asp:BoundField DataField="Email" HeaderText="Email" />
-                            <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
-
-                            <asp:BoundField DataField="NomeDepartamento" HeaderText="Departamento" />
-                            <asp:BoundField DataField="NomeCargo" HeaderText="Cargo" />
-
-                            <asp:BoundField DataField="Conf_Ativo" HeaderText="Ativo" />
-
-                       <asp:TemplateField HeaderText="Editar">
-                          <ItemTemplate>
-                            <a class="btn-editar"
-                               href='<%# "employeeEdit.aspx?id=" + Eval("CodPessoa") %>'>
+                    <asp:TemplateField HeaderText="Editar">
+                        <ItemStyle Width="90px" HorizontalAlign="Center" />
+                        <ItemTemplate>
+                            <a class="btn-editar" href='<%# "employeeEdit.aspx?id=" + Eval("CodPessoa") %>'>
                               <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                          </ItemTemplate>
-                        </asp:TemplateField>
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
+                    <asp:TemplateField HeaderText="Inativar">
+                        <ItemStyle Width="110px" HorizontalAlign="Center" />
+                        <ItemTemplate>
+                            <asp:PlaceHolder ID="phInativar" runat="server">
+                              <button type="button" class="btn-inativar"
+                                onclick='abrirModalInativar(
+                                  <%# Eval("CodPessoa") %>,
+                                  "<%# System.Web.HttpUtility.JavaScriptStringEncode(Eval("NomeCompleto") as string, true) %>",
+                                  "<%# (Eval("Conf_Ativo") ?? "0").ToString() %>"
+                                )'>
+                                <i class="fa-solid fa-user-slash"></i>
+                              </button>
+                            </asp:PlaceHolder>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
+        </div>
 
-                            <asp:TemplateField HeaderText="Inativar">
-                              <ItemTemplate>
-                                <asp:PlaceHolder ID="phInativar" runat="server">
-                                  <button type="button" class="btn-inativar"
-                                    onclick='abrirModalInativar(
-                                      <%# Eval("CodPessoa") %>,
-                                      "<%# Eval("NomeCompleto").ToString().Replace("\"", "\\\"") %>",
-                                      "<%# Eval("Conf_Ativo") %>"
-                                    )'>
-                                    <i class="fa-solid fa-user-slash"></i>
-                                  </button>
-                                </asp:PlaceHolder>
-                              </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                    </asp:GridView>
-
-
-    </div>
-
-
-                <!-- Modal Edição -->
-        <%--            <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content rounded-4 shadow">
-                                <div class="modal-header bg-info text-white">
-                                    <h5 class="modal-title" id="modalEditarUsuarioLabel">
-                                        <i class="fa-solid fa-user-pen me-2"></i>Editar Usuário
-                                    </h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <!-- Campos do formulário -->
-                                    <asp:HiddenField ID="hfCodPessoa" runat="server" />
-
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label">Nome Completo</label>
-                                            <asp:TextBox ID="txtModalNome" runat="server" CssClass="form-control" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">CPF</label>
-                                            <asp:TextBox ID="txtModalCPF" runat="server" CssClass="form-control" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">RG</label>
-                                            <asp:TextBox ID="txtModalRG" runat="server" CssClass="form-control" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">E-mail</label>
-                                            <asp:TextBox ID="txtModalEmail" runat="server" CssClass="form-control" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Telefone</label>
-                                            <asp:TextBox ID="txtModalTelefone" runat="server" CssClass="form-control" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Cargo</label>
-                                            <asp:TextBox ID="txtModalCargo" runat="server" CssClass="form-control" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer bg-light rounded-bottom-4">
-                                    <asp:Button ID="btnSaveUser" runat="server"
-                                        CssClass="btn btn-success btn-pill"
-                                        Text="Salvar Alterações"
-                                        OnClick="btnSaveUser_Click" />
-
-                                    <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
-                                        <i class="fa-solid fa-xmark me-1"></i>Fechar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>--%>
-
-                <!-- Modal de Inativação -->
-                    <div class="modal fade" id="modalInativarUsuario" tabindex="-1" aria-labelledby="modalInativarUsuarioLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-md modal-dialog-centered">
-                            <div class="modal-content rounded-4 shadow">
-                                <div class="modal-header bg-danger text-white">
-                                    <h5 class="modal-title" id="modalInativarUsuarioLabel">
-                                        <i class="fa-solid fa-user-slash me-2"></i>Inativar Usuário
-                                    </h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <asp:HiddenField ID="hfCodPessoaInativa" runat="server" />
-
-                                    <p><strong>Tem certeza que deseja inativar o usuário:</strong> <span id="lblNomeUsuarioInativa" style="color: #d9534f;"></span>?</p>
-
-                                    <label class="form-label mt-3">Motivo da Inativação</label>
-                                    <asp:TextBox ID="txtMotivoInativacao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
-                                </div>
-
-                                <div class="modal-footer bg-light rounded-bottom-4">
-                                    <asp:Button ID="btnConfirmarInativar" runat="server"
-                                        CssClass="btn btn-danger btn-pill"
-                                        Text="Confirmar Inativação"
-                                        OnClick="btnConfirmarInativar_Click" />
-
-                                    <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
-                                        <i class="fa-solid fa-xmark me-1"></i>Cancelar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Modal de Inativação -->
+        <div class="modal fade" id="modalInativarUsuario" tabindex="-1" aria-labelledby="modalInativarUsuarioLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content rounded-4 shadow">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="modalInativarUsuarioLabel">
+                            <i class="fa-solid fa-user-slash me-2"></i>Inativar Usuário
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
-            </asp:Panel>
-        </asp:Panel>
+
+                    <div class="modal-body">
+                        <asp:HiddenField ID="hfCodPessoaInativa" runat="server" />
+                        <p><strong>Tem certeza que deseja inativar o usuário:</strong> <span id="lblNomeUsuarioInativa" style="color: #d9534f;"></span>?</p>
+                        <label class="form-label mt-3">Motivo da Inativação</label>
+                        <asp:TextBox ID="txtMotivoInativacao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
+                    </div>
+
+                    <div class="modal-footer bg-light rounded-bottom-4">
+                        <asp:Button ID="btnConfirmarInativar" runat="server"
+                            CssClass="btn btn-danger btn-pill"
+                            Text="Confirmar Inativação"
+                            OnClick="btnConfirmarInativar_Click" />
+                        <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark me-1"></i>Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </asp:Panel>
+</asp:Panel>
+
 
 
     <script type="text/javascript">
