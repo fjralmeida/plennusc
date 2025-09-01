@@ -263,11 +263,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
 
         public DataTable BuscarUsuarioPorNome(string nome)
         {
+            string nomeEsc = (nome ?? "").Replace("'", "''");
+
             string query = $@"
                 SELECT 
                     p.CodPessoa,
                     (ISNULL(p.Nome,'') + ' ' + ISNULL(p.Sobrenome,'')) AS NomeCompleto,
-                    p.DocRG       AS RG,
                     p.DocCPF      AS CPF,
                     p.Telefone1,
                     p.Email,
@@ -279,11 +280,9 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 FROM Pessoa p
                 LEFT JOIN Cargo        c ON c.CodCargo        = p.CodCargo
                 LEFT JOIN Departamento d ON d.CodDepartamento = p.CodDepartamento
-                WHERE (p.Nome LIKE '%{nome.Replace("'", "''")}%'
-                    OR p.Sobrenome LIKE '%{nome.Replace("'", "''")}%')
-                ORDER BY p.Nome, p.Sobrenome;
-            ";
-
+                WHERE (p.Nome LIKE '%{nomeEsc}%' OR p.Sobrenome LIKE '%{nomeEsc}%')
+                  AND (p.CodEstr_TipoPessoa IS NULL OR p.CodEstr_TipoPessoa <> 2)  -- oculta administradores
+                ORDER BY p.Nome, p.Sobrenome;";
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(query);
@@ -294,26 +293,25 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 return new DataTable();
 
             // remove pontos e traço
-            string cpfLimpo = cpf.Replace(".", "").Replace("-", "").Trim();
+            string cpfLimpo = (cpf ?? "").Replace(".", "").Replace("-", "").Trim().Replace("'", "''");
 
             string query = $@"
-        SELECT 
-            p.CodPessoa,
-            (ISNULL(p.Nome,'') + ' ' + ISNULL(p.Sobrenome,'')) AS NomeCompleto,
-            p.DocRG       AS RG,
-            p.DocCPF      AS CPF,
-            p.Telefone1,
-            p.Email,
-            CASE WHEN p.Conf_Ativo = 1 THEN 'Sim' ELSE 'Não' END AS Conf_Ativo,
-            p.CodCargo,
-            p.CodDepartamento,
-            ISNULL(c.Nome, '') AS NomeCargo,
-            ISNULL(d.Nome, '') AS NomeDepartamento
-        FROM Pessoa p
-        LEFT JOIN Cargo        c ON c.CodCargo        = p.CodCargo
-        LEFT JOIN Departamento d ON d.CodDepartamento = p.CodDepartamento
-        WHERE p.DocCPF = '{cpfLimpo}'
-    ";
+                SELECT 
+                    p.CodPessoa,
+                    (ISNULL(p.Nome,'') + ' ' + ISNULL(p.Sobrenome,'')) AS NomeCompleto,
+                    p.DocCPF      AS CPF,
+                    p.Telefone1,
+                    p.Email,
+                    CASE WHEN p.Conf_Ativo = 1 THEN 'Sim' ELSE 'Não' END AS Conf_Ativo,
+                    p.CodCargo,
+                    p.CodDepartamento,
+                    ISNULL(c.Nome, '') AS NomeCargo,
+                    ISNULL(d.Nome, '') AS NomeDepartamento
+                FROM Pessoa p
+                LEFT JOIN Cargo        c ON c.CodCargo        = p.CodCargo
+                LEFT JOIN Departamento d ON d.CodDepartamento = p.CodDepartamento
+                WHERE p.DocCPF = '{cpfLimpo}'
+                  AND (p.CodEstr_TipoPessoa IS NULL OR p.CodEstr_TipoPessoa <> 2);  -- oculta administradores";
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(query);
@@ -326,20 +324,21 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
 
             string termo = departamento.Trim();
             bool isCodigo = Regex.IsMatch(termo, @"^\d+$");
-
-            // protege aspas no LIKE
             string termoSql = termo.Replace("'", "''");
 
-            string where = isCodigo
+            // WHERE base conforme o tipo do termo
+            string whereBase = isCodigo
                 ? $"WHERE p.CodDepartamento = {termoSql}"
                 : $"WHERE d.Nome LIKE '%{termoSql}%'";
+
+            // acrescenta o filtro para ocultar administradores (CodEstr_TipoPessoa = 2)
+            string where = $"{whereBase} AND (p.CodEstr_TipoPessoa IS NULL OR p.CodEstr_TipoPessoa <> 2)";
 
             string query = $@"
                 SELECT
                     p.CodPessoa,
                     (ISNULL(p.Nome,'') + ' ' + ISNULL(p.Sobrenome,'')) AS NomeCompleto,
                     p.DocCPF     AS CPF,
-                    p.DocRG      AS RG,
                     p.Email,
                     p.Telefone1,
                     CASE WHEN p.Conf_Ativo = 1 THEN 'Sim' ELSE 'Não' END AS Conf_Ativo,
@@ -351,12 +350,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 LEFT JOIN Cargo        c ON c.CodCargo        = p.CodCargo
                 LEFT JOIN Departamento d ON d.CodDepartamento = p.CodDepartamento
                 {where}
-                ORDER BY p.Nome, p.Sobrenome;
-            ";
+                ORDER BY p.Nome, p.Sobrenome;";
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(query);
         }
+
 
         public void AtualizarUsuario(int codPessoa, string nomeCompleto, string cpf, string rg, string email, string telefone, string cargo)
         {

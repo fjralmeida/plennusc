@@ -402,7 +402,7 @@
     <div class="d-flex justify-content-between align-items-center topbar">
       <div class="d-flex align-items-center gap-2" style="cursor: pointer;"
            onclick="limparMenuESeguir('<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>')">
-        <asp:Image ID="imgLogo" runat="server" Style="height:45px;width:auto;" />
+     <%--   <asp:Image ID="imgLogo" runat="server" Style="height:45px;width:auto;" />--%>
         <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
       </div>
 

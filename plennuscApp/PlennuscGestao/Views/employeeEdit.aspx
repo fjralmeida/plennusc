@@ -76,143 +76,141 @@
         }
 
       /* ===== MODAL VISUAL ===== */
-#modalCriarLogin .modal-content {
-  border: 0;
-  border-radius: 16px;
-  overflow: hidden;
-}
-#modalCriarLogin .modal-header {
-  background: linear-gradient(90deg, #4CB07A, #3A9E68);
-  color: #fff;
-  border: 0;
-}
-#modalCriarLogin .modal-footer {
-  background: #f9fafb;
-  border: 0;
-}
+        #modalCriarLogin .modal-content {
+          border: 0;
+          border-radius: 16px;
+          overflow: hidden;
+        }
+        #modalCriarLogin .modal-header {
+          background: linear-gradient(90deg, #4CB07A, #3A9E68);
+          color: #fff;
+          border: 0;
+        }
+        #modalCriarLogin .modal-footer {
+          background: #f9fafb;
+          border: 0;
+        }
 
-/* Campos modernos */
-#modalCriarLogin .form-control,
-#modalCriarLogin .form-select {
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  transition: all .2s;
-}
-#modalCriarLogin .form-control:focus,
-#modalCriarLogin .form-select:focus {
-  border-color: #4CB07A;
-  box-shadow: 0 0 0 3px rgba(76,176,122,.25);
-}
+        /* Campos modernos */
+        #modalCriarLogin .form-control,
+        #modalCriarLogin .form-select {
+          border-radius: 10px;
+          border: 1px solid #ddd;
+          transition: all .2s;
+        }
+        #modalCriarLogin .form-control:focus,
+        #modalCriarLogin .form-select:focus {
+          border-color: #4CB07A;
+          box-shadow: 0 0 0 3px rgba(76,176,122,.25);
+        }
 
-/* Botões */
-#modalCriarLogin .btn-login {
-  background-color: #4CB07A;
-  border-radius: 10px;
-  padding: 10px 22px;
-  font-weight: 600;
-  color: #fff;
-  box-shadow: 0 3px 8px rgba(76,176,122,.25);
-}
-#modalCriarLogin .btn-login:hover { background-color: #3A9E68; }
-#modalCriarLogin .btn-secondary {
-  border-radius: 10px;
-  padding: 10px 22px;
-  font-weight: 500;
-}
+        /* Botões */
+        #modalCriarLogin .btn-login {
+          background-color: #4CB07A;
+          border-radius: 10px;
+          padding: 10px 22px;
+          font-weight: 600;
+          color: #fff;
+          box-shadow: 0 3px 8px rgba(76,176,122,.25);
+        }
+        #modalCriarLogin .btn-login:hover { background-color: #3A9E68; }
+        #modalCriarLogin .btn-secondary {
+          border-radius: 10px;
+          padding: 10px 22px;
+          font-weight: 500;
+        }
 
-/* ===== GRID COM DIVISÓRIAS ===== */
-#modalCriarLogin .form-grid {
-  display: grid;
-  grid-template-columns: 1fr;           /* mobile */
-  border: 1px solid #e5e7eb;            /* borda externa */
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
-}
-#modalCriarLogin .cell {
-  padding: 14px 16px;
-  border-bottom: 1px solid #eee;        /* linha horizontal */
-}
-#modalCriarLogin .cell:last-child {
-  border-bottom: none;                   /* última célula da grade */
-}
+        /* ===== GRID COM DIVISÓRIAS ===== */
+        #modalCriarLogin .form-grid {
+          display: grid;
+          grid-template-columns: 1fr;           /* mobile */
+          border: 1px solid #e5e7eb;            /* borda externa */
+          border-radius: 12px;
+          overflow: hidden;
+          background: #fff;
+        }
+        #modalCriarLogin .cell {
+          padding: 14px 16px;
+          border-bottom: 1px solid #eee;        /* linha horizontal */
+        }
+        #modalCriarLogin .cell:last-child {
+          border-bottom: none;                   /* última célula da grade */
+        }
 
-/* 2 colunas >=768px */
-@media (min-width: 768px) {
-  #modalCriarLogin .form-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-  }
-  #modalCriarLogin .cell {
-    border-right: 1px solid #eee;       /* linha vertical */
-  }
-  #modalCriarLogin .cell:nth-child(2n) {
-    border-right: none;                  /* última coluna não tem borda à direita */
-  }
-  /* última linha em 2 colunas: remova a borda inferior */
-  #modalCriarLogin .cell:nth-last-child(-n+2) {
-    border-bottom: none;
-  }
-  #modalCriarLogin .span-3 {
-    grid-column: 1 / -1;                 /* ocupa as 2 colunas */
-    border-right: none;
-    border-bottom: none;
-  }
-}
+        /* 2 colunas >=768px */
+        @media (min-width: 768px) {
+          #modalCriarLogin .form-grid {
+            grid-template-columns: repeat(2, minmax(0,1fr));
+          }
+          #modalCriarLogin .cell {
+            border-right: 1px solid #eee;       /* linha vertical */
+          }
+          #modalCriarLogin .cell:nth-child(2n) {
+            border-right: none;                  /* última coluna não tem borda à direita */
+          }
+          /* última linha em 2 colunas: remova a borda inferior */
+          #modalCriarLogin .cell:nth-last-child(-n+2) {
+            border-bottom: none;
+          }
+          #modalCriarLogin .span-3 {
+            grid-column: 1 / -1;                 /* ocupa as 2 colunas */
+            border-right: none;
+            border-bottom: none;
+          }
+        }
 
-/* 3 colunas >=992px */
-@media (min-width: 992px) {
-  #modalCriarLogin .form-grid {
-    grid-template-columns: repeat(3, minmax(0,1fr));
-  }
-  #modalCriarLogin .cell {
-    border-right: 1px solid #eee;
-  }
-  #modalCriarLogin .cell:nth-child(3n) {
-    border-right: none;                  /* última coluna */
-  }
-  /* última linha em 3 colunas: remova a borda inferior */
-  #modalCriarLogin .cell:nth-last-child(-n+3) {
-    border-bottom: none;
-  }
-  #modalCriarLogin .span-3 {
-    grid-column: 1 / -1;                 /* ocupa as 3 colunas */
-    border-right: none;
-    border-bottom: none;
-  }
-}
+        /* 3 colunas >=992px */
+        @media (min-width: 992px) {
+          #modalCriarLogin .form-grid {
+            grid-template-columns: repeat(3, minmax(0,1fr));
+          }
+          #modalCriarLogin .cell {
+            border-right: 1px solid #eee;
+          }
+          #modalCriarLogin .cell:nth-child(3n) {
+            border-right: none;                  /* última coluna */
+          }
+          /* última linha em 3 colunas: remova a borda inferior */
+          #modalCriarLogin .cell:nth-last-child(-n+3) {
+            border-bottom: none;
+          }
+          #modalCriarLogin .span-3 {
+            grid-column: 1 / -1;                 /* ocupa as 3 colunas */
+            border-right: none;
+            border-bottom: none;
+          }
+        }
 
-/* ===== CheckBoxList em 2 colunas bem espaçado ===== */
-#modalCriarLogin .check-grid {
-  width: 100%;
-  table-layout: fixed;                   /* cada coluna ocupa 50% */
-  border-collapse: separate;
-  border-spacing: 16px 8px;              /* HORIZONTAL, VERTICAL */
-}
-#modalCriarLogin .check-grid td {
-  width: 50%;
-  padding: 0;
-  vertical-align: middle;
-  white-space: normal;                   /* permite quebra */
-}
-#modalCriarLogin .check-grid input[type="checkbox"] {
-  margin-right: 8px;
-}
+        /* ===== CheckBoxList em 2 colunas bem espaçado ===== */
+        #modalCriarLogin .check-grid {
+          width: 100%;
+          table-layout: fixed;                   /* cada coluna ocupa 50% */
+          border-collapse: separate;
+          border-spacing: 16px 8px;              /* HORIZONTAL, VERTICAL */
+        }
+        #modalCriarLogin .check-grid td {
+          width: 50%;
+          padding: 0;
+          vertical-align: middle;
+          white-space: normal;                   /* permite quebra */
+        }
+        #modalCriarLogin .check-grid input[type="checkbox"] {
+          margin-right: 8px;
+        }
 
-/* Flags lado a lado */
-#modalCriarLogin .flags {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-#modalCriarLogin .flag-line {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 500;
-}
-
-
+        /* Flags lado a lado */
+        #modalCriarLogin .flags {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          flex-wrap: wrap;
+        }
+        #modalCriarLogin .flag-line {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 500;
+        }
         .btn-inativar { background-color: #DC8689; color: white; border: none; padding: 6px 12px; font-size: 13px; border-radius: 50px; transition: background-color 0.3s; }
         .btn-inativar:hover { background-color: #c95b60; }
     </style>
@@ -481,7 +479,7 @@
                     ValidationGroup="Acesso"
                     OnClick="btnCriarLogin_Click" />
 
-                <a href="employeeManagement.aspx" class="btn btn-secondary">Cancelar</a>
+                <a href="employeeManagement?acao=consultar" class="btn btn-secondary">Cancelar</a>
             </div>
         </asp:Panel>
 
@@ -572,8 +570,5 @@
     </div>
   </div>
 </div>
-
-
-
     </div>
 </asp:Content>

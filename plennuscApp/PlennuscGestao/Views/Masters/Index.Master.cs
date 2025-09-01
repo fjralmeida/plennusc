@@ -71,8 +71,8 @@ namespace PlennuscGestao.Views.Masters
 
             if (dtEmpresa.Rows.Count > 0)
             {
-                imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
-                lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
+                //imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
+                //lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
         }
 

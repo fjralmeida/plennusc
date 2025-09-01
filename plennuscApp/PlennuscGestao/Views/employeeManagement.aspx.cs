@@ -306,7 +306,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void btnBuscarPorCPF_Click(object sender, EventArgs e)
         {
             PessoaDAO dao = new PessoaDAO();
-            DataTable dt = dao.BuscarUsuarioPorCPF(txtBuscaCPF.Text.Trim());
+            DataTable dt = dao.BuscarUsuarioPorCPF(txtBuscaCPF.Text.Trim()); 
 
             if (dt != null && dt.Rows.Count > 0)
             {

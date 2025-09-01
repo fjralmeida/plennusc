@@ -643,7 +643,6 @@ justify-content: space-around;
                         <ItemStyle CssClass="col-nome-nowrap" />
                     </asp:BoundField>
                     <asp:BoundField DataField="CPF" HeaderText="CPF" />
-                    <asp:BoundField DataField="RG" HeaderText="RG" />
                     <asp:BoundField DataField="Email" HeaderText="Email" />
                     <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
 
