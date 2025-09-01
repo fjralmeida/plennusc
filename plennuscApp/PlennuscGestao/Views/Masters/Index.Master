@@ -251,8 +251,42 @@
             transform: rotate(90deg);
         }
 
-/* medidas */
-/* medidas base */
+        /* topo da sidebar como na imagem 2 */
+.sidebar-top{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 10px;
+  margin:0 8px 12px;
+  background:#f7f9fc;
+  border-radius:12px;
+}
+.sb-title{
+  font-weight:600;
+  font-size:15px;
+  color:#334155;
+}
+
+/* botão “pill” só com o ícone */
+.sb-toggle{
+  width:34px; height:34px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:0; outline:0;
+  border-radius:10px;
+  background:#f1f5f9;
+  box-shadow:0 1px 2px rgba(0,0,0,.05);
+  transition:background .15s ease;
+}
+.sb-toggle i{ font-size:18px; color:#6b7280; }
+.sb-toggle:hover{ background:#eef2ff; }
+
+/* quando a barra estiver colapsada, esconda o texto e compacte o topo */
+#layout.sb-collapsed .sb-title{ display:none; }
+#layout.sb-collapsed .sidebar-top{
+  background:#ffffff;
+  padding:6px;
+  margin:0 8px 10px;
+  justify-content:flex-end;
+}
+
 #layout{ --sb-w:250px; --sb-w-collapsed:64px; }
 
 /* fechada = compacta */
@@ -410,12 +444,12 @@
       <!-- Sidebar -->
       <nav class="sidebar">
         <!-- botão hamburguer -->
-       <div class="sidebar-top d-flex align-items-center justify-content-end mb-2">
-          <button id="btnSidebar" type="button" class="btn btn-light btn-sm sb-toggle" aria-label="Alternar menu">
-            <span class="btn-label">Navegação</span>
-            <i class="bi bi-list"></i>
-          </button>
-        </div>
+       <div class="sidebar-top">
+  <span class="sb-title">Navegação</span>
+  <button id="btnSidebar" type="button" class="sb-toggle" aria-label="Alternar menu">
+    <i class="bi bi-list"></i>
+  </button>
+</div>
 
         <ul class="list-unstyled">
           <!-- Pessoas -->

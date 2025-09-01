@@ -43,7 +43,7 @@
 
         <!-- Cards coloridos -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4 justify-content-center">
-          <div class="dashboard-card" onclick="window.location.href='employeeManagement.aspx';">
+          <div class="dashboard-card" onclick="window.location.href='employeeManagement.aspx?acao=consultar';">
                 <div  class="card border-0" style="background: #e1fbee;">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
