@@ -15,9 +15,8 @@
 
     <title>Gestão de Funcionários</title>
 
-    <style>
+<style>
 
-  /* ====== Base ====== */
 * { font-family: 'Poppins', sans-serif; box-sizing: border-box; }
 html, body { background:#f2f4f8; color:#333; font-size:14px; }
 
@@ -296,7 +295,7 @@ justify-content: space-around;
   .table-modern{ font-size: .92rem; }
 }
 
-    </style>
+</style>
 
 <script type="text/javascript">
     // ❌ ABRE MODAL DE INATIVAR
