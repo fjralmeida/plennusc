@@ -457,7 +457,7 @@
             <a class="d-flex justify-content-between align-items-center menu-head"
                data-bs-toggle="collapse" href="#menuGestaoPessoas"
                role="button" aria-expanded="true" aria-controls="menuGestaoPessoas" title="Gestão de Pessoas">
-              <span><i class="bi bi-person-badge me-2"></i><strong class="label">Pessoas</strong></span>
+              <span><i class="bi bi-person-badge me-2"></i><strong class="label"> Pessoas</strong></span>
               <i class="bi bi-chevron-right toggle-icon"></i>
             </a>
 
@@ -505,7 +505,7 @@
           <li class="mb-2">
             <a class="d-flex justify-content-between align-items-center menu-head"
                data-bs-toggle="collapse" href="#menuChatbot"
-               role="button" aria-expanded="false" aria-controls="menuChatbot" title="Chatbot">
+               role="button" aria-expanded="false" aria-controls="menuChatbot" title=" Chatbot">
               <span><i class="bi bi-robot me-2"></i><strong class="label">Chatbot</strong></span>
               <i class="bi bi-chevron-right toggle-icon"></i>
             </a>
@@ -523,7 +523,7 @@
             <a class="d-flex justify-content-between align-items-center menu-head"
                data-bs-toggle="collapse" href="#importPrice"
                role="button" aria-expanded="false" aria-controls="importPrice" title="Tabela de Preços">
-              <span><i class="bi bi-upload me-2"></i><strong class="label">Preços</strong></span>
+              <span><i class="bi bi-upload me-2"></i><strong class="label"> Preços</strong></span>
               <i class="bi bi-chevron-right toggle-icon"></i>
             </a>
             <div class="collapse ms-3" id="importPrice">
@@ -539,7 +539,7 @@
             <a class="d-flex justify-content-between align-items-center menu-head"
                data-bs-toggle="collapse" href="#menuDemanda"
                role="button" aria-expanded="false" aria-controls="menuDemanda" title="Demanda">
-              <span><i class="bi bi-envelope me-2"></i><strong class="label">Demanda</strong></span>
+              <span><i class="bi bi-envelope me-2"></i><strong class="label"> Demanda</strong></span>
               <i class="bi bi-chevron-right toggle-icon"></i>
             </a>
             <div class="collapse ms-3" id="menuDemanda">
