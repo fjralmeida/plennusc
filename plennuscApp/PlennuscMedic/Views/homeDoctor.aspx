@@ -34,7 +34,7 @@
 
     <!-- Cards coloridos -->
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4 justify-content-center">
-      <div class="dashboard-card" onclick="window.location.href='employeeManagement.aspx';">
+      <div class="dashboard-card" onclick="window.location.href='employeeManagementMedic?acao=consultar';">
             <div  class="card border-0" style="background: #e1fbee;">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
@@ -43,7 +43,7 @@
                         </h6>
                         <small class="text-muted">Ativos no sistema</small>
                     </div>
-                    <i class="bi bi-person-check-fill fs-2 text-success"></i>
+                    <i class="bi bi-person-check-fill fs-2 text-success"></i> 
                 </div>
             </div>
         </div>
