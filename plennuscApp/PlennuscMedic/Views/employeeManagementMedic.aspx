@@ -307,15 +307,17 @@ justify-content: space-around;
 
 <script type="text/javascript">
     // ❌ ABRE MODAL DE INATIVAR
-    function abrirModalInativar(codPessoa, nome) {
-        // Preenche o hidden field e o label
-        $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
-       document.getElementById("lblNomeUsuarioInativa").innerText = nome;
+    function abrirModalInativarBtn(btn) {
+        const codPessoa = btn.getAttribute('data-codpessoa');
+        const nome = btn.getAttribute('data-nome');
 
-       // Bootstrap 5 modal (sem depender de jQuery antigo)
-       const myModal = new bootstrap.Modal(document.getElementById('modalInativarUsuario'));
-       myModal.show();
-   }
+        $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
+        document.getElementById("lblNomeUsuarioInativa").innerText = nome;
+
+        const myModal = new bootstrap.Modal(document.getElementById('modalInativarUsuario'));
+        myModal.show();
+    }
+
 
     // ✅ FUNÇÃO ÚNICA DE MÁSCARAS
     function aplicarMascaras() {
@@ -682,15 +684,14 @@ justify-content: space-around;
                       </ItemTemplate>
                     </asp:TemplateField>
 
-            <asp:TemplateField HeaderText="Inativar">
+                           <asp:TemplateField HeaderText="Inativar">
     <ItemStyle Width="110px" HorizontalAlign="Center" />
     <ItemTemplate>
         <asp:PlaceHolder ID="phInativar" runat="server">
             <button type="button" class="btn-inativar"
-                onclick='abrirModalInativar(
-                    <%# Eval("CodPessoa") %>,
-                    "<%# System.Web.HttpUtility.JavaScriptStringEncode(Eval("NomeCompleto") as string, true) %>"
-                )'>
+                data-codpessoa='<%# Eval("CodPessoa") %>'
+                data-nome='<%# System.Web.HttpUtility.HtmlEncode(Eval("NomeCompleto")) %>'
+                onclick="abrirModalInativarBtn(this)">
                 <i class="fa-solid fa-user-slash"></i>
             </button>
         </asp:PlaceHolder>

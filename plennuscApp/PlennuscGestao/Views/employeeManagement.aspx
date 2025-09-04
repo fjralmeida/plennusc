@@ -299,11 +299,17 @@ justify-content: space-around;
 
 <script type="text/javascript">
     // ❌ ABRE MODAL DE INATIVAR
-    function abrirModalInativar(codPessoa, nome) {
-        $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
-        document.getElementById("lblNomeUsuarioInativa").innerText = nome;
-        $('#modalInativarUsuario').modal('show');
-    }
+   function abrirModalInativarBtn(btn) {
+    const codPessoa = btn.getAttribute('data-codpessoa');
+    const nome = btn.getAttribute('data-nome');
+
+    $('#<%= hfCodPessoaInativa.ClientID %>').val(codPessoa);
+    document.getElementById("lblNomeUsuarioInativa").innerText = nome;
+
+    const myModal = new bootstrap.Modal(document.getElementById('modalInativarUsuario'));
+    myModal.show();
+}
+
 
     // ✅ FUNÇÃO ÚNICA DE MÁSCARAS
     function aplicarMascaras() {
@@ -663,21 +669,20 @@ justify-content: space-around;
                       </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Inativar">
-                      <ItemStyle Width="110px" HorizontalAlign="Center" />
-                      <ItemTemplate>
-                        <asp:PlaceHolder ID="phInativar" runat="server">
-                          <button type="button" class="btn-inativar"
-                            onclick='abrirModalInativar(
-                              <%# Eval("CodPessoa") %>,
-                              "<%# System.Web.HttpUtility.JavaScriptStringEncode(Eval("NomeCompleto") as string, true) %>",
-                              "<%# (Eval("Conf_Ativo") ?? "0").ToString() %>"
-                            )'>
-                            <i class="fa-solid fa-user-slash"></i>
-                          </button>
-                        </asp:PlaceHolder>
-                      </ItemTemplate>
-                    </asp:TemplateField>
+                 <asp:TemplateField HeaderText="Inativar">
+    <ItemStyle Width="110px" HorizontalAlign="Center" />
+    <ItemTemplate>
+        <asp:PlaceHolder ID="phInativar" runat="server">
+            <button type="button" class="btn-inativar"
+                data-codpessoa='<%# Eval("CodPessoa") %>'
+                data-nome='<%# System.Web.HttpUtility.HtmlEncode(Eval("NomeCompleto")) %>'
+                onclick="abrirModalInativarBtn(this)">
+                <i class="fa-solid fa-user-slash"></i>
+            </button>
+        </asp:PlaceHolder>
+    </ItemTemplate>
+</asp:TemplateField>
+
                 </Columns>
             </asp:GridView>
         </div>
