@@ -194,6 +194,7 @@
     <Content Include="PlennuscGestao\Views\updatePriceTable.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\employeeEditMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeeManagementMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeePositionMedic.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
@@ -213,6 +214,7 @@
     <Content Include="public\uploadgestao\images\logoVallor.png" />
     <Content Include="public\uploadmedic\docs\Pros e Contras de cada arquitetura.txt" />
     <Content Include="public\uploadmedic\images\DSCN1684_Original.JPEG" />
+    <Content Include="public\uploadmedic\images\imgDefultAvatar.jpg" />
     <Content Include="public\uploadmedic\images\logoVallor.png" />
     <Content Include="public\uploadmedic\images\logo_vallor.png" />
     <Content Include="Scripts\jquery-3.7.1.js" />
@@ -454,6 +456,13 @@
     </Compile>
     <Compile Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx.designer.cs">
       <DependentUpon>employeeDepartmentMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeeEditMedic.aspx.cs">
+      <DependentUpon>employeeEditMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\employeeEditMedic.aspx.designer.cs">
+      <DependentUpon>employeeEditMedic.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\employeeManagementMedic.aspx.cs">
       <DependentUpon>employeeManagementMedic.aspx</DependentUpon>

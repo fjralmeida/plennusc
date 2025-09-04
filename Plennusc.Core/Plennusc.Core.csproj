@@ -91,6 +91,7 @@
     <Compile Include="SqlQueries\SqlQueriesMedic\import\importCVSPlanniumMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\interview\MedicalInterview.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\position\EmpPositionMedic.cs" />
+    <Compile Include="SqlQueries\SqlQueriesMedic\profileMedic\AutenticacaoDAOMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\profileMedic\PessoaDAOMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\settingsMedic\PrivacySettingsMedic.cs" />
   </ItemGroup>
