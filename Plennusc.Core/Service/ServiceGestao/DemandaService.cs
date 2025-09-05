@@ -106,6 +106,7 @@ namespace Plennusc.Core.Service.ServiceGestao
             return list;
         }
 
+
         // (opcional) checar se um tipo está permitido para um setor (tabela SetorTipoDemanda)
         public bool TipoPermitidoParaSetor(int codSetor, int codEstrTipoDemanda)
         {
@@ -155,7 +156,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                     using (var cmdVinc = new SqlCommand(Demanda.UpsertSetorTipoDemanda, con, tx))
                     {
                         cmdVinc.Parameters.AddWithValue("@CodSetor", dto.CodSetorDestino);
-                        cmdVinc.Parameters.AddWithValue("@CodEstr_TipoDemanda", dto.CodEstr_TipoDemanda); // << corrigido
+                        cmdVinc.Parameters.AddWithValue("@CodEstr_TipoDemanda", dto.CodEstr_TipoDemanda);
                         cmdVinc.ExecuteNonQuery();
                     }
 
@@ -197,6 +198,108 @@ namespace Plennusc.Core.Service.ServiceGestao
                     throw;
                 }
             }
+        }
+        public List<OptionItem> GetSituacoesDemanda()
+        {
+            var list = new List<OptionItem>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.SituacoesDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@Tipo", EstruturaTipos.SituacaoDemanda); // 5
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+                }
+            }
+            return list;
+        }
+
+        public List<OptionItem> GetCategoriasDemanda()
+        {
+            var list = new List<OptionItem>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.CategoriasDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@Tipo", EstruturaTipos.TipoDemanda); // 6
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+                }
+            }
+            return list;
+        }
+
+        public List<DemandaListDto> ListarDemandas(DemandaFiltro filtro)
+        {
+            var lista = new List<DemandaListDto>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand())
+            {
+                cmd.Connection = con;
+                var sql = new StringBuilder(Demanda.ListarDemandasBase);
+
+                // Visibilidade: MINHAS (M) -> solicitante/aprovador/acompanhamento
+                if (!string.IsNullOrWhiteSpace(filtro?.Visibilidade))
+                {
+                    var v = filtro.Visibilidade.Trim().ToUpperInvariant();
+                    if ((v == "M" || v == "MINHAS" || v == "P") && filtro.CodPessoa.HasValue)
+                    {
+                        sql.Append(" AND (d.CodPessoaSolicitacao = @CodPessoa OR d.CodPessoaAprovacao = @CodPessoa OR EXISTS(SELECT 1 FROM dbo.DemandaAcompanhamento da WHERE da.CodDemanda = d.CodDemanda AND da.CodPessoaAcompanhamento = @CodPessoa))");
+                        cmd.Parameters.AddWithValue("@CodPessoa", filtro.CodPessoa.Value);
+                    }
+                    else if ((v == "S" || v == "SETOR") && filtro.CodSetor.HasValue)
+                    {
+                        sql.Append(" AND (d.CodSetorOrigem = @CodSetor OR d.CodSetorDestino = @CodSetor)");
+                        cmd.Parameters.AddWithValue("@CodSetor", filtro.CodSetor.Value);
+                    }
+                }
+
+                if (filtro?.CodStatus != null)
+                {
+                    sql.Append(" AND d.CodEstr_SituacaoDemanda = @CodStatus");
+                    cmd.Parameters.AddWithValue("@CodStatus", filtro.CodStatus.Value);
+                }
+                if (filtro?.CodCategoria != null)
+                {
+                    // categoria corresponde ao pai (ou tipo quando é pai)
+                    sql.Append(" AND ( (EXISTS(SELECT 1 FROM dbo.Estrutura e WHERE e.CodEstrutura = d.CodEstr_TipoDemanda AND e.CodEstruturaPai = @CodCategoria)) OR (d.CodEstr_TipoDemanda = @CodCategoria) )");
+                    cmd.Parameters.AddWithValue("@CodCategoria", filtro.CodCategoria.Value);
+                }
+                if (filtro?.CodSubtipo != null)
+                {
+                    sql.Append(" AND d.CodEstr_TipoDemanda = @CodSubtipo");
+                    cmd.Parameters.AddWithValue("@CodSubtipo", filtro.CodSubtipo.Value);
+                }
+                if (!string.IsNullOrWhiteSpace(filtro?.NomeSolicitante))
+                {
+                    sql.Append(" AND (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) LIKE @Solicitante");
+                    cmd.Parameters.AddWithValue("@Solicitante", "%" + filtro.NomeSolicitante.Trim() + "%");
+                }
+
+                sql.Append(" ORDER BY d.DataDemanda DESC");
+                cmd.CommandText = sql.ToString();
+
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        var dto = new DemandaListDto
+                        {
+                            CodDemanda = rd.GetInt32(0),
+                            Titulo = rd.IsDBNull(1) ? "" : rd.GetString(1),
+                            Categoria = rd.IsDBNull(2) ? "" : rd.GetString(2),
+                            Subtipo = rd.IsDBNull(3) ? null : rd.GetString(3),
+                            Status = rd.IsDBNull(4) ? "" : rd.GetString(4),
+                            Solicitante = rd.IsDBNull(5) ? "" : rd.GetString(5),
+                            DataSolicitacao = rd.IsDBNull(6) ? DateTime.MinValue : rd.GetDateTime(6)
+                        };
+                        lista.Add(dto);
+                    }
+                }
+            }
+            return lista;
         }
     }
 }

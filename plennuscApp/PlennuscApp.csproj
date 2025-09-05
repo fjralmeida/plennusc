@@ -178,11 +178,13 @@
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
     <Content Include="PlennuscGestao\Views\demand.aspx" />
+    <Content Include="PlennuscGestao\Views\detailDemand.aspx" />
     <Content Include="PlennuscGestao\Views\employeeDepartment.aspx" />
     <Content Include="PlennuscGestao\Views\employeeEdit.aspx" />
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
+    <Content Include="PlennuscGestao\Views\listDemand.aspx" />
     <Content Include="PlennuscGestao\Views\priceTable.aspx" />
     <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
     <Content Include="PlennuscGestao\Views\sendCompanyMessage.aspx" />
@@ -339,6 +341,13 @@
     <Compile Include="PlennuscGestao\Views\demand.aspx.designer.cs">
       <DependentUpon>demand.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscGestao\Views\detailDemand.aspx.cs">
+      <DependentUpon>detailDemand.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\detailDemand.aspx.designer.cs">
+      <DependentUpon>detailDemand.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscGestao\Views\employeeDepartment.aspx.cs">
       <DependentUpon>employeeDepartment.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -373,6 +382,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\FixedMessageSending.aspx.designer.cs">
       <DependentUpon>FixedMessageSending.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\listDemand.aspx.cs">
+      <DependentUpon>listDemand.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\listDemand.aspx.designer.cs">
+      <DependentUpon>listDemand.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\priceTable.aspx.cs">
       <DependentUpon>priceTable.aspx</DependentUpon>

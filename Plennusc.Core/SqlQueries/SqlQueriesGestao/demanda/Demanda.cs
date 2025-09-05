@@ -21,87 +21,95 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             WHERE Conf_Ativo = 1
             ORDER BY Nome, Sobrenome";
 
-        // Prioridades (CodTipoEstrutura = 7)
         public const string PrioridadesPorTipo = @"
             SELECT CodEstrutura AS Value, DescEstrutura AS Text
             FROM dbo.Estrutura
             WHERE CodTipoEstrutura = @Tipo
             ORDER BY ISNULL(ValorPadrao, 999), DescEstrutura";
 
-        // Situação inicial = 'ABERTA' (CodTipoEstrutura = 5)
         public const string SituacaoAbertaPorTipo = @"
             SELECT TOP 1 e.CodEstrutura
             FROM dbo.Estrutura e
             WHERE e.CodTipoEstrutura = @Tipo
-              AND UPPER(e.DescEstrutura) COLLATE Latin1_General_CI_AI = 'ABERTA'
-            ORDER BY ISNULL(e.ValorPadrao, 999), e.CodEstrutura";
+              AND UPPER(e.DescEstrutura) = 'ABERTA'
+            ORDER BY e.CodEstrutura";
 
-        // INSERT demanda
+        public const string UpsertSetorTipoDemanda = @"
+            MERGE dbo.SetorTipoDemanda AS tgt
+            USING (SELECT @CodSetor AS CodSetor, @CodEstr_TipoDemanda AS CodEstr_TipoDemanda) AS src
+            ON (tgt.CodSetor = src.CodSetor AND tgt.CodEstr_TipoDemanda = src.CodEstr_TipoDemanda)
+            WHEN NOT MATCHED THEN
+                INSERT (CodSetor, CodEstr_TipoDemanda) VALUES (src.CodSetor, src.CodEstr_TipoDemanda);";
+
         public const string InsertDemanda = @"
             INSERT INTO dbo.Demanda
-            (CodPessoaSolicitacao, CodSetorOrigem, CodSetorDestino,
-             CodEstr_TipoDemanda, DataDemanda, CodEstr_SituacaoDemanda,
-             CodEstr_NivelPrioridade, Titulo, TextoDemanda,
-             Conf_RequerAprovacao, CodPessoaAprovacao, DataAprovacao, DataPrazoMaximo, DataFinalizacao)
+              (CodPessoaSolicitacao, CodSetorOrigem, CodSetorDestino,
+               CodEstr_TipoDemanda, CodEstr_SituacaoDemanda,
+               CodEstr_NivelPrioridade, Titulo, TextoDemanda,
+               Conf_RequerAprovacao, CodPessoaAprovacao, DataPrazoMaximo, DataDemanda)
+            OUTPUT INSERTED.CodDemanda
             VALUES
-            (@CodPessoaSolicitacao, @CodSetorOrigem, @CodSetorDestino,
-             @CodEstr_TipoDemanda, GETDATE(), @CodEstr_SituacaoDemanda,
-             @CodEstr_NivelPrioridade, @Titulo, @TextoDemanda,
-             @Conf_RequerAprovacao, @CodPessoaAprovacao, NULL, @DataPrazoMaximo, NULL);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);";
+              (@CodPessoaSolicitacao, @CodSetorOrigem, @CodSetorDestino,
+               @CodEstr_TipoDemanda, @CodEstr_SituacaoDemanda,
+               @CodEstr_NivelPrioridade, @Titulo, @TextoDemanda,
+               @Conf_RequerAprovacao, @CodPessoaAprovacao, @DataPrazoMaximo, GETDATE());";
 
-        // INSERT histórico inicial
         public const string InsertHistoricoInicial = @"
             INSERT INTO dbo.DemandaHistorico
-            (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao)
+              (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual,
+               CodPessoaAlteracao, DataAlteracao)
             VALUES
-            (@CodDemanda, @CodEstr_SituacaoDemanda, @CodEstr_SituacaoDemanda, @CodPessoaAlteracao, GETDATE());";
+              (@CodDemanda, @CodEstr_SituacaoDemanda, @CodEstr_SituacaoDemanda,
+               @CodPessoaAlteracao, GETDATE());";
 
-        // Vincula tipo ao setor destino (Upsert)
-        public const string UpsertSetorTipoDemanda = @"
-        IF NOT EXISTS (
-            SELECT 1 FROM dbo.SetorTipoDemanda
-            WHERE CodSetor = @CodSetor
-              AND CodEstr_TipoDemanda = @CodEstr_TipoDemanda
-        )
-        BEGIN
-            INSERT INTO dbo.SetorTipoDemanda
-                (CodSetor, CodEstr_TipoDemanda, Conf_Status, Informacoes_log_i)
-            VALUES
-                (@CodSetor, @CodEstr_TipoDemanda, 1, GETDATE());
-        END
-        ELSE
-        BEGIN
-            UPDATE dbo.SetorTipoDemanda
-            SET Conf_Status = 1,
-                Informacoes_log_a = GETDATE()
-            WHERE CodSetor = @CodSetor
-              AND CodEstr_TipoDemanda = @CodEstr_TipoDemanda;
-        END";
-
-        // ---- Dropdowns de Categoria/Subtipo (CodTipoEstrutura = 6) ----
-
-        // Categorias (pais)
         public const string TiposDemandaGrupos = @"
             SELECT CodEstrutura AS Value, DescEstrutura AS Text
             FROM dbo.Estrutura
-            WHERE CodTipoEstrutura = @Tipo   -- 6
-              AND CodEstruturaPai IS NULL
-            ORDER BY ISNULL(ValorPadrao, 999), DescEstrutura";
+            WHERE CodTipoEstrutura = @Tipo AND CodEstruturaPai IS NULL
+            ORDER BY DescEstrutura";
 
-        // Subtipos (filhos do grupo)
         public const string SubtiposPorGrupo = @"
             SELECT CodEstrutura AS Value, DescEstrutura AS Text
             FROM dbo.Estrutura
-            WHERE CodTipoEstrutura = @Tipo   -- 6
-              AND CodEstruturaPai = @Pai
-            ORDER BY ISNULL(ValorPadrao, 999), DescEstrutura";
+            WHERE CodTipoEstrutura = @Tipo AND CodEstruturaPai = @Pai
+            ORDER BY DescEstrutura";
 
-        // (opcional) Tipos permitidos por setor
+        public const string CategoriasDemanda = @"
+            SELECT CodEstrutura AS Value, DescEstrutura AS Text
+            FROM dbo.Estrutura
+            WHERE CodTipoEstrutura = @Tipo AND CodEstruturaPai IS NULL
+            ORDER BY DescEstrutura";
+
+        public const string SubtiposDemanda = @"
+            SELECT CodEstrutura AS Value, DescEstrutura AS Text
+            FROM dbo.Estrutura
+            WHERE CodTipoEstrutura = @Tipo AND CodEstruturaPai = @Pai
+            ORDER BY DescEstrutura";
+
+        public const string SituacoesDemanda = @"
+            SELECT CodEstrutura AS Value, DescEstrutura AS Text
+            FROM dbo.Estrutura
+            WHERE CodTipoEstrutura = @Tipo
+            ORDER BY DescEstrutura";
+
         public const string TiposPermitidosPorSetor = @"
-            SELECT std.CodEstr_TipoDemanda
-            FROM dbo.SetorTipoDemanda std
-            WHERE std.Conf_Status = 1
-              AND std.CodSetor = @Setor";
+            SELECT CodEstr_TipoDemanda
+            FROM dbo.SetorTipoDemanda
+            WHERE CodSetor = @Setor";
+
+        public const string ListarDemandasBase = @"
+            SELECT d.CodDemanda,
+                   d.Titulo,
+                   cat.DescEstrutura AS Categoria,
+                   sub.DescEstrutura AS Subtipo,
+                   sit.DescEstrutura AS Status,
+                   (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
+                   d.DataDemanda
+            FROM dbo.Demanda d
+            INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
+            INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
+            LEFT JOIN dbo.Estrutura sub ON sub.CodEstrutura = d.CodEstr_TipoDemanda
+            LEFT JOIN dbo.Estrutura cat ON cat.CodEstrutura = sub.CodEstruturaPai
+            WHERE 1=1";
     }
 }
