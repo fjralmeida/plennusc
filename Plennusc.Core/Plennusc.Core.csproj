@@ -58,6 +58,7 @@
     <Compile Include="Data_Bd\BancoDadosSQL.cs" />
     <Compile Include="Mappers\MappersGestao\InsertionIntoTheMapperPriceTable.cs" />
     <Compile Include="Mappers\MappersGestao\TablePriceMapper.cs" />
+    <Compile Include="Models\ModelsGestao\AcompanhamentoDto.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagem.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemCsv.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemPME.cs" />
@@ -65,10 +66,13 @@
     <Compile Include="Models\ModelsGestao\DadosMensagensCsvPlanium.cs" />
     <Compile Include="Models\ModelsGestao\DataInsertionPriceTableMessage.cs" />
     <Compile Include="Models\ModelsGestao\DemandaCreate.cs" />
+    <Compile Include="Models\ModelsGestao\DemandaDto.cs" />
     <Compile Include="Models\ModelsGestao\DemandaFiltro.cs" />
     <Compile Include="Models\ModelsGestao\DemandaListDto.cs" />
+    <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\OptionItem.cs" />
+    <Compile Include="Models\ModelsGestao\RespostaDto.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Models\Utils\EstruturaTipos.cs" />

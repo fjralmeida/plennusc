@@ -79,7 +79,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void gvDemandas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Ver")
-                Response.Redirect("detalharDemanda.aspx?id=" + e.CommandArgument);
+                Response.Redirect("detailDemand.aspx?id=" + e.CommandArgument);
         }
 
         protected void btnNovaDemanda_Click(object sender, EventArgs e)

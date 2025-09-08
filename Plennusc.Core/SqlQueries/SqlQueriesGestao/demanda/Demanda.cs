@@ -111,5 +111,69 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             LEFT JOIN dbo.Estrutura sub ON sub.CodEstrutura = d.CodEstr_TipoDemanda
             LEFT JOIN dbo.Estrutura cat ON cat.CodEstrutura = sub.CodEstruturaPai
             WHERE 1=1";
+        public const string ObterDemandaPorId = @"
+SELECT 
+    d.CodDemanda,
+    d.Titulo,
+    d.TextoDemanda,
+    d.CodEstr_SituacaoDemanda AS StatusCodigo,
+    sit.DescEstrutura AS StatusNome,
+    (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
+    d.DataDemanda AS DataSolicitacao,
+    d.CodPessoaSolicitacao,
+    d.CodPessoaAprovacao -- ESSE CAMPO É CRUCIAL
+FROM dbo.Demanda d
+INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
+INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
+WHERE d.CodDemanda = @CodDemanda";
+        public const string ObterHistorico = @"
+SELECT dh.CodDemandaHistorico,
+       dh.CodDemanda,
+       dh.CodEstr_SituacaoDemandaAnterior,
+       dh.CodEstr_SituacaoDemandaAtual,
+       prev.DescEstrutura AS SituacaoAnterior,
+       curr.DescEstrutura AS SituacaoAtual,
+       dh.CodPessoaAlteracao,
+       (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Usuario,
+       dh.DataAlteracao
+FROM dbo.DemandaHistorico dh
+LEFT JOIN dbo.Estrutura prev ON prev.CodEstrutura = dh.CodEstr_SituacaoDemandaAnterior
+LEFT JOIN dbo.Estrutura curr ON curr.CodEstrutura = dh.CodEstr_SituacaoDemandaAtual
+LEFT JOIN dbo.Pessoa p ON p.CodPessoa = dh.CodPessoaAlteracao
+WHERE dh.CodDemanda = @CodDemanda
+ORDER BY dh.DataAlteracao ASC";
+
+        public const string ObterAcompanhamentos = @"
+SELECT da.CodDemandaAcompanhamento,
+       da.CodDemanda,
+       da.TextoAcompanhamento,
+       da.DataAcompanhamento,
+       da.CodPessoaAcompanhamento,
+       (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Autor
+FROM dbo.DemandaAcompanhamento da
+LEFT JOIN dbo.Pessoa p ON p.CodPessoa = da.CodPessoaAcompanhamento
+WHERE da.CodDemanda = @CodDemanda
+ORDER BY da.DataAcompanhamento ASC";
+
+        public const string InsertAcompanhamento = @"
+INSERT INTO dbo.DemandaAcompanhamento (CodDemanda, TextoAcompanhamento, CodPessoaAcompanhamento, DataAcompanhamento)
+VALUES (@CodDemanda, @TextoAcompanhamento, @CodPessoaAcompanhamento, GETDATE());";
+
+        public const string SelectStatusCodigo = @"
+SELECT CodEstr_SituacaoDemanda FROM dbo.Demanda WHERE CodDemanda = @CodDemanda";
+
+        public const string AtualizarStatus = @"
+UPDATE d
+SET d.CodEstr_SituacaoDemanda = sit.CodEstrutura
+FROM dbo.Demanda d
+INNER JOIN dbo.Estrutura sit ON sit.DescEstrutura = @NovoStatus
+WHERE d.CodDemanda = @CodDemanda";
+
+        public const string InsertDemandaHistorico = @"
+INSERT INTO dbo.DemandaHistorico
+    (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao)
+VALUES
+    (@CodDemanda, @CodAnterior, @CodAtual, @CodPessoaAlteracao, GETDATE());";
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.OData.Query.SemanticAst;
+﻿using Microsoft.Data.Edm.Validation;
+using Microsoft.Data.OData.Query.SemanticAst;
 using Plennusc.Core.Models.ModelsGestao;
 using Plennusc.Core.Models.Utils;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda;
@@ -300,6 +301,142 @@ namespace Plennusc.Core.Service.ServiceGestao
                 }
             }
             return lista;
+        }
+        // DTOs mínimos — adicione em Models se quiser organizar melhor
+
+        public DemandaDto ObterDemandaPorId(int codDemanda)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.ObterDemandaPorId, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                using (var rd = cmd.ExecuteReader())
+                {
+                    if (rd.Read())
+                    {
+                        var dto = new DemandaDto
+                        {
+                            CodDemanda = rd.GetInt32(rd.GetOrdinal("CodDemanda")),
+                            Titulo = rd.IsDBNull(rd.GetOrdinal("Titulo")) ? null : rd.GetString(rd.GetOrdinal("Titulo")),
+                            TextoDemanda = rd.IsDBNull(rd.GetOrdinal("TextoDemanda")) ? null : rd.GetString(rd.GetOrdinal("TextoDemanda")),
+                            StatusNome = rd.IsDBNull(rd.GetOrdinal("StatusNome")) ? null : rd.GetString(rd.GetOrdinal("StatusNome")),
+                            StatusCodigo = rd.IsDBNull(rd.GetOrdinal("StatusCodigo")) ? (int?)null : rd.GetInt32(rd.GetOrdinal("StatusCodigo")),
+                            Solicitante = rd.IsDBNull(rd.GetOrdinal("Solicitante")) ? null : rd.GetString(rd.GetOrdinal("Solicitante")),
+                            DataSolicitacao = rd.IsDBNull(rd.GetOrdinal("DataSolicitacao")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("DataSolicitacao"))
+                        };
+                        return dto;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public IEnumerable<HistoricoDto> ObterHistorico(int codDemanda)
+        {
+            var list = new List<HistoricoDto>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.ObterHistorico, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        var anterior = rd.IsDBNull(rd.GetOrdinal("CodEstr_SituacaoDemandaAnterior")) ? (int?)null : rd.GetInt32(rd.GetOrdinal("CodEstr_SituacaoDemandaAnterior"));
+                        var atual = rd.IsDBNull(rd.GetOrdinal("CodEstr_SituacaoDemandaAtual")) ? (int?)null : rd.GetInt32(rd.GetOrdinal("CodEstr_SituacaoDemandaAtual"));
+
+                        list.Add(new HistoricoDto
+                        {
+                            CodDemandaHistorico = rd.IsDBNull(rd.GetOrdinal("CodDemandaHistorico")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodDemandaHistorico")),
+                            CodDemanda = rd.IsDBNull(rd.GetOrdinal("CodDemanda")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodDemanda")),
+                            CodEstr_SituacaoDemandaAnterior = anterior,
+                            CodEstr_SituacaoDemandaAtual = atual,
+                            SituacaoAnterior = rd.IsDBNull(rd.GetOrdinal("SituacaoAnterior")) ? null : rd.GetString(rd.GetOrdinal("SituacaoAnterior")),
+                            SituacaoAtual = rd.IsDBNull(rd.GetOrdinal("SituacaoAtual")) ? null : rd.GetString(rd.GetOrdinal("SituacaoAtual")),
+                            CodPessoaAlteracao = rd.IsDBNull(rd.GetOrdinal("CodPessoaAlteracao")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodPessoaAlteracao")),
+                            Usuario = rd.IsDBNull(rd.GetOrdinal("Usuario")) ? null : rd.GetString(rd.GetOrdinal("Usuario")),
+                            DataAlteracao = rd.IsDBNull(rd.GetOrdinal("DataAlteracao")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("DataAlteracao"))
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        public IEnumerable<AcompanhamentoDto> ObterAcompanhamentos(int codDemanda)
+        {
+            var list = new List<AcompanhamentoDto>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.ObterAcompanhamentos, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new AcompanhamentoDto
+                        {
+                            CodDemandaAcompanhamento = rd.IsDBNull(rd.GetOrdinal("CodDemandaAcompanhamento")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodDemandaAcompanhamento")),
+                            CodDemanda = rd.IsDBNull(rd.GetOrdinal("CodDemanda")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodDemanda")),
+                            TextoAcompanhamento = rd.IsDBNull(rd.GetOrdinal("TextoAcompanhamento")) ? null : rd.GetString(rd.GetOrdinal("TextoAcompanhamento")),
+                            DataAcompanhamento = rd.IsDBNull(rd.GetOrdinal("DataAcompanhamento")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("DataAcompanhamento")),
+                            CodPessoaAcompanhamento = rd.IsDBNull(rd.GetOrdinal("CodPessoaAcompanhamento")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodPessoaAcompanhamento")),
+                            Autor = rd.IsDBNull(rd.GetOrdinal("Autor")) ? null : rd.GetString(rd.GetOrdinal("Autor"))
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        public void AdicionarAcompanhamento(int codDemanda, int codPessoa, string texto)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.InsertAcompanhamento, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                cmd.Parameters.AddWithValue("@TextoAcompanhamento", (object)(texto ?? string.Empty));
+                cmd.Parameters.AddWithValue("@CodPessoaAcompanhamento", codPessoa);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void AtualizarStatusComHistorico(int codDemanda, string novoStatus, int codPessoaAlteracao)
+        {
+            using (var con = Open())
+            {
+                int codAnterior = 0;
+                using (var sel = new SqlCommand(Demanda.SelectStatusCodigo, con))
+                {
+                    sel.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                    var o = sel.ExecuteScalar();
+                    if (o != null && o != DBNull.Value) codAnterior = Convert.ToInt32(o);
+                }
+
+                using (var upd = new SqlCommand(Demanda.AtualizarStatus, con))
+                {
+                    upd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                    upd.Parameters.AddWithValue("@NovoStatus", novoStatus);
+                    upd.ExecuteNonQuery();
+                }
+
+                int codAtual = 0;
+                using (var sel2 = new SqlCommand(Demanda.SelectStatusCodigo, con))
+                {
+                    sel2.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                    var o = sel2.ExecuteScalar();
+                    if (o != null && o != DBNull.Value) codAtual = Convert.ToInt32(o);
+                }
+
+                using (var ins = new SqlCommand(Demanda.InsertDemandaHistorico, con))
+                {
+                    ins.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                    ins.Parameters.AddWithValue("@CodAnterior", codAnterior);
+                    ins.Parameters.AddWithValue("@CodAtual", codAtual);
+                    ins.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoaAlteracao);
+                    ins.ExecuteNonQuery();
+                }
+            }
         }
     }
 }
