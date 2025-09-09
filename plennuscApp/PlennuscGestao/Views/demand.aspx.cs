@@ -138,6 +138,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }
             }
 
+            // MODIFICAÇÃO PRINCIPAL: A demanda é direcionada para o SETOR, não para pessoa
+            // Se requer aprovação, usamos o aprovador selecionado, senão fica NULL
+            int? codPessoaAprovacao = null;
+            if (chkAprova.Checked && !string.IsNullOrWhiteSpace(ddlAprovador.SelectedValue))
+            {
+                codPessoaAprovacao = int.Parse(ddlAprovador.SelectedValue);
+            }
+
             var dto = new DemandaCreate
             {
                 CodPessoaSolicitacao = CodPessoaAtual,
@@ -148,9 +156,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Titulo = txtTitulo.Text.Trim(),
                 TextoDemanda = txtDescricao.Text.Trim(),
                 Conf_RequerAprovacao = chkAprova.Checked,
-                CodPessoaAprovacao = string.IsNullOrWhiteSpace(ddlAprovador.SelectedValue)
-                                        ? 0
-                                        : int.Parse(ddlAprovador.SelectedValue),
+                CodPessoaAprovacao = codPessoaAprovacao, // Pode ser NULL - direcionado para setor
                 DataPrazoMaximo = prazo
             };
 

@@ -15,9 +15,8 @@ namespace Plennusc.Core.Models.ModelsGestao
         public int CodEstr_NivelPrioridade { get; set; }
         public string Titulo { get; set; }
         public string TextoDemanda { get; set; }
-
         public bool Conf_RequerAprovacao { get; set; }
-        public int CodPessoaAprovacao { get; set; } 
+        public int? CodPessoaAprovacao { get; set; }
         public DateTime? DataPrazoMaximo { get; set; }
     }
 }

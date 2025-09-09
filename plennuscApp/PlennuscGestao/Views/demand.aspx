@@ -166,27 +166,32 @@ textarea.autosize { min-height:120px; resize:none; }
         </div>
         <div class="col-lg-6">
           <label class="form-label">Setor de Destino *</label>
-          <asp:DropDownList ID="ddlDestino" runat="server" CssClass="form-select" />
+          <asp:DropDownList ID="ddlDestino" runat="server" CssClass="form-select" 
+            AutoPostBack="true" 
+            OnSelectedIndexChanged="ddlDestino_SelectedIndexChanged" />
         </div>
       </div>
     </div>
 
-    <!-- Categoria -->
-    <div class="mb-4">
-      <h6 class="section-title">Categoria</h6>
-      <div class="row g-3">
-        <div class="col-lg-6">
-          <label class="form-label">Categoria *</label>
-          <asp:DropDownList ID="ddlTipoGrupo" runat="server" CssClass="form-select" />
-          <small class="input-hint">Ex.: “Tecnologia - Suporte”.</small>
-        </div>
-        <div class="col-lg-6">
-          <label class="form-label">Subtipo</label>
-          <asp:DropDownList ID="ddlTipoDetalhe" runat="server" CssClass="form-select" />
-          <small class="input-hint">Ex.: “Criação Cx. Postal (email)”.</small>
-        </div>
-      </div>
+   <!-- Categoria -->
+<div class="mb-4">
+  <h6 class="section-title">Categoria</h6>
+  <div class="row g-3">
+    <div class="col-lg-6">
+      <label class="form-label">Categoria *</label>
+      <!-- ADICIONE AutoPostBack="true" E OnSelectedIndexChanged AQUI -->
+      <asp:DropDownList ID="ddlTipoGrupo" runat="server" CssClass="form-select" 
+          AutoPostBack="true" 
+          OnSelectedIndexChanged="ddlTipoGrupo_SelectedIndexChanged" />
+      <small class="input-hint">Ex.: “Tecnologia - Suporte”.</small>
     </div>
+    <div class="col-lg-6">
+      <label class="form-label">Subtipo</label>
+      <asp:DropDownList ID="ddlTipoDetalhe" runat="server" CssClass="form-select" />
+      <small class="input-hint">Ex.: “Criação Cx. Postal (email)”.</small>
+    </div>
+  </div>
+</div>
 
     <!-- Aprovação -->
     <div class="mb-4">
@@ -216,40 +221,43 @@ textarea.autosize { min-height:120px; resize:none; }
 <script>
     (function () {
         var chk = document.getElementById('<%= chkAprova.ClientID %>');
-    var ddlApr = document.getElementById('<%= ddlAprovador.ClientID %>');
+      var ddlApr = document.getElementById('<%= ddlAprovador.ClientID %>');
     var titulo = document.getElementById('<%= txtTitulo.ClientID %>');
-    var desc = document.getElementById('<%= txtDescricao.ClientID %>');
-        var cntTitulo = document.getElementById('cntTitulo');
-        var cntDesc = document.getElementById('cntDesc');
+      var desc = document.getElementById('<%= txtDescricao.ClientID %>');
+      var cntTitulo = document.getElementById('cntTitulo');
+      var cntDesc = document.getElementById('cntDesc');
 
-        function toggleAprovador() {
-            var on = chk.checked;
-            ddlApr.disabled = !on;
-            if (!on) ddlApr.selectedIndex = 0;
-        }
-        if (chk) {
-            chk.addEventListener('change', toggleAprovador);
-            toggleAprovador();
-        }
+      function toggleAprovador() {
+          var on = chk.checked;
+          ddlApr.disabled = !on;
+          if (!on) ddlApr.selectedIndex = 0;
 
-        function updateCounters() {
-            if (titulo && cntTitulo) cntTitulo.textContent = (titulo.value || '').length + "/100";
-            if (desc && cntDesc) cntDesc.textContent = (desc.value || '').length + " caracteres";
-        }
+          ddlApr.style.display = on ? 'block' : 'none';
+      }
 
-        function autoSize(el) {
-            el.style.height = 'auto';
-            el.style.height = (el.scrollHeight + 2) + 'px';
-        }
+      if (chk) {
+          chk.addEventListener('change', toggleAprovador);
+          toggleAprovador();
+      }
 
-        if (desc) {
-            desc.addEventListener('input', function () { autoSize(desc); updateCounters(); });
-            setTimeout(function () { autoSize(desc); updateCounters(); }, 0);
-        }
-        if (titulo) {
-            titulo.addEventListener('input', updateCounters);
-            setTimeout(updateCounters, 0);
-        }
-    })();
+      function updateCounters() {
+          if (titulo && cntTitulo) cntTitulo.textContent = (titulo.value || '').length + "/100";
+          if (desc && cntDesc) cntDesc.textContent = (desc.value || '').length + " caracteres";
+      }
+
+      function autoSize(el) {
+          el.style.height = 'auto';
+          el.style.height = (el.scrollHeight + 2) + 'px';
+      }
+
+      if (desc) {
+          desc.addEventListener('input', function () { autoSize(desc); updateCounters(); });
+          setTimeout(function () { autoSize(desc); updateCounters(); }, 0);
+      }
+      if (titulo) {
+          titulo.addEventListener('input', updateCounters);
+          setTimeout(updateCounters, 0);
+      }
+  })();
 </script>
 </asp:Content>

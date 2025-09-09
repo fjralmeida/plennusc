@@ -24,47 +24,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        private void AjustarBotoes()
-        {
-            if (demandaAtual == null) demandaAtual = _service.ObterDemandaPorId(CodDemanda);
-            if (demandaAtual == null) return;
-
-            var permissoes = VerificarPermissoes();
-
-            // Controla a visibilidade dos botões principais
-            btnResolver.Visible = permissoes.PodeResolver;
-            btnEncerrar.Visible = permissoes.PodeEncerrar;
-            btnReabrir.Visible = permissoes.PodeReabrir;
-
-            // CONTROLAR A VISIBILIDADE DO PAINEL DE RESPOSTA COM BASE NA PERMISSÃO
-            pnlResposta.Visible = permissoes.PodeResponder;
-        }
-
-        private (bool PodeResponder, bool PodeResolver, bool PodeEncerrar, bool PodeReabrir) VerificarPermissoes()
-        {
-            // Recarrega demandaAtual caso esteja nulo
-            if (demandaAtual == null) demandaAtual = _service.ObterDemandaPorId(CodDemanda);
-            if (demandaAtual == null) return (false, false, false, false);
-
-            var status = demandaAtual?.StatusNome?.ToUpperInvariant() ?? "";
-            int codUsuario = CodPessoaAtual;
-
-            // 1. É o Solicitante?
-            bool ehSolicitante = (demandaAtual.CodPessoaSolicitacao == codUsuario);
-            // 2. É o Aprovador/Destino? (A PESSOA PARA QUEM A DEMANDA FOI ENVIADA)
-            bool ehAprovador = (demandaAtual.CodPessoaAprovacao == codUsuario);
-
-            // REGRA PRINCIPAL: SÓ O APROVADOR (DESTINATÁRIO) PODE RESPONDER
-            bool podeResponder = ehAprovador;
-
-            // Regras para os botões de ação (baseadas no status e no papel)
-            bool podeResolver = (status == "ABERTA") && ehAprovador;
-            bool podeEncerrar = (status == "ABERTA") && ehAprovador;
-            bool podeReabrir = (status == "RESOLVIDA" || status == "ENCERRADA") && (ehSolicitante || ehAprovador);
-
-            return (podeResponder, podeResolver, podeEncerrar, podeReabrir);
-        }
-
         private void CarregarTudo()
         {
             CarregarDemanda();
@@ -101,37 +60,79 @@ namespace appWhatsapp.PlennuscGestao.Views
             rptAcompanhamentos.DataSource = acs;
             rptAcompanhamentos.DataBind();
         }
+
+        private void AjustarBotoes()
+        {
+            if (demandaAtual == null) demandaAtual = _service.ObterDemandaPorId(CodDemanda);
+            if (demandaAtual == null) return;
+
+            int statusCodigo = demandaAtual.StatusCodigo ?? 0;
+            int codUsuario = CodPessoaAtual;
+
+            bool ehSolicitante = (demandaAtual.CodPessoaSolicitacao == codUsuario);
+            bool ehDestinatario = (demandaAtual.CodPessoaAprovacao == codUsuario);
+
+            // REGRAS:
+            bool podeResponder = ehDestinatario && (statusCodigo == 17); // Aberta
+            bool podeEncerrar = ehSolicitante && (statusCodigo == 18);   // Em andamento
+            bool podeReabrir = ehSolicitante && (statusCodigo == 18);    // Em andamento
+
+            btnEncerrar.Visible = podeEncerrar;
+            btnReabrir.Visible = podeReabrir;
+            pnlResposta.Visible = podeResponder;
+            pnlReabertura.Visible = false; // Inicialmente escondido
+        }
+
         protected void btnResponder_Click(object sender, EventArgs e)
         {
             var texto = txtResposta.Text?.Trim();
             if (!string.IsNullOrEmpty(texto))
             {
-                // salva como Acompanhamento (não cria tabela nova)
+                // SALVA A RESPOSTA
                 _service.AdicionarAcompanhamento(CodDemanda, CodPessoaAtual, texto);
 
-                // limpa campo e recarrega a lista de acompanhamentos
-                txtResposta.Text = string.Empty;
-                CarregarAcompanhamentos();
-            }
-        }
+                // MUDA STATUS PARA "EM ANDAMENTO" (18) - VOLTA PARA QUEM ABRIU
+                _service.AtualizarStatusComHistorico(CodDemanda, 18, CodPessoaAtual);
 
-        protected void btnResolver_Click(object sender, EventArgs e)
-        {
-            // usa o método que atualiza status e grava histórico (passando codPessoa atual)
-            _service.AtualizarStatusComHistorico(CodDemanda, "Resolvida", CodPessoaAtual);
-            CarregarTudo();
+                txtResposta.Text = string.Empty;
+                Response.Redirect("listDemand.aspx");
+            }
         }
 
         protected void btnEncerrar_Click(object sender, EventArgs e)
         {
-            _service.AtualizarStatusComHistorico(CodDemanda, "Encerrada", CodPessoaAtual);
-            CarregarTudo();
+            // MUDA STATUS PARA "CONCLUÍDA" (23)
+            _service.AtualizarStatusComHistorico(CodDemanda, 23, CodPessoaAtual);
+            Response.Redirect("listDemand.aspx");
         }
 
         protected void btnReabrir_Click(object sender, EventArgs e)
         {
-            _service.AtualizarStatusComHistorico(CodDemanda, "Aberta", CodPessoaAtual);
-            CarregarTudo();
+            // Mostra o painel de reabertura em vez de fazer direto
+            pnlReabertura.Visible = true;
+            btnReabrir.Visible = false; // Esconde o botão original
+        }
+
+        // NOVO MÉTODO: Confirmar reabertura com mensagem
+        protected void btnConfirmarReabertura_Click(object sender, EventArgs e)
+        {
+            var motivo = txtMotivoReabertura.Text?.Trim();
+
+            if (!string.IsNullOrEmpty(motivo))
+            {
+                // SALVA O MOTIVO DA REABERTURA COMO ACOMPANHAMENTO
+                _service.AdicionarAcompanhamento(CodDemanda, CodPessoaAtual, "Motivo da reabertura: " + motivo);
+
+                // MUDA STATUS PARA "ABERTA" (17) - VOLTA PARA O DESTINATÁRIO
+                _service.AtualizarStatusComHistorico(CodDemanda, 17, CodPessoaAtual);
+
+                Response.Redirect("listDemand.aspx");
+            }
+            else
+            {
+                // Mostrar mensagem de erro se não preencheu o motivo
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Por favor, digite o motivo da reabertura.');", true);
+            }
         }
     }
 }

@@ -120,8 +120,8 @@ SELECT
     sit.DescEstrutura AS StatusNome,
     (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
     d.DataDemanda AS DataSolicitacao,
-    d.CodPessoaSolicitacao,
-    d.CodPessoaAprovacao -- ESSE CAMPO É CRUCIAL
+    d.CodPessoaSolicitacao,  -- ← ESTE CAMPO ESTAVA FALTANDO
+    d.CodPessoaAprovacao     -- ← ESTE CAMPO ESTAVA FALTANDO
 FROM dbo.Demanda d
 INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
 INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao

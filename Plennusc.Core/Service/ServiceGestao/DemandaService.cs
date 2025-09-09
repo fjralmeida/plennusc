@@ -173,8 +173,16 @@ namespace Plennusc.Core.Service.ServiceGestao
                         cmd.Parameters.AddWithValue("@Titulo", dto.Titulo ?? "");
                         cmd.Parameters.AddWithValue("@TextoDemanda", dto.TextoDemanda ?? "");
                         cmd.Parameters.AddWithValue("@Conf_RequerAprovacao", dto.Conf_RequerAprovacao);
-                        cmd.Parameters.AddWithValue("@CodPessoaAprovacao",
-                            dto.CodPessoaAprovacao > 0 ? dto.CodPessoaAprovacao : dto.CodPessoaSolicitacao);
+
+                        // MODIFICAÇÃO: Se não tem aprovador específico, usa NULL
+                        if (dto.CodPessoaAprovacao.HasValue && dto.CodPessoaAprovacao > 0)
+                        {
+                            cmd.Parameters.AddWithValue("@CodPessoaAprovacao", dto.CodPessoaAprovacao.Value);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@CodPessoaAprovacao", DBNull.Value);
+                        }
 
                         var pPrazo = cmd.Parameters.Add("@DataPrazoMaximo", SqlDbType.DateTime);
                         pPrazo.Value = (object)dto.DataPrazoMaximo ?? DBNull.Value;
@@ -322,7 +330,9 @@ namespace Plennusc.Core.Service.ServiceGestao
                             StatusNome = rd.IsDBNull(rd.GetOrdinal("StatusNome")) ? null : rd.GetString(rd.GetOrdinal("StatusNome")),
                             StatusCodigo = rd.IsDBNull(rd.GetOrdinal("StatusCodigo")) ? (int?)null : rd.GetInt32(rd.GetOrdinal("StatusCodigo")),
                             Solicitante = rd.IsDBNull(rd.GetOrdinal("Solicitante")) ? null : rd.GetString(rd.GetOrdinal("Solicitante")),
-                            DataSolicitacao = rd.IsDBNull(rd.GetOrdinal("DataSolicitacao")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("DataSolicitacao"))
+                            DataSolicitacao = rd.IsDBNull(rd.GetOrdinal("DataSolicitacao")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("DataSolicitacao")),
+                            CodPessoaSolicitacao = rd.IsDBNull(rd.GetOrdinal("CodPessoaSolicitacao")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodPessoaSolicitacao")),
+                            CodPessoaAprovacao = rd.IsDBNull(rd.GetOrdinal("CodPessoaAprovacao")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodPessoaAprovacao"))
                         };
                         return dto;
                     }
@@ -401,40 +411,36 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
         }
 
-        public void AtualizarStatusComHistorico(int codDemanda, string novoStatus, int codPessoaAlteracao)
+        public void AtualizarStatusComHistorico(int codDemanda, int novoStatusCodigo, int codPessoaAlteracao)
         {
             using (var con = Open())
             {
-                int codAnterior = 0;
-                using (var sel = new SqlCommand(Demanda.SelectStatusCodigo, con))
+                // 1. PEGA O STATUS ATUAL
+                int codStatusAtual = 0;
+                using (var cmdStatus = new SqlCommand("SELECT CodEstr_SituacaoDemanda FROM Demanda WHERE CodDemanda = @CodDemanda", con))
                 {
-                    sel.Parameters.AddWithValue("@CodDemanda", codDemanda);
-                    var o = sel.ExecuteScalar();
-                    if (o != null && o != DBNull.Value) codAnterior = Convert.ToInt32(o);
+                    cmdStatus.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                    var resultado = cmdStatus.ExecuteScalar();
+                    if (resultado != null && resultado != DBNull.Value)
+                        codStatusAtual = Convert.ToInt32(resultado);
                 }
 
-                using (var upd = new SqlCommand(Demanda.AtualizarStatus, con))
+                // 2. ATUALIZA O STATUS
+                using (var cmdUpdate = new SqlCommand("UPDATE Demanda SET CodEstr_SituacaoDemanda = @NovoStatus WHERE CodDemanda = @CodDemanda", con))
                 {
-                    upd.Parameters.AddWithValue("@CodDemanda", codDemanda);
-                    upd.Parameters.AddWithValue("@NovoStatus", novoStatus);
-                    upd.ExecuteNonQuery();
+                    cmdUpdate.Parameters.AddWithValue("@NovoStatus", novoStatusCodigo);
+                    cmdUpdate.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                    cmdUpdate.ExecuteNonQuery();
                 }
 
-                int codAtual = 0;
-                using (var sel2 = new SqlCommand(Demanda.SelectStatusCodigo, con))
+                // 3. REGISTRA NO HISTÓRICO
+                using (var cmdHist = new SqlCommand("INSERT INTO DemandaHistorico (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao) VALUES (@CodDemanda, @CodAnterior, @CodAtual, @CodPessoa, GETDATE())", con))
                 {
-                    sel2.Parameters.AddWithValue("@CodDemanda", codDemanda);
-                    var o = sel2.ExecuteScalar();
-                    if (o != null && o != DBNull.Value) codAtual = Convert.ToInt32(o);
-                }
-
-                using (var ins = new SqlCommand(Demanda.InsertDemandaHistorico, con))
-                {
-                    ins.Parameters.AddWithValue("@CodDemanda", codDemanda);
-                    ins.Parameters.AddWithValue("@CodAnterior", codAnterior);
-                    ins.Parameters.AddWithValue("@CodAtual", codAtual);
-                    ins.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoaAlteracao);
-                    ins.ExecuteNonQuery();
+                    cmdHist.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                    cmdHist.Parameters.AddWithValue("@CodAnterior", codStatusAtual);
+                    cmdHist.Parameters.AddWithValue("@CodAtual", novoStatusCodigo);
+                    cmdHist.Parameters.AddWithValue("@CodPessoa", codPessoaAlteracao);
+                    cmdHist.ExecuteNonQuery();
                 }
             }
         }

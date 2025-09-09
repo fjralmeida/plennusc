@@ -42,11 +42,21 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void ddlCategoria_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ddlSubtipo.DataSource = _svc.GetSubtiposDemanda(int.Parse(ddlCategoria.SelectedValue));
-            ddlSubtipo.DataValueField = "Value";
-            ddlSubtipo.DataTextField = "Text";
-            ddlSubtipo.DataBind();
+            if (!string.IsNullOrEmpty(ddlCategoria.SelectedValue) &&
+                int.TryParse(ddlCategoria.SelectedValue, out int categoriaId))
+            {
+                ddlSubtipo.DataSource = _svc.GetSubtiposDemanda(categoriaId);
+                ddlSubtipo.DataValueField = "Value";
+                ddlSubtipo.DataTextField = "Text";
+                ddlSubtipo.DataBind();
+            }
+            else
+            {
+                ddlSubtipo.DataSource = null;
+                ddlSubtipo.DataBind();
+            }
             ddlSubtipo.Items.Insert(0, new ListItem("Todos", ""));
+            BindGrid();
         }
 
         protected void btnFiltrar_Click(object sender, EventArgs e) => BindGrid();
@@ -61,9 +71,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CodCategoria = string.IsNullOrEmpty(ddlCategoria.SelectedValue) ? (int?)null : int.Parse(ddlCategoria.SelectedValue),
                 CodSubtipo = string.IsNullOrEmpty(ddlSubtipo.SelectedValue) ? (int?)null : int.Parse(ddlSubtipo.SelectedValue),
                 NomeSolicitante = txtSolicitante.Text.Trim(),
-                Visibilidade = "M" 
+                Visibilidade = "M" // ← SUA LÓGICA ORIGINAL: MOSTRAR APENAS DO USUÁRIO
             };
-
 
             var lista = _svc.ListarDemandas(filtro);
             gvDemandas.DataSource = lista;
@@ -84,7 +93,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnNovaDemanda_Click(object sender, EventArgs e)
         {
-
+            Response.Redirect("demand.aspx");
         }
     }
 }
