@@ -353,6 +353,37 @@ justify-content: space-around;
     }
 </script>
 
+    <script>
+    function showToastErroObrigatorio() {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Preencha todos os campos obrigatórios.',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    }
+    function rolarParaPrimeiroCampoInvalido(validationGroup) {
+    // pega todos os validators do grupo
+    var validators = Page_Validators;
+    for (var i = 0; i < validators.length; i++) {
+        var v = validators[i];
+        if (v.validationGroup === validationGroup && !v.isvalid) {
+            var campo = document.getElementById(v.controltovalidate);
+            if (campo) {
+                campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                campo.focus();
+                break; // rola só para o primeiro
+            }
+        }
+    }
+}
+
+    </script>
+
+
 </asp:Content>
 
 
@@ -581,8 +612,13 @@ justify-content: space-around;
 
             <!-- SALVAR -->
             <div class="text-center mt-3">
-                <asp:Button ID="btnSalvarUsuario" runat="server" Text="Salvar Usuário" CssClass="btn btn-success"
-                    ValidationGroup="Cadastro" OnClick="btnSalvarUsuario_Click" />
+              <asp:Button ID="btnSalvarUsuario" runat="server" Text="Salvar Usuário" 
+    CssClass="btn btn-success"
+    ValidationGroup="Cadastro"
+    OnClick="btnSalvarUsuario_Click"
+   OnClientClick="if (!Page_ClientValidate('Cadastro')) { showToastErroObrigatorio(); rolarParaPrimeiroCampoInvalido('Cadastro'); return false; }" />
+
+
             </div>
         </asp:Panel>
 
