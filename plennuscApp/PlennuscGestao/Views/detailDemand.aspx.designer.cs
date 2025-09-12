@@ -24,6 +24,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Label lblTitulo;
 
         /// <summary>
+        /// Controle lblStatusBadge.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblStatusBadge;
+
+        /// <summary>
         /// Controle lblTexto.
         /// </summary>
         /// <remarks>
@@ -31,15 +40,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTexto;
-
-        /// <summary>
-        /// Controle lblStatus.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStatus;
 
         /// <summary>
         /// Controle lblSolicitante.
@@ -60,13 +60,13 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Label lblDataSolicitacao;
 
         /// <summary>
-        /// Controle rptHistorico.
+        /// Controle btnEncerrar.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptHistorico;
+        protected global::System.Web.UI.WebControls.Button btnEncerrar;
 
         /// <summary>
         /// Controle rptAcompanhamentos.
@@ -78,75 +78,39 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Repeater rptAcompanhamentos;
 
         /// <summary>
-        /// Controle btnEncerrar.
+        /// Controle editorSection.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnEncerrar;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl editorSection;
 
         /// <summary>
-        /// Controle btnReabrir.
+        /// Controle txtNovoAcompanhamento.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnReabrir;
+        protected global::System.Web.UI.WebControls.TextBox txtNovoAcompanhamento;
 
         /// <summary>
-        /// Controle pnlResposta.
+        /// Controle btnAdicionarAcompanhamento.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlResposta;
+        protected global::System.Web.UI.WebControls.Button btnAdicionarAcompanhamento;
 
         /// <summary>
-        /// Controle txtResposta.
+        /// Controle rptHistorico.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtResposta;
-
-        /// <summary>
-        /// Controle btnResponder.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnResponder;
-
-        /// <summary>
-        /// Controle pnlReabertura.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlReabertura;
-
-        /// <summary>
-        /// Controle txtMotivoReabertura.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMotivoReabertura;
-
-        /// <summary>
-        /// Controle btnConfirmarReabertura.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnConfirmarReabertura;
+        protected global::System.Web.UI.WebControls.Repeater rptHistorico;
     }
 }

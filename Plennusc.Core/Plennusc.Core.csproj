@@ -65,7 +65,9 @@
     <Compile Include="Models\ModelsGestao\DadosMensagemPriceTable.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagensCsvPlanium.cs" />
     <Compile Include="Models\ModelsGestao\DataInsertionPriceTableMessage.cs" />
+    <Compile Include="Models\ModelsGestao\DemandaComLimite.cs" />
     <Compile Include="Models\ModelsGestao\DemandaCreate.cs" />
+    <Compile Include="Models\ModelsGestao\DemandaCriticaInfo.cs" />
     <Compile Include="Models\ModelsGestao\DemandaDto.cs" />
     <Compile Include="Models\ModelsGestao\DemandaFiltro.cs" />
     <Compile Include="Models\ModelsGestao\DemandaListDto.cs" />

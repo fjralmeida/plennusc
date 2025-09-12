@@ -20,6 +20,14 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (!IsPostBack)
             {
+                // DEIXE APENAS AS 2 OPÇÕES QUE EXISTEM NO ASPX
+                ddlVisibilidade.Items.Clear();
+                ddlVisibilidade.Items.Add(new ListItem("Meu Setor", "S"));
+                ddlVisibilidade.Items.Add(new ListItem("Minhas Demandas", "M"));
+                ddlVisibilidade.SelectedValue = "S"; // Default: Meu Setor
+
+                ddlVisibilidade.SelectedValue = "T";
+
                 CarregarFiltros();
                 BindGrid();
             }
@@ -59,6 +67,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             BindGrid();
         }
 
+        // NOVO MÉTODO: Evento do dropdown de visualização
+        protected void ddlVisibilidade_Changed(object sender, EventArgs e)
+        {
+            BindGrid();
+        }
+
         protected void btnFiltrar_Click(object sender, EventArgs e) => BindGrid();
 
         private void BindGrid()
@@ -71,12 +85,18 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CodCategoria = string.IsNullOrEmpty(ddlCategoria.SelectedValue) ? (int?)null : int.Parse(ddlCategoria.SelectedValue),
                 CodSubtipo = string.IsNullOrEmpty(ddlSubtipo.SelectedValue) ? (int?)null : int.Parse(ddlSubtipo.SelectedValue),
                 NomeSolicitante = txtSolicitante.Text.Trim(),
-                Visibilidade = "M" // ← SUA LÓGICA ORIGINAL: MOSTRAR APENAS DO USUÁRIO
+                Visibilidade = ddlVisibilidade.SelectedValue
             };
+
+            System.Diagnostics.Debug.WriteLine("Filtro.CodSetor: " + filtro.CodSetor);
+            System.Diagnostics.Debug.WriteLine("Filtro.Visibilidade: " + filtro.Visibilidade);
 
             var lista = _svc.ListarDemandas(filtro);
             gvDemandas.DataSource = lista;
             gvDemandas.DataBind();
+
+            System.Diagnostics.Debug.WriteLine("Total de resultados: " + lista.Count);
+            System.Diagnostics.Debug.WriteLine("=== FIM DEBUG ===");
         }
 
         protected void gvDemandas_PageIndexChanging(object sender, GridViewPageEventArgs e)

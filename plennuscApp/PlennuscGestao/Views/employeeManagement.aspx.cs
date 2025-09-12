@@ -188,7 +188,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string sobrenome = txtSobrenome.Text.Trim();
                 string apelido = txtApelido.Text.Trim();
                 string sexo = ddlSexo.SelectedValue.Trim();
-                string cpf = txtDocCPF.Text.Trim();
+                string cpf = txtDocCPF.Text.Replace("." ," ").Replace("-", "").Trim();
                 string rg = txtDocRG.Text.Trim();
                 string tituloEleitor = txtTitulo.Text.Trim();
                 string zona = txtZona.Text.Trim();

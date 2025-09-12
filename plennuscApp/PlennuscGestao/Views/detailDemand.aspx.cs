@@ -2,6 +2,8 @@
 using Plennusc.Core.Service.ServiceGestao;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -12,15 +14,16 @@ namespace appWhatsapp.PlennuscGestao.Views
     public partial class detailDemand : System.Web.UI.Page
     {
         private readonly DemandaService _service = new DemandaService("Plennus");
-
         private int CodDemanda => Convert.ToInt32(Request.QueryString["id"]);
         private int CodPessoaAtual => Convert.ToInt32(Session["CodPessoa"] ?? 0);
+        private bool DemandaFechada => (demandaAtual?.StatusCodigo == 23); // 23 = Status "Concluída"
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 CarregarTudo();
+                ConfigurarFormularioAcompanhamento();
             }
         }
 
@@ -41,7 +44,19 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 lblTitulo.Text = demandaAtual.Titulo;
                 lblTexto.Text = demandaAtual.TextoDemanda;
-                lblStatus.Text = demandaAtual.StatusNome;
+
+                // Configurar o badge de status
+                if (DemandaFechada)
+                {
+                    lblStatusBadge.Text = "Fechada";
+                    lblStatusBadge.CssClass = "status-badge status-closed";
+                }
+                else
+                {
+                    lblStatusBadge.Text = "Em andamento";
+                    lblStatusBadge.CssClass = "status-badge status-open";
+                }
+
                 lblSolicitante.Text = demandaAtual.Solicitante;
                 lblDataSolicitacao.Text = demandaAtual.DataSolicitacao?.ToString("dd/MM/yyyy") ?? string.Empty;
             }
@@ -70,69 +85,53 @@ namespace appWhatsapp.PlennuscGestao.Views
             int codUsuario = CodPessoaAtual;
 
             bool ehSolicitante = (demandaAtual.CodPessoaSolicitacao == codUsuario);
-            bool ehDestinatario = (demandaAtual.CodPessoaAprovacao == codUsuario);
 
-            // REGRAS:
-            bool podeResponder = ehDestinatario && (statusCodigo == 17); // Aberta
-            bool podeEncerrar = ehSolicitante && (statusCodigo == 18);   // Em andamento
-            bool podeReabrir = ehSolicitante && (statusCodigo == 18);    // Em andamento
+            // Só mostra botão de encerrar para quem abriu E se status for "Em andamento"
+            bool podeEncerrar = ehSolicitante && (statusCodigo == 18);
 
             btnEncerrar.Visible = podeEncerrar;
-            btnReabrir.Visible = podeReabrir;
-            pnlResposta.Visible = podeResponder;
-            pnlReabertura.Visible = false; // Inicialmente escondido
         }
 
-        protected void btnResponder_Click(object sender, EventArgs e)
+        private void ConfigurarFormularioAcompanhamento()
         {
-            var texto = txtResposta.Text?.Trim();
+            if (DemandaFechada)
+            {
+                // Desabilitar apenas os controles que existem
+                txtNovoAcompanhamento.Enabled = false;
+                txtNovoAcompanhamento.Attributes["placeholder"] = "Demanda fechada - não é possível adicionar acompanhamentos";
+                btnAdicionarAcompanhamento.Enabled = false;
+                btnAdicionarAcompanhamento.CssClass = "btn btn-secondary w-100";
+                btnAdicionarAcompanhamento.Text = "Demanda Fechada";
+            }
+        }
+
+        protected void btnAdicionarAcompanhamento_Click(object sender, EventArgs e)
+        {
+            // Verificar se a demanda está fechada
+            if (DemandaFechada)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "demandaFechada",
+                    "alert('Esta demanda está fechada. Não é possível adicionar acompanhamentos.');", true);
+                return;
+            }
+
+            var texto = txtNovoAcompanhamento.Text?.Trim();
             if (!string.IsNullOrEmpty(texto))
             {
-                // SALVA A RESPOSTA
+                // SALVA O ACOMPANHAMENTO
                 _service.AdicionarAcompanhamento(CodDemanda, CodPessoaAtual, texto);
 
-                // MUDA STATUS PARA "EM ANDAMENTO" (18) - VOLTA PARA QUEM ABRIU
-                _service.AtualizarStatusComHistorico(CodDemanda, 18, CodPessoaAtual);
-
-                txtResposta.Text = string.Empty;
-                Response.Redirect("listDemand.aspx");
+                // LIMPA O CAMPO E RECARREGA
+                txtNovoAcompanhamento.Text = string.Empty;
+                CarregarAcompanhamentos(); // Atualiza a lista
             }
         }
 
         protected void btnEncerrar_Click(object sender, EventArgs e)
         {
-            // MUDA STATUS PARA "CONCLUÍDA" (23)
+            // MUDA STATUS PARA "CONCLUÍDA" (23) - DEMANDA FINALIZADA
             _service.AtualizarStatusComHistorico(CodDemanda, 23, CodPessoaAtual);
             Response.Redirect("listDemand.aspx");
-        }
-
-        protected void btnReabrir_Click(object sender, EventArgs e)
-        {
-            // Mostra o painel de reabertura em vez de fazer direto
-            pnlReabertura.Visible = true;
-            btnReabrir.Visible = false; // Esconde o botão original
-        }
-
-        // NOVO MÉTODO: Confirmar reabertura com mensagem
-        protected void btnConfirmarReabertura_Click(object sender, EventArgs e)
-        {
-            var motivo = txtMotivoReabertura.Text?.Trim();
-
-            if (!string.IsNullOrEmpty(motivo))
-            {
-                // SALVA O MOTIVO DA REABERTURA COMO ACOMPANHAMENTO
-                _service.AdicionarAcompanhamento(CodDemanda, CodPessoaAtual, "Motivo da reabertura: " + motivo);
-
-                // MUDA STATUS PARA "ABERTA" (17) - VOLTA PARA O DESTINATÁRIO
-                _service.AtualizarStatusComHistorico(CodDemanda, 17, CodPessoaAtual);
-
-                Response.Redirect("listDemand.aspx");
-            }
-            else
-            {
-                // Mostrar mensagem de erro se não preencheu o motivo
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Por favor, digite o motivo da reabertura.');", true);
-            }
         }
     }
 }

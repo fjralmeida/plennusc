@@ -1,80 +1,488 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="listDemand.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.listDemand" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #83ceee;
+            --primary-hover: #0d62c9;
+            --success: #4cb07a;
+            --success-hover: #3b8b65;
+            --gray-50: #f8f9fa;
+            --gray-100: #f1f3f4;
+            --gray-200: #e8eaed;
+            --gray-300: #dadce0;
+            --gray-400: #bdc1c6;
+            --gray-500: #9aa0a6;
+            --gray-600: #80868b;
+            --gray-700: #5f6368;
+            --gray-800: #3c4043;
+            --gray-900: #202124;
+            --border-radius: 8px;
+            --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        body {
+            background: var(--gray-100);
+            font-family: 'Roboto', sans-serif;
+            color: var(--gray-800);
+            line-height: 1.5;
+        }
+
+        .container-main {
+            max-width: 2206px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--gray-800);
+            margin: 0;
+        }
+
+        .title-icon {
+            background: var(--primary);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--success);
+            border: none;
+            color: white;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--success-hover);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Filtros - CORREÇÃO PRINCIPAL AQUI */
+        .filters-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            padding: 20px;
+        }
+
+        .filters-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-section {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr); /* 6 colunas de tamanho igual */
+            gap: 12px;
+            align-items: end; /* Alinha todos os itens pela base */
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+            white-space: nowrap;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: var(--transition);
+            background: white;
+            height: 40px; /* Altura fixa para todos os campos */
+            box-sizing: border-box;
+        }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        /* BOTÃO - CORREÇÃO DO ALINHAMENTO */
+        .btn-filter-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+        }
+
+        .btn-filter {
+            background: var(--success);
+            border: none;
+            color: white;
+            font-weight: 500;
+            padding: 10px 16px;
+            border-radius: 4px;
+            transition: var(--transition);
+            height: 40px; /* Mesma altura dos campos */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 28px; /* Compensa a altura do label */
+        }
+
+        .btn-filter:hover {
+            background: var(--success-hover);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Resultados */
+        .results-info {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin-bottom: 16px;
+            padding: 8px 0;
+        }
+
+        /* Tabela */
+        .grid-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .custom-grid {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-grid th {
+            background: var(--gray-50);
+            padding: 16px;
+            text-align: left;
+            font-weight: 500;
+            color: var(--gray-700);
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 14px;
+        }
+
+        .custom-grid td {
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        .custom-grid tr:last-child td {
+            border-bottom: none;
+        }
+
+        .custom-grid tr:hover {
+            background: var(--gray-50);
+        }
+
+        /* Badges de status */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Botões de ação */
+        .btn-action {
+            background: none;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+        }
+
+        .btn-action:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+            text-decoration: none;
+        }
+
+        /* Paginação */
+        .pagination-container {
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Estilos para a paginação do GridView */
+        .custom-grid .pager table {
+            margin: 0 auto;
+        }
+
+        .custom-grid .pager td {
+            padding: 4px;
+            border: none;
+        }
+
+        .custom-grid .pager a, 
+        .custom-grid .pager span {
+            padding: 6px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            margin: 0 2px;
+            text-decoration: none;
+            color: var(--gray-700);
+            display: inline-block;
+        }
+
+        .custom-grid .pager a:hover {
+            background: var(--gray-100);
+        }
+
+        .custom-grid .pager span {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .filter-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .custom-grid {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .custom-grid th, 
+            .custom-grid td {
+                padding: 12px 8px;
+            }
+            
+            .btn-filter {
+                margin-top: 0;
+            }
+        }
+    </style>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div class="container-main">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="title-icon">
+                    <i class="bi bi-clipboard-check"></i>
+                </span>
+                Lista de Demandas
+            </h1>
+            <asp:Button ID="btnNovaDemanda" runat="server" CssClass="btn-primary"
+                        Text="Nova Demanda" OnClick="btnNovaDemanda_Click" />
+        </div>
 
-     <div class="container-fluid py-3">
+        <!-- Filtros -->
+        <div class="filters-card">
+            <h3 class="filters-title">
+                <i class="bi bi-funnel"></i>
+                Filtros
+            </h3>
+            <div class="filter-section">
+                <!-- Dropdown de Visualização -->
+                <div class="filter-item">
+                    <label class="form-label">Visualização</label>
+                    <asp:DropDownList ID="ddlVisibilidade" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlVisibilidade_Changed">
+                        <asp:ListItem Value="S" Text="Meu Setor" Selected="True" />
+                        <asp:ListItem Value="M" Text="Minhas Demandas" />
+                    </asp:DropDownList>
+                </div>
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="mb-0">📋 Demandas</h2>
-      <asp:Button ID="btnNovaDemanda" runat="server" CssClass="btn btn-primary"
-                  Text="+ Nova Demanda" OnClick="btnNovaDemanda_Click" />
+                <div class="filter-item">
+                    <label class="form-label">Status</label>
+                    <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select"></asp:DropDownList>
+                </div>
+
+                <div class="filter-item">
+                    <label class="form-label">Categoria</label>
+                    <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select"
+                                AutoPostBack="true" OnSelectedIndexChanged="ddlCategoria_SelectedIndexChanged"></asp:DropDownList>
+                </div>
+
+                <div class="filter-item">
+                    <label class="form-label">Subtipo</label>
+                    <asp:DropDownList ID="ddlSubtipo" runat="server" CssClass="form-select"></asp:DropDownList>
+                </div>
+
+                <div class="filter-item">
+                    <label class="form-label">Solicitante</label>
+                    <asp:TextBox ID="txtSolicitante" runat="server" CssClass="form-control" placeholder="Nome do solicitante"></asp:TextBox>
+                </div>
+
+                <!-- Container especial para o botão alinhado -->
+                <div class="btn-filter-container">
+                    <asp:Button ID="btnFiltrar" runat="server" CssClass="btn-filter"
+                                Text="Aplicar Filtros" OnClick="btnFiltrar_Click" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="results-info">
+            <asp:Label ID="lblResultados" runat="server"></asp:Label>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid-container">
+            <asp:GridView ID="gvDemandas" runat="server" CssClass="custom-grid"
+                        AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
+                        OnPageIndexChanging="gvDemandas_PageIndexChanging"
+                        OnRowCommand="gvDemandas_RowCommand">
+
+                <Columns>
+                    <asp:BoundField DataField="CodDemanda" HeaderText="ID" />
+                    <asp:BoundField DataField="Titulo" HeaderText="Título" />
+                    <asp:BoundField DataField="Categoria" HeaderText="Categoria" />
+                    <asp:BoundField DataField="Subtipo" HeaderText="Subtipo" />
+                    <asp:TemplateField HeaderText="Status">
+                        <ItemTemplate>
+                            <span class="status-badge">
+                                <%# Eval("Status") %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="Solicitante" HeaderText="Solicitante" />
+                    <asp:BoundField DataField="DataSolicitacao" HeaderText="Data" DataFormatString="{0:dd/MM/yyyy}" />
+                    <asp:TemplateField HeaderText="Ações">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
+                                        CommandName="Ver" CommandArgument='<%# Eval("CodDemanda") %>'>
+                                <i class="bi bi-eye"></i> Ver
+                            </asp:LinkButton>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+
+                <PagerStyle CssClass="pagination-container" />
+                <HeaderStyle CssClass="grid-header" />
+            </asp:GridView>
+        </div>
     </div>
 
-    <!-- Filtros -->
-    <div class="card mb-3 shadow-sm">
-      <div class="card-body row g-3 align-items-end">
+    <script>
+        // Script para colorir os badges de status baseado no texto
+        document.addEventListener('DOMContentLoaded', function () {
+            // Aguardar o carregamento completo da grid
+            setTimeout(function () {
+                colorStatusBadges();
+            }, 100);
+        });
 
-        <div class="col-md-3">
-          <label for="ddlVisibilidade" class="form-label">Visibilidade</label>
-          <asp:DropDownList ID="ddlVisibilidade" runat="server" CssClass="form-select">
-            <asp:ListItem Value="T" Text="Todas"></asp:ListItem>
-            <asp:ListItem Value="M" Text="Minhas"></asp:ListItem>
-            <asp:ListItem Value="S" Text="Do meu setor"></asp:ListItem>
-          </asp:DropDownList>
-        </div>
+        function colorStatusBadges() {
+            const badges = document.querySelectorAll('.status-badge');
 
-        <div class="col-md-3">
-          <label for="ddlStatus" class="form-label">Status</label>
-          <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select"></asp:DropDownList>
-        </div>
+            badges.forEach(badge => {
+                const statusText = badge.textContent.trim().toLowerCase();
 
-        <div class="col-md-3">
-          <label for="ddlCategoria" class="form-label">Categoria</label>
-          <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select"
-                            AutoPostBack="true" OnSelectedIndexChanged="ddlCategoria_SelectedIndexChanged"></asp:DropDownList>
-        </div>
+                // Reset de estilos
+                badge.style.backgroundColor = '';
+                badge.style.color = '';
 
-        <div class="col-md-3">
-          <label for="ddlSubtipo" class="form-label">Subtipo</label>
-          <asp:DropDownList ID="ddlSubtipo" runat="server" CssClass="form-select"></asp:DropDownList>
-        </div>
+                // Aplicar cores baseadas no texto do status
+                if (statusText.includes('aberta')) {
+                    badge.style.backgroundColor = '#e6f4ea';
+                    badge.style.color = '#137333';
+                } else if (statusText.includes('andamento')) {
+                    badge.style.backgroundColor = '#e8f0fe';
+                    badge.style.color = '#1a73e8';
+                } else if (statusText.includes('concluída') || statusText.includes('concluida')) {
+                    badge.style.backgroundColor = '#fef7e0';
+                    badge.style.color = '#f9ab00';
+                } else if (statusText.includes('fechada')) {
+                    badge.style.backgroundColor = '#fce8e6';
+                    badge.style.color = '#c5221f';
+                } else {
+                    // Estilo padrão para outros status
+                    badge.style.backgroundColor = '#f1f3f4';
+                    badge.style.color = '#5f6368';
+                }
+            });
+        }
 
-        <div class="col-md-3">
-          <label for="txtSolicitante" class="form-label">Solicitante</label>
-          <asp:TextBox ID="txtSolicitante" runat="server" CssClass="form-control"></asp:TextBox>
-        </div>
+        // Reaplicar cores quando houver paginação ou filtros (usando MutationObserver)
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.addedNodes.length) {
+                    colorStatusBadges();
+                }
+            });
+        });
 
-        <div class="col-md-2">
-          <asp:Button ID="btnFiltrar" runat="server" CssClass="btn btn-secondary w-100"
-                      Text="Filtrar" OnClick="btnFiltrar_Click" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Grid -->
-    <asp:GridView ID="gvDemandas" runat="server" CssClass="table table-hover table-striped"
-                  AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-                  OnPageIndexChanging="gvDemandas_PageIndexChanging"
-                  OnRowCommand="gvDemandas_RowCommand">
-
-      <Columns>
-        <asp:BoundField DataField="CodDemanda" HeaderText="#" />
-        <asp:BoundField DataField="Titulo" HeaderText="Título" />
-        <asp:BoundField DataField="Categoria" HeaderText="Categoria" />
-        <asp:BoundField DataField="Subtipo" HeaderText="Subtipo" />
-        <asp:BoundField DataField="Status" HeaderText="Status" />
-        <asp:BoundField DataField="Solicitante" HeaderText="Solicitante" />
-        <asp:BoundField DataField="DataSolicitacao" HeaderText="Data" DataFormatString="{0:dd/MM/yyyy}" />
-        <asp:TemplateField HeaderText="Ações">
-          <ItemTemplate>
-            <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn btn-sm btn-outline-primary"
-                            CommandName="Ver" CommandArgument='<%# Eval("CodDemanda") %>'>👁 Ver</asp:LinkButton>
-          </ItemTemplate>
-        </asp:TemplateField>
-      </Columns>
-    </asp:GridView>
-
-  </div>
+        // Iniciar observação quando a página carregar
+        window.addEventListener('load', function () {
+            const gridContainer = document.querySelector('.grid-container');
+            if (gridContainer) {
+                observer.observe(gridContainer, { childList: true, subtree: true });
+            }
+        });
+    </script>
 </asp:Content>
