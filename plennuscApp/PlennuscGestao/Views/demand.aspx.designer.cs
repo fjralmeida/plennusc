@@ -15,13 +15,31 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
-        /// Controle rptDemandasCriticas.
+        /// Controle litTituloModal.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptDemandasCriticas;
+        protected global::System.Web.UI.WebControls.Literal litTituloModal;
+
+        /// <summary>
+        /// Controle litTextoModal.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litTextoModal;
+
+        /// <summary>
+        /// Controle rptDemandas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptDemandas;
 
         /// <summary>
         /// Controle lblMsg.

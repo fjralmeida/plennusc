@@ -152,6 +152,49 @@ namespace Plennusc.Core.Service.ServiceGestao
             return list;
         }
 
+        public List<DemandaCriticaInfo> GetDemandasAltasAbertas(int codPessoa)
+        {
+            var list = new List<DemandaCriticaInfo>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+        SELECT 
+            d.CodDemanda,
+            d.Titulo,
+            d.DataDemanda,
+            s.DescEstrutura AS Situacao
+        FROM dbo.Demanda d
+        INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+        WHERE d.CodPessoaSolicitacao = @CodPessoa
+          AND d.CodEstr_NivelPrioridade = 32 -- Alta
+          AND d.CodEstr_SituacaoDemanda IN (17, 18, 23)
+        ORDER BY d.DataDemanda DESC", con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        list.Add(new DemandaCriticaInfo
+                        {
+                            CodDemanda = rd.GetInt32(0),
+                            Titulo = rd.GetString(1),
+                            DataDemanda = rd.GetDateTime(2),
+                            Situacao = rd.GetString(3)
+                        });
+                }
+            }
+            return list;
+        }
+
+        public int ObterPrioridadeDemanda(int codDemanda)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand("SELECT CodEstr_NivelPrioridade FROM dbo.Demandas WHERE CodDemanda = @CodDemanda", con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
 
         public bool AlterarSituacaoDemanda(int codDemanda, int novaSituacao, int codPessoa)
         {
@@ -420,7 +463,9 @@ namespace Plennusc.Core.Service.ServiceGestao
                             Subtipo = rd.IsDBNull(3) ? null : rd.GetString(3),
                             Status = rd.IsDBNull(4) ? "" : rd.GetString(4),
                             Solicitante = rd.IsDBNull(5) ? "" : rd.GetString(5),
-                            DataSolicitacao = rd.IsDBNull(6) ? DateTime.MinValue : rd.GetDateTime(6)
+                            DataSolicitacao = rd.IsDBNull(6) ? DateTime.MinValue : rd.GetDateTime(6),
+                            Prioridade = rd.IsDBNull(7) ? "Normal" : rd.GetString(7),
+                            CodPrioridade = rd.IsDBNull(8) ? 0 : rd.GetInt32(8) 
                         };
                         lista.Add(dto);
                     }

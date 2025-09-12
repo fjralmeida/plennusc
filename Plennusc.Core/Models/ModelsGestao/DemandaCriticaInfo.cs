@@ -12,5 +12,7 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string Titulo { get; set; }
         public DateTime DataDemanda { get; set; }
         public string Situacao { get; set; }
+        public string Prioridade { get; set; }
+        public int CodPrioridade { get; set; } 
     }
 }

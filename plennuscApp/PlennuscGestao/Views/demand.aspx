@@ -334,76 +334,38 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <%--<asp:Panel ID="pnlDemandasCriticas" runat="server" Visible="false" CssClass="mt-4">
-        <div class="card">
-            <div class="card-header bg-warning text-white">
-                <h5 class="mb-0">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Você possui demandas críticas em aberto
-                </h5>
-            </div>
-            <div class="card-body">
-                <p>Para criar uma nova demanda crítica, você precisa fechar ou alterar a situação de uma das demandas existentes:</p>
-            
-                <asp:Repeater ID="rptDemandasCriticas" runat="server" OnItemDataBound="rptDemandasCriticas_ItemDataBound">
-                    <ItemTemplate>
-                        <div class="demanda-critica-item mb-3 p-3 border rounded">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h6><%# Eval("Titulo") %></h6>
-                                    <div class="text-muted small">
-                                        Data: <%# Eval("DataDemanda", "{0:dd/MM/yyyy}") %> | 
-                                        Situação: <span class="badge bg-info"><%# Eval("Situacao") %></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <asp:DropDownList ID="ddlSituacao" runat="server" CssClass="form-select form-select-sm">
-                                        <asp:ListItem Text="-- Selecionar --" Value="" Selected="True" />
-                                    </asp:DropDownList>
-                                    <asp:Button ID="btnAlterarSituacao" runat="server" Text="Alterar Situação"
-                                        CssClass="btn btn-primary btn-sm mt-2" 
-                                        CommandArgument='<%# Eval("CodDemanda") %>'
-                                        OnClick="btnAlterarSituacao_Click" />
-                                </div>
-                            </div>
-                        </div>
-                    </ItemTemplate>
-            </asp:Repeater>
-            </div>
-        </div>
-    </asp:Panel>--%>
+   
 
-    <!-- Modal para Demandas Críticas -->
-<div class="modal fade" id="modalDemandasCriticas" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalDemandas" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title text-white">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Você possui demandas críticas em aberto
+                    <asp:Literal ID="litTituloModal" runat="server"></asp:Literal>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body">
-                <p>Para criar uma nova demanda crítica, você precisa fechar ou alterar a situação de uma das demandas existentes:</p>
-                
-                <asp:Repeater ID="rptDemandasCriticas" runat="server" OnItemDataBound="rptDemandasCriticas_ItemDataBound">
+                <asp:Literal ID="litTextoModal" runat="server"></asp:Literal>
+
+                <asp:Repeater ID="rptDemandas" runat="server">
                     <ItemTemplate>
                         <div class="demanda-critica-item mb-3 p-3 border rounded">
                             <div class="row">
                                 <div class="col-md-8">
                                     <h6><%# Eval("Titulo") %></h6>
                                     <div class="text-muted small">
-                                        Data: <%# Eval("DataDemanda", "{0:dd/MM/yyyy}") %> | 
+                                        Data: <%# Eval("DataDemanda", "{0:dd/MM/yyyy}") %> |
                                         Situação: <span class="badge bg-info"><%# Eval("Situacao") %></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <asp:DropDownList ID="ddlSituacao" runat="server" CssClass="form-select form-select-sm">
-                                        <asp:ListItem Text="-- Selecionar --" Value="" Selected="True" />
+                                    <asp:DropDownList ID="ddlSituacaoItem" runat="server" CssClass="form-select form-select-sm">
+                                        <asp:ListItem Text="-- Selecionar --" Value="" />
                                     </asp:DropDownList>
-                                    <asp:Button ID="btnAlterarSituacao" runat="server" Text="Alterar Situação"
-                                        CssClass="btn btn-primary btn-sm mt-2" 
+                                    <asp:Button ID="btnAlterarSituacaoItem" runat="server" Text="Alterar Situação"
+                                        CssClass="btn btn-primary btn-sm mt-2"
                                         CommandArgument='<%# Eval("CodDemanda") %>'
                                         OnClick="btnAlterarSituacao_Click" />
                                 </div>
@@ -412,12 +374,18 @@
                     </ItemTemplate>
                 </asp:Repeater>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Botão oculto fallback (dispara modal via data-bs) -->
+<button id="btnAbrirModalHidden" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#modalDemandas"></button>
+
+
 
     <div class="container-main">
         <div class="demand-card">
@@ -564,26 +532,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Verificar se jQuery já está carregado, se não, carregar dinamicamente
-        if (typeof jQuery === 'undefined') {
-            console.log('jQuery não encontrado, carregando...');
-            var script = document.createElement('script');
-            script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
-            script.onload = function () {
-                console.log('jQuery carregado com sucesso');
-                // Agora carregar Bootstrap que depende do jQuery
-                var bootstrapScript = document.createElement('script');
-                bootstrapScript.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js';
-                document.head.appendChild(bootstrapScript);
-            };
-            document.head.appendChild(script);
-        } else {
-            console.log('jQuery já está carregado');
-        }
-    </script>
-
     <script>
         // Contador de caracteres
         function setupCharacterCounters() {
@@ -634,5 +582,23 @@
             setupCharacterCounters();
             autoResizeTextarea();
         });
+    </script>
+
+    <script>
+        // Debug: Verificar se Bootstrap está carregado
+        console.log('Bootstrap carregado:', typeof bootstrap !== 'undefined');
+        console.log('Modal element exists:', document.getElementById('modalDemandasCriticas') !== null);
+
+        // Função global para testar abertura do modal manualmente
+        function testarModal() {
+            const modalElement = document.getElementById('modalDemandasCriticas');
+            if (modalElement && typeof bootstrap !== 'undefined') {
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+                console.log('Modal aberto manualmente');
+            } else {
+                console.error('Não foi possível abrir o modal');
+            }
+        }
     </script>
 </asp:Content>

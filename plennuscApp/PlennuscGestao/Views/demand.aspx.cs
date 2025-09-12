@@ -93,8 +93,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (string.IsNullOrEmpty(ddlPrioridade.SelectedValue) || PrioridadesComLimites == null)
                 return true;
 
-            int prioridadeSelecionada;
-            if (!int.TryParse(ddlPrioridade.SelectedValue, out prioridadeSelecionada))
+            if (!int.TryParse(ddlPrioridade.SelectedValue, out int prioridadeSelecionada))
                 return true;
 
             var prioridade = PrioridadesComLimites.FirstOrDefault(p => (int)p.Value == prioridadeSelecionada);
@@ -107,19 +106,21 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     MostrarMensagemErro($"Você já atingiu o limite máximo de {prioridade.Limite} demanda(s) com prioridade '{prioridade.Text}'.");
 
-                    // SE FOR PRIORIDADE CRÍTICA, MOSTRAR MODAL COM DEMANDAS EXISTENTES
+                    // abre modal conforme prioridade
                     if (prioridadeSelecionada == 33)
                     {
-                        CarregarDemandasCriticas(); // Isso agora abre o modal automaticamente
+                        CarregarDemandasGenerica(isCritica: true);
+                    }
+                    else if (prioridadeSelecionada == 32)
+                    {
+                        CarregarDemandasGenerica(isCritica: false);
                     }
 
-                    // Resetar a seleção
                     ddlPrioridade.ClearSelection();
                     divPrazo.Style["display"] = "none";
                     return false;
                 }
 
-                // Mostrar campo de prazo para prioridades críticas e altas
                 if (prioridadeSelecionada == 33 || prioridadeSelecionada == 32)
                 {
                     divPrazo.Style["display"] = "block";
@@ -140,52 +141,96 @@ namespace appWhatsapp.PlennuscGestao.Views
             return true;
         }
 
-        private void CarregarDemandasCriticas()
+        private void CarregarDemandasGenerica(bool isCritica)
         {
             try
             {
-                var demandasCriticas = _svc.GetDemandasCriticasAbertas(CodPessoaAtual);
+                List<DemandaCriticaInfo> demandas;
+                if (isCritica)
+                    demandas = _svc.GetDemandasCriticasAbertas(CodPessoaAtual);
+                else
+                    demandas = _svc.GetDemandasAltasAbertas(CodPessoaAtual);
 
-                if (demandasCriticas.Any())
+                if (demandas == null || !demandas.Any())
                 {
-                    rptDemandasCriticas.DataSource = demandasCriticas;
-                    rptDemandasCriticas.DataBind();
+                    // opcional: log no cliente
+                    ScriptManager.RegisterStartupScript(Page, Page.GetType(), Guid.NewGuid().ToString(),
+                        "console.log('CarregarDemandasGenerica: lista vazia');", true);
+                    return;
+                }
 
-                    // Script que funciona com ou sem jQuery
-                    string script = @"
-                function openModal() {
-                    var modalElement = document.getElementById('modalDemandasCriticas');
-                    if (modalElement) {
-                        // Tentar com Bootstrap 5 primeiro
-                        if (typeof bootstrap !== 'undefined') {
-                            var modal = new bootstrap.Modal(modalElement);
-                            modal.show();
-                        } 
-                        // Fallback para jQuery se disponível
-                        else if (typeof $ !== 'undefined') {
-                            $('#modalDemandasCriticas').modal('show');
-                        }
-                        // Fallback direto para CSS
-                        else {
-                            modalElement.style.display = 'block';
-                            modalElement.classList.add('show');
+                // DataBind no repeater único
+                rptDemandas.DataSource = demandas;
+                rptDemandas.DataBind();
+
+                // Mensagens dinâmicas
+                if (isCritica)
+                {
+                    litTituloModal.Text = "<i class='bi bi-exclamation-triangle'></i> Você possui demandas CRÍTICAS em aberto";
+                    litTextoModal.Text = "<p>Para criar uma nova demanda CRÍTICA, você precisa fechar ou alterar a situação de uma das demandas existentes:</p>";
+                }
+                else
+                {
+                    litTituloModal.Text = "<i class='bi bi-exclamation-triangle'></i> Você possui demandas ALTAS em aberto";
+                    litTextoModal.Text = "<p>Para criar uma nova demanda ALTA, você precisa fechar ou alterar a situação de uma das demandas existentes:</p>";
+                }
+
+                // Script robusto com getOrCreateInstance + fallback por botão
+                string key = isCritica ? "AbrirModalCriticas" : "AbrirModalAltas";
+                string script = @"
+                (function() {
+                    console.log('>>> Iniciando abertura de modal (genérico)');
+                    function abrirInstancia() {
+                        try {
+                            var modalEl = document.getElementById('modalDemandas');
+                            if (!modalEl) { console.error('modalDemandas não encontrado'); return false; }
+                            if (window.bootstrap && typeof bootstrap.Modal !== 'undefined' && typeof bootstrap.Modal.getOrCreateInstance === 'function') {
+                                var inst = bootstrap.Modal.getOrCreateInstance(modalEl);
+                                inst.show();
+                                console.log('modalDemandas: show() chamado via getOrCreateInstance');
+                                return true;
+                            }
+                            // fallback: criar nova instância se getOrCreate não existir
+                            if (window.bootstrap && typeof bootstrap.Modal !== 'undefined') {
+                                var m = new bootstrap.Modal(modalEl);
+                                m.show();
+                                console.log('modalDemandas: show() chamado via new Modal() fallback');
+                                return true;
+                            }
+                            return false;
+                        } catch(e) {
+                            console.error('erro abrirInstancia:', e);
+                            return false;
                         }
                     }
-                }
-                
-                // Esperar um pouco antes de abrir
-                setTimeout(openModal, 100);
+                    function abrirPorBotao() {
+                        try {
+                            var btn = document.getElementById('btnAbrirModalHidden');
+                            if (btn) { btn.click(); console.log('modalDemandas: aberto por botão fallback'); return true; }
+                            console.error('botão fallback não encontrado');
+                            return false;
+                        } catch(e) {
+                            console.error('erro abrirPorBotao:', e);
+                            return false;
+                        }
+                    }
+                    setTimeout(function() {
+                        var ok = abrirInstancia();
+                        if (!ok) abrirPorBotao();
+                    }, 350);
+                })();
             ";
 
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AbrirModal",
-                        script, true);
-                }
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), key, script, true);
             }
             catch (Exception ex)
             {
-                MostrarMensagemErro($"Erro ao carregar demandas críticas: {ex.Message}");
+                MostrarMensagemErro($"Erro ao carregar demandas: {ex.Message}");
             }
         }
+
+
+
 
         protected void rptDemandasCriticas_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -348,14 +393,28 @@ namespace appWhatsapp.PlennuscGestao.Views
                     {
                         MostrarMensagemSucesso("Situação da demanda alterada com sucesso!");
 
-                        // Recarregar a lista e manter modal aberto
-                        CarregarDemandasCriticas();
+                        // Descobrir prioridade da demanda (32 = Alta, 33 = Crítica)
+                        int prioridadeDemanda = _svc.ObterPrioridadeDemanda(codDemanda);
 
-                        // Se não há mais demandas críticas, fechar modal
-                        if (!_svc.GetDemandasCriticasAbertas(CodPessoaAtual).Any())
+                        if (prioridadeDemanda == 33) // Crítica
                         {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModal",
-                                "$('#modalDemandasCriticas').modal('hide');", true);
+                            CarregarDemandasGenerica(true);
+
+                            if (!_svc.GetDemandasCriticasAbertas(CodPessoaAtual).Any())
+                            {
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModalCriticas",
+                                    "var m = bootstrap.Modal.getInstance(document.getElementById('modalDemandas')); if(m) m.hide();", true);
+                            }
+                        }
+                        else if (prioridadeDemanda == 32) // Alta
+                        {
+                            CarregarDemandasGenerica(false);
+
+                            if (!_svc.GetDemandasAltasAbertas(CodPessoaAtual).Any())
+                            {
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModalAltas",
+                                    "var m = bootstrap.Modal.getInstance(document.getElementById('modalDemandas')); if(m) m.hide();", true);
+                            }
                         }
                     }
                     else
@@ -373,6 +432,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 MostrarMensagemErro("Selecione uma situação válida.");
             }
         }
+
 
         // Método para exibir mensagens com SweetAlert2
         private void MostrarMensagemSucesso(string mensagem)

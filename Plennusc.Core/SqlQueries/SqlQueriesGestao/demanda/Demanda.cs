@@ -105,18 +105,22 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             WHERE CodSetor = @Setor";
 
         public const string ListarDemandasBase = @"
-            SELECT d.CodDemanda,
-                   d.Titulo,
-                   cat.DescEstrutura AS Categoria,
-                   sub.DescEstrutura AS Subtipo,
-                   sit.DescEstrutura AS Status,
-                   (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
-                   d.DataDemanda
+            SELECT 
+                d.CodDemanda,
+                d.Titulo,
+                cat.DescEstrutura AS Categoria,
+                sub.DescEstrutura AS Subtipo,
+                s.DescEstrutura AS Status,
+                p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+                d.DataDemanda AS DataSolicitacao,
+                pri.DescEstrutura AS Prioridade,  -- Nova coluna
+                d.CodEstr_NivelPrioridade AS CodPrioridade  -- Código para estilização
             FROM dbo.Demanda d
-            INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
-            INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
-            LEFT JOIN dbo.Estrutura sub ON sub.CodEstrutura = d.CodEstr_TipoDemanda
-            LEFT JOIN dbo.Estrutura cat ON cat.CodEstrutura = sub.CodEstruturaPai
+            INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+            INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+            INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+            LEFT JOIN dbo.Estrutura sub ON d.CodEstr_TipoDemanda = sub.CodEstrutura
+            LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura  -- Join com prioridade
             WHERE 1=1";
         public const string ObterDemandaPorId = @"
             SELECT 
@@ -215,6 +219,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             AND d.CodEstr_NivelPrioridade = 33
             AND d.CodEstr_SituacaoDemanda IN (17, 18, 23)
             ORDER BY d.DataDemanda DESC";
+
 
         public const string SituacoesParaFechamento = @"
             SELECT CodEstrutura AS Value, DescEstrutura AS Text

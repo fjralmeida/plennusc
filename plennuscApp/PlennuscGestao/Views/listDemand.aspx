@@ -288,6 +288,52 @@
             border-color: var(--primary);
         }
 
+        /* Estilos para badges de prioridade */
+.prioridade-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.prioridade-29 { /* Normal */
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.prioridade-30 { /* Baixa */
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.prioridade-31 { /* Média */
+    background-color: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffe0b2;
+}
+
+.prioridade-32 { /* Alta */
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.prioridade-33 { /* Crítica */
+    background-color: #fce4ec;
+    color: #ad1457;
+    border: 1px solid #f8bbd0;
+    font-weight: bold;
+}
+
+/* Se os códigos forem diferentes, ajuste conforme necessário */
+.prioridade-1 { background-color: #e3f2fd; color: #1565c0; } /* Baixa */
+.prioridade-2 { background-color: #fff3e0; color: #ef6c00; } /* Média */
+.prioridade-3 { background-color: #ffebee; color: #c62828; } /* Alta */
+.prioridade-4 { background-color: #fce4ec; color: #ad1457; font-weight: bold; } /* Crítica */
+
         /* Responsividade */
         @media (max-width: 1024px) {
             .filter-section {
@@ -391,18 +437,26 @@
             <asp:Label ID="lblResultados" runat="server"></asp:Label>
         </div>
 
-        <!-- Grid -->
         <div class="grid-container">
-            <asp:GridView ID="gvDemandas" runat="server" CssClass="custom-grid"
-                        AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-                        OnPageIndexChanging="gvDemandas_PageIndexChanging"
-                        OnRowCommand="gvDemandas_RowCommand">
+           <asp:GridView ID="gvDemandas" runat="server" CssClass="custom-grid"
+              AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
+              OnPageIndexChanging="gvDemandas_PageIndexChanging"
+              OnRowCommand="gvDemandas_RowCommand">
 
                 <Columns>
                     <asp:BoundField DataField="CodDemanda" HeaderText="ID" />
                     <asp:BoundField DataField="Titulo" HeaderText="Título" />
                     <asp:BoundField DataField="Categoria" HeaderText="Categoria" />
                     <asp:BoundField DataField="Subtipo" HeaderText="Subtipo" />
+        
+                    <asp:TemplateField HeaderText="Prioridade">
+                        <ItemTemplate>
+                            <span class='prioridade-badge prioridade-<%# Eval("CodPrioridade") %>'>
+                                <%# Eval("Prioridade") %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+        
                     <asp:TemplateField HeaderText="Status">
                         <ItemTemplate>
                             <span class="status-badge">
@@ -410,8 +464,10 @@
                             </span>
                         </ItemTemplate>
                     </asp:TemplateField>
+        
                     <asp:BoundField DataField="Solicitante" HeaderText="Solicitante" />
                     <asp:BoundField DataField="DataSolicitacao" HeaderText="Data" DataFormatString="{0:dd/MM/yyyy}" />
+        
                     <asp:TemplateField HeaderText="Ações">
                         <ItemTemplate>
                             <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
