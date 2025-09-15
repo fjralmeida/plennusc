@@ -229,8 +229,68 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        protected void rptDemandas_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                DropDownList ddlNovaPrioridade = (DropDownList)e.Item.FindControl("ddlNovaPrioridade");
 
+                if (ddlNovaPrioridade != null && PrioridadesComLimites != null)
+                {
+                    // Filtrar apenas prioridades NÃO críticas/altas (33 e 32)
+                    var prioridadesPermitidas = PrioridadesComLimites
+                        .Where(p => p.Value != 33 && p.Value != 32)
+                        .ToList();
 
+                    ddlNovaPrioridade.DataSource = prioridadesPermitidas;
+                    ddlNovaPrioridade.DataValueField = "Value";
+                    ddlNovaPrioridade.DataTextField = "Text";
+                    ddlNovaPrioridade.DataBind();
+
+                    ddlNovaPrioridade.Items.Insert(0, new ListItem("Selecionar nova prioridade", ""));
+                }
+            }
+        }
+
+        protected void btnAlterarPrioridade_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            RepeaterItem item = (RepeaterItem)btn.NamingContainer;
+            DropDownList ddlNovaPrioridade = (DropDownList)item.FindControl("ddlNovaPrioridade");
+
+            if (string.IsNullOrEmpty(ddlNovaPrioridade.SelectedValue))
+            {
+                MostrarMensagemErro("Selecione uma nova prioridade.");
+                return;
+            }
+
+            int codDemanda = Convert.ToInt32(btn.CommandArgument);
+            int novaPrioridade = Convert.ToInt32(ddlNovaPrioridade.SelectedValue);
+
+            try
+            {
+                // Método para atualizar a prioridade da demanda
+                bool sucesso = _svc.AtualizarPrioridadeDemanda(codDemanda, novaPrioridade);
+
+                if (sucesso)
+                {
+                    // Recarregar o modal com as demandas atualizadas
+                    bool isCritica = litTituloModal.Text.Contains("CRÍTICAS");
+                    CarregarDemandasGenerica(isCritica);
+
+                    ScriptManager.RegisterStartupScript(Page, Page.GetType(), "AtualizarModal",
+                        "console.log('Prioridade alterada com sucesso!');", true);
+                }
+                else
+                {
+                    MostrarMensagemErro("Erro ao alterar a prioridade da demanda.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagemErro($"Erro: {ex.Message}");
+            }
+        }
 
         protected void rptDemandasCriticas_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -435,45 +495,43 @@ namespace appWhatsapp.PlennuscGestao.Views
 
 
         // Método para exibir mensagens com SweetAlert2
-        private void MostrarMensagemSucesso(string mensagem)
-        {
-            string script = $@"
-                Swal.fire({{
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'success',
-                    iconColor: '#28a745',
-                    title: 'Sucesso',
-                    text: '{mensagem.Replace("'", "\\'")}',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    customClass: {{ popup: 'toast-success' }}
-                }});
-            ";
+       private void MostrarMensagemSucesso(string mensagem)
+{
+    string script = $@"
+        Swal.fire({{
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Sucesso',
+            text: '{mensagem.Replace("'", "\\'")}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        }});
+    ";
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
-        }
+    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
+}
 
-        // Método para exibir mensagens de erro (atualizado)
-        private void MostrarMensagemErro(string mensagem, bool isError = true)
-        {
-            string script = $@"
-                Swal.fire({{
-                    toast: true,
-                    position: 'top-end',
-                    icon: '{(isError ? "error" : "warning")}',
-                    iconColor: '{(isError ? "#dc3545" : "#ffc107")}',
-                    title: '{(isError ? "Erro" : "Atenção")}',
-                    text: '{mensagem.Replace("'", "\\'")}',
-                    showConfirmButton: false,
-                    timer: 5000,
-                    timerProgressBar: true,
-                    customClass: {{ popup: 'toast-warn' }}
-                }});
-            ";
+private void MostrarMensagemErro(string mensagem, bool isError = true)
+{
+    string iconType = isError ? "error" : "warning";
+    string title = isError ? "Erro" : "Atenção";
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastNotificacao", script, true);
-        }
+    string script = $@"
+        Swal.fire({{
+            toast: true,
+            position: 'top-end',
+            icon: '{iconType}',
+            title: '{title}',
+            text: '{mensagem.Replace("'", "\\'")}',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true
+        }});
+    ";
+
+    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastErro", script, true);
+}
     }
 }

@@ -9,8 +9,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-
-    <style>
+<style>
         :root {
             --primary: #83ceee;
             --primary-hover: #0d62c9;
@@ -238,64 +237,8 @@
                 flex: 100%;
             }
         }
-
-        /* Toast (SweetAlert2) personalizado */
-        .swal2-container{ z-index:3000 !important; }
-        .swal2-container.swal2-top-end{ top:14px !important; right:14px !important; }
-        .toast-warn{
-            background:#fff !important; 
-            color:#374151 !important;
-            border:1px solid #e5e7eb !important;
-            border-left:6px solid #dc3545 !important;
-            border-radius:12px !important; 
-            box-shadow:0 10px 24px rgba(0,0,0,.08) !important; 
-            padding:10px 14px !important;
-            width: 380px !important;
-        }
-       /* Toast de Sucesso */
-        .toast-success {
-            background: #fff !important; 
-            color: #374151 !important;
-            border: 1px solid #e5e7eb !important;
-            border-left: 6px solid #28a745 !important;
-            border-radius: 12px !important; 
-            box-shadow: 0 10px 24px rgba(0,0,0,.08) !important; 
-            padding: 10px 14px !important;
-        }
-        .toast-success .swal2-title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            margin: 0 0 4px; 
-            color: #28a745;
-        }
-        .toast-success .swal2-html-container { 
-            font-size: 14px; 
-            margin: 0; 
-            opacity: .95; 
-            line-height: 1.4;
-        }
-        .toast-success .swal2-timer-progress-bar { 
-            background: #28a745 !important; 
-            height: 3px;
-        }
-
-        /* Toast de Alerta */
-        .toast-warn {
-            background: #fff !important; 
-            color: #374151 !important;
-            border: 1px solid #e5e7eb !important;
-            border-left: 6px solid #ffc107 !important;
-            border-radius: 12px !important; 
-            box-shadow: 0 10px 24px rgba(0,0,0,.08) !important; 
-            padding: 10px 14px !important;
-        }
-        .toast-warn .swal2-title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            margin: 0 0 4px; 
-            color: #ffc107;
-        }
-                .demanda-critica-item {
+     
+        .demanda-critica-item {
             background-color: #fff3cd;
             border-color: #ffeaa7 !important;
         }
@@ -329,6 +272,7 @@
 .modal.show .modal-dialog {
     transform: translate(0, 0);
 }
+
     </style>
 </asp:Content>
 
@@ -349,30 +293,30 @@
             <div class="modal-body">
                 <asp:Literal ID="litTextoModal" runat="server"></asp:Literal>
 
-                <asp:Repeater ID="rptDemandas" runat="server">
-                    <ItemTemplate>
-                        <div class="demanda-critica-item mb-3 p-3 border rounded">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h6><%# Eval("Titulo") %></h6>
-                                    <div class="text-muted small">
-                                        Data: <%# Eval("DataDemanda", "{0:dd/MM/yyyy}") %> |
-                                        Situação: <span class="badge bg-info"><%# Eval("Situacao") %></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <asp:DropDownList ID="ddlSituacaoItem" runat="server" CssClass="form-select form-select-sm">
-                                        <asp:ListItem Text="-- Selecionar --" Value="" />
-                                    </asp:DropDownList>
-                                    <asp:Button ID="btnAlterarSituacaoItem" runat="server" Text="Alterar Situação"
-                                        CssClass="btn btn-primary btn-sm mt-2"
-                                        CommandArgument='<%# Eval("CodDemanda") %>'
-                                        OnClick="btnAlterarSituacao_Click" />
-                                </div>
-                            </div>
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
+             <asp:Repeater ID="rptDemandas" runat="server" OnItemDataBound="rptDemandas_ItemDataBound">
+    <ItemTemplate>
+        <div class="demanda-critica-item mb-3 p-3 border rounded">
+            <div class="row">
+                <div class="col-md-8">
+                    <h6><%# Eval("Titulo") %></h6>
+                    <div class="text-muted small">
+                        Data: <%# Eval("DataDemanda", "{0:dd/MM/yyyy}") %> |
+                        Prioridade: <span class="badge bg-info"><%# Eval("Prioridade") %></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <asp:DropDownList ID="ddlNovaPrioridade" runat="server" CssClass="form-select form-select-sm">
+                        <asp:ListItem Text="-- Selecionar nova prioridade --" Value="" />
+                    </asp:DropDownList>
+                    <asp:Button ID="btnAlterarPrioridade" runat="server" Text="Alterar Prioridade"
+                        CssClass="btn btn-primary btn-sm mt-2"
+                        CommandArgument='<%# Eval("CodDemanda") %>'
+                        OnClick="btnAlterarPrioridade_Click" />
+                </div>
+            </div>
+        </div>
+    </ItemTemplate>
+</asp:Repeater>
             </div>
 
             <div class="modal-footer">

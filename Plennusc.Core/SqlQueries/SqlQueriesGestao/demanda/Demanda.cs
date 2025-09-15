@@ -227,5 +227,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             WHERE CodTipoEstrutura = @TipoSituacao
             AND CodEstrutura NOT IN (17, 18, 23)
             ORDER BY DescEstrutura";
+
+        public const string AlterarPrioridadeDemanda = @"
+            UPDATE Demanda 
+            SET CodEstr_NivelPrioridade = @NovaPrioridade 
+            WHERE CodDemanda = @CodDemanda";
     }
 }

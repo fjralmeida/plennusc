@@ -96,6 +96,17 @@ namespace Plennusc.Core.Service.ServiceGestao
             return list;
         }
 
+        public bool AtualizarPrioridadeDemanda(int codDemanda, int novaPrioridade)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.AlterarPrioridadeDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@NovaPrioridade", novaPrioridade);
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
         public int ContarDemandasPorPrioridade(int codPessoa, int prioridade)
         {
             using (var con = Open())
