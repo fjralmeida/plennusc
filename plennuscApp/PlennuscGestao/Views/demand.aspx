@@ -272,7 +272,17 @@
 .modal.show .modal-dialog {
     transform: translate(0, 0);
 }
+.file-item {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    background-color: #f8f9fa;
+}
 
+.file-item:hover {
+    background-color: #e9ecef;
+}
     </style>
 </asp:Content>
 
@@ -466,6 +476,43 @@
                         <div class="input-hint">
                             <span class="counter" id="cntDesc">0</span> caracteres
                         </div>
+                    </div>
+                </div>
+
+               <!-- Anexos -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="bi bi-paperclip section-icon"></i>
+                        Anexos
+                    </h3>
+                    <div class="form-group">
+                        <label class="form-label">Adicionar arquivos (Máx. 10MB cada)</label>
+        
+                        <!-- FileUpload ASP.NET -->
+                        <asp:FileUpload ID="fuAnexos" runat="server" CssClass="form-control" AllowMultiple="true" />
+                        <div class="input-hint">
+                            Formatos permitidos: PDF, Word, Excel, imagens (JPG, PNG, GIF)
+                        </div>
+        
+                        <!-- Lista de arquivos selecionados -->
+                        <asp:Panel ID="pnlArquivosSelecionados" runat="server" CssClass="mt-3" Visible="false">
+                            <h6>Arquivos selecionados:</h6>
+                            <asp:Repeater ID="rptArquivos" runat="server">
+                                <ItemTemplate>
+                                    <div class="file-item d-flex justify-content-between align-items-center p-2 mb-2 bg-light rounded">
+                                        <div>
+                                            <i class="bi bi-file-earmark"></i>
+                                            <asp:Label ID="lblNomeArquivo" runat="server" Text='<%# Eval("Nome") %>' CssClass="ms-2" />
+                                            <small class="text-muted ms-2">(<%# Eval("Tamanho") %>)</small>
+                                        </div>
+                                        <asp:LinkButton ID="btnRemoverArquivo" runat="server" CssClass="text-danger" 
+                                            CommandArgument='<%# Container.ItemIndex %>' OnClick="btnRemoverArquivo_Click">
+                                            <i class="bi bi-x-circle"></i>
+                                        </asp:LinkButton>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </asp:Panel>
                     </div>
                 </div>
             </div>

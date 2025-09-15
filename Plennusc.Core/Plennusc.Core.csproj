@@ -46,6 +46,7 @@
     <Reference Include="System.Spatial, Version=5.8.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.8.5\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,6 +60,7 @@
     <Compile Include="Mappers\MappersGestao\InsertionIntoTheMapperPriceTable.cs" />
     <Compile Include="Mappers\MappersGestao\TablePriceMapper.cs" />
     <Compile Include="Models\ModelsGestao\AcompanhamentoDto.cs" />
+    <Compile Include="Models\ModelsGestao\AnexoInfo.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagem.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemCsv.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemPME.cs" />

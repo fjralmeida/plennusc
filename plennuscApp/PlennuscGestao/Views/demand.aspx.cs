@@ -5,8 +5,10 @@ using System.CodeDom; // para usar .Value no <input type="date" runat="server">
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -416,6 +418,45 @@ namespace appWhatsapp.PlennuscGestao.Views
             try
             {
                 int id = _svc.CriarDemanda(dto);
+
+                // Salvar anexos se houver
+                if (fuAnexos.HasFiles)
+                {
+                    foreach (HttpPostedFile arquivo in fuAnexos.PostedFiles)
+                    {
+                        // Validar tamanho (10MB máximo)
+                        if (arquivo.ContentLength > 10 * 1024 * 1024)
+                        {
+                            MostrarMensagemErro($"O arquivo {arquivo.FileName} excede o limite de 10MB.");
+                            continue;
+                        }
+
+                        // Validar extensão
+                        string extensao = Path.GetExtension(arquivo.FileName).ToLower();
+                        string[] extensoesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".gif" };
+
+                        if (!extensoesPermitidas.Contains(extensao))
+                        {
+                            MostrarMensagemErro($"Tipo de arquivo não permitido: {arquivo.FileName}");
+                            continue;
+                        }
+
+                        // PRIMEIRO salva o arquivo físico
+                        string nomeArquivoSalvo = _svc.SalvarAnexoFisico(arquivo, id);
+
+                        // DEPOIS lê o conteúdo para salvar no banco (se necessário)
+                        byte[] conteudo;
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            arquivo.InputStream.CopyTo(ms);
+                            conteudo = ms.ToArray();
+                        }
+
+                        // Salvar anexo - passa o nome único que foi salvo fisicamente
+                        _svc.SalvarAnexoDemanda(id, nomeArquivoSalvo, conteudo, arquivo.ContentType, CodPessoaAtual);
+                    }
+                }
+
                 lblMsg.CssClass = "text-success d-block mb-3";
                 lblMsg.Text = $"Demanda criada (CodDemanda: {id}).";
 
@@ -424,6 +465,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 txtDescricao.Text = "";
                 txtPrazo.Value = "";
                 divPrazo.Style["display"] = "none";
+                fuAnexos.Attributes.Clear(); // Limpa os arquivos selecionados
 
                 // Recarrega categorias/subtipos
                 BindGrupos();
@@ -496,42 +538,47 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         // Método para exibir mensagens com SweetAlert2
        private void MostrarMensagemSucesso(string mensagem)
-{
-    string script = $@"
-        Swal.fire({{
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Sucesso',
-            text: '{mensagem.Replace("'", "\\'")}',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        }});
-    ";
+       {
+            string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Sucesso',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                }});
+            ";
 
-    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
-}
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
+        }
 
-private void MostrarMensagemErro(string mensagem, bool isError = true)
-{
-    string iconType = isError ? "error" : "warning";
-    string title = isError ? "Erro" : "Atenção";
+        private void MostrarMensagemErro(string mensagem, bool isError = true)
+        {
+            string iconType = isError ? "error" : "warning";
+            string title = isError ? "Erro" : "Atenção";
 
-    string script = $@"
-        Swal.fire({{
-            toast: true,
-            position: 'top-end',
-            icon: '{iconType}',
-            title: '{title}',
-            text: '{mensagem.Replace("'", "\\'")}',
-            showConfirmButton: false,
-            timer: 5000,
-            timerProgressBar: true
-        }});
-    ";
+            string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: '{iconType}',
+                    title: '{title}',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true
+                }});
+            ";
 
-    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastErro", script, true);
-}
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastErro", script, true);
+        }
+
+        protected void btnRemoverArquivo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

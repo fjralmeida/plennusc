@@ -375,6 +375,39 @@
                         Text="✖ Encerrar Demanda" OnClick="btnEncerrar_Click" />
         </div>
 
+        <!-- Seção de Anexos -->
+        <div class="attachments-section" style="background: white; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15); margin-top: 24px;">
+            <div class="section-header" style="padding: 16px 24px; background: #f8f9fa; border-bottom: 1px solid #e8eaed; font-size: 18px; font-weight: 500; color: #3c4043; display: flex; align-items: center; gap: 10px;">
+                <i class="bi bi-paperclip"></i>
+                Anexos
+            </div>
+            <div class="attachments-list" style="padding: 16px;">
+                <asp:Repeater ID="rptAnexos" runat="server">
+                    <ItemTemplate>
+                        <div class="attachment-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px; border: 1px solid #e8eaed;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="bi bi-file-earmark" style="font-size: 20px; color: #5f6368;"></i>
+                                <div>
+                                    <div style="font-weight: 500; color: #3c4043;"><%# Eval("NomeArquivo") %></div>
+                                    <div style="font-size: 12px; color: #80868b;">
+                                        <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>
+                                        • <%# Eval("TamanhoFormatado") %>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href='<%# Eval("CaminhoDownload") %>' target="_blank" 
+                               class="btn-download" 
+                               style="background: #1a73e8; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; transition: all 0.2s;">
+                                <i class="bi bi-download"></i> Download
+                            </a>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+                <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado." 
+                          style="padding: 16px; text-align: center; color: #80868b; display: none;" />
+            </div>
+        </div>
+
         <div class="main-layout">
             <!-- Seção Principal - Acompanhamentos -->
             <div class="accompaniments-section">

@@ -232,5 +232,20 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             UPDATE Demanda 
             SET CodEstr_NivelPrioridade = @NovaPrioridade 
             WHERE CodDemanda = @CodDemanda";
+
+        public const string SalvarAnexoDemanda = @"
+            INSERT INTO DemandaAnexos 
+            (CodDemanda, DescArquivo, DataEnvio, Informacoes_log_i)
+            VALUES 
+            (@CodDemanda, @DescArquivo, GETDATE(), GETDATE())";
+
+        public const string GetAnexosDemanda = @"
+    SELECT 
+        CodDemandaAnexo,
+        DescArquivo,
+        DataEnvio
+    FROM DemandaAnexos 
+    WHERE CodDemanda = @CodDemanda
+    ORDER BY DataEnvio DESC";
     }
 }

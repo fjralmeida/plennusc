@@ -8,10 +8,13 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Plennusc.Core.Service.ServiceGestao
 {
@@ -116,6 +119,53 @@ namespace Plennusc.Core.Service.ServiceGestao
                 cmd.Parameters.AddWithValue("@Prioridade", prioridade);
 
                 return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
+        // Use a consulta ORIGINAL que funciona com sua tabela atual
+        public void SalvarAnexoDemanda(int codDemanda, string nomeArquivo, byte[] conteudo, string contentType, int codPessoa)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.SalvarAnexoDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                cmd.Parameters.AddWithValue("@DescArquivo", nomeArquivo);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public string SalvarAnexoFisico(HttpPostedFile arquivo, int codDemanda)
+        {
+            try
+            {
+                // CAMINHO CORRETO - com /public/
+                string pastaAnexos = HttpContext.Current.Server.MapPath("~/public/uploadgestao/docs/");
+                System.Diagnostics.Debug.WriteLine($"Caminho da pasta: {pastaAnexos}");
+
+                if (!Directory.Exists(pastaAnexos))
+                {
+                    System.Diagnostics.Debug.WriteLine("Criando pasta...");
+                    Directory.CreateDirectory(pastaAnexos);
+                }
+
+                // Gera um nome único para o arquivo
+                string nomeUnico = $"{codDemanda}_{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(arquivo.FileName)}";
+                string caminhoCompleto = Path.Combine(pastaAnexos, nomeUnico);
+
+                System.Diagnostics.Debug.WriteLine($"Salvando arquivo em: {caminhoCompleto}");
+
+                // Salva o arquivo
+                arquivo.SaveAs(caminhoCompleto);
+
+                System.Diagnostics.Debug.WriteLine("Arquivo salvo com sucesso!");
+                return nomeUnico;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO ao salvar arquivo: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // Re-lança a exception para ver o erro na interface
             }
         }
 
@@ -619,5 +669,37 @@ namespace Plennusc.Core.Service.ServiceGestao
                 }
             }
         }
+
+        // No DemandaService, adicione este método:
+        // No final do seu código, você tem ESTE método duplicado:
+        public List<AnexoInfo> GetAnexosDemanda(int codDemanda)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.GetAnexosDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+
+                var anexos = new List<AnexoInfo>();
+                using (var rd = cmd.ExecuteReader())
+                {
+                    int idxCod = rd.GetOrdinal("CodDemandaAnexo");
+                    int idxNome = rd.GetOrdinal("DescArquivo"); 
+                    int idxData = rd.GetOrdinal("DataEnvio");
+
+                    while (rd.Read())
+                    {
+                        anexos.Add(new AnexoInfo
+                        {
+                            CodAnexo = rd["CodDemandaAnexo"] != DBNull.Value ? Convert.ToInt32(rd["CodDemandaAnexo"]) : 0,
+                            NomeArquivo = rd["DescArquivo"] != DBNull.Value ? rd["DescArquivo"].ToString() : string.Empty,
+                            DataEnvio = rd["DataEnvio"] != DBNull.Value ? (DateTime)rd["DataEnvio"] : DateTime.MinValue,
+                            TamanhoBytes = 0
+                        });
+                    }
+                }
+                return anexos;
+            }
+        }
+
     }
 }

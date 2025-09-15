@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -33,6 +34,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             CarregarHistorico();
             CarregarAcompanhamentos();
             AjustarBotoes();
+            CarregarAnexos();
         }
 
         private DemandaDto demandaAtual;
@@ -132,6 +134,47 @@ namespace appWhatsapp.PlennuscGestao.Views
             // MUDA STATUS PARA "CONCLUÍDA" (23) - DEMANDA FINALIZADA
             _service.AtualizarStatusComHistorico(CodDemanda, 23, CodPessoaAtual);
             Response.Redirect("listDemand.aspx");
+        }
+
+        private void CarregarAnexos()
+        {
+            if (!string.IsNullOrEmpty(Request.QueryString["id"]) && int.TryParse(Request.QueryString["id"], out int codDemanda))
+            {
+                // Verifique se o método existe no service
+                var anexos = _service.GetAnexosDemanda(codDemanda); // ← Aqui deve ser int, não string
+
+                if (anexos != null && anexos.Any())
+                {
+                    rptAnexos.DataSource = anexos.Select(a => new
+                    {
+                        NomeArquivo = a.NomeArquivo,
+                        DataEnvio = a.DataEnvio,
+                        TamanhoFormatado = FormatTamanhoArquivo(a.TamanhoBytes),
+                        CaminhoDownload = $"/public/uploadgestao/docs/{a.NomeArquivo}"
+                    }).ToList();
+
+                    rptAnexos.DataBind();
+                    lblSemAnexos.Visible = false;
+                }
+                else
+                {
+                    rptAnexos.Visible = false;
+                    lblSemAnexos.Visible = true;
+                }
+            }
+        }
+
+        private string FormatTamanhoArquivo(long bytes)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            int order = 0;
+            double len = bytes;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len = len / 1024;
+            }
+            return $"{len:0.##} {sizes[order]}";
         }
     }
 }
