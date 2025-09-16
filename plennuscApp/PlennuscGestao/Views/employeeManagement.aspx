@@ -314,11 +314,9 @@ justify-content: space-around;
     // ✅ FUNÇÃO ÚNICA DE MÁSCARAS
     function aplicarMascaras() {
         const campoCPF       = $('#<%= txtDocCPF.ClientID %>');
-        const campoRG        = $('#<%= txtDocRG.ClientID %>');
         const campoBuscaCPF  = $('#<%= txtBuscaCPF.ClientID %>');
 
         if (campoCPF.length)      campoCPF.unmask().mask('000.000.000-00', { reverse: true });
-        if (campoRG.length)       campoRG.unmask().mask('00.000.000-0');
         if (campoBuscaCPF.length) campoBuscaCPF.unmask().mask('000.000.000-00', { reverse: true });
 
         const phoneBehavior = function (val) {
