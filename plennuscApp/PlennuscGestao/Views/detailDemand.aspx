@@ -344,6 +344,106 @@
         .history-visible .history-content {
             display: block;
         }
+
+        /* Estilos para a seção de anexos */
+        .attachments-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .attachments-list {
+            padding: 16px;
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--gray-50);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .attachment-item:hover {
+            background: var(--gray-100);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .attachment-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .attachment-icon {
+            font-size: 20px;
+            color: var(--gray-600);
+            flex-shrink: 0;
+        }
+
+        .attachment-details {
+            overflow: hidden;
+        }
+
+        .attachment-name {
+            font-weight: 500;
+            color: var(--gray-800);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+
+        .attachment-meta {
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+
+        .btn-download {
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-download:hover {
+            background: var(--primary-hover);
+            color: white;
+        }
+
+        .no-attachments {
+            padding: 24px;
+            text-align: center;
+            color: var(--gray-500);
+            font-style: italic;
+        }
+
+        /* Responsividade para anexos */
+        @media (max-width: 768px) {
+            .attachment-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .btn-download {
+                align-self: flex-end;
+            }
+        }
     </style>
 </asp:Content>
 
@@ -376,35 +476,33 @@
         </div>
 
         <!-- Seção de Anexos -->
-        <div class="attachments-section" style="background: white; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15); margin-top: 24px;">
-            <div class="section-header" style="padding: 16px 24px; background: #f8f9fa; border-bottom: 1px solid #e8eaed; font-size: 18px; font-weight: 500; color: #3c4043; display: flex; align-items: center; gap: 10px;">
+        <div class="attachments-section">
+            <div class="section-header">
                 <i class="bi bi-paperclip"></i>
                 Anexos
             </div>
-            <div class="attachments-list" style="padding: 16px;">
+            <div class="attachments-list">
                 <asp:Repeater ID="rptAnexos" runat="server">
                     <ItemTemplate>
-                        <div class="attachment-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px; border: 1px solid #e8eaed;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <i class="bi bi-file-earmark" style="font-size: 20px; color: #5f6368;"></i>
-                                <div>
-                                    <div style="font-weight: 500; color: #3c4043;"><%# Eval("NomeArquivo") %></div>
-                                    <div style="font-size: 12px; color: #80868b;">
+                        <div class="attachment-item">
+                            <div class="attachment-info">
+                                <i class="bi bi-file-earmark attachment-icon"></i>
+                                <div class="attachment-details">
+                                    <div class="attachment-name"><%# Eval("NomeArquivo") %></div>
+                                    <div class="attachment-meta">
                                         <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>
                                         • <%# Eval("TamanhoFormatado") %>
                                     </div>
                                 </div>
                             </div>
-                            <a href='<%# Eval("CaminhoDownload") %>' target="_blank" 
-                               class="btn-download" 
-                               style="background: #1a73e8; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; transition: all 0.2s;">
+                            <a href='<%# Eval("CaminhoDownload") %>' target="_blank" class="btn-download">
                                 <i class="bi bi-download"></i> Download
                             </a>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>
                 <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado." 
-                          style="padding: 16px; text-align: center; color: #80868b; display: none;" />
+                          CssClass="no-attachments" />
             </div>
         </div>
 
@@ -497,7 +595,7 @@
     <script>
         function checkDemandStatus() {
             const statusBadge = document.getElementById('<%= lblStatusBadge.ClientID %>');
-          const editorSection = document.getElementById('<%= editorSection.ClientID %>');
+            const editorSection = document.getElementById('<%= editorSection.ClientID %>');
     
             if (statusBadge && statusBadge.textContent.includes('Fechada')) {
                 if (editorSection) {
@@ -508,15 +606,15 @@
                         textarea.placeholder = "Demanda fechada - não é possível adicionar acompanhamentos";
                     }
             
-                          const button = document.getElementById('<%= btnAdicionarAcompanhamento.ClientID %>');
-                          if (button) {
-                              button.disabled = true;
-                              button.textContent = "Demanda Fechada";
-                              button.classList.add("btn-secondary");
-                          }
-                      }
-                  }
-              }
+                    const button = document.getElementById('<%= btnAdicionarAcompanhamento.ClientID %>');
+                    if (button) {
+                        button.disabled = true;
+                        button.textContent = "Demanda Fechada";
+                        button.classList.add("btn-secondary");
+                    }
+                }
+            }
+        }
 
         // Toggle do histórico
         function toggleHistory() {

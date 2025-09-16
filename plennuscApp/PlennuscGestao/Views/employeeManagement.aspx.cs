@@ -260,6 +260,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                     codSistema, codUsuario, observacao
                 );
 
+                // ✅ Limpar os campos do formulário
+                LimparFormulario();
+
                 // Mostrar toast moderno
                 ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
                     Swal.fire({
@@ -283,6 +286,40 @@ namespace appWhatsapp.PlennuscGestao.Views
             }});", true);
             }
 
+        }
+        private void LimparFormulario()
+        {
+            txtNome.Text = string.Empty;
+            txtSobrenome.Text = string.Empty;
+            txtApelido.Text = string.Empty;
+            ddlSexo.SelectedIndex = 0;
+            txtDocCPF.Text = string.Empty;
+            txtDocRG.Text = string.Empty;
+            txtTitulo.Text = string.Empty;
+            txtZona.Text = string.Empty;
+            txtSecao.Text = string.Empty;
+            txtCTPS.Text = string.Empty;
+            txtCTPSSerie.Text = string.Empty;
+            txtCTPSUf.Text = string.Empty;
+            txtPis.Text = string.Empty;
+            txtMatricula.Text = string.Empty;
+            txtFiliacao1.Text = string.Empty;
+            txtFiliacao2.Text = string.Empty;
+            txtTelefone1.Text = string.Empty;
+            txtTelefone2.Text = string.Empty;
+            txtTelefone3.Text = string.Empty;
+            txtEmail.Text = string.Empty;
+            txtEmailAlt.Text = string.Empty;
+            txtObservacao.Text = string.Empty;
+            ddlCargo.SelectedIndex = 0;
+            ddlDepartamento.SelectedIndex = 0;
+            ddlPerfilPessoa.SelectedIndex = 0;
+            chkCriaContaAD.Checked = false;
+            chkCadastraPonto.Checked = false;
+            chkAtivo.Checked = false;
+            chkPermiteAcesso.Checked = false;
+            txtDataNasc.Text = string.Empty;
+            txtDataAdmissao.Text = string.Empty;
         }
 
         protected void btnBuscarPorNome_Click(object sender, EventArgs e)

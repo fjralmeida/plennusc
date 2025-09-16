@@ -15,6 +15,24 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
+        /// Controle ScriptManager1.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager ScriptManager1;
+
+        /// <summary>
+        /// Controle upModalDemandas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upModalDemandas;
+
+        /// <summary>
         /// Controle litTituloModal.
         /// </summary>
         /// <remarks>
@@ -42,15 +60,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Repeater rptDemandas;
 
         /// <summary>
-        /// Controle lblMsg.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMsg;
-
-        /// <summary>
         /// Controle txtTitulo.
         /// </summary>
         /// <remarks>
@@ -58,6 +67,33 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtTitulo;
+
+        /// <summary>
+        /// Controle txtDescricao.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDescricao;
+
+        /// <summary>
+        /// Controle fuAnexos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fuAnexos;
+
+        /// <summary>
+        /// Controle upPrioridade.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upPrioridade;
 
         /// <summary>
         /// Controle ddlPrioridade.
@@ -87,13 +123,13 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.HtmlControls.HtmlInputGenericControl txtPrazo;
 
         /// <summary>
-        /// Controle Label1.
+        /// Controle upRoteamento.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.UpdatePanel upRoteamento;
 
         /// <summary>
         /// Controle ddlOrigem.
@@ -114,6 +150,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.DropDownList ddlDestino;
 
         /// <summary>
+        /// Controle upCategoria.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upCategoria;
+
+        /// <summary>
         /// Controle ddlTipoGrupo.
         /// </summary>
         /// <remarks>
@@ -130,42 +175,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlTipoDetalhe;
-
-        /// <summary>
-        /// Controle txtDescricao.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDescricao;
-
-        /// <summary>
-        /// Controle fuAnexos.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload fuAnexos;
-
-        /// <summary>
-        /// Controle pnlArquivosSelecionados.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlArquivosSelecionados;
-
-        /// <summary>
-        /// Controle rptArquivos.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptArquivos;
 
         /// <summary>
         /// Controle btnSalvar.
