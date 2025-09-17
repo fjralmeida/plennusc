@@ -438,49 +438,62 @@
         </div>
 
         <div class="grid-container">
-           <asp:GridView ID="gvDemandas" runat="server" CssClass="custom-grid"
-              AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-              OnPageIndexChanging="gvDemandas_PageIndexChanging"
-              OnRowCommand="gvDemandas_RowCommand">
+         <asp:GridView ID="gvDemandas" runat="server" CssClass="custom-grid"
+    AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
+    OnPageIndexChanging="gvDemandas_PageIndexChanging"
+    OnRowCommand="gvDemandas_RowCommand"
+    OnRowDataBound="gvDemandas_RowDataBound">
 
-                <Columns>
-                    <asp:BoundField DataField="CodDemanda" HeaderText="ID" />
-                    <asp:BoundField DataField="Titulo" HeaderText="Título" />
-                    <asp:BoundField DataField="Categoria" HeaderText="Categoria" />
-                    <asp:BoundField DataField="Subtipo" HeaderText="Subtipo" />
+    <Columns>
+        <asp:BoundField DataField="CodDemanda" HeaderText="ID" />
+        <asp:BoundField DataField="Titulo" HeaderText="Título" />
+        <asp:BoundField DataField="Categoria" HeaderText="Categoria" />
+        <asp:BoundField DataField="Subtipo" HeaderText="Subtipo" />
         
-                    <asp:TemplateField HeaderText="Prioridade">
-                        <ItemTemplate>
-                            <span class='prioridade-badge prioridade-<%# Eval("CodPrioridade") %>'>
-                                <%# Eval("Prioridade") %>
-                            </span>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+        <asp:TemplateField HeaderText="Prioridade">
+            <ItemTemplate>
+                <span class='prioridade-badge prioridade-<%# Eval("CodPrioridade") %>'>
+                    <%# Eval("Prioridade") %>
+                </span>
+            </ItemTemplate>
+        </asp:TemplateField>
         
-                    <asp:TemplateField HeaderText="Status">
-                        <ItemTemplate>
-                            <span class="status-badge">
-                                <%# Eval("Status") %>
-                            </span>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+        <asp:TemplateField HeaderText="Status">
+            <ItemTemplate>
+                <span class="status-badge"> 
+                    <%# Eval("Status") %>
+                </span>
+            </ItemTemplate>
+        </asp:TemplateField>
         
-                    <asp:BoundField DataField="Solicitante" HeaderText="Solicitante" />
-                    <asp:BoundField DataField="DataSolicitacao" HeaderText="Data" DataFormatString="{0:dd/MM/yyyy}" />
+        <asp:BoundField DataField="Solicitante" HeaderText="Solicitante" />
+        <asp:BoundField DataField="DataSolicitacao" HeaderText="Data" DataFormatString="{0:dd/MM/yyyy}" />
         
-                    <asp:TemplateField HeaderText="Ações">
-                        <ItemTemplate>
-                            <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
-                                        CommandName="Ver" CommandArgument='<%# Eval("CodDemanda") %>'>
-                                <i class="bi bi-eye"></i> Ver
-                            </asp:LinkButton>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
+        <asp:TemplateField HeaderText="Aceite">
+    <ItemTemplate>
+        <asp:Label ID="lblAceiteInfo" runat="server" Visible="false"
+            Text='<%# "Aceita por: " + Eval("NomePessoaExecucao") + " em " + Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>' />
+        
+        <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-accept"
+            CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
+            Visible='<%# Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0 %>'
+            Text="Aceitar Demanda" />
+    </ItemTemplate>
+</asp:TemplateField>
+        
+        <asp:TemplateField HeaderText="Ações">
+            <ItemTemplate>
+                <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
+                            CommandName="Ver" CommandArgument='<%# Eval("CodDemanda") %>'>
+                    <i class="bi bi-eye"></i> Ver
+                </asp:LinkButton>
+            </ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
 
-                <PagerStyle CssClass="pagination-container" />
-                <HeaderStyle CssClass="grid-header" />
-            </asp:GridView>
+    <PagerStyle CssClass="pagination-container" />
+    <HeaderStyle CssClass="grid-header" />
+</asp:GridView>
         </div>
     </div>
 

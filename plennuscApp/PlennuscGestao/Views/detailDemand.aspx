@@ -2,7 +2,8 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
+
+<style>
         :root {
             --primary: #1a73e8;
             --primary-hover: #0d62c9;
@@ -38,89 +39,165 @@
             padding: 0 16px;
         }
 
-        /* Cabeçalho da Demanda */
+        /* ESTILO CLEAN E PROFISSIONAL - IGUAL NA IMAGEM */
         .demand-header {
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: 24px;
+            padding: 32px;
             margin-bottom: 24px;
+            border: 1px solid var(--gray-200);
         }
 
         .demand-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 12px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--gray-200);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+            padding-bottom: 0;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .demand-description {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
             font-size: 16px;
-            color: var(--gray-700);
+            color: var(--gray-800);
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            font-weight: 500;
         }
 
-        .demand-meta {
-            display: flex;
-            flex-wrap: wrap;
+         .demand-description:before {
+            content: '"';
+            font-size: 32px;
+            color: var(--primary);
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-family: Georgia, serif;
+            opacity: 0.3;
+         }
+
+        .demand-description:after {
+            content: '"';
+            font-size: 32px;
+            color: var(--primary);
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-family: Georgia, serif;
+            opacity: 0.3;
+        }
+
+        /* REMOVER HOVER DA DESCRIÇÃO */
+        .demand-description:hover {
+            border-color: var(--gray-200);
+            box-shadow: none;
+            transform: none;
+        }
+         /* REMOVER EFEITOS DESNECESSÁRIOS */
+    .demand-description:hover,
+    .meta-value:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+        /* REMOVER ASPAS DECORATIVAS */
+        .demand-description:before,
+        .demand-description:after {
+            display: none;
+        }
+
+
+         .demand-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
         }
 
         .meta-item {
             display: flex;
             flex-direction: column;
+            padding: 0;
+            background: transparent;
+            border: none;
         }
 
         .meta-label {
             font-size: 12px;
             color: var(--gray-600);
-            margin-bottom: 4px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .meta-value {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 500;
             color: var(--gray-800);
+            padding: 12px 16px;
+            background: var(--gray-50);
+            border-radius: 6px;
+            border: 1px solid var(--gray-200);
         }
 
-        .status-badge {
+     /* Status badge mais destacado */
+            .status-badge {
             display: inline-block;
-            padding: 6px 12px;
-            border-radius: 16px;
+            padding: 8px 16px;
+            border-radius: 6px;
             font-size: 14px;
-            font-weight: 500;
-            margin-left: 12px;
+            font-weight: 600;
+            margin-left: 0;
+            box-shadow: none;
+            border: 1px solid;
         }
 
         .status-open {
-            background-color: #e6f4ea;
+            background: #e6f4ea;
             color: #137333;
+            border-color: #b6e2c1;
         }
 
         .status-closed {
-            background-color: #fce8e6;
+            background: #fce8e6;
             color: #c5221f;
+            border-color: #f4b8b4;
         }
 
         .btn-close-demand {
             background: var(--danger);
             border: none;
             color: white;
-            font-weight: 500;
-            padding: 10px 20px;
-            border-radius: 4px;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 6px;
             transition: var(--transition);
-            margin-top: 16px;
+            margin-top: 24px;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
         }
 
-
         .btn-close-demand:hover {
-            background: #c5221f;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            background: #d93025;
+            box-shadow: 0 2px 4px rgba(234, 67, 53, 0.3);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {

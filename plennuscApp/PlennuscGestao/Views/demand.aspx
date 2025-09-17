@@ -336,7 +336,23 @@
     .demanda-critica-item h6 {
         color: #5c3c00;
     }
-    
+
+ .btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--primary);
+    --bs-btn-border-color: var(--primary); 
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--primary-hover); 
+    --bs-btn-hover-border-color: var(--primary-hover);
+    --bs-btn-focus-shadow-rgb: 49,132,253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--primary-hover); 
+    --bs-btn-active-border-color: var(--primary-hover); 
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--primary);
+    --bs-btn-disabled-border-color: var(--primary); 
+}
 
     </style>
 </asp:Content>

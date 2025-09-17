@@ -2,6 +2,8 @@
 using Plennusc.Core.Service.ServiceGestao;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -105,15 +107,69 @@ namespace appWhatsapp.PlennuscGestao.Views
             BindGrid();
         }
 
+
+        protected void gvDemandas_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                Label lblAceiteInfo = (Label)e.Row.FindControl("lblAceiteInfo");
+                LinkButton btnAceitar = (LinkButton)e.Row.FindControl("btnAceitar");
+
+                // Obter o DTO (não mais DataRowView)
+                var dto = (DemandaListDto)e.Row.DataItem;
+
+                // Configurar a visibilidade
+                if (dto.CodPessoaExecucao.HasValue && dto.CodPessoaExecucao > 0)
+                {
+                    lblAceiteInfo.Visible = true;
+                    btnAceitar.Visible = false;
+                }
+                else
+                {
+                    lblAceiteInfo.Visible = false;
+                    btnAceitar.Visible = true;
+                }
+            }
+        }
+
         protected void gvDemandas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName == "Ver")
-                Response.Redirect("detailDemand.aspx?id=" + e.CommandArgument);
+            if (e.CommandName == "Aceitar")
+            {
+                int codDemanda = Convert.ToInt32(e.CommandArgument);
+                int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
+
+                // Registrar o aceite da demanda
+                var svc = new DemandaService("Plennus");
+                if (svc.AceitarDemanda(codDemanda, codPessoa))
+                {
+                    MostrarMensagem("Demanda aceita com sucesso!", "success");
+                    BindGrid(); // Recarregar o grid
+                }
+                else
+                {
+                    MostrarMensagem("Erro ao aceitar a demanda.", "error");
+                }
+            }
+            else if (e.CommandName == "Ver")
+            {
+                // Sua lógica existente para visualizar
+                int codDemanda = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect($"detailDemand.aspx?codDemanda={codDemanda}");
+            }
         }
+
+        private void MostrarMensagem(string mensagem, string tipo)
+        {
+            string script = $@"showToast{(tipo == "success" ? "Sucesso" : "Erro")}('{mensagem.Replace("'", "\\'")}');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Mensagem", script, true);
+        }
+
 
         protected void btnNovaDemanda_Click(object sender, EventArgs e)
         {
             Response.Redirect("demand.aspx");
         }
+
     }
 }

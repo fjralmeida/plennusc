@@ -17,7 +17,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet" />
 
-    <style>
+<style>
         * {
             font-family: 'Poppins', sans-serif;
         }
@@ -60,48 +60,48 @@
             flex-shrink: 0; /* Impede que a sidebar encolha */
         }
 
-            .sidebar a {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                text-decoration: none;
-                color: #3b3f5c;
-                padding: 8px 16px;
-                border-radius: 6px;
-                transition: background-color 0.2s, color 0.2s;
-                font-weight: 500;
-                /* >>> PREVINE QUEBRA <<< */
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #3b3f5c;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            /* >>> PREVINE QUEBRA <<< */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-                .sidebar a:hover {
-                    background-color: #f1f5ff;
-                    color: #1d4ed8;
-                }
+        .sidebar a:hover {
+            background-color: #f1f5ff;
+            color: #1d4ed8;
+        }
 
-                .sidebar a.active {
-                    background-color: #e0edff;
-                    color: #1d4ed8;
-                    font-weight: 600;
-                }
+        .sidebar a.active {
+            background-color: #e0edff;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
 
-            .sidebar .collapse a {
-                font-size: 13px;
-                padding-left: 16px;
-                font-weight: 400;
-            }
+        .sidebar .collapse a {
+            font-size: 13px;
+            padding-left: 16px;
+            font-weight: 400;
+        }
 
-            .sidebar .bi {
-                font-size: 15px;
-                color: #9ca3af;
-                flex-shrink: 0; /* Ícone nunca encolhe */
-            }
+        .sidebar .bi {
+            font-size: 15px;
+            color: #9ca3af;
+            flex-shrink: 0; /* Ícone nunca encolhe */
+        }
 
-            .sidebar span {
-                padding-left: 6px; /* Espaço entre ícone e texto */
-            }
+        .sidebar span {
+            padding-left: 6px; /* Espaço entre ícone e texto */
+        }
 
         .topbar {
             height: 70px;
@@ -183,16 +183,16 @@
             transition: background-color 0.2s ease-in-out;
         }
 
-            .user-dropdown .dropdown-item i {
-                font-size: 16px;
-                color: #4CB07A;
-                margin-right: 8px;
-            }
+        .user-dropdown .dropdown-item i {
+            font-size: 16px;
+            color: #4CB07A;
+            margin-right: 8px;
+        }
 
-            .user-dropdown .dropdown-item:hover {
-                background-color: #f0fdf4;
-                color: #1e3a34;
-            }
+        .user-dropdown .dropdown-item:hover {
+            background-color: #f0fdf4;
+            color: #1e3a34;
+        }
 
         .user-dropdown .btn-outline-danger {
             font-size: 14px;
@@ -252,126 +252,124 @@
         }
 
         /* topo da sidebar como na imagem 2 */
-.sidebar-top{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:8px 10px;
-  margin:0 8px 12px;
-  background:#f7f9fc;
-  border-radius:12px;
-}
-.sb-title{
-  font-weight:600;
-  font-size:15px;
-  color:#334155;
-}
+        .sidebar-top{
+          display:flex; align-items:center; justify-content:space-between;
+          padding:8px 10px;
+          margin:0 8px 12px;
+          background:#f7f9fc;
+          border-radius:12px;
+        }
+        .sb-title{
+          font-weight:600;
+          font-size:15px;
+          color:#334155;
+        }
 
-/* botão “pill” só com o ícone */
-.sb-toggle{
-  width:34px; height:34px;
-  display:inline-flex; align-items:center; justify-content:center;
-  border:0; outline:0;
-  border-radius:10px;
-  background:#f1f5f9;
-  box-shadow:0 1px 2px rgba(0,0,0,.05);
-  transition:background .15s ease;
-}
-.sb-toggle i{ font-size:18px; color:#6b7280; }
-.sb-toggle:hover{ background:#eef2ff; }
+        /* botão “pill” só com o ícone */
+        .sb-toggle{
+          width:34px; height:34px;
+          display:inline-flex; align-items:center; justify-content:center;
+          border:0; outline:0;
+          border-radius:10px;
+          background:#f1f5f9;
+          box-shadow:0 1px 2px rgba(0,0,0,.05);
+          transition:background .15s ease;
+        }
+        .sb-toggle i{ font-size:18px; color:#6b7280; }
+        .sb-toggle:hover{ background:#eef2ff; }
 
-/* quando a barra estiver colapsada, esconda o texto e compacte o topo */
-#layout.sb-collapsed .sb-title{ display:none; }
-#layout.sb-collapsed .sidebar-top{
-  background:#ffffff;
-  padding:6px;
-  margin:0 8px 10px;
-  justify-content:flex-end;
-}
+        /* quando a barra estiver colapsada, esconda o texto e compacte o topo */
+        #layout.sb-collapsed .sb-title{ display:none; }
+        #layout.sb-collapsed .sidebar-top{
+          background:#ffffff;
+          padding:6px;
+          margin:0 8px 10px;
+          justify-content:flex-end;
+        }
 
-#layout{ --sb-w:250px; --sb-w-collapsed:64px; }
+        #layout{ --sb-w:250px; --sb-w-collapsed:64px; }
 
-/* fechada = compacta */
-#layout.sb-collapsed .sidebar{ width:var(--sb-w-collapsed); }
+        /* fechada = compacta */
+        #layout.sb-collapsed .sidebar{ width:var(--sb-w-collapsed); }
 
-/* quando fechada, não deixa submenus ocuparem espaço (evita “buraco”) */
-#layout.sb-collapsed .sidebar .submenu,
-#layout.sb-collapsed .sidebar .collapse{
-  display:none !important;
-  height:0 !important;
-  overflow:hidden !important;
-  padding:0 !important; margin:0 !important;
-}
+        /* quando fechada, não deixa submenus ocuparem espaço (evita “buraco”) */
+        #layout.sb-collapsed .sidebar .submenu,
+        #layout.sb-collapsed .sidebar .collapse{
+          display:none !important;
+          height:0 !important;
+          overflow:hidden !important;
+          padding:0 !important; margin:0 !important;
+        }
 
-/* ícone centralizado e texto oculto quando fechada */
-#layout.sb-collapsed .sidebar a{
-  justify-content:center !important; gap:0 !important;
-  padding-left:0; padding-right:0;
-}
-#layout.sb-collapsed .sidebar .label{ display:none !important; }
-#layout.sb-collapsed .sidebar .toggle-icon{ display:none !important; }
-#layout.sb-collapsed .sidebar .bi{ margin-right:0 !important; }
+        /* ícone centralizado e texto oculto quando fechada */
+        #layout.sb-collapsed .sidebar a{
+          justify-content:center !important; gap:0 !important;
+          padding-left:0; padding-right:0;
+        }
+        #layout.sb-collapsed .sidebar .label{ display:none !important; }
+        #layout.sb-collapsed .sidebar .toggle-icon{ display:none !important; }
+        #layout.sb-collapsed .sidebar .bi{ margin-right:0 !important; }
 
-/* ===== EXPANSÃO NO HOVER (ou “forçada” via classe) ===== */
-#layout.sb-collapsed .sidebar:hover,
-#layout.sb-collapsed .sidebar.sb-forceopen{
-  width:var(--sb-w);
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  z-index:1000;
-}
+        /* ===== EXPANSÃO NO HOVER (ou “forçada” via classe) ===== */
+        #layout.sb-collapsed .sidebar:hover,
+        #layout.sb-collapsed .sidebar.sb-forceopen{
+          width:var(--sb-w);
+          box-shadow:0 8px 24px rgba(0,0,0,.08);
+          z-index:1000;
+        }
 
-/* quando expandida (hover/forçada), volta a mostrar rótulos/chevrons */
-#layout.sb-collapsed .sidebar:hover .label,
-#layout.sb-collapsed .sidebar.sb-forceopen .label,
-#layout.sb-collapsed .sidebar:hover .toggle-icon,
-#layout.sb-collapsed .sidebar.sb-forceopen .toggle-icon{
-  display:inline-flex !important;
-  white-space:nowrap;
-}
+        /* quando expandida (hover/forçada), volta a mostrar rótulos/chevrons */
+        #layout.sb-collapsed .sidebar:hover .label,
+        #layout.sb-collapsed .sidebar.sb-forceopen .label,
+        #layout.sb-collapsed .sidebar:hover .toggle-icon,
+        #layout.sb-collapsed .sidebar.sb-forceopen .toggle-icon{
+          display:inline-flex !important;
+          white-space:nowrap;
+        }
 
-/* permite que os submenus ABERTOS apareçam durante o hover/força
-   (sem abrir todos automaticamente) */
-#layout.sb-collapsed .sidebar:hover .collapse.show,
-#layout.sb-collapsed .sidebar.sb-forceopen .collapse.show{
-  display:block !important;
-  height:auto !important;
-  overflow:visible !important;
-}
+        /* permite que os submenus ABERTOS apareçam durante o hover/força
+           (sem abrir todos automaticamente) */
+        #layout.sb-collapsed .sidebar:hover .collapse.show,
+        #layout.sb-collapsed .sidebar.sb-forceopen .collapse.show{
+          display:block !important;
+          height:auto !important;
+          overflow:visible !important;
+        }
 
-/* links: texto à esquerda, chevron à direita quando aberta */
-.sidebar a{ display:flex; align-items:center; justify-content:flex-start !important; }
-.sidebar .toggle-icon{ margin-left:auto; }
-.sidebar .label{ white-space:nowrap; }
-.sidebar .submenu{ display:block !important; }
-.sidebar .submenu > li{ display:block; }
+        /* links: texto à esquerda, chevron à direita quando aberta */
+        .sidebar a{ display:flex; align-items:center; justify-content:flex-start !important; }
+        .sidebar .toggle-icon{ margin-left:auto; }
+        .sidebar .label{ white-space:nowrap; }
+        .sidebar .submenu{ display:block !important; }
+        .sidebar .submenu > li{ display:block; }
 
-/* deixa a linha toda “clicável” com área confortável */
-.sidebar a.menu-head,
-.sidebar .submenu a{
-  padding:10px 12px;
-  border-radius:8px;
-}
-.sidebar a.menu-head:hover,
-.sidebar .submenu a:hover{
-  background:#f4f7fb;
-}
-.sidebar a, .sidebar button { cursor: pointer; }
+        /* deixa a linha toda “clicável” com área confortável */
+        .sidebar a.menu-head,
+        .sidebar .submenu a{
+          padding:10px 12px;
+          border-radius:8px;
+        }
+        .sidebar a.menu-head:hover,
+        .sidebar .submenu a:hover{
+          background:#f4f7fb;
+        }
+        .sidebar a, .sidebar button { cursor: pointer; }
 
-/* transição suave de largura/sombra para dar fluidez */
-.sidebar{ transition: width .18s ease, box-shadow .18s ease; }
-@media (prefers-reduced-motion: reduce){
-  .sidebar{ transition: none; }
-}
+        /* transição suave de largura/sombra para dar fluidez */
+        .sidebar{ transition: width .18s ease, box-shadow .18s ease; }
+        @media (prefers-reduced-motion: reduce){
+          .sidebar{ transition: none; }
+        }
 
-/* botão do topo: quando fechado, fica só o ícone; quando aberto, mostra o texto */
-.sidebar-top .sb-toggle { display:inline-flex; align-items:center; gap:.5rem; }
-.sidebar-top .sb-toggle .btn-label { font-weight:600; color:#334155; }
-#layout.sb-collapsed .sidebar-top { justify-content:center !important; }
-#layout.sb-collapsed .sidebar-top .sb-toggle {
-  width:36px; height:36px; padding:0; gap:0; justify-content:center;
-}
-#layout.sb-collapsed .sidebar-top .sb-toggle .btn-label { display:none; }
-#layout.sb-collapsed .sidebar-top .sb-toggle .bi-list { margin:0; }
-
-
+        /* botão do topo: quando fechado, fica só o ícone; quando aberto, mostra o texto */
+        .sidebar-top .sb-toggle { display:inline-flex; align-items:center; gap:.5rem; }
+        .sidebar-top .sb-toggle .btn-label { font-weight:600; color:#334155; }
+        #layout.sb-collapsed .sidebar-top { justify-content:center !important; }
+        #layout.sb-collapsed .sidebar-top .sb-toggle {
+          width:36px; height:36px; padding:0; gap:0; justify-content:center;
+        }
+        #layout.sb-collapsed .sidebar-top .sb-toggle .btn-label { display:none; }
+        #layout.sb-collapsed .sidebar-top .sb-toggle .bi-list { margin:0; }
     </style>
 
 
@@ -390,7 +388,7 @@
                 menu.style.display = 'none';
             }
         });
-    </script>
+</script>
 
 
     <asp:ContentPlaceHolder ID="head" runat="server" />
@@ -546,6 +544,7 @@
               <ul class="list-unstyled ps-3 submenu">
                 <li><a href="demand.aspx" title="Criar Demanda"><i class="bi bi-plus-circle me-2"></i><span class="label">Criar Demanda</span></a></li>
                 <li><a href="listDemand.aspx" title="Listar Demandas"><i class="bi bi-list-ul me-2"></i><span class="label">Listar Demandas</span></a></li>
+                <li><a href="myDemands.aspx" title="Minhas Demandas"><i class="bi bi-list-ul me-2"></i><span class="label">Minhas Demandas</span></a></li>
               </ul>
             </div>
           </li>

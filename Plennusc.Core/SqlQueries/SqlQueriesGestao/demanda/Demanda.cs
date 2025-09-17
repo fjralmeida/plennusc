@@ -113,14 +113,19 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
                 s.DescEstrutura AS Status,
                 p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
                 d.DataDemanda AS DataSolicitacao,
-                pri.DescEstrutura AS Prioridade,  -- Nova coluna
-                d.CodEstr_NivelPrioridade AS CodPrioridade  -- Código para estilização
+                pri.DescEstrutura AS Prioridade,
+                d.CodEstr_NivelPrioridade AS CodPrioridade,
+                -- Campos de aceite adicionados
+                d.CodPessoaExecucao,
+                d.DataAceitacao,
+                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
             FROM dbo.Demanda d
             INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
             INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
             INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
             LEFT JOIN dbo.Estrutura sub ON d.CodEstr_TipoDemanda = sub.CodEstrutura
-            LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura  -- Join com prioridade
+            LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+            LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
             WHERE 1=1";
         public const string ObterDemandaPorId = @"
             SELECT 
@@ -240,12 +245,42 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             (@CodDemanda, @DescArquivo, GETDATE(), GETDATE())";
 
         public const string GetAnexosDemanda = @"
-    SELECT 
-        CodDemandaAnexo,
-        DescArquivo,
-        DataEnvio
-    FROM DemandaAnexos 
-    WHERE CodDemanda = @CodDemanda
-    ORDER BY DataEnvio DESC";
+            SELECT 
+                CodDemandaAnexo,
+                DescArquivo,
+                DataEnvio
+            FROM DemandaAnexos 
+            WHERE CodDemanda = @CodDemanda
+            ORDER BY DataEnvio DESC";
+
+        public const string AceitarDemanda = @"
+        UPDATE Demanda 
+        SET CodPessoaExecucao = @CodPessoaExecucao, 
+            DataAceitacao = GETDATE() 
+        WHERE CodDemanda = @CodDemanda";
+
+        public const string GetDemandasParaListagem = @"
+        SELECT 
+            d.CodDemanda,
+            d.Titulo,
+            tg.Descricao as Categoria,
+            td.Descricao as Subtipo,
+            d.CodEstr_NivelPrioridade as CodPrioridade,
+            np.Descricao as Prioridade,
+            sd.Descricao as Status,
+            p.Nome + ' ' + p.Sobrenome as Solicitante,
+            d.DataDemanda as DataSolicitacao,
+            d.CodPessoaExecucao,
+            d.DataAceitacao,
+            pexec.Nome + ' ' + pexec.Sobrenome as NomePessoaExecucao
+        FROM Demanda d
+        INNER JOIN Estr_TipoDemandaGrupo tg ON d.CodEstr_TipoDemanda = tg.CodEstr_TipoDemandaGrupo
+        INNER JOIN Estr_TipoDemandaDetalhe td ON d.CodEstr_TipoDemanda = td.CodEstr_TipoDemandaDetalhe
+        INNER JOIN Estr_NivelPrioridade np ON d.CodEstr_NivelPrioridade = np.CodEstr_NivelPrioridade
+        INNER JOIN Estr_SituacaoDemanda sd ON d.CodEstr_SituacaoDemanda = sd.CodEstr_SituacaoDemanda
+        INNER JOIN Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+        LEFT JOIN Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
+        WHERE (@CodPessoaFiltro IS NULL OR d.CodPessoaExecucao = @CodPessoaFiltro)
+        ORDER BY d.DataDemanda DESC";
     }
 }

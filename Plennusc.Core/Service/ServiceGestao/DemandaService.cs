@@ -134,7 +134,54 @@ namespace Plennusc.Core.Service.ServiceGestao
                 cmd.ExecuteNonQuery();
             }
         }
+        public bool AceitarDemanda(int codDemanda, int codPessoa)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.AceitarDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoaExecucao", codPessoa);
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
 
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public List<DemandaListDto> GetDemandasParaListagem(int? codPessoaFiltro = null)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.GetDemandasParaListagem, con))
+            {
+                if (codPessoaFiltro.HasValue)
+                    cmd.Parameters.AddWithValue("@CodPessoaFiltro", codPessoaFiltro.Value);
+                else
+                    cmd.Parameters.AddWithValue("@CodPessoaFiltro", DBNull.Value);
+
+                con.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    var result = new List<DemandaListDto>();
+                    while (reader.Read())
+                    {
+                        result.Add(new DemandaListDto
+                        {
+                            CodDemanda = reader.GetInt32(0),
+                            Titulo = reader.GetString(1),
+                            Categoria = reader.GetString(2),
+                            Subtipo = reader.GetString(3),
+                            CodPrioridade = reader.GetInt32(4),
+                            Prioridade = reader.GetString(5),
+                            Status = reader.GetString(6),
+                            Solicitante = reader.GetString(7),
+                            DataSolicitacao = reader.GetDateTime(8),
+                            CodPessoaExecucao = reader.IsDBNull(9) ? (int?)null : reader.GetInt32(9),
+                            DataAceitacao = reader.IsDBNull(10) ? (DateTime?)null : reader.GetDateTime(10),
+                            NomePessoaExecucao = reader.IsDBNull(11) ? null : reader.GetString(11)
+                        });
+                    }
+                    return result;
+                }
+            }
+        }
         public string SalvarAnexoFisico(HttpPostedFile arquivo, int codDemanda)
         {
             try
@@ -510,7 +557,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                 foreach (SqlParameter p in cmd.Parameters)
                 {
                     System.Diagnostics.Debug.WriteLine($"{p.ParameterName}: {p.Value}");
-                }
+                } 
 
                 using (var rd = cmd.ExecuteReader())
                 {
@@ -526,7 +573,12 @@ namespace Plennusc.Core.Service.ServiceGestao
                             Solicitante = rd.IsDBNull(5) ? "" : rd.GetString(5),
                             DataSolicitacao = rd.IsDBNull(6) ? DateTime.MinValue : rd.GetDateTime(6),
                             Prioridade = rd.IsDBNull(7) ? "Normal" : rd.GetString(7),
-                            CodPrioridade = rd.IsDBNull(8) ? 0 : rd.GetInt32(8) 
+                            CodPrioridade = rd.IsDBNull(8) ? 0 : rd.GetInt32(8),
+
+                            // Novas propriedades de aceite
+                            CodPessoaExecucao = rd.IsDBNull(9) ? (int?)null : rd.GetInt32(9),
+                            DataAceitacao = rd.IsDBNull(10) ? (DateTime?)null : rd.GetDateTime(10),
+                            NomePessoaExecucao = rd.IsDBNull(11) ? null : rd.GetString(11)
                         };
                         lista.Add(dto);
                     }
