@@ -186,6 +186,11 @@
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
     <Content Include="PlennuscGestao\Views\listDemand.aspx" />
     <Content Include="PlennuscGestao\Views\myDemands.aspx" />
+    <Content Include="PlennuscGestao\Views\myDemandsCompleted.aspx" />
+    <Content Include="PlennuscGestao\Views\myDemandsOpen.aspx" />
+    <Content Include="PlennuscGestao\Views\myDemandsProgress.aspx" />
+    <Content Include="PlennuscGestao\Views\myDemandsRefused.aspx" />
+    <Content Include="PlennuscGestao\Views\myDemandsWaiting.aspx" />
     <Content Include="PlennuscGestao\Views\priceTable.aspx" />
     <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
     <Content Include="PlennuscGestao\Views\sendCompanyMessage.aspx" />
@@ -397,6 +402,41 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\myDemands.aspx.designer.cs">
       <DependentUpon>myDemands.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsCompleted.aspx.cs">
+      <DependentUpon>myDemandsCompleted.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsCompleted.aspx.designer.cs">
+      <DependentUpon>myDemandsCompleted.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsOpen.aspx.cs">
+      <DependentUpon>myDemandsOpen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsOpen.aspx.designer.cs">
+      <DependentUpon>myDemandsOpen.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsProgress.aspx.cs">
+      <DependentUpon>myDemandsProgress.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsProgress.aspx.designer.cs">
+      <DependentUpon>myDemandsProgress.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsRefused.aspx.cs">
+      <DependentUpon>myDemandsRefused.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsRefused.aspx.designer.cs">
+      <DependentUpon>myDemandsRefused.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsWaiting.aspx.cs">
+      <DependentUpon>myDemandsWaiting.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\myDemandsWaiting.aspx.designer.cs">
+      <DependentUpon>myDemandsWaiting.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\priceTable.aspx.cs">
       <DependentUpon>priceTable.aspx</DependentUpon>
