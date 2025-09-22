@@ -127,21 +127,45 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
             LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
             WHERE 1=1";
+
         public const string ObterDemandaPorId = @"
-            SELECT 
-                d.CodDemanda,
-                d.Titulo,
-                d.TextoDemanda,
-                d.CodEstr_SituacaoDemanda AS StatusCodigo,
-                sit.DescEstrutura AS StatusNome,
-                (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
-                d.DataDemanda AS DataSolicitacao,
-                d.CodPessoaSolicitacao,
-                d.CodSetorDestino
-            FROM dbo.Demanda d
-            INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
-            INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
-            WHERE d.CodDemanda = @CodDemanda";
+    SELECT 
+        d.CodDemanda,
+        d.Titulo,
+        d.TextoDemanda,
+        d.CodEstr_SituacaoDemanda AS StatusCodigo,
+        sit.DescEstrutura AS StatusNome,
+        (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
+        d.DataDemanda AS DataSolicitacao,
+        d.CodPessoaSolicitacao,
+        d.CodPessoaExecucao,
+        d.DataAceitacao,
+        pexec.Nome + ' ' + ISNULL(pexec.Sobrenome,'') AS NomePessoaExecucao,
+        d.CodPessoaAprovacao,
+        d.CodSetorDestino
+    FROM dbo.Demanda d
+    INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
+    INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
+    LEFT JOIN dbo.Pessoa pexec ON pexec.CodPessoa = d.CodPessoaExecucao
+    WHERE d.CodDemanda = @CodDemanda
+";
+
+
+        //public const string ObterDemandaPorId = @"
+        //    SELECT 
+        //        d.CodDemanda,
+        //        d.Titulo,
+        //        d.TextoDemanda,
+        //        d.CodEstr_SituacaoDemanda AS StatusCodigo,
+        //        sit.DescEstrutura AS StatusNome,
+        //        (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
+        //        d.DataDemanda AS DataSolicitacao,
+        //        d.CodPessoaSolicitacao,
+        //        d.CodSetorDestino
+        //    FROM dbo.Demanda d
+        //    INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
+        //    INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
+        //    WHERE d.CodDemanda = @CodDemanda";
 
         public const string ObterHistorico = @"
             SELECT dh.CodDemandaHistorico,
@@ -176,6 +200,21 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             INSERT INTO dbo.DemandaAcompanhamento (CodDemanda, TextoAcompanhamento, CodPessoaAcompanhamento, DataAcompanhamento)
             VALUES (@CodDemanda, @TextoAcompanhamento, @CodPessoaAcompanhamento, GETDATE());";
 
+        public const string SelectDemandaExecutorStatus = @"
+            SELECT CodPessoaExecucao, CodEstr_SituacaoDemanda
+            FROM dbo.Demanda
+            WHERE CodDemanda = @CodDemanda;";
+
+        public const string UpdateSituacaoDemanda = @"
+            UPDATE dbo.Demanda
+            SET CodEstr_SituacaoDemanda = @NovoStatus
+            WHERE CodDemanda = @CodDemanda;";
+
+        public const string InsertDemandaHistorico = @"
+            INSERT INTO dbo.DemandaHistorico
+            (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao)
+            VALUES (@CodDemanda, @Anterior, @Atual, @CodPessoa, GETDATE());";
+
         public const string SelectStatusCodigo = @"
             SELECT CodEstr_SituacaoDemanda FROM dbo.Demanda WHERE CodDemanda = @CodDemanda";
 
@@ -185,12 +224,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             FROM dbo.Demanda d
             INNER JOIN dbo.Estrutura sit ON sit.DescEstrutura = @NovoStatus
             WHERE d.CodDemanda = @CodDemanda";
-
-        public const string InsertDemandaHistorico = @"
-            INSERT INTO dbo.DemandaHistorico
-                (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao)
-            VALUES
-                (@CodDemanda, @CodAnterior, @CodAtual, @CodPessoaAlteracao, GETDATE());";
 
         public const string ContarDemandasPorPrioridade = @"
             SELECT COUNT(*) 
@@ -282,5 +315,84 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
         LEFT JOIN Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
         WHERE (@CodPessoaFiltro IS NULL OR d.CodPessoaExecucao = @CodPessoaFiltro)
         ORDER BY d.DataDemanda DESC";
+
+        public const string DemandasEmAbertoPorPessoa = @"
+            SELECT 
+                d.CodDemanda,
+                d.Titulo,
+                cat.DescEstrutura AS Categoria,
+                sub.DescEstrutura AS Subtipo,
+                s.DescEstrutura AS Status,
+                p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+                d.DataDemanda AS DataSolicitacao,
+                pri.DescEstrutura AS Prioridade,
+                d.CodEstr_NivelPrioridade AS CodPrioridade,
+                d.CodPessoaExecucao,
+                d.DataAceitacao,
+                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+            FROM dbo.Demanda d
+            INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+            INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+            INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+            LEFT JOIN dbo.Estrutura sub ON d.CodEstr_TipoDemanda = sub.CodEstrutura
+            LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+            LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
+            WHERE d.CodPessoaExecucao = @CodPessoa
+              AND d.CodEstr_SituacaoDemanda IN (17, 18, 23)
+            ORDER BY d.DataDemanda DESC";
+
+        public const string DemandasEmAndamentoPorPessoa = @"
+                SELECT 
+                    d.CodDemanda,
+                    d.Titulo,
+                    cat.DescEstrutura AS Categoria,
+                    sub.DescEstrutura AS Subtipo,
+                    s.DescEstrutura AS Status,
+                    p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+                    d.DataDemanda AS DataSolicitacao,
+                    pri.DescEstrutura AS Prioridade,
+                    d.CodEstr_NivelPrioridade AS CodPrioridade,
+                    d.CodPessoaExecucao,
+                    d.DataAceitacao,
+                    pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+                FROM dbo.Demanda d
+                INNER JOIN dbo.Pessoa p 
+                    ON d.CodPessoaSolicitacao = p.CodPessoa
+                INNER JOIN dbo.Estrutura s 
+                    ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+                INNER JOIN dbo.Estrutura cat 
+                    ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+                LEFT JOIN dbo.Estrutura sub 
+                    ON d.CodEstr_TipoDemanda = sub.CodEstrutura
+                LEFT JOIN dbo.Estrutura pri 
+                    ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+                LEFT JOIN dbo.Pessoa pexec 
+                    ON d.CodPessoaExecucao = pexec.CodPessoa
+                WHERE d.CodPessoaExecucao = @CodPessoa
+                  AND d.CodEstr_SituacaoDemanda = 18
+                ORDER BY d.DataDemanda DESC";
+
+        // busca o CODSETOR (destino) e status atual da demanda
+        public const string SelectDemanda_Setor_Status = @"
+            SELECT CodSetorDestino, CodEstr_SituacaoDemanda, CodPessoaAprovacao
+            FROM dbo.Demanda
+            WHERE CodDemanda = @CodDemanda;";
+
+        // busca um gestor ativo do departamento (setor)
+        public const string SelectGestorPorDepartamento = @"
+            SELECT TOP 1 p.CodPessoa
+            FROM dbo.Pessoa p
+            INNER JOIN dbo.Cargo c ON p.CodCargo = c.CodCargo
+            WHERE p.CodDepartamento = @CodDepartamento
+              AND c.Conf_TipoGestor = 1
+              AND p.Conf_Ativo = 1
+            ORDER BY p.CodPessoa; -- ordenação simples, escolha a regra que preferir";
+
+        // atualiza o aprovador da demanda
+        public const string UpdateDemanda_SetAprovador = @"
+            UPDATE dbo.Demanda
+            SET CodPessoaAprovacao = @CodPessoaAprovacao
+            WHERE CodDemanda = @CodDemanda;";
+
     }
 }

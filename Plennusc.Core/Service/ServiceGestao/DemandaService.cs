@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Edm.Validation;
 using Microsoft.Data.OData.Query.SemanticAst;
+using Plennusc.Core.Mappers.MappersGestao;
 using Plennusc.Core.Models.ModelsGestao;
 using Plennusc.Core.Models.Utils;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda;
@@ -599,18 +600,36 @@ namespace Plennusc.Core.Service.ServiceGestao
                 {
                     if (rd.Read())
                     {
+                        // debug opcional: lista colunas retornadas (descomente para investigar)
+                        // for (int i = 0; i < rd.FieldCount; i++)
+                        //     System.Diagnostics.Debug.WriteLine($"COL[{i}] = {rd.GetName(i)}");
+
                         var dto = new DemandaDto
                         {
-                            CodDemanda = rd.GetInt32(rd.GetOrdinal("CodDemanda")),
-                            Titulo = rd.IsDBNull(rd.GetOrdinal("Titulo")) ? null : rd.GetString(rd.GetOrdinal("Titulo")),
-                            TextoDemanda = rd.IsDBNull(rd.GetOrdinal("TextoDemanda")) ? null : rd.GetString(rd.GetOrdinal("TextoDemanda")),
-                            StatusNome = rd.IsDBNull(rd.GetOrdinal("StatusNome")) ? null : rd.GetString(rd.GetOrdinal("StatusNome")),
-                            StatusCodigo = rd.IsDBNull(rd.GetOrdinal("StatusCodigo")) ? (int?)null : rd.GetInt32(rd.GetOrdinal("StatusCodigo")),
-                            Solicitante = rd.IsDBNull(rd.GetOrdinal("Solicitante")) ? null : rd.GetString(rd.GetOrdinal("Solicitante")),
-                            DataSolicitacao = rd.IsDBNull(rd.GetOrdinal("DataSolicitacao")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("DataSolicitacao")),
-                            CodPessoaSolicitacao = rd.IsDBNull(rd.GetOrdinal("CodPessoaSolicitacao")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodPessoaSolicitacao")),
-                            CodSetorDestino = rd.IsDBNull(rd.GetOrdinal("CodSetorDestino")) ? 0 : rd.GetInt32(rd.GetOrdinal("CodSetorDestino"))
+                            CodDemanda = rd.GetInt("CodDemanda", 0),
+                            Titulo = rd.GetStringOrNull("Titulo"),
+                            TextoDemanda = rd.GetStringOrNull("TextoDemanda"),
+
+                            // status (nome + codigo)
+                            StatusNome = rd.GetStringOrNull("StatusNome"),
+                            StatusCodigo = rd.GetNullableInt("StatusCodigo"),
+
+                            Solicitante = rd.GetStringOrNull("Solicitante"),
+                            DataSolicitacao = rd.GetNullableDateTime("DataSolicitacao"),
+                            CodPessoaSolicitacao = rd.GetInt("CodPessoaSolicitacao", 0),
+
+                            // executor / aceite
+                            CodPessoaExecucao = rd.GetNullableInt("CodPessoaExecucao"),
+                            DataAceitacao = rd.GetNullableDateTime("DataAceitacao"),
+                            NomePessoaExecucao = rd.GetStringOrNull("NomePessoaExecucao"),
+
+                            // aprovador
+                            CodPessoaAprovacao = rd.GetNullableInt("CodPessoaAprovacao"),
+
+                            // setor destino
+                            CodSetorDestino = rd.GetInt("CodSetorDestino", 0)
                         };
+
                         return dto;
                     }
                 }
@@ -678,13 +697,163 @@ namespace Plennusc.Core.Service.ServiceGestao
 
         public void AdicionarAcompanhamento(int codDemanda, int codPessoa, string texto)
         {
+            const int STATUS_EM_ANDAMENTO = 18;
+            const int STATUS_CONCLUIDA = 23;
+
             using (var con = Open())
-            using (var cmd = new SqlCommand(Demanda.InsertAcompanhamento, con))
+            using (var tx = con.BeginTransaction())
             {
-                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
-                cmd.Parameters.AddWithValue("@TextoAcompanhamento", (object)(texto ?? string.Empty));
-                cmd.Parameters.AddWithValue("@CodPessoaAcompanhamento", codPessoa);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    // 1) Inserir o acompanhamento
+                    using (var cmdIns = new SqlCommand(Demanda.InsertAcompanhamento, con, tx))
+                    {
+                        cmdIns.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        cmdIns.Parameters.AddWithValue("@TextoAcompanhamento", (object)(texto ?? string.Empty));
+                        cmdIns.Parameters.AddWithValue("@CodPessoaAcompanhamento", codPessoa);
+                        cmdIns.ExecuteNonQuery();
+                    }
+
+                    // 2) Ler executor e status atual da demanda
+                    int? codPessoaExecucao = null;
+                    int statusAtual = 0;
+                    using (var cmdSel = new SqlCommand(Demanda.SelectDemandaExecutorStatus, con, tx))
+                    {
+                        cmdSel.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        using (var rd = cmdSel.ExecuteReader())
+                        {
+                            if (rd.Read())
+                            {
+                                codPessoaExecucao = rd.IsDBNull(0) ? (int?)null : rd.GetInt32(0);
+                                statusAtual = rd.IsDBNull(1) ? 0 : rd.GetInt32(1);
+                            }
+                        }
+                    }
+
+                    // 3) Se quem respondeu é o executor e o status não é já Em Andamento/Concluída -> atualiza
+                    if (codPessoaExecucao.HasValue && codPessoaExecucao.Value == codPessoa
+                        && statusAtual != STATUS_EM_ANDAMENTO
+                        && statusAtual != STATUS_CONCLUIDA)
+                    {
+                        using (var cmdUpd = new SqlCommand(Demanda.UpdateSituacaoDemanda, con, tx))
+                        {
+                            cmdUpd.Parameters.AddWithValue("@NovoStatus", STATUS_EM_ANDAMENTO);
+                            cmdUpd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                            cmdUpd.ExecuteNonQuery();
+                        }
+
+                        using (var cmdHist = new SqlCommand(Demanda.InsertDemandaHistorico, con, tx))
+                        {
+                            cmdHist.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                            cmdHist.Parameters.AddWithValue("@Anterior", statusAtual);
+                            cmdHist.Parameters.AddWithValue("@Atual", STATUS_EM_ANDAMENTO);
+                            cmdHist.Parameters.AddWithValue("@CodPessoa", codPessoa);
+                            cmdHist.ExecuteNonQuery();
+                        }
+                    }
+
+                    tx.Commit();
+                }
+                catch
+                {
+                    try { tx.Rollback(); } catch { /* swallow */ }
+                    throw;
+                }
+            }
+        }
+
+        //SOLICITAÇÃO DE APROVAÇÃO DE DEMANDA
+        public bool SolicitarAprovacaoDemanda(int codDemanda, int codPessoaSolicitante, out int gestorDesignado)
+        {
+            gestorDesignado = 0;
+            using (var con = Open())
+            using (var tx = con.BeginTransaction())
+            {
+                try
+                {
+                    // 1) pegar setor destino e status atual (e se já tem aprovador)
+                    int? codSetorDestino = null;
+                    int statusAtual = 0;
+                    int? codPessoaAprovacaoExistente = null;
+
+                    using (var cmd = new SqlCommand(Demanda.SelectDemanda_Setor_Status, con, tx))
+                    {
+                        cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        using (var rd = cmd.ExecuteReader())
+                        {
+                            if (rd.Read())
+                            {
+                                codSetorDestino = rd.IsDBNull(0) ? (int?)null : rd.GetInt32(0);
+                                statusAtual = rd.IsDBNull(1) ? 0 : rd.GetInt32(1);
+                                codPessoaAprovacaoExistente = rd.IsDBNull(2) ? (int?)null : rd.GetInt32(2);
+                            }
+                            else
+                            {
+                                // demanda não encontrada
+                                tx.Rollback();
+                                return false;
+                            }
+                        }
+                    }
+
+                    // se já tem aprovador, não sobrescreve, retorna false (ou true se quiser sobrescrever)
+                    if (codPessoaAprovacaoExistente.HasValue && codPessoaAprovacaoExistente.Value > 0)
+                    {
+                        gestorDesignado = codPessoaAprovacaoExistente.Value;
+                        tx.Commit();
+                        return true;
+                    }
+
+                    if (!codSetorDestino.HasValue)
+                    {
+                        tx.Rollback();
+                        return false;
+                    }
+
+                    // 2) buscar gestor do departamento
+                    int gestorId = 0;
+                    using (var cmd = new SqlCommand(Demanda.SelectGestorPorDepartamento, con, tx))
+                    {
+                        cmd.Parameters.AddWithValue("@CodDepartamento", codSetorDestino.Value);
+                        var o = cmd.ExecuteScalar();
+                        if (o != null && o != DBNull.Value)
+                            gestorId = Convert.ToInt32(o);
+                    }
+
+                    if (gestorId == 0)
+                    {
+                        // sem gestor encontrado — decide: rollback + false ou commit e retorno parcial
+                        tx.Rollback();
+                        return false;
+                    }
+
+                    // 3) atualizar Demanda.CodPessoaAprovacao
+                    using (var cmd = new SqlCommand(Demanda.UpdateDemanda_SetAprovador, con, tx))
+                    {
+                        cmd.Parameters.AddWithValue("@CodPessoaAprovacao", gestorId);
+                        cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 4) registrar no histórico (sem mudar status, grava anterior==atual)
+                    using (var cmd = new SqlCommand(Demanda.InsertDemandaHistorico, con, tx))
+                    {
+                        cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        cmd.Parameters.AddWithValue("@Anterior", statusAtual);
+                        cmd.Parameters.AddWithValue("@Atual", statusAtual);
+                        cmd.Parameters.AddWithValue("@CodPessoa", codPessoaSolicitante);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    tx.Commit();
+                    gestorDesignado = gestorId;
+                    return true;
+                }
+                catch
+                {
+                    try { tx.Rollback(); } catch { }
+                    throw;
+                }
             }
         }
 
@@ -722,8 +891,7 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
         }
 
-        // No DemandaService, adicione este método:
-        // No final do seu código, você tem ESTE método duplicado:
+        //ANEXOS DE UMA DEMANDA
         public List<AnexoInfo> GetAnexosDemanda(int codDemanda)
         {
             using (var con = Open())
@@ -751,6 +919,86 @@ namespace Plennusc.Core.Service.ServiceGestao
                 }
                 return anexos;
             }
+        }
+        //DEMANDAS EM ABERTO PARA PESSOA (MINHAS DEMANDAS)
+        public List<DemandaInfo> GetDemandasEmAbertoPorPessoa(int codPessoa)
+        {
+            var demandas = new List<DemandaInfo>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.DemandasEmAbertoPorPessoa, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        demandas.Add(new DemandaInfo
+                        {
+                            CodDemanda = reader.GetInt32(reader.GetOrdinal("CodDemanda")),
+                            Titulo = reader.GetString(reader.GetOrdinal("Titulo")),
+                            Categoria = reader.GetString(reader.GetOrdinal("Categoria")),
+                            Subtipo = reader.GetString(reader.GetOrdinal("Subtipo")),
+                            Status = reader.GetString(reader.GetOrdinal("Status")),
+                            Solicitante = reader.GetString(reader.GetOrdinal("Solicitante")),
+                            DataSolicitacao = reader.GetDateTime(reader.GetOrdinal("DataSolicitacao")),
+                            Prioridade = reader.GetString(reader.GetOrdinal("Prioridade")),
+                            CodPrioridade = reader.GetInt32(reader.GetOrdinal("CodPrioridade")),
+                            CodPessoaExecucao = reader.IsDBNull(reader.GetOrdinal("CodPessoaExecucao")) ?
+                                                (int?)null : reader.GetInt32(reader.GetOrdinal("CodPessoaExecucao")),
+                            DataAceitacao = reader.IsDBNull(reader.GetOrdinal("DataAceitacao")) ?
+                                            (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("DataAceitacao")),
+                            NomePessoaExecucao = reader.IsDBNull(reader.GetOrdinal("NomePessoaExecucao")) ?
+                                                 null : reader.GetString(reader.GetOrdinal("NomePessoaExecucao")),
+                        });
+                    }
+                }
+            }
+
+            return demandas;
+        }
+
+        //DEMANDAS EM ANDAMENTO PARA PESSOA (MINHAS DEMANDAS)
+        public List<DemandaInfo> GetDemandasEmAndamentoPorPessoa(int codPessoa)
+        {
+            var demandas = new List<DemandaInfo>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.DemandasEmAndamentoPorPessoa, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        demandas.Add(new DemandaInfo
+                        {
+                            CodDemanda = reader.GetInt32(reader.GetOrdinal("CodDemanda")),
+                            Titulo = reader.GetString(reader.GetOrdinal("Titulo")),
+                            Categoria = reader.GetString(reader.GetOrdinal("Categoria")),
+                            Subtipo = reader.GetString(reader.GetOrdinal("Subtipo")),
+                            Status = reader.GetString(reader.GetOrdinal("Status")),
+                            Solicitante = reader.GetString(reader.GetOrdinal("Solicitante")),
+                            DataSolicitacao = reader.GetDateTime(reader.GetOrdinal("DataSolicitacao")),
+                            Prioridade = reader.GetString(reader.GetOrdinal("Prioridade")),
+                            CodPrioridade = reader.GetInt32(reader.GetOrdinal("CodPrioridade")),
+                            CodPessoaExecucao = reader.IsDBNull(reader.GetOrdinal("CodPessoaExecucao"))
+                                                ? (int?)null
+                                                : reader.GetInt32(reader.GetOrdinal("CodPessoaExecucao")),
+                            DataAceitacao = reader.IsDBNull(reader.GetOrdinal("DataAceitacao"))
+                                            ? (DateTime?)null
+                                            : reader.GetDateTime(reader.GetOrdinal("DataAceitacao")),
+                            NomePessoaExecucao = reader.IsDBNull(reader.GetOrdinal("NomePessoaExecucao"))
+                                                 ? null
+                                                 : reader.GetString(reader.GetOrdinal("NomePessoaExecucao")),
+                        });
+                    }
+                }
+            }
+
+            return demandas;
         }
 
     }

@@ -58,6 +58,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Data_Bd\BancoDadosSQL.cs" />
     <Compile Include="Mappers\MappersGestao\InsertionIntoTheMapperPriceTable.cs" />
+    <Compile Include="Mappers\MappersGestao\ReaderExtensions.cs" />
     <Compile Include="Mappers\MappersGestao\TablePriceMapper.cs" />
     <Compile Include="Models\ModelsGestao\AcompanhamentoDto.cs" />
     <Compile Include="Models\ModelsGestao\AnexoInfo.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Models\ModelsGestao\DemandaCriticaInfo.cs" />
     <Compile Include="Models\ModelsGestao\DemandaDto.cs" />
     <Compile Include="Models\ModelsGestao\DemandaFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\DemandaInfo.cs" />
     <Compile Include="Models\ModelsGestao\DemandaListDto.cs" />
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />

@@ -509,6 +509,31 @@
             font-style: italic;
         }
 
+        .toast-container {
+          position: fixed;
+          right: 20px;
+          top: 20px;
+          z-index: 99999;
+        }
+        .toast {
+          min-width: 260px;
+          max-width: 380px;
+          padding: 12px 16px;
+          border-radius: 8px;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+          color: #fff;
+          margin-bottom: 10px;
+          font-family: Roboto, Arial, sans-serif;
+          opacity: 0;
+          transform: translateY(-10px);
+          transition: all .25s ease;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        .toast .title { font-weight: 600; margin-bottom: 4px; }
+        .toast .msg { font-size: 13px; }
+
         /* Responsividade para anexos */
         @media (max-width: 768px) {
             .attachment-item {
@@ -525,6 +550,9 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <div class="toast-container" id="globalToastContainer" runat="server" style="display:none"></div>
+
     <div class="container-main">
         <!-- Cabeçalho da Demanda -->
         <div class="demand-header">
@@ -547,6 +575,9 @@
                     <span class="meta-value"><asp:Label ID="lblDataSolicitacao" runat="server" /></span>
                 </div>
             </div>
+
+            <asp:Button ID="btnSolicitarAprovacao" runat="server" CssClass="btn-primary"
+                      Text="Solicitar Aprovação" OnClick="btnSolicitarAprovacao_Click" Visible="false" />
             
             <asp:Button ID="btnEncerrar" runat="server" CssClass="btn-close-demand" 
                         Text="✖ Encerrar Demanda" OnClick="btnEncerrar_Click" />
@@ -723,4 +754,35 @@
             checkDemandStatus();
         });
     </script>
+
+<script>
+    function createToast(message, type, title) {
+        var container = document.getElementById('globalToastContainer');
+        if (!container) return;
+        container.style.display = 'block';
+
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        toast.innerHTML = (title ? '<div class=\"title\">' + title + '</div>' : '') +
+            '<div class=\"msg\">' + message + '</div>';
+        container.appendChild(toast);
+
+        // show
+        setTimeout(function () { toast.classList.add('show'); }, 10);
+
+        // remove after 5s
+        setTimeout(function () {
+            toast.classList.remove('show');
+            setTimeout(function () { try { container.removeChild(toast); } catch (e) { } }, 300);
+        }, 5000);
+    }
+
+    function showToastSucesso(message) {
+        createToast(message, 'success', 'Sucesso');
+    }
+    function showToastErro(message) {
+        createToast(message, 'error', 'Erro');
+    }
+</script>
+
 </asp:Content>

@@ -11,11 +11,25 @@ namespace Plennusc.Core.Models.ModelsGestao
         public int CodDemanda { get; set; }
         public string Titulo { get; set; }
         public string TextoDemanda { get; set; }
+
+        // Status
         public string StatusNome { get; set; }
-        public int? StatusCodigo { get; set; }
+        public int? StatusCodigo { get; set; } 
+
+        // Solicitante / datas
         public string Solicitante { get; set; }
         public DateTime? DataSolicitacao { get; set; }
         public int CodPessoaSolicitacao { get; set; }
+
+        // Executor / aceite
+        public int? CodPessoaExecucao { get; set; }   
+        public DateTime? DataAceitacao { get; set; }
+        public string NomePessoaExecucao { get; set; }
+
+        // Aprovação
+        public int? CodPessoaAprovacao { get; set; } 
+
+        // Setor/demais (se precisar)
         public int CodSetorDestino { get; set; }
     }
 }

@@ -15,6 +15,15 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
+        /// Controle globalToastContainer.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl globalToastContainer;
+
+        /// <summary>
         /// Controle lblTitulo.
         /// </summary>
         /// <remarks>
@@ -58,6 +67,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblDataSolicitacao;
+
+        /// <summary>
+        /// Controle btnSolicitarAprovacao.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSolicitarAprovacao;
 
         /// <summary>
         /// Controle btnEncerrar.

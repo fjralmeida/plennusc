@@ -15,7 +15,7 @@ namespace appWhatsapp.PlennuscGestao.Views
     public partial class detailDemand : System.Web.UI.Page
     {
         private readonly DemandaService _service = new DemandaService("Plennus");
-        private int CodDemanda => Convert.ToInt32(Request.QueryString["id"]);
+        private int CodDemanda => Convert.ToInt32(Request.QueryString["codDemanda"]);
         private int CodPessoaAtual => Convert.ToInt32(Session["CodPessoa"] ?? 0);
         private bool DemandaFechada => (demandaAtual?.StatusCodigo == 23); // 23 = Status "Concluída"
 
@@ -92,6 +92,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             bool podeEncerrar = ehSolicitante && (statusCodigo == 18);
 
             btnEncerrar.Visible = podeEncerrar;
+
+            // Mostrar o botão de "Solicitar Aprovação" para quem é executor da demanda,
+            // e apenas se ainda não existir um aprovador e a demanda não estiver fechada
+            bool ehExecutor = demandaAtual.CodPessoaExecucao.HasValue && demandaAtual.CodPessoaExecucao.Value == codUsuario;
+            bool jaTemAprovador = demandaAtual.CodPessoaAprovacao.HasValue && demandaAtual.CodPessoaAprovacao.Value > 0;
+            btnSolicitarAprovacao.Visible = ehExecutor && !jaTemAprovador && !DemandaFechada;
         }
 
         private void ConfigurarFormularioAcompanhamento()
@@ -175,6 +181,43 @@ namespace appWhatsapp.PlennuscGestao.Views
                 len = len / 1024;
             }
             return $"{len:0.##} {sizes[order]}";
+        }
+
+        protected void btnSolicitarAprovacao_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int gestorId;
+                var ok = _service.SolicitarAprovacaoDemanda(CodDemanda, CodPessoaAtual, out gestorId);
+                if (ok)
+                {
+                    if (gestorId > 0)
+                        MostrarMensagem($"Solicitação enviada para o gestor (ID {gestorId}).", "success");
+                    else
+                        MostrarMensagem("Solicitação enviada.", "success");
+
+                    // Recarrega demanda e UI
+                    demandaAtual = _service.ObterDemandaPorId(CodDemanda);
+                    CarregarDemanda();
+                    AjustarBotoes();
+                }
+                else
+                {
+                    MostrarMensagem("Não foi possível localizar um gestor para este setor.", "error");
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem("Erro ao solicitar aprovação: " + ex.Message, "error");
+            }
+        }
+
+        private void MostrarMensagem(string mensagem, string tipo)
+        {
+            string functionName = tipo == "success" ? "showToastSucesso" : "showToastErro";
+            string script = $@"{functionName}('{mensagem.Replace("'", "\\'")}');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "MensagemToast", script, true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "MensagemToast", script, true);
         }
     }
 }
