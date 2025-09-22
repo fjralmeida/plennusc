@@ -766,16 +766,18 @@ namespace Plennusc.Core.Service.ServiceGestao
         public bool SolicitarAprovacaoDemanda(int codDemanda, int codPessoaSolicitante, out int gestorDesignado)
         {
             gestorDesignado = 0;
+
             using (var con = Open())
             using (var tx = con.BeginTransaction())
             {
                 try
                 {
-                    // 1) pegar setor destino e status atual (e se já tem aprovador)
                     int? codSetorDestino = null;
+                    int statusAnterior = 0;
                     int statusAtual = 0;
                     int? codPessoaAprovacaoExistente = null;
 
+                    // 1) Buscar setor, status e aprovador atual
                     using (var cmd = new SqlCommand(Demanda.SelectDemanda_Setor_Status, con, tx))
                     {
                         cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
@@ -783,20 +785,30 @@ namespace Plennusc.Core.Service.ServiceGestao
                         {
                             if (rd.Read())
                             {
-                                codSetorDestino = rd.IsDBNull(0) ? (int?)null : rd.GetInt32(0);
-                                statusAtual = rd.IsDBNull(1) ? 0 : rd.GetInt32(1);
-                                codPessoaAprovacaoExistente = rd.IsDBNull(2) ? (int?)null : rd.GetInt32(2);
+                                codSetorDestino = rd.HasColumn("CodSetorDestino") && !rd.IsDBNull(rd.GetOrdinal("CodSetorDestino"))
+                                    ? (int?)rd.GetInt32(rd.GetOrdinal("CodSetorDestino"))
+                                    : null;
+
+                                statusAnterior = rd.HasColumn("CodEstr_SituacaoDemanda") && !rd.IsDBNull(rd.GetOrdinal("CodEstr_SituacaoDemanda"))
+                                    ? rd.GetInt32(rd.GetOrdinal("CodEstr_SituacaoDemanda"))
+                                    : 0;
+
+                                // Por enquanto, statusAtual = statusAnterior (será atualizado logo depois)
+                                statusAtual = statusAnterior;
+
+                                codPessoaAprovacaoExistente = rd.HasColumn("CodPessoaAprovacao") && !rd.IsDBNull(rd.GetOrdinal("CodPessoaAprovacao"))
+                                    ? (int?)rd.GetInt32(rd.GetOrdinal("CodPessoaAprovacao"))
+                                    : null;
                             }
                             else
                             {
-                                // demanda não encontrada
                                 tx.Rollback();
                                 return false;
                             }
                         }
                     }
 
-                    // se já tem aprovador, não sobrescreve, retorna false (ou true se quiser sobrescrever)
+                    // Se já tem aprovador
                     if (codPessoaAprovacaoExistente.HasValue && codPessoaAprovacaoExistente.Value > 0)
                     {
                         gestorDesignado = codPessoaAprovacaoExistente.Value;
@@ -810,7 +822,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                         return false;
                     }
 
-                    // 2) buscar gestor do departamento
+                    // 2) Buscar gestor do setor
                     int gestorId = 0;
                     using (var cmd = new SqlCommand(Demanda.SelectGestorPorDepartamento, con, tx))
                     {
@@ -822,12 +834,11 @@ namespace Plennusc.Core.Service.ServiceGestao
 
                     if (gestorId == 0)
                     {
-                        // sem gestor encontrado — decide: rollback + false ou commit e retorno parcial
                         tx.Rollback();
                         return false;
                     }
 
-                    // 3) atualizar Demanda.CodPessoaAprovacao
+                    // 3) Atualizar aprovador (mantém sua lógica)
                     using (var cmd = new SqlCommand(Demanda.UpdateDemanda_SetAprovador, con, tx))
                     {
                         cmd.Parameters.AddWithValue("@CodPessoaAprovacao", gestorId);
@@ -835,13 +846,41 @@ namespace Plennusc.Core.Service.ServiceGestao
                         cmd.ExecuteNonQuery();
                     }
 
-                    // 4) registrar no histórico (sem mudar status, grava anterior==atual)
+                    // ==== BLOCO SUBSTITUÍDO: buscar código 'Aguardando aprovação' via constante do Demanda (sem query inline) ====
+                    int codSituacaoAguardando = 0;
+                    using (var cmd = new SqlCommand(Demanda.SelectCodSituacaoAguardando, con, tx))
+                    {
+                        var o = cmd.ExecuteScalar();
+                        if (o != null && o != DBNull.Value)
+                            codSituacaoAguardando = Convert.ToInt32(o);
+                    }
+
+                    if (codSituacaoAguardando == 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[SolicitarAprovacao] ERRO: 'Aguardando aprovação' não encontrada em Estrutura.");
+                        tx.Rollback();
+                        return false;
+                    }
+
+                    // 4) Atualizar a situação da Demanda para 'Aguardando aprovação' (valor vindo do banco)
+                    using (var cmd = new SqlCommand(Demanda.UpdateSituacaoDemanda, con, tx))
+                    {
+                        cmd.Parameters.AddWithValue("@CodEstr_SituacaoDemanda", codSituacaoAguardando);
+                        cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Ajusta statusAtual para ser usado no histórico logo em seguida
+                    statusAtual = codSituacaoAguardando;
+                    // ==== FIM do bloco substituído ====
+
+                    // 5) Inserir no histórico
                     using (var cmd = new SqlCommand(Demanda.InsertDemandaHistorico, con, tx))
                     {
                         cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
-                        cmd.Parameters.AddWithValue("@Anterior", statusAtual);
-                        cmd.Parameters.AddWithValue("@Atual", statusAtual);
-                        cmd.Parameters.AddWithValue("@CodPessoa", codPessoaSolicitante);
+                        cmd.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAnterior", statusAnterior);
+                        cmd.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAtual", statusAtual);
+                        cmd.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoaSolicitante);
                         cmd.ExecuteNonQuery();
                     }
 
@@ -856,6 +895,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                 }
             }
         }
+
+
 
         public void AtualizarStatusComHistorico(int codDemanda, int novoStatusCodigo, int codPessoaAlteracao)
         {

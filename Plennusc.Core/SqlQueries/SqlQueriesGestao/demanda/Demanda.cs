@@ -150,7 +150,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
     WHERE d.CodDemanda = @CodDemanda
 ";
 
-
         //public const string ObterDemandaPorId = @"
         //    SELECT 
         //        d.CodDemanda,
@@ -209,11 +208,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             UPDATE dbo.Demanda
             SET CodEstr_SituacaoDemanda = @NovoStatus
             WHERE CodDemanda = @CodDemanda;";
-
         public const string InsertDemandaHistorico = @"
             INSERT INTO dbo.DemandaHistorico
             (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao)
-            VALUES (@CodDemanda, @Anterior, @Atual, @CodPessoa, GETDATE());";
+            VALUES (@CodDemanda, @CodEstr_SituacaoDemandaAnterior, @CodEstr_SituacaoDemandaAtual, @CodPessoaAlteracao, GETDATE());";
 
         public const string SelectStatusCodigo = @"
             SELECT CodEstr_SituacaoDemanda FROM dbo.Demanda WHERE CodDemanda = @CodDemanda";
@@ -393,6 +391,13 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             UPDATE dbo.Demanda
             SET CodPessoaAprovacao = @CodPessoaAprovacao
             WHERE CodDemanda = @CodDemanda;";
+
+        public const string SelectCodSituacaoAguardando = @"
+            SELECT TOP 1 CodEstrutura
+            FROM dbo.Estrutura
+            WHERE LOWER(DescEstrutura) = 'aguardando aprovação'
+               OR (LOWER(DescEstrutura) LIKE '%aguardando%' AND LOWER(DescEstrutura) LIKE '%aprov%');";
+
 
     }
 }
