@@ -489,27 +489,37 @@
                 <!-- Coluna lateral - Categoria, Roteamento e Prioridade -->
                 <div class="col-lg-4">
                     <!-- Prioridade em UpdatePanel -->
-                    <asp:UpdatePanel ID="upPrioridade" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
-                            <div class="mb-4">
-                                <h3 class="section-title"><i class="bi bi-flag"></i>Prioridade</h3>
-                                <div class="form-card">
-                                    <div class="mb-3">
-                                        <label class="form-label required-field">Prioridade</label>
-                                        <asp:DropDownList ID="ddlPrioridade" runat="server" CssClass="form-select" 
-                                            AutoPostBack="true" OnSelectedIndexChanged="ddlPrioridade_SelectedIndexChanged">
-                                            <asp:ListItem Text="Selecione a prioridade" Value="" />
-                                        </asp:DropDownList>
-                                    </div>
-                                    
-                                    <div class="mb-3" id="divPrazo" runat="server" style="display: none;">
-                                        <label class="form-label required-field">Prazo</label>
-                                        <input type="date" id="txtPrazo" runat="server" class="form-control" />
-                                    </div>
+                 <asp:UpdatePanel ID="upPrioridade" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="mb-4">
+                            <h3 class="section-title"><i class="bi bi-flag"></i>Prioridade</h3>
+                            <div class="form-card">
+                                <!-- Importância (sempre visível) -->
+                                <div class="mb-3">
+                                    <label class="form-label">Nível de Importância</label>
+                                    <asp:DropDownList ID="ddlImportancia" runat="server" CssClass="form-select">
+                                        <asp:ListItem Text="Selecione a importância (opcional)" Value="" />
+                                    </asp:DropDownList>
+                                </div>
+
+                                <!-- Prioridade -->
+                                <div class="mb-3">
+                                    <label class="form-label required-field">Prioridade</label>
+                                    <asp:DropDownList ID="ddlPrioridade" runat="server" CssClass="form-select" 
+                                        AutoPostBack="true" OnSelectedIndexChanged="ddlPrioridade_SelectedIndexChanged">
+                                        <asp:ListItem Text="Selecione a prioridade" Value="" />
+                                    </asp:DropDownList>
+                                </div>
+
+                                <!-- Prazo (aparece apenas para prioridades específicas) -->
+                                <div class="mb-3" id="divPrazo" runat="server" style="display: none;">
+                                    <label class="form-label required-field">Prazo</label>
+                                    <input type="date" id="txtPrazo" runat="server" class="form-control" />
                                 </div>
                             </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
+                        </div>
+                    </ContentTemplate>
+                 </asp:UpdatePanel>
 
                     <!-- Roteamento em UpdatePanel -->
                     <asp:UpdatePanel ID="upRoteamento" runat="server" UpdateMode="Conditional">

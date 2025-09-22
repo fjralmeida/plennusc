@@ -18,5 +18,7 @@ namespace Plennusc.Core.Models.ModelsGestao
         public bool Conf_RequerAprovacao { get; set; }
         public int? CodPessoaAprovacao { get; set; }
         public DateTime? DataPrazoMaximo { get; set; }
+
+        public int? CodEstr_NivelImportancia { get; set; }
     }
 }

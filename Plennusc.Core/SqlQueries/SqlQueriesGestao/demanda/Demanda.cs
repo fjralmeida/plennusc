@@ -53,13 +53,13 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
               (CodPessoaSolicitacao, CodSetorOrigem, CodSetorDestino,
                CodEstr_TipoDemanda, CodEstr_SituacaoDemanda,
                CodEstr_NivelPrioridade, Titulo, TextoDemanda,
-               Conf_RequerAprovacao, CodPessoaAprovacao, DataPrazoMaximo, DataDemanda)
+               Conf_RequerAprovacao, CodPessoaAprovacao, DataPrazoMaximo, DataDemanda, CodEstr_NivelImportancia)
             OUTPUT INSERTED.CodDemanda
             VALUES
               (@CodPessoaSolicitacao, @CodSetorOrigem, @CodSetorDestino,
                @CodEstr_TipoDemanda, @CodEstr_SituacaoDemanda,
                @CodEstr_NivelPrioridade, @Titulo, @TextoDemanda,
-               @Conf_RequerAprovacao, @CodPessoaAprovacao, @DataPrazoMaximo, GETDATE());";
+               @Conf_RequerAprovacao, @CodPessoaAprovacao, @DataPrazoMaximo, GETDATE(), @CodEstr_NivelImportancia);";
 
         public const string InsertHistoricoInicial = @"
             INSERT INTO dbo.DemandaHistorico
@@ -105,28 +105,31 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             WHERE CodSetor = @Setor";
 
         public const string ListarDemandasBase = @"
-            SELECT 
-                d.CodDemanda,
-                d.Titulo,
-                cat.DescEstrutura AS Categoria,
-                sub.DescEstrutura AS Subtipo,
-                s.DescEstrutura AS Status,
-                p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
-                d.DataDemanda AS DataSolicitacao,
-                pri.DescEstrutura AS Prioridade,
-                d.CodEstr_NivelPrioridade AS CodPrioridade,
-                -- Campos de aceite adicionados
-                d.CodPessoaExecucao,
-                d.DataAceitacao,
-                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
-            FROM dbo.Demanda d
-            INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
-            INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
-            INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
-            LEFT JOIN dbo.Estrutura sub ON d.CodEstr_TipoDemanda = sub.CodEstrutura
-            LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
-            LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
-            WHERE 1=1";
+    SELECT 
+        d.CodDemanda,
+        d.Titulo,
+        cat.DescEstrutura AS Categoria,
+        sub.DescEstrutura AS Subtipo,
+        s.DescEstrutura AS Status,
+        p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+        d.DataDemanda AS DataSolicitacao,
+        pri.DescEstrutura AS Prioridade,
+        d.CodEstr_NivelPrioridade AS CodPrioridade,
+        imp.DescEstrutura AS Importancia,
+        d.CodEstr_NivelImportancia AS CodImportancia,
+        d.CodPessoaExecucao,
+        d.DataAceitacao,
+        pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+    FROM dbo.Demanda d
+    INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+    INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+    INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+    LEFT JOIN dbo.Estrutura sub ON d.CodEstr_TipoDemanda = sub.CodEstrutura
+    LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+    LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
+    LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
+    WHERE 1=1";
+
 
         public const string ObterDemandaPorId = @"
     SELECT 
@@ -398,6 +401,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             WHERE LOWER(DescEstrutura) = 'aguardando aprovação'
                OR (LOWER(DescEstrutura) LIKE '%aguardando%' AND LOWER(DescEstrutura) LIKE '%aprov%');";
 
-
+        // Buscar níveis de importância (CodTipoEstrutura = 12)
+        public const string SelectNiveisImportancia = @"
+            SELECT CodEstrutura AS Value, DescEstrutura AS Text
+            FROM dbo.Estrutura 
+            WHERE CodTipoEstrutura = 12 
+            ORDER BY ISNULL(ValorPadrao, 999), DescEstrutura";
     }
 }

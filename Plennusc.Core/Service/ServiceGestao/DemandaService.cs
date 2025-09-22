@@ -174,9 +174,15 @@ namespace Plennusc.Core.Service.ServiceGestao
                             Status = reader.GetString(6),
                             Solicitante = reader.GetString(7),
                             DataSolicitacao = reader.GetDateTime(8),
-                            CodPessoaExecucao = reader.IsDBNull(9) ? (int?)null : reader.GetInt32(9),
-                            DataAceitacao = reader.IsDBNull(10) ? (DateTime?)null : reader.GetDateTime(10),
-                            NomePessoaExecucao = reader.IsDBNull(11) ? null : reader.GetString(11)
+
+                            // NOVOS CAMPOS - Importância (posições 9 e 10)
+                            Importancia = reader.IsDBNull(9) ? "Não definida" : reader.GetString(9),
+                            CodImportancia = reader.IsDBNull(10) ? (int?)null : reader.GetInt32(10),
+
+                            // Campos existentes AGORA nas posições 11, 12, 13
+                            CodPessoaExecucao = reader.IsDBNull(11) ? (int?)null : reader.GetInt32(11),
+                            DataAceitacao = reader.IsDBNull(12) ? (DateTime?)null : reader.GetDateTime(12),
+                            NomePessoaExecucao = reader.IsDBNull(13) ? null : reader.GetString(13)
                         });
                     }
                     return result;
@@ -291,6 +297,35 @@ namespace Plennusc.Core.Service.ServiceGestao
                         });
                 }
             }
+            return list;
+        }
+
+        public List<OptionItem> GetNiveisImportancia()
+        {
+            var list = new List<OptionItem>();
+
+            try
+            {
+                using (var con = Open())
+                using (var cmd = new SqlCommand(Demanda.SelectNiveisImportancia, con))
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new OptionItem
+                        {
+                            Value = rd.GetInt32(0),
+                            Text = rd.GetString(1)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Falha silenciosa - importância é opcional
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar níveis de importância: {ex.Message}");
+            }
+
             return list;
         }
 
@@ -436,6 +471,10 @@ namespace Plennusc.Core.Service.ServiceGestao
                         var pPrazo = cmd.Parameters.Add("@DataPrazoMaximo", SqlDbType.DateTime);
                         pPrazo.Value = (object)dto.DataPrazoMaximo ?? DBNull.Value;
 
+                        // NOVO PARÂMETRO ADICIONADO: Nível de Importância
+                        var pImportancia = cmd.Parameters.Add("@CodEstr_NivelImportancia", SqlDbType.Int);
+                        pImportancia.Value = (object)dto.CodEstr_NivelImportancia ?? DBNull.Value;
+
                         novoId = Convert.ToInt32(cmd.ExecuteScalar());
                     }
 
@@ -576,10 +615,12 @@ namespace Plennusc.Core.Service.ServiceGestao
                             Prioridade = rd.IsDBNull(7) ? "Normal" : rd.GetString(7),
                             CodPrioridade = rd.IsDBNull(8) ? 0 : rd.GetInt32(8),
 
-                            // Novas propriedades de aceite
-                            CodPessoaExecucao = rd.IsDBNull(9) ? (int?)null : rd.GetInt32(9),
-                            DataAceitacao = rd.IsDBNull(10) ? (DateTime?)null : rd.GetDateTime(10),
-                            NomePessoaExecucao = rd.IsDBNull(11) ? null : rd.GetString(11)
+                            // agora segue a query certinho:
+                            Importancia = rd.IsDBNull(9) ? null : rd.GetString(9),
+                            CodImportancia = rd.IsDBNull(10) ? (int?)null : rd.GetInt32(10),
+                            CodPessoaExecucao = rd.IsDBNull(11) ? (int?)null : rd.GetInt32(11),
+                            DataAceitacao = rd.IsDBNull(12) ? (DateTime?)null : rd.GetDateTime(12),
+                            NomePessoaExecucao = rd.IsDBNull(13) ? null : rd.GetString(13)
                         };
                         lista.Add(dto);
                     }

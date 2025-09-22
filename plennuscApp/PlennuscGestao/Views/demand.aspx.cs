@@ -34,6 +34,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 BindAll();
                 // Esconder o campo de prazo inicialmente
                 divPrazo.Style["display"] = "none";
+
+                CarregarNiveisImportancia();
             }
             else
             {
@@ -213,6 +215,25 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        private void CarregarNiveisImportancia()
+        {
+            try
+            {
+                var importancias = _svc.GetNiveisImportancia();
+                ddlImportancia.DataSource = importancias;
+                ddlImportancia.DataValueField = "Value";
+                ddlImportancia.DataTextField = "Text";
+                ddlImportancia.DataBind();
+
+                if (ddlImportancia.Items.Count > 0)
+                    ddlImportancia.Items.Insert(0, new ListItem("Selecione a importância (opcional)", ""));
+            }
+            catch (Exception ex)
+            {
+                // Falha silenciosa
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar importâncias: {ex.Message}");
+            }
+        }
 
         protected void rptDemandas_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -454,6 +475,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }
             }
 
+            int? codImportancia = null;
+            if (!string.IsNullOrEmpty(ddlImportancia.SelectedValue))
+            {
+                codImportancia = Convert.ToInt32(ddlImportancia.SelectedValue);
+            }
+
             var dto = new DemandaCreate
             {
                 CodPessoaSolicitacao = CodPessoaAtual,
@@ -463,7 +490,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CodEstr_NivelPrioridade = prioridadeSelecionada,
                 Titulo = txtTitulo.Text.Trim(),
                 TextoDemanda = txtDescricao.Text.Trim(),
-                DataPrazoMaximo = prazo
+                DataPrazoMaximo = prazo,
+                CodEstr_NivelImportancia = codImportancia
             };
 
             try
