@@ -25,11 +25,29 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void BindGrid()
         {
-            // Usa direto o método que você vai criar no Service
-            var lista = _svc.GetDemandasEmAndamentoPorPessoa(CodPessoaAtual);
+            try
+            {
+                // Pega as demandas em andamento do usuário
+                var demandas = _svc.GetDemandasEmAndamentoPorPessoa(CodPessoaAtual);
 
-            gvMinhasDemandas.DataSource = lista;
-            gvMinhasDemandas.DataBind();
+                if (demandas != null)
+                {
+                    foreach (var d in demandas)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda} - Executor: {d.CodPessoaExecucao}");
+                    }
+                }
+
+                gvMinhasDemandas.DataSource = demandas;
+                gvMinhasDemandas.DataBind();
+
+                // Atualiza label ou contador de resultados se existir
+                lblResultados.Text = $"Total de demandas em andamento: {demandas?.Count ?? 0}";
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem("Erro ao carregar demandas em andamento: " + ex.Message, "error");
+            }
         }
 
         protected void gvMinhasDemandas_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -67,6 +85,29 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             gvMinhasDemandas.PageIndex = e.NewPageIndex;
             BindGrid();
+        }
+
+        private void MostrarMensagem(string mensagem, string tipo)
+        {
+            string script = $@"showToast{(tipo == "success" ? "Sucesso" : "Erro")}('{mensagem.Replace("'", "\\'")}');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Mensagem", script, true);
+        }
+        protected string GetClassePrazo(object dataPrazo)
+        {
+            if (dataPrazo == null || dataPrazo == DBNull.Value)
+                return "prazo-sem-data";
+
+            DateTime prazo = Convert.ToDateTime(dataPrazo);
+            DateTime hoje = DateTime.Today;
+
+            if (prazo < hoje)
+                return "prazo-atrasado";
+            else if (prazo == hoje)
+                return "prazo-hoje";
+            else if (prazo <= hoje.AddDays(3))
+                return "prazo-proximo";
+            else
+                return "prazo-dentro-prazo";
         }
     }
 }

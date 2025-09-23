@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -589,7 +590,13 @@ namespace Plennusc.Core.Service.ServiceGestao
                     cmd.Parameters.AddWithValue("@Solicitante", "%" + filtro.NomeSolicitante.Trim() + "%");
                 }
 
-                sql.Append(" ORDER BY d.DataDemanda DESC");
+                sql.Append(@"
+                     ORDER BY 
+                         d.CodEstr_NivelPrioridade DESC,
+                         d.DataPrazoMaximo ASC,
+                         d.CodEstr_NivelImportancia DESC,
+                         d.DataDemanda DESC
+                ");
                 cmd.CommandText = sql.ToString();
 
                 // DEBUG
@@ -612,15 +619,17 @@ namespace Plennusc.Core.Service.ServiceGestao
                             Status = rd.IsDBNull(4) ? "" : rd.GetString(4),
                             Solicitante = rd.IsDBNull(5) ? "" : rd.GetString(5),
                             DataSolicitacao = rd.IsDBNull(6) ? DateTime.MinValue : rd.GetDateTime(6),
-                            Prioridade = rd.IsDBNull(7) ? "Normal" : rd.GetString(7),
-                            CodPrioridade = rd.IsDBNull(8) ? 0 : rd.GetInt32(8),
 
-                            // agora segue a query certinho:
-                            Importancia = rd.IsDBNull(9) ? null : rd.GetString(9),
-                            CodImportancia = rd.IsDBNull(10) ? (int?)null : rd.GetInt32(10),
-                            CodPessoaExecucao = rd.IsDBNull(11) ? (int?)null : rd.GetInt32(11),
-                            DataAceitacao = rd.IsDBNull(12) ? (DateTime?)null : rd.GetDateTime(12),
-                            NomePessoaExecucao = rd.IsDBNull(13) ? null : rd.GetString(13)
+                            DataPrazo = rd.IsDBNull(7) ? (DateTime?)null : rd.GetDateTime(7),
+
+                            Prioridade = rd.IsDBNull(8) ? "Normal" : rd.GetString(8),
+                            CodPrioridade = rd.IsDBNull(9) ? 0 : rd.GetInt32(9),
+
+                            Importancia = rd.IsDBNull(10) ? null : rd.GetString(10),
+                            CodImportancia = rd.IsDBNull(11) ? (int?)null : rd.GetInt32(11),
+                            CodPessoaExecucao = rd.IsDBNull(12) ? (int?)null : rd.GetInt32(12),
+                            DataAceitacao = rd.IsDBNull(13) ? (DateTime?)null : rd.GetDateTime(13),
+                            NomePessoaExecucao = rd.IsDBNull(14) ? null : rd.GetString(14)
                         };
                         lista.Add(dto);
                     }
@@ -1016,30 +1025,57 @@ namespace Plennusc.Core.Service.ServiceGestao
                 {
                     while (reader.Read())
                     {
-                        demandas.Add(new DemandaInfo
+                        // pega ordinais apenas uma vez
+                        int oCodDemanda = reader.GetOrdinal("CodDemanda");
+                        int oTitulo = reader.GetOrdinal("Titulo");
+                        int oCategoria = reader.GetOrdinal("Categoria");
+                        int oSubtipo = reader.GetOrdinal("Subtipo");
+                        int oStatus = reader.GetOrdinal("Status");
+                        int oSolicitante = reader.GetOrdinal("Solicitante");
+                        int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
+                        int oDataPrazo = reader.GetOrdinal("DataPrazo");
+                        int oPrioridade = reader.GetOrdinal("Prioridade");
+                        int oCodPrioridade = reader.GetOrdinal("CodPrioridade");
+                        int oImportancia = reader.GetOrdinal("Importancia");
+                        int oCodImportancia = reader.GetOrdinal("CodImportancia");
+                        int oCodPessoaExecucao = reader.GetOrdinal("CodPessoaExecucao");
+                        int oDataAceitacao = reader.GetOrdinal("DataAceitacao");
+                        int oNomePessoaExecucao = reader.GetOrdinal("NomePessoaExecucao");
+
+                        var di = new DemandaInfo
                         {
-                            CodDemanda = reader.GetInt32(reader.GetOrdinal("CodDemanda")),
-                            Titulo = reader.GetString(reader.GetOrdinal("Titulo")),
-                            Categoria = reader.GetString(reader.GetOrdinal("Categoria")),
-                            Subtipo = reader.GetString(reader.GetOrdinal("Subtipo")),
-                            Status = reader.GetString(reader.GetOrdinal("Status")),
-                            Solicitante = reader.GetString(reader.GetOrdinal("Solicitante")),
-                            DataSolicitacao = reader.GetDateTime(reader.GetOrdinal("DataSolicitacao")),
-                            Prioridade = reader.GetString(reader.GetOrdinal("Prioridade")),
-                            CodPrioridade = reader.GetInt32(reader.GetOrdinal("CodPrioridade")),
-                            CodPessoaExecucao = reader.IsDBNull(reader.GetOrdinal("CodPessoaExecucao")) ?
-                                                (int?)null : reader.GetInt32(reader.GetOrdinal("CodPessoaExecucao")),
-                            DataAceitacao = reader.IsDBNull(reader.GetOrdinal("DataAceitacao")) ?
-                                            (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("DataAceitacao")),
-                            NomePessoaExecucao = reader.IsDBNull(reader.GetOrdinal("NomePessoaExecucao")) ?
-                                                 null : reader.GetString(reader.GetOrdinal("NomePessoaExecucao")),
-                        });
+                            CodDemanda = reader.IsDBNull(oCodDemanda) ? 0 : reader.GetInt32(oCodDemanda),
+                            Titulo = reader.IsDBNull(oTitulo) ? string.Empty : reader.GetString(oTitulo),
+                            Categoria = reader.IsDBNull(oCategoria) ? string.Empty : reader.GetString(oCategoria),
+                            Subtipo = reader.IsDBNull(oSubtipo) ? null : reader.GetString(oSubtipo),
+                            Status = reader.IsDBNull(oStatus) ? string.Empty : reader.GetString(oStatus),
+                            Solicitante = reader.IsDBNull(oSolicitante) ? string.Empty : reader.GetString(oSolicitante),
+
+                            // DataSolicitacao: se pode ser NULL no seu BD, troque o tipo na DemandaInfo para DateTime?
+                            DataSolicitacao = reader.IsDBNull(oDataSolicitacao) ? DateTime.MinValue : reader.GetDateTime(oDataSolicitacao),
+
+                            // novo campo Prazo (nullable)
+                            DataPrazo = reader.IsDBNull(oDataPrazo) ? (DateTime?)null : reader.GetDateTime(oDataPrazo),
+
+                            Prioridade = reader.IsDBNull(oPrioridade) ? string.Empty : reader.GetString(oPrioridade),
+                            CodPrioridade = reader.IsDBNull(oCodPrioridade) ? 0 : reader.GetInt32(oCodPrioridade),
+
+                            Importancia = reader.IsDBNull(oImportancia) ? null : reader.GetString(oImportancia),
+                            CodImportancia = reader.IsDBNull(oCodImportancia) ? (int?)null : reader.GetInt32(oCodImportancia),
+
+                            CodPessoaExecucao = reader.IsDBNull(oCodPessoaExecucao) ? (int?)null : reader.GetInt32(oCodPessoaExecucao),
+                            DataAceitacao = reader.IsDBNull(oDataAceitacao) ? (DateTime?)null : reader.GetDateTime(oDataAceitacao),
+                            NomePessoaExecucao = reader.IsDBNull(oNomePessoaExecucao) ? null : reader.GetString(oNomePessoaExecucao),
+                        };
+
+                        demandas.Add(di);
                     }
                 }
             }
 
             return demandas;
         }
+
 
         //DEMANDAS EM ANDAMENTO PARA PESSOA (MINHAS DEMANDAS)
         public List<DemandaInfo> GetDemandasEmAndamentoPorPessoa(int codPessoa)
@@ -1055,33 +1091,52 @@ namespace Plennusc.Core.Service.ServiceGestao
                 {
                     while (reader.Read())
                     {
-                        demandas.Add(new DemandaInfo
+                        // ordinais uma vez
+                        int oCodDemanda = reader.GetOrdinal("CodDemanda");
+                        int oTitulo = reader.GetOrdinal("Titulo");
+                        int oCategoria = reader.GetOrdinal("Categoria");
+                        int oSubtipo = reader.GetOrdinal("Subtipo");
+                        int oStatus = reader.GetOrdinal("Status");
+                        int oSolicitante = reader.GetOrdinal("Solicitante");
+                        int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
+                        int oDataPrazo = reader.GetOrdinal("DataPrazo"); 
+                        int oPrioridade = reader.GetOrdinal("Prioridade");
+                        int oCodPrioridade = reader.GetOrdinal("CodPrioridade");
+                        int oImportancia = reader.GetOrdinal("Importancia");
+                        int oCodImportancia = reader.GetOrdinal("CodImportancia");
+                        int oCodPessoaExecucao = reader.GetOrdinal("CodPessoaExecucao");
+                        int oDataAceitacao = reader.GetOrdinal("DataAceitacao");
+                        int oNomePessoaExecucao = reader.GetOrdinal("NomePessoaExecucao");
+
+                        var di = new DemandaInfo
                         {
-                            CodDemanda = reader.GetInt32(reader.GetOrdinal("CodDemanda")),
-                            Titulo = reader.GetString(reader.GetOrdinal("Titulo")),
-                            Categoria = reader.GetString(reader.GetOrdinal("Categoria")),
-                            Subtipo = reader.GetString(reader.GetOrdinal("Subtipo")),
-                            Status = reader.GetString(reader.GetOrdinal("Status")),
-                            Solicitante = reader.GetString(reader.GetOrdinal("Solicitante")),
-                            DataSolicitacao = reader.GetDateTime(reader.GetOrdinal("DataSolicitacao")),
-                            Prioridade = reader.GetString(reader.GetOrdinal("Prioridade")),
-                            CodPrioridade = reader.GetInt32(reader.GetOrdinal("CodPrioridade")),
-                            CodPessoaExecucao = reader.IsDBNull(reader.GetOrdinal("CodPessoaExecucao"))
-                                                ? (int?)null
-                                                : reader.GetInt32(reader.GetOrdinal("CodPessoaExecucao")),
-                            DataAceitacao = reader.IsDBNull(reader.GetOrdinal("DataAceitacao"))
-                                            ? (DateTime?)null
-                                            : reader.GetDateTime(reader.GetOrdinal("DataAceitacao")),
-                            NomePessoaExecucao = reader.IsDBNull(reader.GetOrdinal("NomePessoaExecucao"))
-                                                 ? null
-                                                 : reader.GetString(reader.GetOrdinal("NomePessoaExecucao")),
-                        });
+                            CodDemanda = reader.IsDBNull(oCodDemanda) ? 0 : reader.GetInt32(oCodDemanda),
+                            Titulo = reader.IsDBNull(oTitulo) ? string.Empty : reader.GetString(oTitulo),
+                            Categoria = reader.IsDBNull(oCategoria) ? string.Empty : reader.GetString(oCategoria),
+                            Subtipo = reader.IsDBNull(oSubtipo) ? null : reader.GetString(oSubtipo),
+                            Status = reader.IsDBNull(oStatus) ? string.Empty : reader.GetString(oStatus),
+                            Solicitante = reader.IsDBNull(oSolicitante) ? string.Empty : reader.GetString(oSolicitante),
+                            DataSolicitacao = reader.IsDBNull(oDataSolicitacao) ? DateTime.MinValue : reader.GetDateTime(oDataSolicitacao),
+
+                            // novos campos
+                            DataPrazo = reader.IsDBNull(oDataPrazo) ? (DateTime?)null : reader.GetDateTime(oDataPrazo),
+                            Importancia = reader.IsDBNull(oImportancia) ? null : reader.GetString(oImportancia),
+                            CodImportancia = reader.IsDBNull(oCodImportancia) ? (int?)null : reader.GetInt32(oCodImportancia),
+
+                            Prioridade = reader.IsDBNull(oPrioridade) ? string.Empty : reader.GetString(oPrioridade),
+                            CodPrioridade = reader.IsDBNull(oCodPrioridade) ? 0 : reader.GetInt32(oCodPrioridade),
+
+                            CodPessoaExecucao = reader.IsDBNull(oCodPessoaExecucao) ? (int?)null : reader.GetInt32(oCodPessoaExecucao),
+                            DataAceitacao = reader.IsDBNull(oDataAceitacao) ? (DateTime?)null : reader.GetDateTime(oDataAceitacao),
+                            NomePessoaExecucao = reader.IsDBNull(oNomePessoaExecucao) ? null : reader.GetString(oNomePessoaExecucao),
+                        };
+
+                        demandas.Add(di);
                     }
                 }
             }
 
             return demandas;
         }
-
     }
 }

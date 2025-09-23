@@ -42,7 +42,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     foreach (var d in demandas)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda} - Executor: {d.CodPessoaExecucao}");
+                        System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda} - Executor: {d.CodPessoaExecucao} - Prazo: {d.DataPrazo}");
                     }
                 }
 
@@ -59,6 +59,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
             }
         }
+
 
         protected void gvDemandasAberto_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
@@ -120,6 +121,24 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             string script = $@"showToast{(tipo == "success" ? "Sucesso" : "Erro")}('{mensagem.Replace("'", "\\'")}');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Mensagem", script, true);
+        }
+
+        protected string GetClassePrazo(object dataPrazo)
+        {
+            if (dataPrazo == null || dataPrazo == DBNull.Value)
+                return "prazo-sem-data";
+
+            DateTime prazo = Convert.ToDateTime(dataPrazo);
+            DateTime hoje = DateTime.Today;
+
+            if (prazo < hoje)
+                return "prazo-atrasado";
+            else if (prazo == hoje)
+                return "prazo-hoje";
+            else if (prazo <= hoje.AddDays(3))
+                return "prazo-proximo";
+            else
+                return "prazo-dentro-prazo";
         }
     }
 }
