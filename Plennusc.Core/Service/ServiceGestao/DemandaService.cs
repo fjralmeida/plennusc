@@ -812,6 +812,90 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
         }
 
+        // NO SERVICE - Alterar para retornar o ID do acompanhamento
+        public int InserirAcompanhamento(int codDemanda, int codPessoa, string texto)
+        {
+            const int STATUS_EM_ANDAMENTO = 18;
+            const int STATUS_CONCLUIDA = 23;
+
+            using (var con = Open())
+            using (var tx = con.BeginTransaction())
+            {
+                try
+                {
+                    int idAcompanhamento;
+
+                    // 1) Inserir o acompanhamento e RETORNAR O ID
+                    using (var cmdIns = new SqlCommand(Demanda.InsertAcompanhamento + "; SELECT SCOPE_IDENTITY();", con, tx))
+                    {
+                        cmdIns.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        cmdIns.Parameters.AddWithValue("@TextoAcompanhamento", (object)(texto ?? string.Empty));
+                        cmdIns.Parameters.AddWithValue("@CodPessoaAcompanhamento", codPessoa);
+                        idAcompanhamento = Convert.ToInt32(cmdIns.ExecuteScalar());
+                    }
+
+                    // 2) Ler executor e status atual da demanda (seu código existente)
+                    int? codPessoaExecucao = null;
+                    int statusAtual = 0;
+                    using (var cmdSel = new SqlCommand(Demanda.SelectDemandaExecutorStatus, con, tx))
+                    {
+                        cmdSel.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        using (var rd = cmdSel.ExecuteReader())
+                        {
+                            if (rd.Read())
+                            {
+                                codPessoaExecucao = rd.IsDBNull(0) ? (int?)null : rd.GetInt32(0);
+                                statusAtual = rd.IsDBNull(1) ? 0 : rd.GetInt32(1);
+                            }
+                        }
+                    }
+
+                    // 3) Sua lógica existente de atualização de status
+                    if (codPessoaExecucao.HasValue && codPessoaExecucao.Value == codPessoa
+                        && statusAtual != STATUS_EM_ANDAMENTO
+                        && statusAtual != STATUS_CONCLUIDA)
+                    {
+                        using (var cmdUpd = new SqlCommand(Demanda.UpdateSituacaoDemanda, con, tx))
+                        {
+                            cmdUpd.Parameters.AddWithValue("@NovoStatus", STATUS_EM_ANDAMENTO);
+                            cmdUpd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                            cmdUpd.ExecuteNonQuery();
+                        }
+
+                        using (var cmdHist = new SqlCommand(Demanda.InsertDemandaHistorico, con, tx))
+                        {
+                            cmdHist.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                            cmdHist.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAnterior", statusAtual); 
+                            cmdHist.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAtual", STATUS_EM_ANDAMENTO); 
+                            cmdHist.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoa); 
+                            cmdHist.ExecuteNonQuery();
+                        }
+                    }
+
+                    tx.Commit();
+                    return idAcompanhamento; // RETORNA O ID
+                }
+                catch
+                {
+                    try { tx.Rollback(); } catch { /* swallow */ }
+                    throw;
+                }
+            }
+        }
+        public void SalvarAnexoAcompanhamento(int codDemanda, int codDemandaAcompanhamento, string descArquivo)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+        INSERT INTO DemandaAnexos (CodDemanda, CodDemandaAcompanhamento, DescArquivo, DataEnvio) 
+        VALUES (@CodDemanda, @CodDemandaAcompanhamento, @DescArquivo, GETDATE())", con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                cmd.Parameters.AddWithValue("@CodDemandaAcompanhamento", codDemandaAcompanhamento);
+                cmd.Parameters.AddWithValue("@DescArquivo", descArquivo);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         //SOLICITAÇÃO DE APROVAÇÃO DE DEMANDA
         public bool SolicitarAprovacaoDemanda(int codDemanda, int codPessoaSolicitante, out int gestorDesignado)
         {

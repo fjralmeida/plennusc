@@ -132,6 +132,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.TextBox txtNovoAcompanhamento;
 
         /// <summary>
+        /// Controle fuAnexos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fuAnexos;
+
+        /// <summary>
         /// Controle btnAdicionarAcompanhamento.
         /// </summary>
         /// <remarks>
