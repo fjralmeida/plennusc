@@ -1,12 +1,13 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="detailDemand.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.detailDemand" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-<style>
+    <style>
         :root {
-            --primary: #1a73e8;
-            --primary-hover: #0d62c9;
+            --primary: #6ebfe1;
+            --primary-hover: #58c0eb;
             --success: #4cb07a;
             --success-hover: #3b8b65;
             --danger: #ea4335;
@@ -75,49 +76,49 @@
             font-weight: 500;
         }
 
-         .demand-description:before {
-            content: '"';
-            font-size: 32px;
-            color: var(--primary);
-            position: absolute;
-            top: 10px;
-            left: 15px;
-            font-family: Georgia, serif;
-            opacity: 0.3;
-         }
+            .demand-description:before {
+                content: '"';
+                font-size: 32px;
+                color: var(--primary);
+                position: absolute;
+                top: 10px;
+                left: 15px;
+                font-family: Georgia, serif;
+                opacity: 0.3;
+            }
 
-        .demand-description:after {
-            content: '"';
-            font-size: 32px;
-            color: var(--primary);
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            font-family: Georgia, serif;
-            opacity: 0.3;
-        }
+            .demand-description:after {
+                content: '"';
+                font-size: 32px;
+                color: var(--primary);
+                position: absolute;
+                bottom: 10px;
+                right: 15px;
+                font-family: Georgia, serif;
+                opacity: 0.3;
+            }
 
-        /* REMOVER HOVER DA DESCRIÇÃO */
-        .demand-description:hover {
-            border-color: var(--gray-200);
-            box-shadow: none;
-            transform: none;
-        }
-         /* REMOVER EFEITOS DESNECESSÁRIOS */
-    .demand-description:hover,
-    .meta-value:hover {
-        transform: none;
-        box-shadow: none;
-    }
+            /* REMOVER HOVER DA DESCRIÇÃO */
+            .demand-description:hover {
+                border-color: var(--gray-200);
+                box-shadow: none;
+                transform: none;
+            }
+            /* REMOVER EFEITOS DESNECESSÁRIOS */
+            .demand-description:hover,
+            .meta-value:hover {
+                transform: none;
+                box-shadow: none;
+            }
 
-        /* REMOVER ASPAS DECORATIVAS */
-        .demand-description:before,
-        .demand-description:after {
-            display: none;
-        }
+            /* REMOVER ASPAS DECORATIVAS */
+            .demand-description:before,
+            .demand-description:after {
+                display: none;
+            }
 
 
-         .demand-meta {
+        .demand-meta {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
@@ -154,8 +155,8 @@
             border: 1px solid var(--gray-200);
         }
 
-     /* Status badge mais destacado */
-            .status-badge {
+        /* Status badge mais destacado */
+        .status-badge {
             display: inline-block;
             padding: 8px 16px;
             border-radius: 6px;
@@ -194,11 +195,11 @@
             font-size: 14px;
         }
 
-        .btn-close-demand:hover {
-            background: #d93025;
-            box-shadow: 0 2px 4px rgba(234, 67, 53, 0.3);
-            transform: translateY(-1px);
-        }
+            .btn-close-demand:hover {
+                background: #d93025;
+                box-shadow: 0 2px 4px rgba(234, 67, 53, 0.3);
+                transform: translateY(-1px);
+            }
 
         .btn-secondary {
             background: var(--gray-400) !important;
@@ -304,15 +305,15 @@
             transition: var(--transition);
         }
 
-        .toolbar-btn:hover {
-            background: var(--gray-100);
-        }
+            .toolbar-btn:hover {
+                background: var(--gray-100);
+            }
 
-        .toolbar-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
+            .toolbar-btn.active {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
 
         .editor-textarea {
             width: 100%;
@@ -326,11 +327,11 @@
             margin-bottom: 16px;
         }
 
-        .editor-textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
-        }
+            .editor-textarea:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+            }
 
         .btn-send {
             background: var(--success);
@@ -343,27 +344,27 @@
             width: 100%;
         }
 
-        .btn-send:hover {
-            background: var(--success-hover);
-        }
+            .btn-send:hover {
+                background: var(--success-hover);
+            }
 
-        .btn-send:disabled {
-            background: var(--gray-400);
-            cursor: not-allowed;
-        }
+            .btn-send:disabled {
+                background: var(--gray-400);
+                cursor: not-allowed;
+            }
 
         /* Estilos para quando a demanda está fechada */
         .demand-closed .editor-toolbar {
             opacity: 0.5;
             pointer-events: none;
         }
-        
+
         .demand-closed .editor-textarea {
             background-color: var(--gray-100);
             color: var(--gray-500);
             pointer-events: none;
         }
-        
+
         .demand-closed .btn-send {
             background: var(--gray-400);
             cursor: not-allowed;
@@ -422,6 +423,200 @@
             display: block;
         }
 
+        /* Estilos para a seção de upload de anexos */
+        .attachment-upload-section {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .upload-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .file-counter {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-left: auto;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--border-radius);
+            padding: 32px 16px;
+            text-align: center;
+            background: white;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+            .file-upload-area:hover {
+                border-color: var(--primary);
+                background: var(--gray-50);
+            }
+
+            .file-upload-area.dragover {
+                border-color: var(--primary);
+                background: rgba(26, 115, 232, 0.05);
+            }
+
+        .upload-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            color: var(--gray-400);
+        }
+
+        .upload-title {
+            font-weight: 500;
+            color: var(--gray-700);
+            margin: 0;
+        }
+
+        .upload-subtitle {
+            color: var(--gray-500);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .btn-upload {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-upload:hover {
+                background: var(--primary-hover);
+                transform: translateY(-1px);
+            }
+
+        .upload-info {
+            margin-top: 12px;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Preview dos arquivos */
+        .file-preview-container {
+            margin-top: 16px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+            .preview-header h6 {
+                margin: 0;
+                font-weight: 500;
+                color: var(--gray-700);
+            }
+
+        .btn-clear {
+            background: none;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-600);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .btn-clear:hover {
+                background: var(--gray-100);
+                color: var(--danger);
+            }
+
+        .file-preview-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .file-preview-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--gray-50);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .file-preview-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .file-preview-name {
+            font-size: 14px;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .file-preview-size {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .file-preview-remove {
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+            .file-preview-remove:hover {
+                color: var(--danger);
+                background: var(--gray-100);
+            }
+
         /* Estilos para a seção de anexos */
         .attachments-section {
             background: white;
@@ -447,10 +642,10 @@
             transition: var(--transition);
         }
 
-        .attachment-item:hover {
-            background: var(--gray-100);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
+            .attachment-item:hover {
+                background: var(--gray-100);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
 
         .attachment-info {
             display: flex;
@@ -478,9 +673,18 @@
             max-width: 300px;
         }
 
+        .attachment-meta strong {
+            color: #137333;
+            font-weight: 600;
+        }
+
         .attachment-meta {
             font-size: 12px;
             color: var(--gray-600);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         .btn-download {
@@ -497,10 +701,10 @@
             white-space: nowrap;
         }
 
-        .btn-download:hover {
-            background: var(--primary-hover);
-            color: white;
-        }
+            .btn-download:hover {
+                background: var(--primary-hover);
+                color: white;
+            }
 
         .no-attachments {
             padding: 24px;
@@ -510,29 +714,47 @@
         }
 
         .toast-container {
-          position: fixed;
-          right: 20px;
-          top: 20px;
-          z-index: 99999;
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 99999;
         }
+
         .toast {
-          min-width: 260px;
-          max-width: 380px;
-          padding: 12px 16px;
-          border-radius: 8px;
-          box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-          color: #fff;
-          margin-bottom: 10px;
-          font-family: Roboto, Arial, sans-serif;
-          opacity: 0;
-          transform: translateY(-10px);
-          transition: all .25s ease;
+            min-width: 260px;
+            max-width: 380px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            color: #fff;
+            margin-bottom: 10px;
+            font-family: Roboto, Arial, sans-serif;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all .25s ease;
         }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { background: #28a745; }
-        .toast.error { background: #dc3545; }
-        .toast .title { font-weight: 600; margin-bottom: 4px; }
-        .toast .msg { font-size: 13px; }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .toast.success {
+                background: #28a745;
+            }
+
+            .toast.error {
+                background: #dc3545;
+            }
+
+            .toast .title {
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+            .toast .msg {
+                font-size: 13px;
+            }
 
         /* Responsividade para anexos */
         @media (max-width: 768px) {
@@ -541,7 +763,7 @@
                 align-items: flex-start;
                 gap: 12px;
             }
-            
+
             .btn-download {
                 align-self: flex-end;
             }
@@ -551,7 +773,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <div class="toast-container" id="globalToastContainer" runat="server" style="display:none"></div>
+    <div class="toast-container" id="globalToastContainer" runat="server" style="display: none"></div>
 
     <div class="container-main">
         <!-- Cabeçalho da Demanda -->
@@ -560,59 +782,62 @@
                 <asp:Label ID="lblTitulo" runat="server"></asp:Label>
                 <asp:Label ID="lblStatusBadge" runat="server" CssClass="status-badge" />
             </h1>
-            
+
             <div class="demand-description">
                 <asp:Label ID="lblTexto" runat="server"></asp:Label>
             </div>
-            
+
             <div class="demand-meta">
                 <div class="meta-item">
                     <span class="meta-label">Solicitante</span>
-                    <span class="meta-value"><asp:Label ID="lblSolicitante" runat="server" /></span>
+                    <span class="meta-value">
+                        <asp:Label ID="lblSolicitante" runat="server" /></span>
                 </div>
                 <div class="meta-item">
                     <span class="meta-label">Data</span>
-                    <span class="meta-value"><asp:Label ID="lblDataSolicitacao" runat="server" /></span>
+                    <span class="meta-value">
+                        <asp:Label ID="lblDataSolicitacao" runat="server" /></span>
                 </div>
             </div>
 
             <asp:Button ID="btnSolicitarAprovacao" runat="server" CssClass="btn-primary"
-                      Text="Solicitar Aprovação" OnClick="btnSolicitarAprovacao_Click" Visible="false" />
-            
-            <asp:Button ID="btnEncerrar" runat="server" CssClass="btn-close-demand" 
-                        Text="✖ Encerrar Demanda" OnClick="btnEncerrar_Click" />
+                Text="Solicitar Aprovação" OnClick="btnSolicitarAprovacao_Click" Visible="false" />
+
+            <asp:Button ID="btnEncerrar" runat="server" CssClass="btn-close-demand"
+                Text="✖ Encerrar Demanda" OnClick="btnEncerrar_Click" />
         </div>
 
         <!-- Seção de Anexos EXISTENTES -->
-        <div class="attachments-section">
-            <div class="section-header">
-                <i class="bi bi-paperclip"></i>
-                Anexos da Demanda
-            </div>
-            <div class="attachments-list">
-                <asp:Repeater ID="rptAnexos" runat="server">
-                    <ItemTemplate>
-                        <div class="attachment-item">
-                            <div class="attachment-info">
-                                <i class="bi bi-file-earmark attachment-icon"></i>
-                                <div class="attachment-details">
-                                    <div class="attachment-name"><%# Eval("NomeArquivo") %></div>
-                                    <div class="attachment-meta">
-                                        <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>
-                                        • <%# Eval("TamanhoFormatado") %>
-                                    </div>
+     <div class="attachments-section">
+        <div class="section-header">
+            <i class="bi bi-paperclip"></i>
+            Anexos da Demanda
+        </div>
+        <div class="attachments-list">
+            <asp:Repeater ID="rptAnexos" runat="server">
+                <ItemTemplate>
+                    <div class="attachment-item">
+                        <div class="attachment-info">
+                            <i class="bi bi-file-earmark attachment-icon"></i>
+                            <div class="attachment-details">
+                                <div class="attachment-name"><%# Eval("NomeArquivo") %></div>
+                                <div class="attachment-meta">
+                                    <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>
+                                    • <%# Eval("TamanhoFormatado") %>
+                                    • Enviado por: <strong><%# Eval("NomeUsuarioUpload") %></strong>
                                 </div>
                             </div>
-                            <a href='<%# Eval("CaminhoDownload") %>' target="_blank" class="btn-download">
-                                <i class="bi bi-download"></i> Download
-                            </a>
                         </div>
-                    </ItemTemplate>
-                </asp:Repeater>
-                <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado." 
-                          CssClass="no-attachments" />
-            </div>
+                        <a href='<%# Eval("CaminhoDownload") %>' target="_blank" class="btn-download">
+                            <i class="bi bi-download"></i>Download
+                        </a>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+            <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado."
+                CssClass="no-attachments" />
         </div>
+    </div>
 
         <div class="main-layout">
             <!-- Seção Principal - Acompanhamentos -->
@@ -646,7 +871,7 @@
                     Novo Acompanhamento
                 </div>
                 <div class="editor-container">
-                    <div class="editor-toolbar">
+                    <%--<div class="editor-toolbar">
                         <button type="button" class="toolbar-btn" data-command="bold" title="Negrito">
                             <i class="bi bi-type-bold"></i>
                         </button>
@@ -663,44 +888,56 @@
                             <option value="Courier New">Courier New</option>
                             <option value="Verdana">Verdana</option>
                         </select>
-                    </div>
-                    
-                    <asp:TextBox ID="txtNovoAcompanhamento" runat="server" 
-                                CssClass="editor-textarea" TextMode="MultiLine" 
-                                placeholder="Digite seu acompanhamento..." Rows="6" />
-                    
-                    <!-- SEÇÃO DE UPLOAD DE ANEXOS PARA O ACOMPANHAMENTO -->
+                    </div>--%>
+
+                    <asp:TextBox ID="txtNovoAcompanhamento" runat="server"
+                        CssClass="editor-textarea" TextMode="MultiLine"
+                        placeholder="Digite seu acompanhamento..." Rows="6" />
+
+                    <!-- SEÇÃO DE UPLOAD DE ANEXOS PARA O ACOMPANHAMENTO - VERSÃO CORRIGIDA -->
                     <div class="attachment-upload-section">
-                        <div class="form-card">
-                            <label class="form-label">Anexar arquivos ao acompanhamento (Máx. 10MB cada)</label>
-                    
-                            <!-- FileUpload ASP.NET -->
-                            <div class="file-upload-area">
-                                <i class="bi bi-cloud-arrow-up text-muted mb-2"></i>
-                                <p class="mb-2 small text-muted">Arraste arquivos aqui ou clique para selecionar</p>
-                                <asp:FileUpload ID="fuAnexos" runat="server" CssClass="d-none" AllowMultiple="true" 
-                                    onchange="handleFileSelection(this);" />
-                                <button type="button" class="btn btn-outline-secondary btn-sm" 
+                        <div class="upload-header">
+                            <i class="bi bi-paperclip"></i>
+                            <span>Anexar arquivos</span>
+                            <span class="file-counter" id="fileCounter">0 arquivos selecionados</span>
+                        </div>
+
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <div class="upload-content">
+                                <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                                <p class="upload-title">Arraste arquivos aqui</p>
+                                <p class="upload-subtitle">ou</p>
+                                <button type="button" class="btn-upload"
                                     onclick="document.getElementById('<%= fuAnexos.ClientID %>').click()">
-                                    Selecionar Arquivos
+                                    <i class="bi bi-folder2-open"></i>Selecionar Arquivos
                                 </button>
                             </div>
-                    
+                            <asp:FileUpload ID="fuAnexos" runat="server" CssClass="d-none" AllowMultiple="true"
+                                onchange="handleFileSelection(this);" />
+                        </div>
+
+                        <div class="upload-info">
                             <div class="input-hint">
-                                Formatos permitidos: PDF, Word, Excel, imagens (JPG, PNG, GIF)
-                            </div>
-                    
-                            <!-- Container para preview dos arquivos selecionados -->
-                            <div id="filePreviewContainer" class="file-preview-container" style="display: none;">
-                                <h6 class="small text-muted">Arquivos selecionados:</h6>
-                                <div id="filePreviewList"></div>
+                                <i class="bi bi-info-circle"></i>
+                                Formatos: PDF, Word, Excel, imagens (JPG, PNG, GIF) • Máx. 10MB cada
                             </div>
                         </div>
+
+                        <!-- Preview dos Arquivos -->
+                        <div id="filePreviewContainer" class="file-preview-container" style="display: none;">
+                            <div class="preview-header">
+                                <h6>Arquivos selecionados</h6>
+                                <button type="button" class="btn-clear" onclick="limparAnexos()">
+                                    <i class="bi bi-x-circle"></i>Limpar todos
+                                </button>
+                            </div>
+                            <div id="filePreviewList" class="file-preview-list"></div>
+                        </div>
                     </div>
-                    
-                    <asp:Button ID="btnAdicionarAcompanhamento" runat="server" 
-                                CssClass="btn-send" Text="Enviar Acompanhamento" 
-                                OnClick="btnAdicionarAcompanhamento_Click" />
+
+                    <asp:Button ID="btnAdicionarAcompanhamento" runat="server"
+                        CssClass="btn-send" Text="Enviar Acompanhamento"
+                        OnClick="btnAdicionarAcompanhamento_Click" />
                 </div>
             </div>
         </div>
@@ -731,12 +968,12 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         function checkDemandStatus() {
             const statusBadge = document.getElementById('<%= lblStatusBadge.ClientID %>');
             const editorSection = document.getElementById('<%= editorSection.ClientID %>');
-    
+
             if (statusBadge && statusBadge.textContent.includes('Fechada')) {
                 if (editorSection) {
                     editorSection.classList.add('demand-closed');
@@ -745,7 +982,7 @@
                         textarea.disabled = true;
                         textarea.placeholder = "Demanda fechada - não é possível adicionar acompanhamentos";
                     }
-            
+
                     const button = document.getElementById('<%= btnAdicionarAcompanhamento.ClientID %>');
                     if (button) {
                         button.disabled = true;
@@ -795,38 +1032,38 @@
         });
     </script>
 
-<script>
-    function createToast(message, type, title) {
-        var container = document.getElementById('globalToastContainer');
-        if (!container) return;
-        container.style.display = 'block';
+    <script>
+        function createToast(message, type, title) {
+            var container = document.getElementById('globalToastContainer');
+            if (!container) return;
+            container.style.display = 'block';
 
-        var toast = document.createElement('div');
-        toast.className = 'toast ' + type;
-        toast.innerHTML = (title ? '<div class=\"title\">' + title + '</div>' : '') +
-            '<div class=\"msg\">' + message + '</div>';
-        container.appendChild(toast);
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = (title ? '<div class=\"title\">' + title + '</div>' : '') +
+                '<div class=\"msg\">' + message + '</div>';
+            container.appendChild(toast);
 
-        // show
-        setTimeout(function () { toast.classList.add('show'); }, 10);
+            // show
+            setTimeout(function () { toast.classList.add('show'); }, 10);
 
-        // remove after 5s
-        setTimeout(function () {
-            toast.classList.remove('show');
-            setTimeout(function () { try { container.removeChild(toast); } catch (e) { } }, 300);
-        }, 5000);
-    }
+            // remove after 5s
+            setTimeout(function () {
+                toast.classList.remove('show');
+                setTimeout(function () { try { container.removeChild(toast); } catch (e) { } }, 300);
+            }, 5000);
+        }
 
-    function showToastSucesso(message) {
-        createToast(message, 'success', 'Sucesso');
-    }
-    function showToastErro(message) {
-        createToast(message, 'error', 'Erro');
-    }
-    function showToastAviso(message) {
-        createToast(message, 'warning', 'Aviso');
-    }
-</script>
+        function showToastSucesso(message) {
+            createToast(message, 'success', 'Sucesso');
+        }
+        function showToastErro(message) {
+            createToast(message, 'error', 'Erro');
+        }
+        function showToastAviso(message) {
+            createToast(message, 'warning', 'Aviso');
+        }
+    </script>
 
     <script>
         // Variável global para armazenar os arquivos selecionados
@@ -847,32 +1084,36 @@
         function updateFilePreview() {
             const container = document.getElementById('filePreviewContainer');
             const list = document.getElementById('filePreviewList');
+            const counter = document.getElementById('fileCounter');
 
             if (selectedFiles.length === 0) {
                 container.style.display = 'none';
                 list.innerHTML = '';
+                counter.textContent = '0 arquivos selecionados';
                 return;
             }
 
             container.style.display = 'block';
             list.innerHTML = '';
+            counter.textContent = selectedFiles.length + ' arquivo(s) selecionado(s)';
 
             selectedFiles.forEach((file, index) => {
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-preview-item';
                 fileItem.innerHTML = `
-                    <div class="file-preview-info">
-                        <i class="bi bi-file-earmark"></i>
-                        <span class="file-preview-name">${file.name}</span>
-                        <span class="file-preview-size">(${formatFileSize(file.size)})</span>
-                    </div>
-                    <button type="button" class="file-preview-remove" onclick="removeFile(${index})">
-                        <i class="bi bi-x-circle"></i>
-                    </button>
-                `;
+            <div class="file-preview-info">
+                <i class="bi bi-file-earmark"></i>
+                <span class="file-preview-name">${file.name}</span>
+                <span class="file-preview-size">(${formatFileSize(file.size)})</span>
+            </div>
+            <button type="button" class="file-preview-remove" onclick="removeFile(${index})">
+                <i class="bi bi-x-circle"></i>
+            </button>
+        `;
                 list.appendChild(fileItem);
             });
         }
+
 
         // Função para formatar o tamanho do arquivo
         function formatFileSize(bytes) {
@@ -891,68 +1132,73 @@
             // Atualizar o FileUpload ASP.NET
             const fileInput = document.getElementById('<%= fuAnexos.ClientID %>');
             const dataTransfer = new DataTransfer();
-            
+
             selectedFiles.forEach(file => {
                 dataTransfer.items.add(file);
             });
-            
+
             fileInput.files = dataTransfer.files;
         }
-        
-        // Função para arrastar e soltar arquivos
+
+        // Função para arrastar e soltar arquivos (atualizada)
         function setupDragAndDrop() {
-            const dropArea = document.querySelector('.file-upload-area');
+            const dropArea = document.getElementById('fileUploadArea');
             if (!dropArea) return;
-            
+
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 dropArea.addEventListener(eventName, preventDefaults, false);
             });
-            
+
             function preventDefaults(e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
-            
+
             ['dragenter', 'dragover'].forEach(eventName => {
-                dropArea.addEventListener(eventName, highlight, false);
+                dropArea.addEventListener(eventName, function () {
+                    dropArea.classList.add('dragover');
+                }, false);
             });
-            
+
             ['dragleave', 'drop'].forEach(eventName => {
-                dropArea.addEventListener(eventName, unhighlight, false);
+                dropArea.addEventListener(eventName, function () {
+                    dropArea.classList.remove('dragover');
+                }, false);
             });
-            
-            function highlight() {
-                dropArea.style.borderColor = 'var(--primary)';
-                dropArea.style.backgroundColor = 'rgba(37, 99, 235, 0.1)';
-            }
-            
-            function unhighlight() {
-                dropArea.style.borderColor = 'var(--gray-300)';
-                dropArea.style.backgroundColor = 'var(--gray-50)';
-            }
-            
+
             dropArea.addEventListener('drop', handleDrop, false);
-            
+
             function handleDrop(e) {
                 const dt = e.dataTransfer;
                 const files = dt.files;
-                
+
                 if (files.length > 0) {
                     const fileInput = document.getElementById('<%= fuAnexos.ClientID %>');
-                    fileInput.files = files;
-                    handleFileSelection(fileInput);
+
+                    // Combinar arquivos existentes com novos
+                    const allFiles = [...selectedFiles, ...Array.from(files)];
+                    selectedFiles = allFiles;
+
+                    // Atualizar o FileUpload ASP.NET
+                    const dataTransfer = new DataTransfer();
+                    selectedFiles.forEach(file => {
+                        dataTransfer.items.add(file);
+                    });
+
+                    fileInput.files = dataTransfer.files;
+                    updateFilePreview();
+
+                    showToastSucesso(files.length + ' arquivo(s) adicionado(s)!');
                 }
             }
         }
-
         // Função para limpar os anexos (chamada após o envio)
         function limparAnexos() {
             selectedFiles = [];
             updateFilePreview();
-            
+
             const fileInput = document.getElementById('<%= fuAnexos.ClientID %>');
             fileInput.value = '';
         }
-    </script>
-
+    </script>  
 </asp:Content>

@@ -281,12 +281,29 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
 
         public const string GetAnexosDemanda = @"
             SELECT 
-                CodDemandaAnexo,
-                DescArquivo,
-                DataEnvio
-            FROM DemandaAnexos 
-            WHERE CodDemanda = @CodDemanda
-            ORDER BY DataEnvio DESC";
+                da.CodDemandaAnexo,
+                da.DescArquivo,
+                da.DataEnvio,
+                da.CodDemandaAcompanhamento,
+                p.Nome as NomeUsuario,
+                COALESCE(
+                    (SELECT TOP 1 dh.CodPessoaAlteracao 
+                     FROM DemandaHistorico dh 
+                     WHERE dh.CodDemanda = da.CodDemanda 
+                     AND dh.DataAlteracao <= da.DataEnvio 
+                     ORDER BY dh.DataAlteracao DESC),
+                    da.CodDemandaAcompanhamento
+                ) as CodPessoaUpload
+            FROM DemandaAnexos da
+            LEFT JOIN DemandaAcompanhamento dac ON da.CodDemandaAcompanhamento = dac.CodDemandaAcompanhamento
+            LEFT JOIN Pessoa p ON p.CodPessoa = COALESCE(dac.CodPessoaAcompanhamento, 
+                (SELECT TOP 1 dh.CodPessoaAlteracao 
+                 FROM DemandaHistorico dh 
+                 WHERE dh.CodDemanda = da.CodDemanda 
+                 AND dh.DataAlteracao <= da.DataEnvio 
+                 ORDER BY dh.DataAlteracao DESC))
+            WHERE da.CodDemanda = @CodDemanda
+            ORDER BY da.DataEnvio DESC";
 
         public const string AceitarDemanda = @"
         UPDATE Demanda 

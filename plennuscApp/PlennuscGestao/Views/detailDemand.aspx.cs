@@ -245,7 +245,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                         NomeArquivo = a.NomeArquivo,
                         DataEnvio = a.DataEnvio,
                         TamanhoFormatado = FormatTamanhoArquivo(a.TamanhoBytes),
-                        CaminhoDownload = $"/public/uploadgestao/docs/{a.NomeArquivo}"
+                        CaminhoDownload = $"/public/uploadgestao/docs/{a.NomeArquivo}",
+                        NomeUsuarioUpload = a.NomeUsuarioUpload
                     }).ToList();
 
                     rptAnexos.DataBind();

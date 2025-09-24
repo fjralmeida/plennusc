@@ -12,5 +12,7 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string NomeArquivo { get; set; }
         public DateTime DataEnvio { get; set; }
         public long TamanhoBytes { get; set; }
+
+        public string NomeUsuarioUpload { get; set; }
     }
 }

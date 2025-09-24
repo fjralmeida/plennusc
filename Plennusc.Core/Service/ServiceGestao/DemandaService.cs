@@ -1080,6 +1080,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                     int idxCod = rd.GetOrdinal("CodDemandaAnexo");
                     int idxNome = rd.GetOrdinal("DescArquivo"); 
                     int idxData = rd.GetOrdinal("DataEnvio");
+                    int idxNomeUsuario = rd.GetOrdinal("NomeUsuario");
 
                     while (rd.Read())
                     {
@@ -1088,7 +1089,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                             CodAnexo = rd["CodDemandaAnexo"] != DBNull.Value ? Convert.ToInt32(rd["CodDemandaAnexo"]) : 0,
                             NomeArquivo = rd["DescArquivo"] != DBNull.Value ? rd["DescArquivo"].ToString() : string.Empty,
                             DataEnvio = rd["DataEnvio"] != DBNull.Value ? (DateTime)rd["DataEnvio"] : DateTime.MinValue,
-                            TamanhoBytes = 0
+                            TamanhoBytes = 0,
+                            NomeUsuarioUpload = rd["NomeUsuario"] != DBNull.Value ? rd["NomeUsuario"].ToString() : "Sistema"
                         });
                     }
                 }
