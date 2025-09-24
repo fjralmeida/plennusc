@@ -85,7 +85,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CodSetor = CodSetorAtual,
                 CodStatus = string.IsNullOrEmpty(ddlStatus.SelectedValue) ? (int?)null : int.Parse(ddlStatus.SelectedValue),
                 CodCategoria = string.IsNullOrEmpty(ddlCategoria.SelectedValue) ? (int?)null : int.Parse(ddlCategoria.SelectedValue),
-                CodSubtipo = string.IsNullOrEmpty(ddlSubtipo.SelectedValue) ? (int?)null : int.Parse(ddlSubtipo.SelectedValue),
                 NomeSolicitante = txtSolicitante.Text.Trim(),
                 Visibilidade = ddlVisibilidade.SelectedValue
             };

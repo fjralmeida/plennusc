@@ -579,11 +579,6 @@ namespace Plennusc.Core.Service.ServiceGestao
                     sql.Append(" AND ( (EXISTS(SELECT 1 FROM dbo.Estrutura e WHERE e.CodEstrutura = d.CodEstr_TipoDemanda AND e.CodEstruturaPai = @CodCategoria)) OR (d.CodEstr_TipoDemanda = @CodCategoria) )");
                     cmd.Parameters.AddWithValue("@CodCategoria", filtro.CodCategoria.Value);
                 }
-                if (filtro?.CodSubtipo != null)
-                {
-                    sql.Append(" AND d.CodEstr_TipoDemanda = @CodSubtipo");
-                    cmd.Parameters.AddWithValue("@CodSubtipo", filtro.CodSubtipo.Value);
-                }
                 if (!string.IsNullOrWhiteSpace(filtro?.NomeSolicitante))
                 {
                     sql.Append(" AND (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) LIKE @Solicitante");
@@ -927,7 +922,6 @@ namespace Plennusc.Core.Service.ServiceGestao
                                     ? rd.GetInt32(rd.GetOrdinal("CodEstr_SituacaoDemanda"))
                                     : 0;
 
-                                // Por enquanto, statusAtual = statusAnterior (será atualizado logo depois)
                                 statusAtual = statusAnterior;
 
                                 codPessoaAprovacaoExistente = rd.HasColumn("CodPessoaAprovacao") && !rd.IsDBNull(rd.GetOrdinal("CodPessoaAprovacao"))
@@ -972,7 +966,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                         return false;
                     }
 
-                    // 3) Atualizar aprovador (mantém sua lógica)
+                    // 3) Atualizar aprovador
                     using (var cmd = new SqlCommand(Demanda.UpdateDemanda_SetAprovador, con, tx))
                     {
                         cmd.Parameters.AddWithValue("@CodPessoaAprovacao", gestorId);
@@ -980,23 +974,10 @@ namespace Plennusc.Core.Service.ServiceGestao
                         cmd.ExecuteNonQuery();
                     }
 
-                    // ==== BLOCO SUBSTITUÍDO: buscar código 'Aguardando aprovação' via constante do Demanda (sem query inline) ====
-                    int codSituacaoAguardando = 0;
-                    using (var cmd = new SqlCommand(Demanda.SelectCodSituacaoAguardando, con, tx))
-                    {
-                        var o = cmd.ExecuteScalar();
-                        if (o != null && o != DBNull.Value)
-                            codSituacaoAguardando = Convert.ToInt32(o);
-                    }
+                    // CORREÇÃO: Usar o código fixo 65 para "Aguardando Aprovação"
+                    int codSituacaoAguardando = 65; // Código direto da sua tabela
 
-                    if (codSituacaoAguardando == 0)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[SolicitarAprovacao] ERRO: 'Aguardando aprovação' não encontrada em Estrutura.");
-                        tx.Rollback();
-                        return false;
-                    }
-
-                    // 4) Atualizar a situação da Demanda para 'Aguardando aprovação' (valor vindo do banco)
+                    // 4) Atualizar a situação da Demanda para 'Aguardando aprovação'
                     using (var cmd = new SqlCommand(Demanda.UpdateSituacaoDemanda, con, tx))
                     {
                         cmd.Parameters.AddWithValue("@CodEstr_SituacaoDemanda", codSituacaoAguardando);
@@ -1004,9 +985,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                         cmd.ExecuteNonQuery();
                     }
 
-                    // Ajusta statusAtual para ser usado no histórico logo em seguida
+                    // Ajusta statusAtual para o histórico
                     statusAtual = codSituacaoAguardando;
-                    // ==== FIM do bloco substituído ====
 
                     // 5) Inserir no histórico
                     using (var cmd = new SqlCommand(Demanda.InsertDemandaHistorico, con, tx))
@@ -1115,7 +1095,6 @@ namespace Plennusc.Core.Service.ServiceGestao
                         int oCodDemanda = reader.GetOrdinal("CodDemanda");
                         int oTitulo = reader.GetOrdinal("Titulo");
                         int oCategoria = reader.GetOrdinal("Categoria");
-                        int oSubtipo = reader.GetOrdinal("Subtipo");
                         int oStatus = reader.GetOrdinal("Status");
                         int oSolicitante = reader.GetOrdinal("Solicitante");
                         int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
@@ -1133,7 +1112,6 @@ namespace Plennusc.Core.Service.ServiceGestao
                             CodDemanda = reader.IsDBNull(oCodDemanda) ? 0 : reader.GetInt32(oCodDemanda),
                             Titulo = reader.IsDBNull(oTitulo) ? string.Empty : reader.GetString(oTitulo),
                             Categoria = reader.IsDBNull(oCategoria) ? string.Empty : reader.GetString(oCategoria),
-                            Subtipo = reader.IsDBNull(oSubtipo) ? null : reader.GetString(oSubtipo),
                             Status = reader.IsDBNull(oStatus) ? string.Empty : reader.GetString(oStatus),
                             Solicitante = reader.IsDBNull(oSolicitante) ? string.Empty : reader.GetString(oSolicitante),
 
@@ -1181,7 +1159,6 @@ namespace Plennusc.Core.Service.ServiceGestao
                         int oCodDemanda = reader.GetOrdinal("CodDemanda");
                         int oTitulo = reader.GetOrdinal("Titulo");
                         int oCategoria = reader.GetOrdinal("Categoria");
-                        int oSubtipo = reader.GetOrdinal("Subtipo");
                         int oStatus = reader.GetOrdinal("Status");
                         int oSolicitante = reader.GetOrdinal("Solicitante");
                         int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
@@ -1199,7 +1176,6 @@ namespace Plennusc.Core.Service.ServiceGestao
                             CodDemanda = reader.IsDBNull(oCodDemanda) ? 0 : reader.GetInt32(oCodDemanda),
                             Titulo = reader.IsDBNull(oTitulo) ? string.Empty : reader.GetString(oTitulo),
                             Categoria = reader.IsDBNull(oCategoria) ? string.Empty : reader.GetString(oCategoria),
-                            Subtipo = reader.IsDBNull(oSubtipo) ? null : reader.GetString(oSubtipo),
                             Status = reader.IsDBNull(oStatus) ? string.Empty : reader.GetString(oStatus),
                             Solicitante = reader.IsDBNull(oSolicitante) ? string.Empty : reader.GetString(oSolicitante),
                             DataSolicitacao = reader.IsDBNull(oDataSolicitacao) ? DateTime.MinValue : reader.GetDateTime(oDataSolicitacao),

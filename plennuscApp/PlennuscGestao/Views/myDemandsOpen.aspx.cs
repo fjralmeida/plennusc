@@ -34,29 +34,26 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 var demandas = _svc.GetDemandasEmAbertoPorPessoa(CodPessoaAtual);
 
-                // DEBUG - Adicione estas linhas
-                System.Diagnostics.Debug.WriteLine($"Usuário: {CodPessoaAtual}");
-                System.Diagnostics.Debug.WriteLine($"Demandas encontradas: {demandas?.Count ?? 0}");
 
-                if (demandas != null)
+                if (demandas != null && demandas.Count > 0)
                 {
                     foreach (var d in demandas)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda} - Executor: {d.CodPessoaExecucao} - Prazo: {d.DataPrazo}");
+                        System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda}: Status={d.Status}, Executor={d.CodPessoaExecucao}, Titulo={d.Titulo}");
                     }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("NENHUMA demanda retornada pela consulta!");
                 }
 
                 gvDemandasAberto.DataSource = demandas;
                 gvDemandasAberto.DataBind();
-
-                // Atualizar label de resultados
                 lblResultados.Text = $"Total de demandas: {demandas?.Count ?? 0}";
             }
             catch (Exception ex)
             {
                 MostrarMensagem("Erro ao carregar demandas: " + ex.Message, "error");
-                System.Diagnostics.Debug.WriteLine($"ERRO: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
             }
         }
 

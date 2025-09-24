@@ -634,9 +634,6 @@
                     <asp:BoundField DataField="Categoria" HeaderText="Categoria"
                         ItemStyle-CssClass="text-left col-categoria" HeaderStyle-CssClass="text-left" />
 
-                    <asp:BoundField DataField="Subtipo" HeaderText="Subtipo"
-                        ItemStyle-CssClass="text-left col-subtipo" HeaderStyle-CssClass="text-left" />
-
                 <asp:TemplateField HeaderText="Prioridade"
     ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
     <ItemTemplate>

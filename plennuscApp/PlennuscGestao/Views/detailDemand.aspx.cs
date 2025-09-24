@@ -88,17 +88,21 @@ namespace appWhatsapp.PlennuscGestao.Views
             int codUsuario = CodPessoaAtual;
 
             bool ehSolicitante = (demandaAtual.CodPessoaSolicitacao == codUsuario);
+            bool ehExecutor = demandaAtual.CodPessoaExecucao.HasValue && demandaAtual.CodPessoaExecucao.Value == codUsuario;
+            bool jaTemAprovador = demandaAtual.CodPessoaAprovacao.HasValue && demandaAtual.CodPessoaAprovacao.Value > 0;
+
+            // Status que consideram a demanda como "fechada"
+            bool demandaFechada = (statusCodigo == 22 || statusCodigo == 23 || statusCodigo == 65); // Finalizada, Concluída ou Aguardando Aprovação
 
             // Só mostra botão de encerrar para quem abriu E se status for "Em andamento"
             bool podeEncerrar = ehSolicitante && (statusCodigo == 18);
-
             btnEncerrar.Visible = podeEncerrar;
 
             // Mostrar o botão de "Solicitar Aprovação" para quem é executor da demanda,
-            // e apenas se ainda não existir um aprovador e a demanda não estiver fechada
-            bool ehExecutor = demandaAtual.CodPessoaExecucao.HasValue && demandaAtual.CodPessoaExecucao.Value == codUsuario;
-            bool jaTemAprovador = demandaAtual.CodPessoaAprovacao.HasValue && demandaAtual.CodPessoaAprovacao.Value > 0;
-            btnSolicitarAprovacao.Visible = ehExecutor && !jaTemAprovador && !DemandaFechada;
+            // e apenas se: não tem aprovador, não está fechada E status é "Em andamento" (18)
+            bool podeSolicitarAprovacao = ehExecutor && !jaTemAprovador && !demandaFechada && (statusCodigo == 18);
+            btnSolicitarAprovacao.Visible = podeSolicitarAprovacao;
+
         }
 
         private void ConfigurarFormularioAcompanhamento()

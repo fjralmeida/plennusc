@@ -11,7 +11,6 @@ namespace Plennusc.Core.Models.ModelsGestao
         public int CodDemanda { get; set; }
         public string Titulo { get; set; }
         public string Categoria { get; set; }
-        public string Subtipo { get; set; }
 
         public int CodPrioridade { get; set; }
         public string Prioridade { get; set; }
