@@ -336,50 +336,15 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
         ORDER BY d.DataDemanda DESC";
 
         public const string DemandasEmAbertoPorPessoa = @"
-            SELECT 
-                d.CodDemanda,
-                d.Titulo,
-                cat.DescEstrutura AS Categoria,
-                sub.DescEstrutura AS Subtipo,
-                s.DescEstrutura AS Status,
-                p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
-                d.DataDemanda AS DataSolicitacao,
-                d.DataPrazoMaximo AS DataPrazo,
-                pri.DescEstrutura AS Prioridade,
-                d.CodEstr_NivelPrioridade AS CodPrioridade,
-                imp.DescEstrutura AS Importancia,
-                d.CodEstr_NivelImportancia AS CodImportancia,
-                d.CodPessoaExecucao,
-                d.DataAceitacao,
-                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
-            FROM dbo.Demanda d
-            INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
-            INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
-            INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
-            LEFT JOIN dbo.Estrutura sub ON d.CodEstr_TipoDemanda = sub.CodEstrutura
-            LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
-            LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
-            LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
-            WHERE d.CodPessoaExecucao = @CodPessoa
-              AND d.CodEstr_SituacaoDemanda IN (17, 18, 23)
-            ORDER BY 
-                d.CodEstr_NivelPrioridade DESC,
-                CASE WHEN d.DataPrazoMaximo IS NULL THEN 1 ELSE 0 END,
-                d.DataPrazoMaximo ASC,
-                d.CodEstr_NivelImportancia DESC,
-                d.DataDemanda DESC";
-
-
-        public const string DemandasEmAndamentoPorPessoa = @"
     SELECT 
         d.CodDemanda,
         d.Titulo,
         cat.DescEstrutura AS Categoria,
-        sub.DescEstrutura AS Subtipo,
+        '' AS Subtipo,  -- Corrigido: campo vazio
         s.DescEstrutura AS Status,
         p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
         d.DataDemanda AS DataSolicitacao,
-        d.DataPrazoMaximo AS DataPrazo, 
+        d.DataPrazoMaximo AS DataPrazo,
         pri.DescEstrutura AS Prioridade,
         d.CodEstr_NivelPrioridade AS CodPrioridade,
         imp.DescEstrutura AS Importancia,
@@ -388,29 +353,60 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
         d.DataAceitacao,
         pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
     FROM dbo.Demanda d
-    INNER JOIN dbo.Pessoa p 
-        ON d.CodPessoaSolicitacao = p.CodPessoa
-    INNER JOIN dbo.Estrutura s 
-        ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
-    INNER JOIN dbo.Estrutura cat 
-        ON d.CodEstr_TipoDemanda = cat.CodEstrutura
-    LEFT JOIN dbo.Estrutura sub 
-        ON d.CodEstr_TipoDemanda = sub.CodEstrutura
-    LEFT JOIN dbo.Estrutura pri 
-        ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
-    LEFT JOIN dbo.Estrutura imp 
-        ON d.CodEstr_NivelImportancia = imp.CodEstrutura
-    LEFT JOIN dbo.Pessoa pexec 
-        ON d.CodPessoaExecucao = pexec.CodPessoa
+    INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+    INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+    INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+    LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+    LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
+    LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
     WHERE d.CodPessoaExecucao = @CodPessoa
-          AND d.CodEstr_SituacaoDemanda = 18
-        ORDER BY 
-            d.CodEstr_NivelPrioridade DESC,
-            CASE WHEN d.DataPrazoMaximo IS NULL THEN 1 ELSE 0 END,
-            d.DataPrazoMaximo ASC,
-            d.CodEstr_NivelImportancia DESC,
-            d.DataDemanda DESC";
+      AND d.CodEstr_SituacaoDemanda = 17  -- Apenas status 17 (Aberta)
+    ORDER BY 
+        d.CodEstr_NivelPrioridade DESC,
+        CASE WHEN d.DataPrazoMaximo IS NULL THEN 1 ELSE 0 END,
+        d.DataPrazoMaximo ASC,
+        d.CodEstr_NivelImportancia DESC,
+        d.DataDemanda DESC";
 
+
+        public const string DemandasEmAndamentoPorPessoa = @"
+SELECT 
+    d.CodDemanda,
+    d.Titulo,
+    cat.DescEstrutura AS Categoria,
+    '' AS Subtipo, -- Removido o subtipo pois não existe na tabela
+    s.DescEstrutura AS Status,
+    p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+    d.DataDemanda AS DataSolicitacao,
+    d.DataPrazoMaximo AS DataPrazo, 
+    pri.DescEstrutura AS Prioridade,
+    d.CodEstr_NivelPrioridade AS CodPrioridade,
+    imp.DescEstrutura AS Importancia,
+    d.CodEstr_NivelImportancia AS CodImportancia,
+    d.CodPessoaExecucao,
+    d.DataAceitacao,
+    pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+FROM dbo.Demanda d
+INNER JOIN dbo.Pessoa p 
+    ON d.CodPessoaSolicitacao = p.CodPessoa
+INNER JOIN dbo.Estrutura s 
+    ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+INNER JOIN dbo.Estrutura cat 
+    ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+LEFT JOIN dbo.Estrutura pri 
+    ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+LEFT JOIN dbo.Estrutura imp 
+    ON d.CodEstr_NivelImportancia = imp.CodEstrutura
+LEFT JOIN dbo.Pessoa pexec 
+    ON d.CodPessoaExecucao = pexec.CodPessoa
+WHERE d.CodPessoaExecucao = @CodPessoa
+      AND d.CodEstr_SituacaoDemanda = 18
+ORDER BY 
+    d.CodEstr_NivelPrioridade DESC,
+    CASE WHEN d.DataPrazoMaximo IS NULL THEN 1 ELSE 0 END,
+    d.DataPrazoMaximo ASC,
+    d.CodEstr_NivelImportancia DESC,
+    d.DataDemanda DESC";
 
         // busca o CODSETOR (destino) e status atual da demanda
         public const string SelectDemanda_Setor_Status = @"
