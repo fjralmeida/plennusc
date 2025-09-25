@@ -267,7 +267,7 @@
 .importancia-media, .importancia-média, .importancia-medio, .importancia-médio,
 .prioridade-media, .prioridade-média, .prioridade-medio, .prioridade-médio,
 .prazo-hoje,
-.status-concluída, .status-concluida, .status-concluido, .status-concluído {
+.status-concluída, .status-concluida, .status-concluido, .status-concluído, .status-aguardando-aprovacao {
     background: #fff3e0 !important;
     color: #ef6c00 !important;
     border: 1px solid #ffe0b2 !important;

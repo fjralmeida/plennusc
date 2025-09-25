@@ -12,6 +12,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -1162,7 +1163,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                         int oStatus = reader.GetOrdinal("Status");
                         int oSolicitante = reader.GetOrdinal("Solicitante");
                         int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
-                        int oDataPrazo = reader.GetOrdinal("DataPrazo"); 
+                        int oDataPrazo = reader.GetOrdinal("DataPrazo");
                         int oPrioridade = reader.GetOrdinal("Prioridade");
                         int oCodPrioridade = reader.GetOrdinal("CodPrioridade");
                         int oImportancia = reader.GetOrdinal("Importancia");
@@ -1170,6 +1171,9 @@ namespace Plennusc.Core.Service.ServiceGestao
                         int oCodPessoaExecucao = reader.GetOrdinal("CodPessoaExecucao");
                         int oDataAceitacao = reader.GetOrdinal("DataAceitacao");
                         int oNomePessoaExecucao = reader.GetOrdinal("NomePessoaExecucao");
+                        int oCodPessoaAprovacao = reader.GetOrdinal("CodPessoaAprovacao");
+                        int oDataAprovacao = reader.GetOrdinal("DataAprovacao");
+                        int oNomePessoaAprovacao = reader.GetOrdinal("NomePessoaAprovacao");
 
                         var di = new DemandaInfo
                         {
@@ -1191,6 +1195,10 @@ namespace Plennusc.Core.Service.ServiceGestao
                             CodPessoaExecucao = reader.IsDBNull(oCodPessoaExecucao) ? (int?)null : reader.GetInt32(oCodPessoaExecucao),
                             DataAceitacao = reader.IsDBNull(oDataAceitacao) ? (DateTime?)null : reader.GetDateTime(oDataAceitacao),
                             NomePessoaExecucao = reader.IsDBNull(oNomePessoaExecucao) ? null : reader.GetString(oNomePessoaExecucao),
+                            // ADICIONE OS NOVOS CAMPOS
+                            CodPessoaAprovacao = reader.IsDBNull(oCodPessoaAprovacao) ? (int?)null : reader.GetInt32(oCodPessoaAprovacao),
+                            DataAprovacao = reader.IsDBNull(oDataAprovacao) ? (DateTime?)null : reader.GetDateTime(oDataAprovacao),
+                            NomePessoaAprovacao = reader.IsDBNull(oNomePessoaAprovacao) ? null : reader.GetString(oNomePessoaAprovacao)
                         };
 
                         demandas.Add(di);
@@ -1199,6 +1207,148 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
 
             return demandas;
+        }
+
+        public List<DemandaInfo> GetDemandasAguardandoAprovacaoPorGestor(int codPessoa)
+        {
+            var demandas = new List<DemandaInfo>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.DemandasAguardandoAprovacaoPorGestor, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // pega ordinais
+                        int oCodDemanda = reader.GetOrdinal("CodDemanda");
+                        int oTitulo = reader.GetOrdinal("Titulo");
+                        int oCategoria = reader.GetOrdinal("Categoria");
+                        int oStatus = reader.GetOrdinal("Status");
+                        int oSolicitante = reader.GetOrdinal("Solicitante");
+                        int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
+                        int oDataPrazo = reader.GetOrdinal("DataPrazo");
+                        int oPrioridade = reader.GetOrdinal("Prioridade");
+                        int oCodPrioridade = reader.GetOrdinal("CodPrioridade");
+                        int oImportancia = reader.GetOrdinal("Importancia");
+                        int oCodImportancia = reader.GetOrdinal("CodImportancia");
+                        int oCodPessoaExecucao = reader.GetOrdinal("CodPessoaExecucao");
+                        int oDataAceitacao = reader.GetOrdinal("DataAceitacao");
+                        int oNomePessoaExecucao = reader.GetOrdinal("NomePessoaExecucao");
+                        int oCodPessoaAprovacao = reader.GetOrdinal("CodPessoaAprovacao");
+                        int oDataAprovacao = reader.GetOrdinal("DataAprovacao");
+                        int oNomeSolicitanteCompleto = reader.GetOrdinal("NomeSolicitanteCompleto");
+
+                        var di = new DemandaInfo
+                        {
+                            CodDemanda = reader.IsDBNull(oCodDemanda) ? 0 : reader.GetInt32(oCodDemanda),
+                            Titulo = reader.IsDBNull(oTitulo) ? string.Empty : reader.GetString(oTitulo),
+                            Categoria = reader.IsDBNull(oCategoria) ? string.Empty : reader.GetString(oCategoria),
+                            Status = reader.IsDBNull(oStatus) ? string.Empty : reader.GetString(oStatus),
+                            Solicitante = reader.IsDBNull(oSolicitante) ? string.Empty : reader.GetString(oSolicitante),
+                            DataSolicitacao = reader.IsDBNull(oDataSolicitacao) ? DateTime.MinValue : reader.GetDateTime(oDataSolicitacao),
+                            DataPrazo = reader.IsDBNull(oDataPrazo) ? (DateTime?)null : reader.GetDateTime(oDataPrazo),
+                            Prioridade = reader.IsDBNull(oPrioridade) ? string.Empty : reader.GetString(oPrioridade),
+                            CodPrioridade = reader.IsDBNull(oCodPrioridade) ? 0 : reader.GetInt32(oCodPrioridade),
+                            Importancia = reader.IsDBNull(oImportancia) ? null : reader.GetString(oImportancia),
+                            CodImportancia = reader.IsDBNull(oCodImportancia) ? (int?)null : reader.GetInt32(oCodImportancia),
+                            CodPessoaExecucao = reader.IsDBNull(oCodPessoaExecucao) ? (int?)null : reader.GetInt32(oCodPessoaExecucao),
+                            DataAceitacao = reader.IsDBNull(oDataAceitacao) ? (DateTime?)null : reader.GetDateTime(oDataAceitacao),
+                            NomePessoaExecucao = reader.IsDBNull(oNomePessoaExecucao) ? null : reader.GetString(oNomePessoaExecucao),
+                            CodPessoaAprovacao = reader.IsDBNull(oCodPessoaAprovacao) ? (int?)null : reader.GetInt32(oCodPessoaAprovacao),
+                            DataAprovacao = reader.IsDBNull(oDataAprovacao) ? (DateTime?)null : reader.GetDateTime(oDataAprovacao),
+                            NomePessoaAprovacao = reader.IsDBNull(oNomeSolicitanteCompleto) ? null : reader.GetString(oNomeSolicitanteCompleto)
+                        };
+
+                        demandas.Add(di);
+                    }
+                }
+            }
+
+            return demandas;
+        }
+
+        public bool AprovarDemanda(int codDemanda, int codPessoaAprovadora)
+        {
+            using (var con = Open())
+            using (var tx = con.BeginTransaction())
+            {
+                try
+                {
+                    // 1. Verificar se a demanda existe e está aguardando aprovação (status 65)
+                    int statusAtual = 0;
+                    using (var cmdVerificar = new SqlCommand(
+                            @"SELECT CodEstr_SituacaoDemanda, CodPessoaAprovacao 
+                              FROM Demanda 
+                              WHERE CodDemanda = @CodDemanda",
+                        con, tx))
+                    {
+                        cmdVerificar.Parameters.AddWithValue("@CodDemanda", codDemanda);
+
+                        using (var reader = cmdVerificar.ExecuteReader())
+                        {
+                            if (!reader.Read())
+                            {
+                                tx.Rollback();
+                                return false; // Demanda não encontrada
+                            }
+
+                            statusAtual = reader.GetInt32(0);
+                            var codPessoaAprovacao = reader.IsDBNull(1) ? (int?)null : reader.GetInt32(1);
+
+                            // Verificar se está no status correto (65 = Aguardando Aprovação)
+                            if (statusAtual != 65)
+                            {
+                                tx.Rollback();
+                                return false; // Status incorreto
+                            }
+                        }
+                    }
+
+                    // 2. Atualizar a demanda: preencher data de aprovação e mudar status para Em Andamento (18)
+                    using (var cmdAtualizar = new SqlCommand(@"
+                            UPDATE dbo.Demanda 
+                            SET DataAprovacao = GETDATE(),
+                                CodPessoaAprovacao = @CodPessoaAprovadora,
+                                CodEstr_SituacaoDemanda = 18  -- Muda para Em Andamento
+                        WHERE CodDemanda = @CodDemanda", con, tx))
+                    {
+                        cmdAtualizar.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        cmdAtualizar.Parameters.AddWithValue("@CodPessoaAprovadora", codPessoaAprovadora);
+
+                        int rowsAffected = cmdAtualizar.ExecuteNonQuery();
+                        if (rowsAffected == 0)
+                        {
+                            tx.Rollback();
+                            return false;
+                        }
+                    }
+
+                    // 3. Registrar no histórico
+                    using (var cmdHistorico = new SqlCommand(@"
+                        INSERT INTO dbo.DemandaHistorico 
+                        (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao)
+                        VALUES 
+                        (@CodDemanda, @StatusAnterior, @StatusAtual, @CodPessoaAlteracao, GETDATE())", con, tx))
+                    {
+                        cmdHistorico.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                        cmdHistorico.Parameters.AddWithValue("@StatusAnterior", statusAtual); // 65 - Aguardando Aprovação
+                        cmdHistorico.Parameters.AddWithValue("@StatusAtual", 18); // 18 - Em Andamento
+                        cmdHistorico.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoaAprovadora);
+                        cmdHistorico.ExecuteNonQuery();
+                    }
+
+                    tx.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    tx.Rollback();
+                    throw new Exception($"Erro ao aprovar demanda: {ex.Message}", ex);
+                }
+            }
         }
     }
 }

@@ -276,7 +276,7 @@
 /* 🔴 VERMELHO - ALTO/ATRASADO/URGENTE */
 .importancia-alta, .importancia-alto,
 .prioridade-alta, .prioridade-alto,
-.prazo-atrasado {
+.prazo-atrasado, .prioridade-com-prazo { 
     background: #ffebee !important;
     color: #c62828 !important;
     border: 1px solid #ffcdd2 !important;
@@ -365,6 +365,20 @@
                 margin-bottom: 2px;
             }
 
+
+            .aprovação-info {
+    font-size: 10px;
+    color: #2e7d32;
+    line-height: 1.2;
+}
+
+.aprovação-info strong {
+    display: block;
+    color: #1b5e20;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
         /* Botões de ação */
         .btn-action {
             background: white;
@@ -589,13 +603,14 @@
         <asp:BoundField DataField="Categoria" HeaderText="Categoria"
             ItemStyle-CssClass="text-left col-categoria" HeaderStyle-CssClass="text-left" />
 
-        <asp:TemplateField HeaderText="Prioridade"
+       <asp:TemplateField HeaderText="Prioridade"
             ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
             <ItemTemplate>
                 <span class='badge prioridade-<%# Eval("Prioridade").ToString().ToLower()
                     .Replace("é", "e").Replace("á", "a").Replace("í", "i")
                     .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
-                    .Replace("û", "u").Replace("ç", "c") %>'>
+                    .Replace("û", "u").Replace("ç", "c")
+                    .Replace(" ", "-") %>'> 
                     <%# Eval("Prioridade") %>
                 </span>
             </ItemTemplate>
@@ -635,23 +650,35 @@
             </ItemTemplate>
         </asp:TemplateField>
 
-        <asp:TemplateField HeaderText="Aceite"
-            ItemStyle-CssClass="text-center col-aceite" HeaderStyle-CssClass="text-center">
-            <ItemTemplate>
-                <asp:Label ID="lblAceiteInfo" runat="server" CssClass="aceite-info"
-                    Visible='<%# Eval("CodPessoaExecucao") != null && Convert.ToInt32(Eval("CodPessoaExecucao")) > 0 %>'>
-                    <strong>Aceita</strong>
-                    por: <%# Eval("NomePessoaExecucao") %><br/>
-                    em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
-                </asp:Label>
+       <asp:TemplateField HeaderText="Aceite/Aprovação"
+    ItemStyle-CssClass="text-center col-aceite" HeaderStyle-CssClass="text-center">
+    <ItemTemplate>
+        <!-- Informação de Aprovação -->
+        <asp:Panel ID="pnlAprovacao" runat="server" 
+            Visible='<%# Eval("CodPessoaAprovacao") != null && Convert.ToInt32(Eval("CodPessoaAprovacao")) > 0 %>'
+            CssClass="aprovação-info" style="margin-bottom: 8px;">
+            <div style="background: #e8f5e9; padding: 6px; border-radius: 4px; border-left: 3px solid #4caf50;">
+                <strong>✅ Aprovada por:</strong><br/>
+                <%# Eval("NomePessoaAprovacao") %><br/>
+                em <%# Eval("DataAprovacao", "{0:dd/MM/yyyy HH:mm}") %>
+            </div>
+        </asp:Panel>
 
-                <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-aceitar"
-                    CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
-                    Visible='<%# Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0 %>'>
-                    <i class="bi bi-check-circle"></i> Aceitar
-                </asp:LinkButton>
-            </ItemTemplate>
-        </asp:TemplateField>
+        <!-- Informação de Aceite (existente) -->
+        <asp:Label ID="lblAceiteInfo" runat="server" CssClass="aceite-info"
+            Visible='<%# Eval("CodPessoaExecucao") != null && Convert.ToInt32(Eval("CodPessoaExecucao")) > 0 %>'>
+            <strong>👤 Aceita por:</strong><br/>
+            <%# Eval("NomePessoaExecucao") %><br/>
+            em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
+        </asp:Label>
+
+        <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-aceitar"
+            CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
+            Visible='<%# Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0 %>'>
+            <i class="bi bi-check-circle"></i> Aceitar
+        </asp:LinkButton>
+    </ItemTemplate>
+</asp:TemplateField>
 
         <asp:TemplateField HeaderText="Ações"
             ItemStyle-CssClass="text-center col-acoes" HeaderStyle-CssClass="text-center">

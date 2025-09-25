@@ -383,7 +383,10 @@ SELECT
     d.CodEstr_NivelImportancia AS CodImportancia,
     d.CodPessoaExecucao,
     d.DataAceitacao,
-    pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+    pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao,
+    d.CodPessoaAprovacao,
+    d.DataAprovacao,
+    paprov.Nome + ' ' + ISNULL(paprov.Sobrenome, '') AS NomePessoaAprovacao
 FROM dbo.Demanda d
 INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
 INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
@@ -391,6 +394,7 @@ INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
 LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
 LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
 LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
+LEFT JOIN dbo.Pessoa paprov ON d.CodPessoaAprovacao = paprov.CodPessoa
 WHERE d.CodEstr_SituacaoDemanda = 18  -- Apenas status Em Andamento
   AND d.CodPessoaExecucao = @CodPessoa  -- Para status 18, só as aceitas pelo usuário
 ORDER BY 
@@ -434,5 +438,43 @@ ORDER BY
             FROM dbo.Estrutura 
             WHERE CodTipoEstrutura = 12 
             ORDER BY ISNULL(ValorPadrao, 999), DescEstrutura";
+
+        // Listar demandas que estão aguardando aprovação e que o gestor logado é o aprovador
+        public const string DemandasAguardandoAprovacaoPorGestor = @"
+            SELECT 
+                d.CodDemanda,
+                d.Titulo,
+                cat.DescEstrutura AS Categoria,
+                s.DescEstrutura AS Status,
+                p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+                d.DataDemanda AS DataSolicitacao,
+                d.DataPrazoMaximo AS DataPrazo,
+                pri.DescEstrutura AS Prioridade,
+                d.CodEstr_NivelPrioridade AS CodPrioridade,
+                imp.DescEstrutura AS Importancia,
+                d.CodEstr_NivelImportancia AS CodImportancia,
+                d.CodPessoaExecucao,
+                d.DataAceitacao,
+                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao,
+                d.CodPessoaAprovacao,
+                d.DataAprovacao,
+                psolic.Nome + ' ' + ISNULL(psolic.Sobrenome, '') AS NomeSolicitanteCompleto
+            FROM dbo.Demanda d
+            INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+            INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+            INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+            LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+            LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
+            LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
+            LEFT JOIN dbo.Pessoa psolic ON d.CodPessoaSolicitacao = psolic.CodPessoa
+            WHERE d.CodEstr_SituacaoDemanda = 65  -- Aguardando Aprovação
+              AND d.CodPessoaAprovacao = @CodPessoa  -- Gestor logado
+              AND d.DataAprovacao IS NULL  -- Ainda não aprovada
+            ORDER BY 
+                d.CodEstr_NivelPrioridade DESC,
+                CASE WHEN d.DataPrazoMaximo IS NULL THEN 1 ELSE 0 END,
+                d.DataPrazoMaximo ASC,
+                d.CodEstr_NivelImportancia DESC,
+                d.DataDemanda DESC";
     }
 }

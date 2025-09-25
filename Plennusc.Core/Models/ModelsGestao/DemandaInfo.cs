@@ -20,13 +20,17 @@ namespace Plennusc.Core.Models.ModelsGestao
 
         public DateTime DataSolicitacao { get; set; }
 
-        public DateTime? DataPrazo { get; set; } 
+        public DateTime? DataPrazo { get; set; }
         public string Importancia { get; set; }
         public int? CodImportancia { get; set; }
 
         public int? CodPessoaExecucao { get; set; }
         public DateTime? DataAceitacao { get; set; }
         public string NomePessoaExecucao { get; set; }
+
+        public int? CodPessoaAprovacao { get; set; }
+        public DateTime? DataAprovacao { get; set; }
+        public string NomePessoaAprovacao { get; set; }
     }
 }
 
