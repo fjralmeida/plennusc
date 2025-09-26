@@ -71,6 +71,7 @@
     <Compile Include="Models\ModelsGestao\DemandaComLimite.cs" />
     <Compile Include="Models\ModelsGestao\DemandaCreate.cs" />
     <Compile Include="Models\ModelsGestao\DemandaCriticaInfo.cs" />
+    <Compile Include="Models\ModelsGestao\DemandaDetalhesDto.cs" />
     <Compile Include="Models\ModelsGestao\DemandaDto.cs" />
     <Compile Include="Models\ModelsGestao\DemandaFiltro.cs" />
     <Compile Include="Models\ModelsGestao\DemandaInfo.cs" />

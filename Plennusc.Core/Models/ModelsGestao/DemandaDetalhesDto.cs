@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Plennusc.Core.Models.ModelsGestao
 {
-    public class DemandaDto
+    public class DemandaDetalhesDto
     {
         public int CodDemanda { get; set; }
         public string Titulo { get; set; }
@@ -14,7 +14,7 @@ namespace Plennusc.Core.Models.ModelsGestao
 
         // Status
         public string StatusNome { get; set; }
-        public int? StatusCodigo { get; set; } 
+        public int? StatusCodigo { get; set; }
 
         // Solicitante / datas
         public string Solicitante { get; set; }
@@ -22,14 +22,19 @@ namespace Plennusc.Core.Models.ModelsGestao
         public int CodPessoaSolicitacao { get; set; }
 
         // Executor / aceite
-        public int? CodPessoaExecucao { get; set; }   
+        public int? CodPessoaExecucao { get; set; }
         public DateTime? DataAceitacao { get; set; }
         public string NomePessoaExecucao { get; set; }
 
         // Aprovação
-        public int? CodPessoaAprovacao { get; set; } 
+        public int? CodPessoaAprovacao { get; set; }
 
-        // Setor/demais (se precisar)
+        // Novos campos para a tela de detalhes
         public int CodSetorDestino { get; set; }
+        public string Categoria { get; set; }
+        public string Prioridade { get; set; }
+        public string Importancia { get; set; }
+        public string DataPrazo { get; set; }
+        public string Status { get; set; }
     }
 }
