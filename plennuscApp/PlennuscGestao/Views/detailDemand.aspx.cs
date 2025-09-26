@@ -94,8 +94,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             // Status que consideram a demanda como "fechada"
             bool demandaFechada = (statusCodigo == 22 || statusCodigo == 23 || statusCodigo == 65); // Finalizada, Concluída ou Aguardando Aprovação
 
-            // Só mostra botão de encerrar para quem abriu E se status for "Em andamento"
-            bool podeEncerrar = ehSolicitante && (statusCodigo == 18);
+            //// Só mostra botão de encerrar para quem abriu E se status for "Em andamento"
+            //bool podeEncerrar = ehSolicitante && (statusCodigo == 18);
+
+            // Só aparece o botão de encerrar para quem abriu a demanda E se não estiver concluída
+            bool podeEncerrar = (demandaAtual.CodPessoaSolicitacao == CodPessoaAtual)
+                               && (demandaAtual.StatusCodigo != 23);
             btnEncerrar.Visible = podeEncerrar;
 
             // Mostrar o botão de "Solicitar Aprovação" para quem é executor da demanda,
@@ -318,6 +322,11 @@ namespace appWhatsapp.PlennuscGestao.Views
             string script = $@"{functionName}('{mensagem.Replace("'", "\\'")}');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), "MensagemToast", script, true);
             ScriptManager.RegisterStartupScript(this, this.GetType(), "MensagemToast", script, true);
+        }
+
+        protected void btnRecusar_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

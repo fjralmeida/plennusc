@@ -178,29 +178,58 @@
             color: #c5221f;
             border-color: #f4b8b4;
         }
+/* Container dos botões - ALINHAMENTO CORRETO */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 24px 0;
+    padding: 0;
+    width: 100%;
+}
 
-        .btn-close-demand {
-            background: var(--danger);
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 12px 24px;
-            border-radius: 6px;
-            transition: var(--transition);
-            margin-top: 24px;
-            box-shadow: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
+/* ESTILO GHOST PARA TODOS OS BOTÕES */
+.btn-primary, .btn-close-demand, .btn-refuse {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    color: var(--gray-700);
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    height: 40px;
+}
 
-            .btn-close-demand:hover {
-                background: #d93025;
-                box-shadow: 0 2px 4px rgba(234, 67, 53, 0.3);
-                transform: translateY(-1px);
-            }
+/* HOVER ESPECÍFICO PARA CADA BOTÃO */
+.btn-primary:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(110, 191, 225, 0.2);
+}
 
+.btn-close-demand:hover {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(76, 176, 122, 0.2);
+}
+
+.btn-refuse:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(234, 67, 53, 0.2);
+}
         .btn-secondary {
             background: var(--gray-400) !important;
             border-color: var(--gray-400) !important;
@@ -776,7 +805,7 @@
     <div class="toast-container" id="globalToastContainer" runat="server" style="display: none"></div>
 
     <div class="container-main">
-        <!-- Cabeçalho da Demanda -->
+       <!-- Cabeçalho da Demanda -->
         <div class="demand-header">
             <h1 class="demand-title">
                 <asp:Label ID="lblTitulo" runat="server"></asp:Label>
@@ -799,13 +828,9 @@
                         <asp:Label ID="lblDataSolicitacao" runat="server" /></span>
                 </div>
             </div>
-
-            <asp:Button ID="btnSolicitarAprovacao" runat="server" CssClass="btn-primary"
-                Text="Solicitar Aprovação" OnClick="btnSolicitarAprovacao_Click" Visible="false" />
-
-            <asp:Button ID="btnEncerrar" runat="server" CssClass="btn-close-demand"
-                Text="✖ Encerrar Demanda" OnClick="btnEncerrar_Click" />
         </div>
+
+    
 
         <!-- Seção de Anexos EXISTENTES -->
      <div class="attachments-section">
@@ -941,6 +966,23 @@
                 </div>
             </div>
         </div>
+
+       <div class="button-container">
+    <asp:LinkButton ID="btnSolicitarAprovacao" runat="server" CssClass="btn-primary"
+        OnClick="btnSolicitarAprovacao_Click" Visible="false">
+        <i class="bi bi-check-circle"></i> Solicitar Aprovação
+    </asp:LinkButton>
+
+    <asp:LinkButton ID="btnRecusar" runat="server" CssClass="btn-refuse"
+        OnClick="btnRecusar_Click" Visible="false">
+        <i class="bi bi-x-circle"></i> Recusar
+    </asp:LinkButton>
+
+    <asp:LinkButton ID="btnEncerrar" runat="server" CssClass="btn-close-demand"
+        OnClick="btnEncerrar_Click" Visible="false">
+        <i class="bi bi-check-lg"></i> Concluir
+    </asp:LinkButton>
+</div>
 
         <!-- Histórico de Status (Collapsible) -->
         <div class="history-section" id="historySection">

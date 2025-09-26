@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -1349,6 +1350,61 @@ namespace Plennusc.Core.Service.ServiceGestao
                     throw new Exception($"Erro ao aprovar demanda: {ex.Message}", ex);
                 }
             }
+        }
+
+        public List<DemandaInfo> GetDemandasConcluidasPorPessoa(int codPessoa)
+        {
+            var demandas = new List<DemandaInfo>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.DemandasConcluidasPorPessoa, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // ordinais
+                        int oCodDemanda = reader.GetOrdinal("CodDemanda");
+                        int oTitulo = reader.GetOrdinal("Titulo");
+                        int oCategoria = reader.GetOrdinal("Categoria");
+                        int oStatus = reader.GetOrdinal("Status");
+                        int oSolicitante = reader.GetOrdinal("Solicitante");
+                        int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
+                        int oDataPrazo = reader.GetOrdinal("DataPrazo");
+                        int oPrioridade = reader.GetOrdinal("Prioridade");
+                        int oCodPrioridade = reader.GetOrdinal("CodPrioridade");
+                        int oImportancia = reader.GetOrdinal("Importancia");
+                        int oCodImportancia = reader.GetOrdinal("CodImportancia");
+                        int oCodPessoaExecucao = reader.GetOrdinal("CodPessoaExecucao");
+                        int oDataAceitacao = reader.GetOrdinal("DataAceitacao");
+                        int oNomePessoaExecucao = reader.GetOrdinal("NomePessoaExecucao");
+
+                        var di = new DemandaInfo
+                        {
+                            CodDemanda = reader.IsDBNull(oCodDemanda) ? 0 : reader.GetInt32(oCodDemanda),
+                            Titulo = reader.IsDBNull(oTitulo) ? string.Empty : reader.GetString(oTitulo),
+                            Categoria = reader.IsDBNull(oCategoria) ? string.Empty : reader.GetString(oCategoria),
+                            Status = reader.IsDBNull(oStatus) ? string.Empty : reader.GetString(oStatus),
+                            Solicitante = reader.IsDBNull(oSolicitante) ? string.Empty : reader.GetString(oSolicitante),
+                            DataSolicitacao = reader.IsDBNull(oDataSolicitacao) ? DateTime.MinValue : reader.GetDateTime(oDataSolicitacao),
+                            DataPrazo = reader.IsDBNull(oDataPrazo) ? (DateTime?)null : reader.GetDateTime(oDataPrazo),
+                            Importancia = reader.IsDBNull(oImportancia) ? null : reader.GetString(oImportancia),
+                            CodImportancia = reader.IsDBNull(oCodImportancia) ? (int?)null : reader.GetInt32(oCodImportancia),
+                            Prioridade = reader.IsDBNull(oPrioridade) ? string.Empty : reader.GetString(oPrioridade),
+                            CodPrioridade = reader.IsDBNull(oCodPrioridade) ? 0 : reader.GetInt32(oCodPrioridade),
+                            CodPessoaExecucao = reader.IsDBNull(oCodPessoaExecucao) ? (int?)null : reader.GetInt32(oCodPessoaExecucao),
+                            DataAceitacao = reader.IsDBNull(oDataAceitacao) ? (DateTime?)null : reader.GetDateTime(oDataAceitacao),
+                            NomePessoaExecucao = reader.IsDBNull(oNomePessoaExecucao) ? null : reader.GetString(oNomePessoaExecucao)
+                        };
+
+                        demandas.Add(di);
+                    }
+                }
+            }
+
+            return demandas;
         }
     }
 }

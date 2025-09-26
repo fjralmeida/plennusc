@@ -476,5 +476,33 @@ ORDER BY
                 d.DataPrazoMaximo ASC,
                 d.CodEstr_NivelImportancia DESC,
                 d.DataDemanda DESC";
+
+        //DEMANDAS CONCLUÍDAS
+        public const string DemandasConcluidasPorPessoa = @"
+        SELECT 
+            d.CodDemanda,
+            d.Titulo,
+            cat.DescEstrutura AS Categoria,
+            s.DescEstrutura AS Status,
+            p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+            d.DataDemanda AS DataSolicitacao,
+            d.DataPrazoMaximo AS DataPrazo, 
+            pri.DescEstrutura AS Prioridade,
+            d.CodEstr_NivelPrioridade AS CodPrioridade,
+            imp.DescEstrutura AS Importancia,
+            d.CodEstr_NivelImportancia AS CodImportancia,
+            d.CodPessoaExecucao,
+            d.DataAceitacao,
+            pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+        FROM dbo.Demanda d
+        INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+        INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+        INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+        LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+        LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
+        LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
+        WHERE d.CodEstr_SituacaoDemanda = 23  -- Status Concluída
+          AND (d.CodPessoaSolicitacao = @CodPessoa OR d.CodPessoaExecucao = @CodPessoa)
+        ORDER BY d.DataDemanda DESC";
     }
 }
