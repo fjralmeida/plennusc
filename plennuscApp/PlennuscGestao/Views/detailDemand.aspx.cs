@@ -107,6 +107,20 @@ namespace appWhatsapp.PlennuscGestao.Views
             bool podeSolicitarAprovacao = ehExecutor && !jaTemAprovador && !demandaFechada && (statusCodigo == 18);
             btnSolicitarAprovacao.Visible = podeSolicitarAprovacao;
 
+            // BOTÃO RECUSAR - Para demandas em aberto (17), andamento (18) e aguardando aprovação (65)
+            bool podeRecusar = false;
+
+            // Para demandas em aberto (17) - executor pode recusar aceitação
+            if (statusCodigo == 17 && ehExecutor)
+            {
+                podeRecusar = true;
+            }
+            // Para demandas em andamento (18) - executor pode recusar continuidade
+            else if (statusCodigo == 18 && ehExecutor)
+            {
+                podeRecusar = true;
+            }
+
         }
 
         private void ConfigurarFormularioAcompanhamento()
