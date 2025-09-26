@@ -154,7 +154,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 // Sua lógica existente para visualizar
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"detailDemand.aspx?codDemanda={codDemanda}");
+                Response.Redirect($"viewDemandBeforeAccept.aspx?codDemanda={codDemanda}");
             }
         }
 

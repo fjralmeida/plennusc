@@ -200,6 +200,7 @@
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscGestao\Views\updatePriceTable.aspx" />
+    <Content Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeeEditMedic.aspx" />
@@ -506,6 +507,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\updatePriceTable.aspx.designer.cs">
       <DependentUpon>updatePriceTable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx.cs">
+      <DependentUpon>viewDemandBeforeAccept.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx.designer.cs">
+      <DependentUpon>viewDemandBeforeAccept.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx.cs">
       <DependentUpon>csvImportPlaniumMedic.aspx</DependentUpon>

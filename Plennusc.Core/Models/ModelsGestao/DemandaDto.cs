@@ -31,5 +31,10 @@ namespace Plennusc.Core.Models.ModelsGestao
 
         // Setor/demais (se precisar)
         public int CodSetorDestino { get; set; }
+        public string Categoria { get; set; }
+        public string Prioridade { get; set; }
+        public string Importancia { get; set; }
+        public string DataPrazo { get; set; }
+        public string Status { get; set; }
     }
 }
