@@ -244,9 +244,20 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             FROM dbo.Demanda
             WHERE CodDemanda = @CodDemanda;";
 
+        public const string SelectDemandaStatus = @"
+            SELECT CodEstr_SituacaoDemanda 
+            FROM dbo.Demanda 
+            WHERE CodDemanda = @CodDemanda";
+
+        public const string GetStatusDemanda = @"
+            SELECT CodEstrutura AS Value, DescEstrutura AS Text
+            FROM dbo.Estrutura
+            WHERE CodTipoEstrutura = @TipoStatus
+            ORDER BY DescEstrutura";
+
         public const string UpdateSituacaoDemanda = @"
             UPDATE dbo.Demanda
-            SET CodEstr_SituacaoDemanda = @CodEstr_SituacaoDemanda
+            SET CodEstr_SituacaoDemanda = @NovoStatus
             WHERE CodDemanda = @CodDemanda;";
 
         public const string InsertDemandaHistorico = @"
@@ -540,5 +551,14 @@ ORDER BY
         WHERE d.CodEstr_SituacaoDemanda = 23  -- Status Concluída
           AND (d.CodPessoaSolicitacao = @CodPessoa OR d.CodPessoaExecucao = @CodPessoa)
         ORDER BY d.DataDemanda DESC";
+
+        // No Demanda.cs - Query corrigida
+        public const string VerificarGestor = @"
+            SELECT COUNT(1) 
+            FROM dbo.Pessoa p
+            WHERE p.CodPessoa = @CodPessoa 
+              AND p.CodDepartamento = @CodSetor
+              AND p.Conf_Ativo = 1
+              AND p.CodCargo = 2";
     }
 }

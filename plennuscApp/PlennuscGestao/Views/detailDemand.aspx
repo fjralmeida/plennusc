@@ -785,6 +785,14 @@
                 font-size: 13px;
             }
 
+             .btn-primary:disabled,
+    .btn-refuse:disabled,
+    .btn-close-demand:disabled {
+        opacity: 0.5 !important;
+        pointer-events: none !important;
+        cursor: not-allowed !important;
+    }
+
         /* Responsividade para anexos */
         @media (max-width: 768px) {
             .attachment-item {
@@ -830,7 +838,7 @@
             </div>
         </div>
 
-    
+    <asp:HiddenField ID="hdnStatusOriginal" runat="server" />
 
         <!-- Seção de Anexos EXISTENTES -->
      <div class="attachments-section">
@@ -960,6 +968,12 @@
                         </div>
                     </div>
 
+                   <div class="status-selector">
+                        <label class="form-label">Alterar Status:</label>
+                        <asp:DropDownList ID="ddlStatusAcompanhamento" runat="server" CssClass="form-select">
+                        </asp:DropDownList>
+                    </div>
+
                     <asp:Button ID="btnAdicionarAcompanhamento" runat="server"
                         CssClass="btn-send" Text="Enviar Acompanhamento"
                         OnClick="btnAdicionarAcompanhamento_Click" />
@@ -1010,6 +1024,69 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function configurarControleBotoes() {
+            const ddlStatus = document.getElementById('<%= ddlStatusAcompanhamento.ClientID %>');
+        const hdnStatusOriginal = document.getElementById('<%= hdnStatusOriginal.ClientID %>');
+
+        const btnSolicitarAprovacao = document.getElementById('<%= btnSolicitarAprovacao.ClientID %>');
+        const btnRecusar = document.getElementById('<%= btnRecusar.ClientID %>');
+        const btnEncerrar = document.getElementById('<%= btnEncerrar.ClientID %>');
+
+            if (ddlStatus && hdnStatusOriginal) {
+                ddlStatus.addEventListener('change', function () {
+                    const statusAtual = ddlStatus.value;
+                    const statusOriginal = hdnStatusOriginal.value;
+
+                    // Habilita os botões apenas se o status foi alterado
+                    const habilitarBotoes = (statusAtual !== statusOriginal);
+
+                    if (btnSolicitarAprovacao) {
+                        btnSolicitarAprovacao.disabled = !habilitarBotoes;
+                        btnSolicitarAprovacao.style.opacity = habilitarBotoes ? '1' : '0.5';
+                        btnSolicitarAprovacao.style.pointerEvents = habilitarBotoes ? 'auto' : 'none';
+                    }
+
+                    if (btnRecusar) {
+                        btnRecusar.disabled = !habilitarBotoes;
+                        btnRecusar.style.opacity = habilitarBotoes ? '1' : '0.5';
+                        btnRecusar.style.pointerEvents = habilitarBotoes ? 'auto' : 'none';
+                    }
+
+                    if (btnEncerrar) {
+                        btnEncerrar.disabled = !habilitarBotoes;
+                        btnEncerrar.style.opacity = habilitarBotoes ? '1' : '0.5';
+                        btnEncerrar.style.pointerEvents = habilitarBotoes ? 'auto' : 'none';
+                    }
+                });
+
+                // Configuração inicial - desabilita os botões
+                if (btnSolicitarAprovacao) {
+                    btnSolicitarAprovacao.disabled = true;
+                    btnSolicitarAprovacao.style.opacity = '0.5';
+                    btnSolicitarAprovacao.style.pointerEvents = 'none';
+                }
+
+                if (btnRecusar) {
+                    btnRecusar.disabled = true;
+                    btnRecusar.style.opacity = '0.5';
+                    btnRecusar.style.pointerEvents = 'none';
+                }
+
+                if (btnEncerrar) {
+                    btnEncerrar.disabled = true;
+                    btnEncerrar.style.opacity = '0.5';
+                    btnEncerrar.style.pointerEvents = 'none';
+                }
+            }
+        }
+
+        // Executa quando a página carrega
+        document.addEventListener('DOMContentLoaded', function () {
+            configurarControleBotoes();
+        });
+    </script>
 
     <script>
         function checkDemandStatus() {

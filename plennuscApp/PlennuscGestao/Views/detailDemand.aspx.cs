@@ -36,10 +36,27 @@ namespace appWhatsapp.PlennuscGestao.Views
             CarregarAcompanhamentos();
             AjustarBotoes();
             CarregarAnexos();
+            CarregarStatusAcompanhamento();
         }
 
         private DemandaDto demandaAtual;
 
+        private void CarregarStatusAcompanhamento()
+        {
+            ddlStatusAcompanhamento.DataSource = _service.GetStatusDemanda();
+            ddlStatusAcompanhamento.DataValueField = "Value";
+            ddlStatusAcompanhamento.DataTextField = "Text";
+            ddlStatusAcompanhamento.DataBind();
+
+            // Define o status atual como selecionado
+            var demanda = _service.ObterDemandaDetalhesPorId(CodDemanda);
+            if (demanda != null && demanda.StatusCodigo.HasValue)
+            {
+                string statusAtual = demanda.StatusCodigo.Value.ToString();
+                ddlStatusAcompanhamento.SelectedValue = demanda.StatusCodigo.Value.ToString();
+                hdnStatusOriginal.Value = statusAtual;
+            }
+        }
         private void CarregarDemanda()
         {
             demandaAtual = _service.ObterDemandaPorId(CodDemanda);
@@ -134,12 +151,18 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             var texto = txtNovoAcompanhamento.Text?.Trim();
+
+            int novoStatus = int.Parse(ddlStatusAcompanhamento.SelectedValue);
+
             if (!string.IsNullOrEmpty(texto))
             {
                 try
                 {
-                    // SALVA O ACOMPANHAMENTO E OBTÉM O ID
-                    int idAcompanhamento = _service.InserirAcompanhamento(CodDemanda, CodPessoaAtual, texto);
+                    int idAcompanhamento = _service.InserirAcompanhamento(
+                        CodDemanda,
+                        CodPessoaAtual,
+                        texto,
+                        novoStatus);
 
                     // Salvar anexos se houver
                     if (fuAnexos.HasFiles)
@@ -206,6 +229,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivosErro",
                                 "showToastAviso('" + arquivosComErro + " arquivo(s) não puderam ser anexados.');", true);
                         }
+                        hdnStatusOriginal.Value = novoStatus.ToString();
                     }
 
                     CarregarAnexos();

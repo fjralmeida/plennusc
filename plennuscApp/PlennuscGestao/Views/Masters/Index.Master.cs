@@ -1,4 +1,5 @@
 ﻿using appWhatsapp.SqlQueries;
+using Plennusc.Core.Service.ServiceGestao;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,9 @@ namespace PlennuscGestao.Views.Masters
                         true);
                 }
 
+                // VERIFICA SE É GESTOR E CONFIGURA O MENU
+                VerificarPermissaoMenu();
+
                 int codUsuario = Convert.ToInt32(Session["codUsuario"]);
                 PessoaDAO pessoaDao = new PessoaDAO();
                 DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
@@ -62,6 +66,40 @@ namespace PlennuscGestao.Views.Masters
                     imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
                 }
             }
+        }
+
+        private void VerificarPermissaoMenu()
+        {
+            if (Session["CodPessoa"] != null && Session["CodDepartamento"] != null)
+            {
+                int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
+                int codSetor = Convert.ToInt32(Session["CodDepartamento"]);
+
+                var demandaService = new DemandaService("Plennus"); // ou sua connection string
+                bool eGestor = demandaService.VerificarSeEGestor(codPessoa, codSetor);
+
+                // Armazena na sessão para usar em outras páginas se necessário
+                Session["EGestor"] = eGestor;
+
+                // Configura a visibilidade do menu no front-end
+                ConfigurarMenuGestor(eGestor);
+            }
+        }
+
+        private void ConfigurarMenuGestor(bool eGestor)
+        {
+            // Usa JavaScript para mostrar/esconder o item do menu
+            string script = $@"
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {{
+                var menuAguardando = document.querySelector('a[href=""myDemandsWaiting.aspx""]').closest('li');
+                if (menuAguardando) {{
+                    menuAguardando.style.display = '{(!eGestor ? "none" : "block")}';
+                }}
+            }});
+        </script>";
+
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "MenuGestor", script);
         }
 
         private void CarregarInfoEmpresa(int codSistema)

@@ -868,11 +868,8 @@ namespace Plennusc.Core.Service.ServiceGestao
         }
 
         // NO SERVICE - Alterar para retornar o ID do acompanhamento
-        public int InserirAcompanhamento(int codDemanda, int codPessoa, string texto)
+        public int InserirAcompanhamento(int codDemanda, int codPessoa, string texto, int novoStatus)
         {
-            const int STATUS_EM_ANDAMENTO = 18;
-            const int STATUS_CONCLUIDA = 23;
-
             using (var con = Open())
             using (var tx = con.BeginTransaction())
             {
@@ -889,30 +886,26 @@ namespace Plennusc.Core.Service.ServiceGestao
                         idAcompanhamento = Convert.ToInt32(cmdIns.ExecuteScalar());
                     }
 
-                    // 2) Ler executor e status atual da demanda (seu código existente)
-                    int? codPessoaExecucao = null;
+                    // 2) Ler status atual da demanda
                     int statusAtual = 0;
-                    using (var cmdSel = new SqlCommand(Demanda.SelectDemandaExecutorStatus, con, tx))
+                    using (var cmdSel = new SqlCommand(Demanda.SelectDemandaStatus, con, tx))
                     {
                         cmdSel.Parameters.AddWithValue("@CodDemanda", codDemanda);
                         using (var rd = cmdSel.ExecuteReader())
                         {
                             if (rd.Read())
                             {
-                                codPessoaExecucao = rd.IsDBNull(0) ? (int?)null : rd.GetInt32(0);
-                                statusAtual = rd.IsDBNull(1) ? 0 : rd.GetInt32(1);
+                                statusAtual = rd.IsDBNull(0) ? 0 : rd.GetInt32(0);
                             }
                         }
                     }
 
-                    // 3) Sua lógica existente de atualização de status
-                    if (codPessoaExecucao.HasValue && codPessoaExecucao.Value == codPessoa
-                        && statusAtual != STATUS_EM_ANDAMENTO
-                        && statusAtual != STATUS_CONCLUIDA)
+                    // 3) ATUALIZA O STATUS SE FOR DIFERENTE DO ATUAL
+                    if (novoStatus != statusAtual)
                     {
                         using (var cmdUpd = new SqlCommand(Demanda.UpdateSituacaoDemanda, con, tx))
                         {
-                            cmdUpd.Parameters.AddWithValue("@NovoStatus", STATUS_EM_ANDAMENTO);
+                            cmdUpd.Parameters.AddWithValue("@NovoStatus", novoStatus);
                             cmdUpd.Parameters.AddWithValue("@CodDemanda", codDemanda);
                             cmdUpd.ExecuteNonQuery();
                         }
@@ -920,15 +913,15 @@ namespace Plennusc.Core.Service.ServiceGestao
                         using (var cmdHist = new SqlCommand(Demanda.InsertDemandaHistorico, con, tx))
                         {
                             cmdHist.Parameters.AddWithValue("@CodDemanda", codDemanda);
-                            cmdHist.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAnterior", statusAtual); 
-                            cmdHist.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAtual", STATUS_EM_ANDAMENTO); 
-                            cmdHist.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoa); 
+                            cmdHist.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAnterior", statusAtual);
+                            cmdHist.Parameters.AddWithValue("@CodEstr_SituacaoDemandaAtual", novoStatus);
+                            cmdHist.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoa);
                             cmdHist.ExecuteNonQuery();
                         }
                     }
 
                     tx.Commit();
-                    return idAcompanhamento; // RETORNA O ID
+                    return idAcompanhamento;
                 }
                 catch
                 {
@@ -937,6 +930,23 @@ namespace Plennusc.Core.Service.ServiceGestao
                 }
             }
         }
+
+        public List<OptionItem> GetStatusDemanda()
+        {
+            var list = new List<OptionItem>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.GetStatusDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@TipoStatus", EstruturaTipos.SituacaoDemanda); // ajuste o tipo
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+                }
+            }
+            return list;
+        }
+
         public void SalvarAnexoAcompanhamento(int codDemanda, int codDemandaAcompanhamento, string descArquivo)
         {
             using (var con = Open())
@@ -1463,6 +1473,24 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
 
             return demandas;
+        }
+
+        // No DemandaService.cs
+        public bool VerificarSeEGestor(int codPessoa, int? codSetor = null)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.VerificarGestor, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                if (codSetor.HasValue)
+                    cmd.Parameters.AddWithValue("@CodSetor", codSetor.Value);
+                else
+                    cmd.Parameters.AddWithValue("@CodSetor", DBNull.Value);
+
+                var resultado = cmd.ExecuteScalar();
+                return resultado != null && Convert.ToInt32(resultado) > 0;
+            }
         }
     }
 }
