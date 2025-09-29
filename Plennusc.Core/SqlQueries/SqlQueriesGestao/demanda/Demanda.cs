@@ -81,6 +81,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             WHERE CodTipoEstrutura = @Tipo AND CodEstruturaPai = @Pai
             ORDER BY DescEstrutura";
 
+        public const string PrioridadesDemanda = @"
+            SELECT CodEstrutura AS Value, DescEstrutura AS Text
+            FROM dbo.Estrutura
+            WHERE CodTipoEstrutura = @Tipo
+            ORDER BY DescEstrutura";
+
         public const string CategoriasDemanda = @"
             SELECT CodEstrutura AS Value, DescEstrutura AS Text
             FROM dbo.Estrutura
@@ -120,7 +126,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
                 d.CodEstr_NivelImportancia AS CodImportancia,
                 d.CodPessoaExecucao,
                 d.DataAceitacao,
-                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao,
+                d.CodPessoaSolicitacao
             FROM dbo.Demanda d
             INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
             INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
@@ -129,30 +136,59 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
             LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
             LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
-            WHERE 1=1";
+            WHERE 1=1
+        ";
 
+        public const string ObterDemandaDetalhesPorIdQuery = @"
+            SELECT 
+                d.CodDemanda,
+                d.Titulo,
+                d.TextoDemanda,
+                d.CodEstr_SituacaoDemanda AS StatusCodigo,
+                sit.DescEstrutura AS StatusNome,
+                (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
+                d.DataDemanda AS DataSolicitacao,
+                d.CodPessoaSolicitacao,
+                d.CodPessoaExecucao,
+                d.DataAceitacao,
+                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome,'') AS NomePessoaExecucao,
+                d.CodPessoaAprovacao,
+                d.CodSetorDestino,
+                tipo.DescEstrutura AS Categoria,
+                prioridade.DescEstrutura AS Prioridade,
+                importancia.DescEstrutura AS Importancia,
+                CONVERT(VARCHAR, d.DataPrazoMaximo, 103) + ' ' + CONVERT(VARCHAR, d.DataPrazoMaximo, 108) AS DataPrazo
+            FROM dbo.Demanda d
+            INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
+            INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
+            LEFT JOIN dbo.Pessoa pexec ON pexec.CodPessoa = d.CodPessoaExecucao
+            LEFT JOIN dbo.Estrutura tipo ON tipo.CodEstrutura = d.CodEstr_TipoDemanda
+            LEFT JOIN dbo.Estrutura prioridade ON prioridade.CodEstrutura = d.CodEstr_NivelPrioridade
+            LEFT JOIN dbo.Estrutura importancia ON importancia.CodEstrutura = d.CodEstr_NivelImportancia
+            WHERE d.CodDemanda = @CodDemanda
+        ";
 
         public const string ObterDemandaPorId = @"
-    SELECT 
-        d.CodDemanda,
-        d.Titulo,
-        d.TextoDemanda,
-        d.CodEstr_SituacaoDemanda AS StatusCodigo,
-        sit.DescEstrutura AS StatusNome,
-        (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
-        d.DataDemanda AS DataSolicitacao,
-        d.CodPessoaSolicitacao,
-        d.CodPessoaExecucao,
-        d.DataAceitacao,
-        pexec.Nome + ' ' + ISNULL(pexec.Sobrenome,'') AS NomePessoaExecucao,
-        d.CodPessoaAprovacao,
-        d.CodSetorDestino
-    FROM dbo.Demanda d
-    INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
-    INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
-    LEFT JOIN dbo.Pessoa pexec ON pexec.CodPessoa = d.CodPessoaExecucao
-    WHERE d.CodDemanda = @CodDemanda
-";
+            SELECT 
+                d.CodDemanda,
+                d.Titulo,
+                d.TextoDemanda,
+                d.CodEstr_SituacaoDemanda AS StatusCodigo,
+                sit.DescEstrutura AS StatusNome,
+                (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) AS Solicitante,
+                d.DataDemanda AS DataSolicitacao,
+                d.CodPessoaSolicitacao,
+                d.CodPessoaExecucao,
+                d.DataAceitacao,
+                pexec.Nome + ' ' + ISNULL(pexec.Sobrenome,'') AS NomePessoaExecucao,
+                d.CodPessoaAprovacao,
+                d.CodSetorDestino
+            FROM dbo.Demanda d
+            INNER JOIN dbo.Estrutura sit ON sit.CodEstrutura = d.CodEstr_SituacaoDemanda
+            INNER JOIN dbo.Pessoa p ON p.CodPessoa = d.CodPessoaSolicitacao
+            LEFT JOIN dbo.Pessoa pexec ON pexec.CodPessoa = d.CodPessoaExecucao
+            WHERE d.CodDemanda = @CodDemanda
+        ";
 
         //public const string ObterDemandaPorId = @"
         //    SELECT 

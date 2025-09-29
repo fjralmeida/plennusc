@@ -394,6 +394,21 @@ namespace Plennusc.Core.Service.ServiceGestao
             return list;
         }
 
+        public List<OptionItem> GetPrioridadesDemanda()
+        {
+            var list = new List<OptionItem>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.PrioridadesDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@Tipo", EstruturaTipos.NivelPrioridade); // ajuste o tipo conforme seu sistema
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+                }
+            }
+            return list;
+        }
 
         // (opcional) checar se um tipo está permitido para um setor (tabela SetorTipoDemanda)
         public bool TipoPermitidoParaSetor(int codSetor, int codEstrTipoDemanda)
@@ -540,68 +555,75 @@ namespace Plennusc.Core.Service.ServiceGestao
                 cmd.Connection = con;
                 var sql = new StringBuilder(Demanda.ListarDemandasBase);
 
-                System.Diagnostics.Debug.WriteLine("=== FILTRO APPLICADO ===");
-                System.Diagnostics.Debug.WriteLine($"Pessoa: {filtro?.CodPessoa}, Setor: {filtro?.CodSetor}, Visibilidade: {filtro?.Visibilidade}");
-
-                // LÓGICA CORRETA E SIMPLES:
+                // LÓGICA DE VISIBILIDADE (mantém igual)
                 if (!string.IsNullOrWhiteSpace(filtro?.Visibilidade))
                 {
                     var v = filtro.Visibilidade.Trim().ToUpperInvariant();
-
-                    if (v == "M") // MINHAS DEMANDAS - só as que o usuário criou/participa
+                    if (v == "M") // MINHAS DEMANDAS
                     {
                         sql.Append(" AND (d.CodPessoaSolicitacao = @CodPessoa OR d.CodPessoaAprovacao = @CodPessoa OR EXISTS(SELECT 1 FROM dbo.DemandaAcompanhamento da WHERE da.CodDemanda = d.CodDemanda AND da.CodPessoaAcompanhamento = @CodPessoa))");
                         cmd.Parameters.AddWithValue("@CodPessoa", filtro.CodPessoa.Value);
-                        System.Diagnostics.Debug.WriteLine("FILTRO: Apenas minhas demandas");
                     }
-                    else // MEU SETOR - demandas destinadas ao meu setor + as que eu criei
+                    else // MEU SETOR
                     {
                         sql.Append(" AND (d.CodSetorDestino = @CodSetor OR d.CodPessoaSolicitacao = @CodPessoa)");
                         cmd.Parameters.AddWithValue("@CodSetor", filtro.CodSetor.Value);
                         cmd.Parameters.AddWithValue("@CodPessoa", filtro.CodPessoa.Value);
-                        System.Diagnostics.Debug.WriteLine("FILTRO: Demandas do meu setor + minhas");
                     }
                 }
-                else // Default: mostra tudo do setor destino + do usuário
+                else // DEFAULT
                 {
                     sql.Append(" AND (d.CodSetorDestino = @CodSetor OR d.CodPessoaSolicitacao = @CodPessoa)");
                     cmd.Parameters.AddWithValue("@CodSetor", filtro.CodSetor.Value);
                     cmd.Parameters.AddWithValue("@CodPessoa", filtro.CodPessoa.Value);
-                    System.Diagnostics.Debug.WriteLine("FILTRO: Default (setor + minhas)");
                 }
 
-                // Resto dos filtros (status, categoria, etc)
+                // FILTRO POR STATUS
                 if (filtro?.CodStatus != null)
                 {
                     sql.Append(" AND d.CodEstr_SituacaoDemanda = @CodStatus");
                     cmd.Parameters.AddWithValue("@CodStatus", filtro.CodStatus.Value);
                 }
+
+                // FILTRO POR CATEGORIA
                 if (filtro?.CodCategoria != null)
                 {
                     sql.Append(" AND ( (EXISTS(SELECT 1 FROM dbo.Estrutura e WHERE e.CodEstrutura = d.CodEstr_TipoDemanda AND e.CodEstruturaPai = @CodCategoria)) OR (d.CodEstr_TipoDemanda = @CodCategoria) )");
                     cmd.Parameters.AddWithValue("@CodCategoria", filtro.CodCategoria.Value);
                 }
+
+                // FILTRO POR PRIORIDADE
+                if (filtro?.CodPrioridade != null)
+                {
+                    sql.Append(" AND d.CodEstr_NivelPrioridade = @CodPrioridade");
+                    cmd.Parameters.AddWithValue("@CodPrioridade", filtro.CodPrioridade.Value);
+                }
+
+                // FILTRO POR NOME DO SOLICITANTE - CORRIGIDO
                 if (!string.IsNullOrWhiteSpace(filtro?.NomeSolicitante))
                 {
                     sql.Append(" AND (p.Nome + ' ' + ISNULL(p.Sobrenome,'')) LIKE @Solicitante");
                     cmd.Parameters.AddWithValue("@Solicitante", "%" + filtro.NomeSolicitante.Trim() + "%");
+                    System.Diagnostics.Debug.WriteLine("FILTRO NomeSolicitante APLICADO: " + filtro.NomeSolicitante); // DEBUG
                 }
 
+                // ORDENAÇÃO
                 sql.Append(@"
-                     ORDER BY 
-                         d.CodEstr_NivelPrioridade DESC,
-                         d.DataPrazoMaximo ASC,
-                         d.CodEstr_NivelImportancia DESC,
-                         d.DataDemanda DESC
-                ");
+            ORDER BY 
+                d.CodEstr_NivelPrioridade DESC,
+                d.DataPrazoMaximo ASC,
+                d.CodEstr_NivelImportancia DESC,
+                d.DataDemanda DESC
+        ");
+
                 cmd.CommandText = sql.ToString();
 
-                // DEBUG
+                // DEBUG DA QUERY FINAL
                 System.Diagnostics.Debug.WriteLine("QUERY FINAL: " + cmd.CommandText);
                 foreach (SqlParameter p in cmd.Parameters)
                 {
                     System.Diagnostics.Debug.WriteLine($"{p.ParameterName}: {p.Value}");
-                } 
+                }
 
                 using (var rd = cmd.ExecuteReader())
                 {
@@ -616,17 +638,15 @@ namespace Plennusc.Core.Service.ServiceGestao
                             Status = rd.IsDBNull(4) ? "" : rd.GetString(4),
                             Solicitante = rd.IsDBNull(5) ? "" : rd.GetString(5),
                             DataSolicitacao = rd.IsDBNull(6) ? DateTime.MinValue : rd.GetDateTime(6),
-
                             DataPrazo = rd.IsDBNull(7) ? (DateTime?)null : rd.GetDateTime(7),
-
                             Prioridade = rd.IsDBNull(8) ? "Normal" : rd.GetString(8),
                             CodPrioridade = rd.IsDBNull(9) ? 0 : rd.GetInt32(9),
-
                             Importancia = rd.IsDBNull(10) ? null : rd.GetString(10),
                             CodImportancia = rd.IsDBNull(11) ? (int?)null : rd.GetInt32(11),
                             CodPessoaExecucao = rd.IsDBNull(12) ? (int?)null : rd.GetInt32(12),
                             DataAceitacao = rd.IsDBNull(13) ? (DateTime?)null : rd.GetDateTime(13),
-                            NomePessoaExecucao = rd.IsDBNull(14) ? null : rd.GetString(14)
+                            NomePessoaExecucao = rd.IsDBNull(14) ? null : rd.GetString(14),
+                            CodPessoaSolicitacao = rd.IsDBNull(15) ? 0 : rd.GetInt32(15)
                         };
                         lista.Add(dto);
                     }
@@ -677,6 +697,44 @@ namespace Plennusc.Core.Service.ServiceGestao
                             CodSetorDestino = rd.GetInt("CodSetorDestino", 0)
                         };
 
+                        return dto;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public DemandaDetalhesDto ObterDemandaDetalhesPorId(int codDemanda)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.ObterDemandaDetalhesPorIdQuery, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                using (var rd = cmd.ExecuteReader())
+                {
+                    if (rd.Read())
+                    {
+                        var dto = new DemandaDetalhesDto
+                        {
+                            CodDemanda = rd.GetInt("CodDemanda", 0),
+                            Titulo = rd.GetStringOrNull("Titulo"),
+                            TextoDemanda = rd.GetStringOrNull("TextoDemanda"),
+                            StatusNome = rd.GetStringOrNull("StatusNome"),
+                            StatusCodigo = rd.GetNullableInt("StatusCodigo"),
+                            Solicitante = rd.GetStringOrNull("Solicitante"),
+                            DataSolicitacao = rd.GetNullableDateTime("DataSolicitacao"),
+                            CodPessoaSolicitacao = rd.GetInt("CodPessoaSolicitacao", 0),
+                            CodPessoaExecucao = rd.GetNullableInt("CodPessoaExecucao"),
+                            DataAceitacao = rd.GetNullableDateTime("DataAceitacao"),
+                            NomePessoaExecucao = rd.GetStringOrNull("NomePessoaExecucao"),
+                            CodPessoaAprovacao = rd.GetNullableInt("CodPessoaAprovacao"),
+                            CodSetorDestino = rd.GetInt("CodSetorDestino", 0),
+                            Categoria = rd.GetStringOrNull("Categoria"),
+                            Prioridade = rd.GetStringOrNull("Prioridade"),
+                            Importancia = rd.GetStringOrNull("Importancia"),
+                            DataPrazo = rd.GetStringOrNull("DataPrazo"),
+                            Status = rd.GetStringOrNull("StatusNome")
+                        };
                         return dto;
                     }
                 }

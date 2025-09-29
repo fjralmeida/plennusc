@@ -33,7 +33,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void CarregarDemanda()
         {
-            var demanda = _service.ObterDemandaPorId(CodDemanda);
+            var demanda = _service.ObterDemandaDetalhesPorId(CodDemanda);
             if (demanda != null)
             {
                 // Preencher os dados básicos
@@ -42,10 +42,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                 lblTexto.Text = demanda.TextoDemanda;
                 lblSolicitante.Text = demanda.Solicitante;
                 lblDataSolicitacao.Text = demanda.DataSolicitacao?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
-                lblCategoria.Text = demanda.Categoria;
-                lblPrioridade.Text = demanda.Prioridade;
+
+                // NOVOS CAMPOS
+                lblCategoria.Text = demanda.Categoria ?? "-";
+                lblPrioridade.Text = demanda.Prioridade ?? "-";
                 lblImportancia.Text = demanda.Importancia ?? "N/A";
-                lblPrazo.Text = demanda.DataPrazo;
+                lblPrazo.Text = demanda.DataPrazo ?? "-";
 
                 // Verificar se pode aceitar
                 VerificarPermissaoAceitar(demanda);
@@ -76,23 +78,18 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        private void VerificarPermissaoAceitar(DemandaDto demanda)
+        private void VerificarPermissaoAceitar(DemandaDetalhesDto demanda)
         {
-            // Só pode aceitar se:
-            // 1. A demanda estiver aberta (status 17)
-            // 2. O usuário não for o solicitante
-            // 3. A demanda ainda não tiver executor
-            bool podeAceitar = (demanda.StatusCodigo == 17) &&
-                              (demanda.CodPessoaSolicitacao != CodPessoaAtual) &&
-                              (!demanda.CodPessoaExecucao.HasValue || demanda.CodPessoaExecucao.Value == 0);
-
-            btnAceitarDemanda.Visible = podeAceitar;
-
-            if (!podeAceitar)
+            // Mantém a mesma lógica, mas agora recebe DemandaDetalhesDto
+            if (demanda.StatusCodigo == 1) // Status "Aberta"
+            {
+                btnAceitarDemanda.Enabled = true;
+                btnAceitarDemanda.CssClass = "btn-accept";
+            }
+            else
             {
                 btnAceitarDemanda.Enabled = false;
-                btnAceitarDemanda.ToolTip = "Você não pode aceitar esta demanda";
-                btnAceitarDemanda.CssClass = "btn-back";
+                btnAceitarDemanda.CssClass = "btn-accept btn-secondary";
             }
         }
 

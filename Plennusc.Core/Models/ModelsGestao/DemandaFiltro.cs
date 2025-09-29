@@ -13,6 +13,7 @@ namespace Plennusc.Core.Models.ModelsGestao
         public int? CodStatus { get; set; }
         public int? CodCategoria { get; set; }
         public int? CodSubtipo { get; set; }
+        public int? CodPrioridade { get; set; }
         public string NomeSolicitante { get; set; }
         public string Visibilidade { get; set; }
 

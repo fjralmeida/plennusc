@@ -588,9 +588,9 @@
                     </asp:DropDownList>
                 </div>
 
-                <div class="filter-item">
-                    <label class="form-label">Subtipo</label>
-                    <asp:DropDownList ID="ddlSubtipo" runat="server" CssClass="form-select"></asp:DropDownList>
+               <div class="filter-item">
+                    <label class="form-label">Prioridade</label>
+                    <asp:DropDownList ID="ddlPrioridade" runat="server" CssClass="form-select"></asp:DropDownList>
                 </div>
 
                 <div class="filter-item">
@@ -682,23 +682,23 @@
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Aceite"
-                        ItemStyle-CssClass="text-center col-aceite" HeaderStyle-CssClass="text-center">
-                        <ItemTemplate>
-                            <asp:Label ID="lblAceiteInfo" runat="server" CssClass="aceite-info"
-                                Visible='<%# Eval("CodPessoaExecucao") != null && Convert.ToInt32(Eval("CodPessoaExecucao")) > 0 %>'>
-                    <strong>Aceita</strong>
-                    por: <%# Eval("NomePessoaExecucao") %><br/>
-                    em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
-                            </asp:Label>
+                  <asp:TemplateField HeaderText="Aceite"
+                    ItemStyle-CssClass="text-center col-aceite" HeaderStyle-CssClass="text-center">
+                    <ItemTemplate>
+                        <asp:Label ID="lblAceiteInfo" runat="server" CssClass="aceite-info"
+                            Visible="false"> <%-- Inicia como false, controlamos no code behind --%>
+                            <strong>Aceita</strong>
+                            por: <%# Eval("NomePessoaExecucao") %><br/>
+                            em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
+                        </asp:Label>
 
-                            <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-aceitar"
-                                CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
-                                Visible='<%# Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0 %>'>
-                    <i class="bi bi-check-circle"></i> Aceitar
-                            </asp:LinkButton>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                        <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-aceitar"
+                            CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
+                            Visible="false"> <%-- Inicia como false, controlamos no code behind --%>
+                            <i class="bi bi-check-circle"></i> Aceitar
+                        </asp:LinkButton>
+                    </ItemTemplate>
+                </asp:TemplateField>
 
                     <asp:TemplateField HeaderText="Ações"
                         ItemStyle-CssClass="text-center col-acoes" HeaderStyle-CssClass="text-center">

@@ -28,8 +28,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 ddlVisibilidade.Items.Add(new ListItem("Minhas Demandas", "M"));
                 ddlVisibilidade.SelectedValue = "S"; // Default: Meu Setor
 
-                ddlVisibilidade.SelectedValue = "T";
-
                 CarregarFiltros();
                 BindGrid();
             }
@@ -48,24 +46,31 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlCategoria.DataTextField = "Text";
             ddlCategoria.DataBind();
             ddlCategoria.Items.Insert(0, new ListItem("Todas", ""));
+
+            // PRIORIDADES - CARREGA AQUI TAMBÉM
+            ddlPrioridade.DataSource = _svc.GetPrioridadesDemanda();
+            ddlPrioridade.DataValueField = "Value";
+            ddlPrioridade.DataTextField = "Text";
+            ddlPrioridade.DataBind();
+            ddlPrioridade.Items.Insert(0, new ListItem("Todas", ""));
         }
 
         protected void ddlCategoria_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(ddlCategoria.SelectedValue) &&
-                int.TryParse(ddlCategoria.SelectedValue, out int categoriaId))
+        int.TryParse(ddlCategoria.SelectedValue, out int categoriaId))
             {
-                ddlSubtipo.DataSource = _svc.GetSubtiposDemanda(categoriaId);
-                ddlSubtipo.DataValueField = "Value";
-                ddlSubtipo.DataTextField = "Text";
-                ddlSubtipo.DataBind();
+                ddlPrioridade.DataSource = _svc.GetPrioridadesDemanda();
+                ddlPrioridade.DataValueField = "Value";
+                ddlPrioridade.DataTextField = "Text";
+                ddlPrioridade.DataBind();
             }
             else
             {
-                ddlSubtipo.DataSource = null;
-                ddlSubtipo.DataBind();
+                ddlPrioridade.DataSource = null;
+                ddlPrioridade.DataBind();
             }
-            ddlSubtipo.Items.Insert(0, new ListItem("Todos", ""));
+            ddlPrioridade.Items.Insert(0, new ListItem("Todas", ""));
             BindGrid();
         }
 
@@ -85,6 +90,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CodSetor = CodSetorAtual,
                 CodStatus = string.IsNullOrEmpty(ddlStatus.SelectedValue) ? (int?)null : int.Parse(ddlStatus.SelectedValue),
                 CodCategoria = string.IsNullOrEmpty(ddlCategoria.SelectedValue) ? (int?)null : int.Parse(ddlCategoria.SelectedValue),
+                CodPrioridade = string.IsNullOrEmpty(ddlPrioridade.SelectedValue) ? (int?)null : int.Parse(ddlPrioridade.SelectedValue), // ← NOVO FILTRO
                 NomeSolicitante = txtSolicitante.Text.Trim(),
                 Visibilidade = ddlVisibilidade.SelectedValue
             };
@@ -95,9 +101,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             var lista = _svc.ListarDemandas(filtro);
             gvDemandas.DataSource = lista;
             gvDemandas.DataBind();
-
-            System.Diagnostics.Debug.WriteLine("Total de resultados: " + lista.Count);
-            System.Diagnostics.Debug.WriteLine("=== FIM DEBUG ===");
         }
 
         protected void gvDemandas_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -117,16 +120,23 @@ namespace appWhatsapp.PlennuscGestao.Views
                 // Obter o DTO (não mais DataRowView)
                 var dto = (DemandaListDto)e.Row.DataItem;
 
-                // Configurar a visibilidade
-                if (dto.CodPessoaExecucao.HasValue && dto.CodPessoaExecucao > 0)
+                int codPessoaLogada = Convert.ToInt32(Session["CodPessoa"]);
+
+                bool demandaAceita = dto.CodPessoaExecucao.HasValue && dto.CodPessoaExecucao > 0;
+                bool foiCriadaPorMim = dto.CodPessoaSolicitacao == codPessoaLogada;
+
+                if (demandaAceita)
                 {
+                    // Se já foi aceita, mostra info e esconde botão
                     lblAceiteInfo.Visible = true;
                     btnAceitar.Visible = false;
                 }
                 else
                 {
                     lblAceiteInfo.Visible = false;
-                    btnAceitar.Visible = true;
+
+                    // Só mostra o botão se NÃO foi criada por mim
+                    btnAceitar.Visible = !foiCriadaPorMim;
                 }
             }
         }

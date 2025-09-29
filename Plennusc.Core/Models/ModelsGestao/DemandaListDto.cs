@@ -25,5 +25,6 @@ namespace Plennusc.Core.Models.ModelsGestao
         public int? CodPessoaExecucao { get; set; }
         public DateTime? DataAceitacao { get; set; }
         public string NomePessoaExecucao { get; set; }
+        public int CodPessoaSolicitacao { get; set; }
     }
 }
