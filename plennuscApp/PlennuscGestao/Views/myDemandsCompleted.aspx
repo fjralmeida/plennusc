@@ -182,6 +182,15 @@
                     <asp:BoundField DataField="Categoria" HeaderText="Categoria"
                         ItemStyle-CssClass="text-left col-categoria" HeaderStyle-CssClass="text-left" />
 
+                    <asp:TemplateField HeaderText="Importância"
+                        ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
+                            <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower().Replace(" ", "-") %>'>
+                                <%# Eval("Importancia") %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
                     <asp:TemplateField HeaderText="Prioridade"
                         ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
                         <ItemTemplate>
@@ -198,15 +207,6 @@
                                 Eval("DataPrazo") != DBNull.Value ? 
                                 Convert.ToDateTime(Eval("DataPrazo")).ToString("dd/MM/yyyy") : 
                                 "<span class='text-muted'>N/A</span>" %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-
-                    <asp:TemplateField HeaderText="Importância"
-                        ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
-                        <ItemTemplate>
-                            <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower().Replace(" ", "-") %>'>
-                                <%# Eval("Importancia") %>
-                            </span>
                         </ItemTemplate>
                     </asp:TemplateField>
 

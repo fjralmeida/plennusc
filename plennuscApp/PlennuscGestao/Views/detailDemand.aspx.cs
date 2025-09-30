@@ -43,7 +43,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void CarregarStatusAcompanhamento()
         {
-            ddlStatusAcompanhamento.DataSource = _service.GetStatusDemanda();
+            ddlStatusAcompanhamento.DataSource = _service.GetStatusDemandaFiltrados();
             ddlStatusAcompanhamento.DataValueField = "Value";
             ddlStatusAcompanhamento.DataTextField = "Text";
             ddlStatusAcompanhamento.DataBind();
@@ -352,6 +352,11 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void btnRecusar_Click(object sender, EventArgs e)
         {
 
+        }
+
+        protected bool IsMyMessage(int codPessoaAcompanhamento)
+        {
+            return codPessoaAcompanhamento == CodPessoaAtual;
         }
     }
 }

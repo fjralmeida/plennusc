@@ -19,6 +19,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Plennusc.Core.Service.ServiceGestao
 {
@@ -931,6 +932,21 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
         }
 
+        public List<dynamic> GetStatusDemandaFiltrados()
+        {
+            var todosStatus = GetStatusDemanda();
+
+            var statusPermitidos = new List<string>
+            {
+                "Aberta",
+                "Em andamento",
+                "Aguardando Aprovação",
+                "Recusada",
+                "Concluída"
+            };
+
+            return todosStatus.Where(s => statusPermitidos.Contains(s.Text)).Cast<dynamic>().ToList();
+        }
         public List<OptionItem> GetStatusDemanda()
         {
             var list = new List<OptionItem>();
@@ -1243,6 +1259,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                         int oCodPessoaAprovacao = reader.GetOrdinal("CodPessoaAprovacao");
                         int oDataAprovacao = reader.GetOrdinal("DataAprovacao");
                         int oNomePessoaAprovacao = reader.GetOrdinal("NomePessoaAprovacao");
+                        int oPapelUsuario = reader.GetOrdinal("PapelUsuario");
 
                         var di = new DemandaInfo
                         {
@@ -1267,7 +1284,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                             // ADICIONE OS NOVOS CAMPOS
                             CodPessoaAprovacao = reader.IsDBNull(oCodPessoaAprovacao) ? (int?)null : reader.GetInt32(oCodPessoaAprovacao),
                             DataAprovacao = reader.IsDBNull(oDataAprovacao) ? (DateTime?)null : reader.GetDateTime(oDataAprovacao),
-                            NomePessoaAprovacao = reader.IsDBNull(oNomePessoaAprovacao) ? null : reader.GetString(oNomePessoaAprovacao)
+                            NomePessoaAprovacao = reader.IsDBNull(oNomePessoaAprovacao) ? null : reader.GetString(oNomePessoaAprovacao),
+                            PapelUsuario = reader.IsDBNull(oPapelUsuario) ? string.Empty : reader.GetString(oPapelUsuario)
                         };
 
                         demandas.Add(di);

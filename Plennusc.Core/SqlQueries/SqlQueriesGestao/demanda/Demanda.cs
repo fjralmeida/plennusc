@@ -433,7 +433,13 @@ SELECT
     pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao,
     d.CodPessoaAprovacao,
     d.DataAprovacao,
-    paprov.Nome + ' ' + ISNULL(paprov.Sobrenome, '') AS NomePessoaAprovacao
+    paprov.Nome + ' ' + ISNULL(paprov.Sobrenome, '') AS NomePessoaAprovacao,
+    -- Novo campo para identificar o papel do usuário
+    CASE 
+        WHEN d.CodPessoaSolicitacao = @CodPessoa THEN 'Solicitante'
+        WHEN d.CodPessoaExecucao = @CodPessoa THEN 'Executor' 
+        ELSE 'Outro'
+    END AS PapelUsuario
 FROM dbo.Demanda d
 INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
 INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
@@ -443,14 +449,13 @@ LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
 LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
 LEFT JOIN dbo.Pessoa paprov ON d.CodPessoaAprovacao = paprov.CodPessoa
 WHERE d.CodEstr_SituacaoDemanda = 18  -- Apenas status Em Andamento
-  AND d.CodPessoaExecucao = @CodPessoa  -- Para status 18, só as aceitas pelo usuário
+  AND (d.CodPessoaExecucao = @CodPessoa OR d.CodPessoaSolicitacao = @CodPessoa)
 ORDER BY 
     d.CodEstr_NivelPrioridade DESC,
     CASE WHEN d.DataPrazoMaximo IS NULL THEN 1 ELSE 0 END,
     d.DataPrazoMaximo ASC,
     d.CodEstr_NivelImportancia DESC,
     d.DataDemanda DESC";
-
         // busca o CODSETOR (destino) e status atual da demanda
         public const string SelectDemanda_Setor_Status = @"
             SELECT CodSetorDestino, CodEstr_SituacaoDemanda, CodPessoaAprovacao

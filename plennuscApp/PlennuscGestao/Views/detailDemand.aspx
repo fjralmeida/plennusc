@@ -40,41 +40,50 @@
             padding: 0 16px;
         }
 
-        /* ESTILO CLEAN E PROFISSIONAL - IGUAL NA IMAGEM */
-        .demand-header {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 32px;
-            margin-bottom: 24px;
-            border: 1px solid var(--gray-200);
-        }
+      /* Cabeçalho da Demanda - CORREÇÃO DO TEXTO LONGO */
+.demand-header {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+    margin-bottom: 24px;
+    border: 1px solid var(--gray-200);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
 
-        .demand-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 8px;
-            padding-bottom: 0;
-            border-bottom: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
+.demand-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+    padding-bottom: 0;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
 
-        .demand-description {
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            font-size: 16px;
-            color: var(--gray-800);
-            line-height: 1.6;
-            margin-bottom: 24px;
-            font-weight: 500;
-        }
+.demand-description {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    font-size: 16px;
+    color: var(--gray-800);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap; /* Mantém quebras de linha */
+    max-height: 200px; /* Altura máxima */
+    overflow-y: auto; /* Scroll se necessário */
+}
 
             .demand-description:before {
                 content: '"';
@@ -118,42 +127,48 @@
             }
 
 
-        .demand-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 0;
-            padding: 0;
-            background: transparent;
-            border: none;
-        }
+      /* Meta informações */
+.demand-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
 
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            background: transparent;
-            border: none;
-        }
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
 
-        .meta-label {
-            font-size: 12px;
-            color: var(--gray-600);
-            margin-bottom: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+.meta-label {
+    font-size: 12px;
+    color: var(--gray-600);
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-        .meta-value {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--gray-800);
-            padding: 12px 16px;
-            background: var(--gray-50);
-            border-radius: 6px;
-            border: 1px solid var(--gray-200);
-        }
+.meta-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gray-800);
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border-radius: 6px;
+    border: 1px solid var(--gray-200);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-height: 44px; /* Altura mínima consistente */
+    display: flex;
+    align-items: center;
+}
 
         /* Status badge mais destacado */
         .status-badge {
@@ -247,41 +262,179 @@
                 grid-template-columns: 1fr;
             }
         }
+/* Seção de Acompanhamentos - Estilo WhatsApp */
+.accompaniments-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
 
-        /* Acompanhamentos */
-        .accompaniments-section {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
+.section-header {
+    padding: 16px 24px;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--gray-800);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
 
-        .section-header {
-            padding: 16px 24px;
-            background: var(--gray-50);
-            border-bottom: 1px solid var(--gray-200);
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--gray-800);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.accompaniments-list {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #e5ddd5; /* Fundo estilo WhatsApp */
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 20h40v60H30z' fill='%23d4f0fd' fill-opacity='0.1'/%3E%3C/svg%3E");
+}
 
-        .accompaniments-list {
-            padding: 16px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
+/* Item de Acompanhamento Base */
+.accompaniment-item {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 7.5px;
+    position: relative;
+    margin: 2px 0;
+    word-wrap: break-word;
+}
 
-        .accompaniment-item {
-            background: var(--gray-50);
-            padding: 16px;
-            border-radius: var(--border-radius);
-            margin-bottom: 16px;
-            border-left: 4px solid var(--primary);
-        }
+/* Minhas Mensagens - Lado Direito */
+.accompaniment-item.my-message {
+    align-self: flex-end;
+    background: #dcf8c6; /* Verde claro do WhatsApp */
+    margin-left: auto;
+    border-bottom-right-radius: 0;
+}
 
+.accompaniment-item.my-message .accompaniment-header {
+    justify-content: flex-end;
+}
+
+.accompaniment-item.my-message .accompaniment-author {
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+.accompaniment-item.my-message .accompaniment-date {
+    color: #666;
+}
+
+/* Mensagens de Outros - Lado Esquerdo */
+.accompaniment-item.other-message {
+    align-self: flex-start;
+    background: white;
+    border-bottom-left-radius: 0;
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+}
+
+.accompaniment-item.other-message .accompaniment-author {
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+.accompaniment-item.other-message .accompaniment-date {
+    color: #666;
+}
+
+/* Cabeçalho das Mensagens */
+.accompaniment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    gap: 8px;
+}
+
+.accompaniment-author {
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+.accompaniment-date {
+    font-size: 10.5px;
+    opacity: 0.8;
+}
+
+/* Conteúdo das Mensagens */
+.accompaniment-content {
+    font-size: 13.5px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    color: #303030;
+}
+
+/* Seta das mensagens - Estilo WhatsApp */
+.accompaniment-item.my-message::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -8px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid #dcf8c6;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+.accompaniment-item.other-message::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-right: 8px solid white;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+/* Scrollbar personalizada */
+.accompaniments-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.accompaniments-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.accompaniments-list::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 3px;
+}
+
+.accompaniments-list::-webkit-scrollbar-thumb:hover {
+    background: #aaaaaa;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .accompaniments-section {
+        height: 500px;
+    }
+    
+    .accompaniment-item {
+        max-width: 85%;
+    }
+    
+    .accompaniment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+    
+    .accompaniment-item.my-message .accompaniment-header {
+        align-items: flex-end;
+    }
+}
         .accompaniment-header {
             display: flex;
             justify-content: space-between;
@@ -309,6 +462,7 @@
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
+             min-height: 600px;
         }
 
         .editor-container {
@@ -346,7 +500,7 @@
 
         .editor-textarea {
             width: 100%;
-            min-height: 150px;
+            min-height: 200px;
             border: 1px solid var(--gray-300);
             border-radius: 4px;
             padding: 12px;
@@ -784,7 +938,158 @@
             .toast .msg {
                 font-size: 13px;
             }
+/* Controle de Status Individual */
+.status-control-single {
+    display: flex;
+    justify-content: flex-start;
+    margin: 24px 0;
+    padding: 0;
+}
 
+.status-selector-single {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+}
+
+.status-label-single {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.status-dropdown-single {
+    padding: 10px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    background: white;
+    font-size: 14px;
+    color: var(--gray-800);
+    min-width: 200px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.status-dropdown-single:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(110, 191, 225, 0.2);
+}
+
+/* Container Final de Ações - LADO DIREITO */
+.final-actions-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: 32px 0 24px 0;
+    padding: 0;
+}
+
+.final-buttons-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* Botões Finais - Estilo Ghost Padronizado */
+.btn-final {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    color: var(--gray-700);
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    height: 44px;
+    min-width: 140px;
+    justify-content: center;
+}
+
+/* Hover específico para cada botão final */
+.btn-final.btn-primary:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(110, 191, 225, 0.2);
+}
+
+.btn-final.btn-close-demand:hover {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(76, 176, 122, 0.2);
+}
+
+.btn-final.btn-refuse:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(234, 67, 53, 0.2);
+}
+
+/* Status atual no cabeçalho */
+.current-status-value {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .status-control-single {
+        justify-content: center;
+    }
+    
+    .status-selector-single {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .status-dropdown-single {
+        min-width: 100%;
+    }
+    
+    .final-actions-container {
+        justify-content: center;
+    }
+    
+    .final-buttons-group {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .final-buttons-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-final {
+        width: 100%;
+        min-width: auto;
+    }
+}
              .btn-primary:disabled,
     .btn-refuse:disabled,
     .btn-close-demand:disabled {
@@ -813,7 +1118,7 @@
     <div class="toast-container" id="globalToastContainer" runat="server" style="display: none"></div>
 
     <div class="container-main">
-       <!-- Cabeçalho da Demanda -->
+        <!-- Cabeçalho da Demanda -->
         <div class="demand-header">
             <h1 class="demand-title">
                 <asp:Label ID="lblTitulo" runat="server"></asp:Label>
@@ -835,99 +1140,74 @@
                     <span class="meta-value">
                         <asp:Label ID="lblDataSolicitacao" runat="server" /></span>
                 </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status Atual</span>
+                    <span class="meta-value">
+                        <asp:Label ID="lblStatusAtual" runat="server" CssClass="current-status-value" />
+                    </span>
+                </div>
             </div>
         </div>
 
-    <asp:HiddenField ID="hdnStatusOriginal" runat="server" />
+        <asp:HiddenField ID="hdnStatusOriginal" runat="server" />
 
         <!-- Seção de Anexos EXISTENTES -->
-     <div class="attachments-section">
-        <div class="section-header">
-            <i class="bi bi-paperclip"></i>
-            Anexos da Demanda
-        </div>
-        <div class="attachments-list">
-            <asp:Repeater ID="rptAnexos" runat="server">
-                <ItemTemplate>
-                    <div class="attachment-item">
-                        <div class="attachment-info">
-                            <i class="bi bi-file-earmark attachment-icon"></i>
-                            <div class="attachment-details">
-                                <div class="attachment-name"><%# Eval("NomeArquivo") %></div>
-                                <div class="attachment-meta">
-                                    <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>
-                                    • <%# Eval("TamanhoFormatado") %>
-                                    • Enviado por: <strong><%# Eval("NomeUsuarioUpload") %></strong>
+        <div class="attachments-section">
+            <div class="section-header">
+                <i class="bi bi-paperclip"></i>
+                Anexos da Demanda
+            </div>
+            <div class="attachments-list">
+                <asp:Repeater ID="rptAnexos" runat="server">
+                    <ItemTemplate>
+                        <div class="attachment-item">
+                            <div class="attachment-info">
+                                <i class="bi bi-file-earmark attachment-icon"></i>
+                                <div class="attachment-details">
+                                    <div class="attachment-name"><%# Eval("NomeArquivo") %></div>
+                                    <div class="attachment-meta">
+                                        <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>
+                                        • <%# Eval("TamanhoFormatado") %>
+                                        • Enviado por: <strong><%# Eval("NomeUsuarioUpload") %></strong>
+                                    </div>
                                 </div>
                             </div>
+                            <a href='<%# Eval("CaminhoDownload") %>' target="_blank" class="btn-download">
+                                <i class="bi bi-download"></i>Download
+                            </a>
                         </div>
-                        <a href='<%# Eval("CaminhoDownload") %>' target="_blank" class="btn-download">
-                            <i class="bi bi-download"></i>Download
-                        </a>
-                    </div>
-                </ItemTemplate>
-            </asp:Repeater>
-            <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado."
-                CssClass="no-attachments" />
+                    </ItemTemplate>
+                </asp:Repeater>
+                <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado."
+                    CssClass="no-attachments" />
+            </div>
         </div>
-    </div>
+
+        <!-- Controle de Status (Agora sozinho) -->
+        <div class="status-control-single">
+            <div class="status-selector-single">
+                <label class="status-label-single">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Alterar Status:
+                </label>
+                <asp:DropDownList ID="ddlStatusAcompanhamento" runat="server" CssClass="status-dropdown-single">
+                </asp:DropDownList>
+            </div>
+        </div>
 
         <div class="main-layout">
-            <!-- Seção Principal - Acompanhamentos -->
-            <div class="accompaniments-section">
-                <div class="section-header">
-                    <i class="bi bi-chat-text"></i>
-                    Acompanhamentos
-                </div>
-                <div class="accompaniments-list">
-                    <asp:Repeater ID="rptAcompanhamentos" runat="server">
-                        <ItemTemplate>
-                            <div class="accompaniment-item">
-                                <div class="accompaniment-header">
-                                    <span class="accompaniment-author"><%# Eval("Autor") %></span>
-                                    <span class="accompaniment-date"><%# Eval("DataAcompanhamento", "{0:dd/MM/yyyy HH:mm}") %></span>
-                                </div>
-                                <div class="accompaniment-content">
-                                    <%# Eval("TextoAcompanhamento") %>
-                                </div>
-                                <!-- REMOVER ESTA PARTE DOS ANEXOS -->
-                            </div>
-                        </ItemTemplate>
-                    </asp:Repeater>
-                </div>
-            </div>
-
-            <!-- Seção Lateral - Editor de Texto COM UPLOAD DE ANEXOS -->
+            <!-- Seção Principal - NOVO ACOMPANHAMENTO -->
             <div class="editor-section" id="editorSection" runat="server">
                 <div class="section-header">
                     <i class="bi bi-pencil-square"></i>
                     Novo Acompanhamento
                 </div>
                 <div class="editor-container">
-                    <%--<div class="editor-toolbar">
-                        <button type="button" class="toolbar-btn" data-command="bold" title="Negrito">
-                            <i class="bi bi-type-bold"></i>
-                        </button>
-                        <button type="button" class="toolbar-btn" data-command="italic" title="Itálico">
-                            <i class="bi bi-type-italic"></i>
-                        </button>
-                        <button type="button" class="toolbar-btn" data-command="underline" title="Sublinhado">
-                            <i class="bi bi-type-underline"></i>
-                        </button>
-                        <select class="toolbar-btn" id="fontFamily" title="Fonte">
-                            <option value="Arial">Arial</option>
-                            <option value="Helvetica">Helvetica</option>
-                            <option value="Times New Roman">Times New Roman</option>
-                            <option value="Courier New">Courier New</option>
-                            <option value="Verdana">Verdana</option>
-                        </select>
-                    </div>--%>
-
                     <asp:TextBox ID="txtNovoAcompanhamento" runat="server"
                         CssClass="editor-textarea" TextMode="MultiLine"
-                        placeholder="Digite seu acompanhamento..." Rows="6" />
+                        placeholder="Digite seu acompanhamento..." Rows="8" />
 
-                    <!-- SEÇÃO DE UPLOAD DE ANEXOS PARA O ACOMPANHAMENTO - VERSÃO CORRIGIDA -->
+                    <!-- SEÇÃO DE UPLOAD DE ANEXOS PARA O ACOMPANHAMENTO -->
                     <div class="attachment-upload-section">
                         <div class="upload-header">
                             <i class="bi bi-paperclip"></i>
@@ -968,35 +1248,54 @@
                         </div>
                     </div>
 
-                   <div class="status-selector">
-                        <label class="form-label">Alterar Status:</label>
-                        <asp:DropDownList ID="ddlStatusAcompanhamento" runat="server" CssClass="form-select">
-                        </asp:DropDownList>
-                    </div>
-
                     <asp:Button ID="btnAdicionarAcompanhamento" runat="server"
                         CssClass="btn-send" Text="Enviar Acompanhamento"
                         OnClick="btnAdicionarAcompanhamento_Click" />
                 </div>
             </div>
-        </div>
 
-       <div class="button-container">
-    <asp:LinkButton ID="btnSolicitarAprovacao" runat="server" CssClass="btn-primary"
-        OnClick="btnSolicitarAprovacao_Click" Visible="false">
-        <i class="bi bi-check-circle"></i> Solicitar Aprovação
-    </asp:LinkButton>
-
-    <asp:LinkButton ID="btnRecusar" runat="server" CssClass="btn-refuse"
-        OnClick="btnRecusar_Click" Visible="false">
-        <i class="bi bi-x-circle"></i> Recusar
-    </asp:LinkButton>
-
-    <asp:LinkButton ID="btnEncerrar" runat="server" CssClass="btn-close-demand"
-        OnClick="btnEncerrar_Click" Visible="false">
-        <i class="bi bi-check-lg"></i> Concluir
-    </asp:LinkButton>
+        <!-- Seção Lateral - ACOMPANHAMENTOS EXISTENTES -->
+<div class="accompaniments-section">
+    <div class="section-header">
+        <i class="bi bi-chat-text"></i>
+        Acompanhamentos
+    </div>
+    <div class="accompaniments-list">
+        <asp:Repeater ID="rptAcompanhamentos" runat="server">
+            <ItemTemplate>
+                <div class="accompaniment-item <%# IsMyMessage(Convert.ToInt32(Eval("CodPessoaAcompanhamento"))) ? "my-message" : "other-message" %>">
+                    <div class="accompaniment-header">
+                        <span class="accompaniment-author"><%# Eval("Autor") %></span>
+                        <span class="accompaniment-date"><%# Eval("DataAcompanhamento", "{0:dd/MM/yyyy HH:mm}") %></span>
+                    </div>
+                    <div class="accompaniment-content">
+                        <%# Eval("TextoAcompanhamento") %>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </asp:Repeater>
+    </div>
 </div>
+
+        <!-- Botões de Ação - AGORA NO FINAL LADO DIREITO -->
+        <div class="final-actions-container">
+            <div class="final-buttons-group">
+                <asp:LinkButton ID="btnRecusar" runat="server" CssClass="btn-final btn-refuse"
+                    OnClick="btnRecusar_Click" Visible="false">
+                    <i class="bi bi-x-circle"></i> Recusar
+                </asp:LinkButton>
+
+                <asp:LinkButton ID="btnSolicitarAprovacao" runat="server" CssClass="btn-final btn-primary"
+                    OnClick="btnSolicitarAprovacao_Click" Visible="false">
+                    <i class="bi bi-check-circle"></i> Solicitar Aprovação
+                </asp:LinkButton>
+
+                <asp:LinkButton ID="btnEncerrar" runat="server" CssClass="btn-final btn-close-demand"
+                    OnClick="btnEncerrar_Click" Visible="false">
+                    <i class="bi bi-check-lg"></i> Concluir
+                </asp:LinkButton>
+            </div>
+        </div>
 
         <!-- Histórico de Status (Collapsible) -->
         <div class="history-section" id="historySection">
@@ -1024,7 +1323,7 @@
             </div>
         </div>
     </div>
-
+    
     <script>
         function configurarControleBotoes() {
             const ddlStatus = document.getElementById('<%= ddlStatusAcompanhamento.ClientID %>');

@@ -31,6 +31,8 @@ namespace Plennusc.Core.Models.ModelsGestao
         public int? CodPessoaAprovacao { get; set; }
         public DateTime? DataAprovacao { get; set; }
         public string NomePessoaAprovacao { get; set; }
+
+        public string PapelUsuario { get; set; }
     }
 }
 

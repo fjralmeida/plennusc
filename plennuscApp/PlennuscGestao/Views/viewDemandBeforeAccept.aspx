@@ -407,7 +407,7 @@
                     Text="Voltar para Lista" OnClick="btnVoltar_Click" />
                 
                 <asp:Button ID="btnAceitarDemanda" runat="server" CssClass="btn-accept"
-                    Text="Aceitar esta Demanda" OnClick="btnAceitarDemanda_Click" />
+                    Text="Aceitar esta Demanda" OnClick="btnAceitarDemanda_Click1" />
             </div>
         </div>
     </div>

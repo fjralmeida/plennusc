@@ -517,6 +517,31 @@
             font-size: 12px;
         }
 
+      /* Informação de Aprovação - AGORA IGUAL AO ACEITE */
+.aprovacao-info {
+    font-size: 10px;
+    color: var(--gray-700);
+    line-height: 1.2;
+    text-align: center;
+    padding: 6px 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary); /* Azul para aprovação */
+    display: block;
+    max-width: 140px;
+    word-wrap: break-word;
+    white-space: normal;
+    margin-bottom: 4px;
+}
+
+.aprovacao-info strong {
+    display: block;
+    color: var(--gray-800);
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
         /* Responsividade */
         @media (max-width: 1024px) {
             .filter-section {
@@ -603,6 +628,18 @@
         <asp:BoundField DataField="Categoria" HeaderText="Categoria"
             ItemStyle-CssClass="text-left col-categoria" HeaderStyle-CssClass="text-left" />
 
+         <asp:TemplateField HeaderText="Importância"
+             ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
+             <ItemTemplate>
+                 <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower()
+                     .Replace("é", "e").Replace("á", "a").Replace("í", "i")
+                     .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
+                     .Replace("û", "u").Replace("ç", "c") %>'>
+                     <%# Eval("Importancia") %>
+                 </span>
+             </ItemTemplate>
+         </asp:TemplateField>
+
        <asp:TemplateField HeaderText="Prioridade"
             ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
             <ItemTemplate>
@@ -626,17 +663,6 @@
             </ItemTemplate>
         </asp:TemplateField>
 
-        <asp:TemplateField HeaderText="Importância"
-            ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
-            <ItemTemplate>
-                <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower()
-                    .Replace("é", "e").Replace("á", "a").Replace("í", "i")
-                    .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
-                    .Replace("û", "u").Replace("ç", "c") %>'>
-                    <%# Eval("Importancia") %>
-                </span>
-            </ItemTemplate>
-        </asp:TemplateField>
 
         <asp:TemplateField HeaderText="Status"
             ItemStyle-CssClass="text-center col-status" HeaderStyle-CssClass="text-center">
@@ -650,31 +676,30 @@
             </ItemTemplate>
         </asp:TemplateField>
 
-       <asp:TemplateField HeaderText="Aceite/Aprovação"
+   <asp:TemplateField HeaderText="Situação"
     ItemStyle-CssClass="text-center col-aceite" HeaderStyle-CssClass="text-center">
     <ItemTemplate>
-        <!-- Informação de Aprovação -->
-        <asp:Panel ID="pnlAprovacao" runat="server" 
-            Visible='<%# Eval("CodPessoaAprovacao") != null && Convert.ToInt32(Eval("CodPessoaAprovacao")) > 0 %>'
-            CssClass="aprovação-info" style="margin-bottom: 8px;">
-            <div style="background: #e8f5e9; padding: 6px; border-radius: 4px; border-left: 3px solid #4caf50;">
-                <strong>✅ Aprovada por:</strong><br/>
-                <%# Eval("NomePessoaAprovacao") %><br/>
-                em <%# Eval("DataAprovacao", "{0:dd/MM/yyyy HH:mm}") %>
-            </div>
-        </asp:Panel>
-
-        <!-- Informação de Aceite (existente) -->
+        <!-- Informação de Aceite -->
         <asp:Label ID="lblAceiteInfo" runat="server" CssClass="aceite-info"
             Visible='<%# Eval("CodPessoaExecucao") != null && Convert.ToInt32(Eval("CodPessoaExecucao")) > 0 %>'>
-            <strong>👤 Aceita por:</strong><br/>
-            <%# Eval("NomePessoaExecucao") %><br/>
+            <strong>Aceita</strong>
+            por: <%# Eval("NomePessoaExecucao") %><br/>
             em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
         </asp:Label>
 
+        <!-- Informação de Aprovação -->
+        <asp:Label ID="lblAprovacaoInfo" runat="server" CssClass="aprovacao-info"
+            Visible='<%# Eval("CodPessoaAprovacao") != null && Convert.ToInt32(Eval("CodPessoaAprovacao")) > 0 %>'>
+            <strong>Aprovada</strong>
+            por: <%# Eval("NomePessoaAprovacao") %><br/>
+            em <%# Eval("DataAprovacao", "{0:dd/MM/yyyy HH:mm}") %>
+        </asp:Label>
+
+        <!-- Botão Aceitar (só aparece para executores quando não aceitaram ainda) -->
         <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-aceitar"
             CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
-            Visible='<%# Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0 %>'>
+            Visible='<%# Eval("PapelUsuario").ToString() == "Executor" && 
+                       (Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0) %>'>
             <i class="bi bi-check-circle"></i> Aceitar
         </asp:LinkButton>
     </ItemTemplate>

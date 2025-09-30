@@ -81,7 +81,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         private void VerificarPermissaoAceitar(DemandaDetalhesDto demanda)
         {
             // Mantém a mesma lógica, mas agora recebe DemandaDetalhesDto
-            if (demanda.StatusCodigo == 1) // Status "Aberta"
+            if (demanda.StatusCodigo == 17) // Status "Aberta"
             {
                 btnAceitarDemanda.Enabled = true;
                 btnAceitarDemanda.CssClass = "btn-accept";
@@ -93,7 +93,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        protected void btnAceitarDemanda_Click(object sender, EventArgs e)
+        protected void btnAceitarDemanda_Click1(object sender, EventArgs e)
         {
             try
             {
@@ -103,7 +103,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (aceitou)
                 {
                     // Redirecionar para a página de detalhes completa
-                    Response.Redirect($"detailDemand.aspx?codDemanda={CodDemanda}");
+                    Response.Redirect($"detailDemand.aspx?codDemanda={CodDemanda}", false);
+                    Context.ApplicationInstance.CompleteRequest(); // Opcional
+                    return; // Para a execução
                 }
                 else
                 {

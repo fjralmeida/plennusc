@@ -589,21 +589,31 @@
                     <asp:BoundField DataField="Categoria" HeaderText="Categoria"
                         ItemStyle-CssClass="text-left col-categoria" HeaderStyle-CssClass="text-left" />
 
+
+                   <asp:TemplateField HeaderText="Importância"
+                       ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
+                       <ItemTemplate>
+                           <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower().Replace("é", "e").Replace("á", "a").Replace("í", "i").Replace("ê", "e").Replace("â", "a").Replace("ô", "o").Replace("û", "u").Replace("ç", "c") %>'>
+                               <%# Eval("Importancia") %>
+                           </span>
+                       </ItemTemplate>
+                   </asp:TemplateField>
+
                 <asp:TemplateField HeaderText="Prioridade"
-    ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
-    <ItemTemplate>
-        <span class='badge <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? 
-                              "prioridade-nao-definida" : 
-                              "prioridade-" + Eval("Prioridade").ToString().ToLower()
-                                  .Replace(" ", "-")
-                                  .Replace("com-prazo", "com-prazo")
-                                  .Replace("é", "e").Replace("á", "a").Replace("í", "i")
-                                  .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
-                                  .Replace("û", "u").Replace("ç", "c") %>'>
-            <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? "N/A" : Eval("Prioridade") %>
-        </span>
-    </ItemTemplate>
-</asp:TemplateField>
+                ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
+                <ItemTemplate>
+                    <span class='badge <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? 
+                                          "prioridade-nao-definida" : 
+                                          "prioridade-" + Eval("Prioridade").ToString().ToLower()
+                                              .Replace(" ", "-")
+                                              .Replace("com-prazo", "com-prazo")
+                                              .Replace("é", "e").Replace("á", "a").Replace("í", "i")
+                                              .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
+                                              .Replace("û", "u").Replace("ç", "c") %>'>
+                        <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? "N/A" : Eval("Prioridade") %>
+                    </span>
+                </ItemTemplate>
+            </asp:TemplateField>
 
                 <asp:TemplateField HeaderText="Prazo" 
                     ItemStyle-CssClass="text-center col-prazo" HeaderStyle-CssClass="text-center">
@@ -616,15 +626,6 @@
                         </span>
                     </ItemTemplate>
                 </asp:TemplateField>
-
-                    <asp:TemplateField HeaderText="Importância"
-                        ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
-                        <ItemTemplate>
-                            <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower().Replace("é", "e").Replace("á", "a").Replace("í", "i").Replace("ê", "e").Replace("â", "a").Replace("ô", "o").Replace("û", "u").Replace("ç", "c") %>'>
-                                <%# Eval("Importancia") %>
-                            </span>
-                        </ItemTemplate>
-                    </asp:TemplateField>
 
                     <asp:TemplateField HeaderText="Status"
                         ItemStyle-CssClass="text-center col-status" HeaderStyle-CssClass="text-center">
