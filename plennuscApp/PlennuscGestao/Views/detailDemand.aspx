@@ -263,16 +263,6 @@
             }
         }
 /* Seção de Acompanhamentos - Estilo WhatsApp */
-.accompaniments-section {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    height: 600px;
-    display: flex;
-    flex-direction: column;
-}
-
 .section-header {
     padding: 16px 24px;
     background: var(--gray-50);
@@ -293,10 +283,9 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    background: #e5ddd5; /* Fundo estilo WhatsApp */
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 20h40v60H30z' fill='%23d4f0fd' fill-opacity='0.1'/%3E%3C/svg%3E");
+    background: #f0f2f5; /* Cinza azulado bem suave */
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2390caf9' fill-opacity='0.03'%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3C/g%3E%3C/svg%3E");
 }
-
 /* Item de Acompanhamento Base */
 .accompaniment-item {
     max-width: 70%;
@@ -414,12 +403,26 @@
 .accompaniments-list::-webkit-scrollbar-thumb:hover {
     background: #aaaaaa;
 }
+  .side-sections-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        height: fit-content;
+    }
+
+    /* Ajuste na altura da seção de acompanhamentos */
+    .accompaniments-section {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        height: 600px; /* Reduzida para caber junto com o histórico */
+        display: flex;
+        flex-direction: column;
+    }
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .accompaniments-section {
-        height: 500px;
-    }
     
     .accompaniment-item {
         max-width: 85%;
@@ -554,12 +557,14 @@
         }
 
         /* Histórico (Collapsible) */
-        .history-section {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            margin-top: 24px;
-        }
+          .history-section {
+                background: white;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow);
+                margin-top: 0; /* Remove a margem superior anterior */
+                flex: 1;
+            }
+
 
         .history-header {
             padding: 16px 24px;
@@ -575,9 +580,11 @@
         }
 
         .history-content {
-            padding: 16px;
-            display: none;
-        }
+        padding: 16px;
+        display: none;
+        max-height: 300px;
+        overflow-y: auto;
+    }
 
         .history-item {
             padding: 12px;
@@ -1255,49 +1262,32 @@
             </div>
 
         <!-- Seção Lateral - ACOMPANHAMENTOS EXISTENTES -->
-<div class="accompaniments-section">
-    <div class="section-header">
-        <i class="bi bi-chat-text"></i>
-        Acompanhamentos
-    </div>
-    <div class="accompaniments-list">
-        <asp:Repeater ID="rptAcompanhamentos" runat="server">
-            <ItemTemplate>
-                <div class="accompaniment-item <%# IsMyMessage(Convert.ToInt32(Eval("CodPessoaAcompanhamento"))) ? "my-message" : "other-message" %>">
-                    <div class="accompaniment-header">
-                        <span class="accompaniment-author"><%# Eval("Autor") %></span>
-                        <span class="accompaniment-date"><%# Eval("DataAcompanhamento", "{0:dd/MM/yyyy HH:mm}") %></span>
-                    </div>
-                    <div class="accompaniment-content">
-                        <%# Eval("TextoAcompanhamento") %>
-                    </div>
-                </div>
-            </ItemTemplate>
-        </asp:Repeater>
-    </div>
-</div>
-
-        <!-- Botões de Ação - AGORA NO FINAL LADO DIREITO -->
-        <div class="final-actions-container">
-            <div class="final-buttons-group">
-                <asp:LinkButton ID="btnRecusar" runat="server" CssClass="btn-final btn-refuse"
-                    OnClick="btnRecusar_Click" Visible="false">
-                    <i class="bi bi-x-circle"></i> Recusar
-                </asp:LinkButton>
-
-                <asp:LinkButton ID="btnSolicitarAprovacao" runat="server" CssClass="btn-final btn-primary"
-                    OnClick="btnSolicitarAprovacao_Click" Visible="false">
-                    <i class="bi bi-check-circle"></i> Solicitar Aprovação
-                </asp:LinkButton>
-
-                <asp:LinkButton ID="btnEncerrar" runat="server" CssClass="btn-final btn-close-demand"
-                    OnClick="btnEncerrar_Click" Visible="false">
-                    <i class="bi bi-check-lg"></i> Concluir
-                </asp:LinkButton>
+   <!-- Coluna da Direita (Acompanhamentos + Histórico) -->
+    <div class="side-sections-container">
+        <!-- Seção de Acompanhamentos -->
+        <div class="accompaniments-section">
+            <div class="section-header">
+                <i class="bi bi-chat-text"></i>
+                Acompanhamentos
+            </div>
+            <div class="accompaniments-list">
+                <asp:Repeater ID="rptAcompanhamentos" runat="server">
+                    <ItemTemplate>
+                        <div class="accompaniment-item <%# IsMyMessage(Convert.ToInt32(Eval("CodPessoaAcompanhamento"))) ? "my-message" : "other-message" %>">
+                            <div class="accompaniment-header">
+                                <span class="accompaniment-author"><%# Eval("Autor") %></span>
+                                <span class="accompaniment-date"><%# Eval("DataAcompanhamento", "{0:dd/MM/yyyy HH:mm}") %></span>
+                            </div>
+                            <div class="accompaniment-content">
+                                <%# Eval("TextoAcompanhamento") %>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
             </div>
         </div>
 
-        <!-- Histórico de Status (Collapsible) -->
+        <!-- Histórico de Status (Agora ao lado dos acompanhamentos) -->
         <div class="history-section" id="historySection">
             <div class="history-header" onclick="toggleHistory()">
                 <span>
@@ -1324,6 +1314,27 @@
         </div>
     </div>
     
+    </div>
+        <!-- Botões de Ação - AGORA NO FINAL LADO DIREITO -->
+    <div class="final-actions-container">
+        <div class="final-buttons-group">
+            <asp:LinkButton ID="btnRecusar" runat="server" CssClass="btn-final btn-refuse"
+                OnClick="btnRecusar_Click" Visible="false">
+                <i class="bi bi-x-circle"></i> Recusar
+            </asp:LinkButton>
+
+            <asp:LinkButton ID="btnSolicitarAprovacao" runat="server" CssClass="btn-final btn-primary"
+                OnClick="btnSolicitarAprovacao_Click" Visible="false">
+                <i class="bi bi-check-circle"></i> Solicitar Aprovação
+            </asp:LinkButton>
+
+            <asp:LinkButton ID="btnEncerrar" runat="server" CssClass="btn-final btn-close-demand"
+                OnClick="btnEncerrar_Click" Visible="false">
+                <i class="bi bi-check-lg"></i> Concluir
+            </asp:LinkButton>
+        </div>
+    </div>
+
     <script>
         function configurarControleBotoes() {
             const ddlStatus = document.getElementById('<%= ddlStatusAcompanhamento.ClientID %>');

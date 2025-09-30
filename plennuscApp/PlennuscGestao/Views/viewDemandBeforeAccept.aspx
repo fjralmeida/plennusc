@@ -313,7 +313,7 @@
         <div class="demand-header">
             <h1 class="demand-title">
                 <asp:Label ID="lblTitulo" runat="server"></asp:Label>
-                <asp:Label ID="lblStatusBadge" runat="server" CssClass="status-badge status-open" Text="Aberta" />
+                 <asp:Label ID="lblStatusBadge" runat="server" CssClass="status-badge" />
             </h1>
 
             <!-- Detalhes da Demanda -->
@@ -371,35 +371,35 @@
             </div>
 
             <!-- Anexos -->
-            <div class="attachments-section">
-                <div class="section-header">
-                    <i class="bi bi-paperclip"></i> Anexos da Demanda
-                </div>
-                <div class="attachments-list">
-                    <asp:Repeater ID="rptAnexos" runat="server">
-                        <ItemTemplate>
-                            <div class="attachment-item">
-                                <div class="attachment-info">
-                                    <i class="bi bi-file-earmark"></i>
-                                    <div>
-                                        <div class="attachment-name"><%# Eval("NomeArquivo") %></div>
-                                        <div class="attachment-meta">
-                                            <span><%# Eval("TamanhoFormatado") %></span>
-                                            <span>•</span>
-                                            <span>Enviado em <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %></span>
-                                        </div>
+          <div class="attachments-section" id="attachmentsSection" runat="server">
+            <div class="section-header">
+                <i class="bi bi-paperclip"></i> Anexos da Demanda
+            </div>
+            <div class="attachments-list">
+                <asp:Repeater ID="rptAnexos" runat="server">
+                    <ItemTemplate>
+                        <div class="attachment-item">
+                            <div class="attachment-info">
+                                <i class="bi bi-file-earmark"></i>
+                                <div>
+                                    <div class="attachment-name"><%# Eval("NomeArquivo") %></div>
+                                    <div class="attachment-meta">
+                                        <span><%# Eval("TamanhoFormatado") %></span>
+                                        <span>•</span>
+                                        <span>Enviado em <%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %></span>
                                     </div>
                                 </div>
-                                <a href='<%# Eval("CaminhoDownload") %>' class="btn-download" download>
-                                    <i class="bi bi-download"></i> Baixar
-                                </a>
                             </div>
-                        </ItemTemplate>
-                    </asp:Repeater>
-                    <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado." 
-                        CssClass="no-attachments" Visible="false" />
-                </div>
+                            <a href='<%# Eval("CaminhoDownload") %>' class="btn-download" download>
+                                <i class="bi bi-download"></i> Baixar
+                            </a>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+                <asp:Label ID="lblSemAnexos" runat="server" Text="Nenhum anexo encontrado." 
+                    CssClass="no-attachments" Visible="false" />
             </div>
+        </div>
 
             <!-- Botões de Ação -->
             <div class="button-container">

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace appWhatsapp.PlennuscGestao.Views
@@ -43,6 +44,30 @@ namespace appWhatsapp.PlennuscGestao.Views
                 lblSolicitante.Text = demanda.Solicitante;
                 lblDataSolicitacao.Text = demanda.DataSolicitacao?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
 
+                // ✅ CORREÇÃO: Atualizar o status badge
+                if (!string.IsNullOrEmpty(demanda.StatusNome))
+                {
+                    lblStatusBadge.Text = demanda.StatusNome;
+
+                    // Aplicar classe CSS baseada no status
+                    if (demanda.StatusNome.ToLower().Contains("fechada") ||
+                        demanda.StatusNome.ToLower().Contains("concluída") ||
+                        demanda.StatusNome.ToLower().Contains("concluida"))
+                    {
+                        lblStatusBadge.CssClass = "status-badge status-closed";
+                    }
+                    else
+                    {
+                        lblStatusBadge.CssClass = "status-badge status-open";
+                    }
+                }
+                else
+                {
+                    // Fallback
+                    lblStatusBadge.Text = "Aberta";
+                    lblStatusBadge.CssClass = "status-badge status-open";
+                }
+
                 // NOVOS CAMPOS
                 lblCategoria.Text = demanda.Categoria ?? "-";
                 lblPrioridade.Text = demanda.Prioridade ?? "-";
@@ -57,6 +82,9 @@ namespace appWhatsapp.PlennuscGestao.Views
         private void CarregarAnexos()
         {
             var anexos = _service.GetAnexosDemanda(CodDemanda);
+
+            var attachmentsSection = (HtmlGenericControl)FindControl("attachmentsSection");
+
             if (anexos != null && anexos.Any())
             {
                 rptAnexos.DataSource = anexos.Select(a => new
@@ -70,11 +98,19 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 rptAnexos.DataBind();
                 lblSemAnexos.Visible = false;
+
+                // MOSTRAR a seção de anexos
+                if (attachmentsSection != null)
+                    attachmentsSection.Visible = true;
             }
             else
             {
                 rptAnexos.Visible = false;
                 lblSemAnexos.Visible = true;
+
+                // OCULTAR a seção de anexos
+                if (attachmentsSection != null)
+                    attachmentsSection.Visible = false;
             }
         }
 

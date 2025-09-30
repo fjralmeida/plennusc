@@ -65,14 +65,26 @@ namespace appWhatsapp.PlennuscGestao.Views
                 lblTitulo.Text = demandaAtual.Titulo;
                 lblTexto.Text = demandaAtual.TextoDemanda;
 
-                // Configurar o badge de status
-                if (DemandaFechada)
+                // ✅ CORREÇÃO: Usar o StatusNome que vem do banco
+                if (!string.IsNullOrEmpty(demandaAtual.StatusNome))
                 {
-                    lblStatusBadge.Text = "Fechada";
-                    lblStatusBadge.CssClass = "status-badge status-closed";
+                    lblStatusBadge.Text = demandaAtual.StatusNome;
+
+                    // ✅ CORREÇÃO: Aplicar classe CSS baseada no status real
+                    if (demandaAtual.StatusNome.ToLower().Contains("fechada") ||
+                        demandaAtual.StatusNome.ToLower().Contains("concluída") ||
+                        demandaAtual.StatusNome.ToLower().Contains("concluida"))
+                    {
+                        lblStatusBadge.CssClass = "status-badge status-closed";
+                    }
+                    else
+                    {
+                        lblStatusBadge.CssClass = "status-badge status-open";
+                    }
                 }
                 else
                 {
+                    // Fallback caso não tenha status
                     lblStatusBadge.Text = "Em andamento";
                     lblStatusBadge.CssClass = "status-badge status-open";
                 }

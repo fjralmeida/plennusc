@@ -159,6 +159,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Repeater rptAcompanhamentos;
 
         /// <summary>
+        /// Controle rptHistorico.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptHistorico;
+
+        /// <summary>
         /// Controle btnRecusar.
         /// </summary>
         /// <remarks>
@@ -184,14 +193,5 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnEncerrar;
-
-        /// <summary>
-        /// Controle rptHistorico.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptHistorico;
     }
 }
