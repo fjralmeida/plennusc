@@ -193,11 +193,20 @@
             overflow-x: auto;
         }
 
-        .custom-grid {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1200px;
-        }
+           .custom-grid {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1200px;
+    table-layout: fixed; /* 🔥 IMPORTANTE: Força o layout fixo */
+}
+
+    .custom-grid th,
+.custom-grid td {
+    white-space: nowrap; /* 🔥 Impede quebra de linha */
+    overflow: hidden; /* 🔥 Esconde overflow */
+    text-overflow: ellipsis; /* 🔥 Adiciona "..." */
+    vertical-align: middle;
+}
 
             .custom-grid th {
                 background: var(--gray-50);
@@ -419,6 +428,58 @@
         .col-subtipo {
             width: 150px;
         }
+
+                .col-solicitante,
+.col-categoria {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* COLUNAS CENTRALIZADAS - mantém uma linha */
+.col-id,
+.col-data-abertura,
+.col-importancia,
+.col-prioridade,
+.col-prazo,
+.col-status,
+.col-aceite,
+.col-acoes {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* LARGURAS ESPECÍFICAS PARA CADA COLUNA */
+.col-id { width: 80px; min-width: 80px; }
+.col-titulo { width: 250px; min-width: 200px; max-width: 250px; }
+.col-solicitante { width: 180px; min-width: 150px; max-width: 180px; }
+.col-data-abertura { width: 120px; min-width: 100px; max-width: 120px; }
+.col-categoria { width: 150px; min-width: 120px; max-width: 150px; }
+.col-importancia { width: 100px; min-width: 90px; max-width: 100px; }
+.col-prioridade { width: 100px; min-width: 90px; max-width: 100px; }
+.col-prazo { width: 100px; min-width: 90px; max-width: 100px; }
+.col-status { width: 120px; min-width: 100px; max-width: 120px; }
+.col-aceite { width: 140px; min-width: 120px; max-width: 140px; }
+.col-acoes { width: 100px; min-width: 80px; max-width: 100px; }
+
+/* GARANTIR QUE BADGES E BOTÕES NÃO QUEBREM */
+.badge,
+.btn-action,
+.btn-aceitar {
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* INFO DE ACEITE/APROVAÇÃO - permite quebra controlada */
+.aceite-info,
+.aprovacao-info {
+    white-space: normal !important;
+    word-wrap: break-word;
+    line-height: 1.3;
 
         .col-importancia {
             width: 100px;

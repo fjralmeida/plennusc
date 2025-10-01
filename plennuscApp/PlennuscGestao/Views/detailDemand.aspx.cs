@@ -363,7 +363,46 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnRecusar_Click(object sender, EventArgs e)
         {
+            try
+            {
+                int codDemanda = Convert.ToInt32(Request.QueryString["codDemanda"]);
+                int codPessoaAtual = Convert.ToInt32(Session["CodPessoa"]);
 
+                // Verificar se a demanda existe
+                var demanda = _service.GetDemandaPorCodigo(codDemanda);
+
+                if (demanda == null)
+                {
+                    MostrarMensagem("Demanda não encontrada.", "error");
+                    return;
+                }
+
+                // Verificar se o usuário atual é o executor da demanda
+                if (demanda.CodPessoaExecucao != codPessoaAtual)
+                {
+                    MostrarMensagem("Você não tem permissão para recusar esta demanda.", "error");
+                    return;
+                }
+
+                // Verificar se a demanda já não está recusada pelo status
+                if (demanda.Status.ToLower().Contains("recusada"))
+                {
+                    MostrarMensagem("Esta demanda já está recusada.", "error");
+                    return;
+                }
+
+                // Recusar a demanda
+                _service.RecusarDemanda(codDemanda, codPessoaAtual, demanda.CodEstr_SituacaoDemanda);
+
+                MostrarMensagem("Demanda recusada com sucesso!", "success");
+
+                // Redirecionar para atualizar a página
+                Response.Redirect($"detailDemand.aspx?codDemanda={codDemanda}");
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem("Erro ao recusar demanda: " + ex.Message, "error");
+            }
         }
 
         protected bool IsMyMessage(int codPessoaAcompanhamento)

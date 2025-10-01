@@ -557,7 +557,55 @@ ORDER BY
           AND (d.CodPessoaSolicitacao = @CodPessoa OR d.CodPessoaExecucao = @CodPessoa)
         ORDER BY d.DataDemanda DESC";
 
-        // No Demanda.cs - Query corrigida
+        // DEMANDAS RECUSADAS - VERSÃO QUE FUNCIONA
+        public const string DemandasRecusadasPorPessoa = @"
+SELECT 
+    d.CodDemanda,
+    d.Titulo,
+    cat.DescEstrutura AS Categoria,
+    s.DescEstrutura AS Status,
+    p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+    d.DataDemanda AS DataSolicitacao,
+    d.DataPrazoMaximo AS DataPrazo, 
+    pri.DescEstrutura AS Prioridade,
+    d.CodEstr_NivelPrioridade AS CodPrioridade,
+    imp.DescEstrutura AS Importancia,
+    d.CodEstr_NivelImportancia AS CodImportancia,
+    ISNULL(d.CodPessoaExecucao, ph.CodPessoaAlteracao) AS CodPessoaExecucao,
+    ISNULL(pexec.Nome + ' ' + ISNULL(pexec.Sobrenome,''), 'Sem executor') AS NomePessoaExecucao,
+    d.DataAceitacao  -- ⚠️ Adicionei aqui
+FROM dbo.Demanda d
+INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
+LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
+LEFT JOIN (
+    SELECT h1.CodDemanda, h1.CodPessoaAlteracao
+    FROM dbo.DemandaHistorico h1
+    WHERE h1.CodEstr_SituacaoDemandaAtual = 20
+      AND h1.DataAlteracao = (
+          SELECT MAX(h2.DataAlteracao)
+          FROM dbo.DemandaHistorico h2
+          WHERE h2.CodDemanda = h1.CodDemanda
+            AND h2.CodEstr_SituacaoDemandaAtual = 20
+      )
+) ph ON ph.CodDemanda = d.CodDemanda
+LEFT JOIN dbo.Pessoa pexec ON pexec.CodPessoa = ISNULL(d.CodPessoaExecucao, ph.CodPessoaAlteracao)
+WHERE d.CodEstr_SituacaoDemanda = 20
+  AND (
+        d.CodPessoaSolicitacao = @CodPessoa
+        OR EXISTS (
+            SELECT 1 
+            FROM dbo.DemandaHistorico h 
+            WHERE h.CodDemanda = d.CodDemanda
+              AND h.CodEstr_SituacaoDemandaAtual = 20
+              AND h.CodPessoaAlteracao = @CodPessoa
+        )
+      )
+ORDER BY d.DataDemanda DESC";
+
+
         public const string VerificarGestor = @"
             SELECT COUNT(1) 
             FROM dbo.Pessoa p
@@ -565,5 +613,44 @@ ORDER BY
               AND p.CodDepartamento = @CodSetor
               AND p.Conf_Ativo = 1
               AND p.CodCargo = 2";
+
+        public const string GetDemandaPorCodigo = @"
+            SELECT 
+                d.CodDemanda,
+                d.Titulo,
+                d.TextoDemanda,
+                d.CodPessoaSolicitacao,
+                d.CodPessoaExecucao,
+                d.CodEstr_SituacaoDemanda,
+                d.DataDemanda,
+                d.DataPrazoMaximo,
+                d.CodEstr_NivelPrioridade,
+                d.CodEstr_NivelImportancia,
+                s.DescEstrutura AS Status,
+                p.Nome + ' ' + ISNULL(p.Sobrenome, '') AS Solicitante,
+                cat.DescEstrutura AS Categoria
+            FROM dbo.Demanda d
+            INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
+            INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+            INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
+            WHERE d.CodDemanda = @CodDemanda";
+
+        // ATUALIZE A CONSTANTE PARA INCLUIR O HISTÓRICO
+        public const string RecusarDemanda = @"
+            BEGIN TRANSACTION;
+            UPDATE dbo.Demanda 
+            SET 
+                CodEstr_SituacaoDemanda = @CodStatusRecusada,
+                CodPessoaExecucao = NULL,
+                DataAceitacao = NULL
+            WHERE CodDemanda = @CodDemanda;
+    
+            INSERT INTO dbo.DemandaHistorico 
+            (CodDemanda, CodEstr_SituacaoDemandaAnterior, CodEstr_SituacaoDemandaAtual, CodPessoaAlteracao, DataAlteracao)
+            VALUES 
+            (@CodDemanda, @CodStatusAnterior, @CodStatusRecusada, @CodPessoaAlteracao, GETDATE());
+    
+            COMMIT TRANSACTION;";
+
     }
 }

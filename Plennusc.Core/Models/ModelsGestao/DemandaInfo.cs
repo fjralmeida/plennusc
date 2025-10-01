@@ -33,6 +33,8 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string NomePessoaAprovacao { get; set; }
 
         public string PapelUsuario { get; set; }
+
+        public int CodEstr_SituacaoDemanda { get; set; }
     }
 }
 

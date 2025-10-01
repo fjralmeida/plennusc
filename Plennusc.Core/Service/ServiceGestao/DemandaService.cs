@@ -1132,6 +1132,18 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
         }
 
+        public void ReucsarDemanda(int codDemanda, int codStatusRecusada = 20)
+        {
+            using (var con = Open())
+            using(var cmd = new SqlCommand(Demanda.RecusarDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                cmd.Parameters.AddWithValue("@CodStatusRecusada", codStatusRecusada);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         //ANEXOS DE UMA DEMANDA
         public List<AnexoInfo> GetAnexosDemanda(int codDemanda)
         {
@@ -1491,6 +1503,104 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
 
             return demandas;
+        }
+
+        public List<DemandaInfo> GetDemandasRecusadasPorPessoa(int codPessoa)
+        {
+            var demandas = new List<DemandaInfo>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.DemandasRecusadasPorPessoa, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // ordinais
+                        int oCodDemanda = reader.GetOrdinal("CodDemanda");
+                        int oTitulo = reader.GetOrdinal("Titulo");
+                        int oCategoria = reader.GetOrdinal("Categoria");
+                        int oStatus = reader.GetOrdinal("Status");
+                        int oSolicitante = reader.GetOrdinal("Solicitante");
+                        int oDataSolicitacao = reader.GetOrdinal("DataSolicitacao");
+                        int oDataPrazo = reader.GetOrdinal("DataPrazo");
+                        int oPrioridade = reader.GetOrdinal("Prioridade");
+                        int oCodPrioridade = reader.GetOrdinal("CodPrioridade");
+                        int oImportancia = reader.GetOrdinal("Importancia");
+                        int oCodImportancia = reader.GetOrdinal("CodImportancia");
+                        int oCodPessoaExecucao = reader.GetOrdinal("CodPessoaExecucao");
+                        int oDataAceitacao = reader.GetOrdinal("DataAceitacao");
+                        int oNomePessoaExecucao = reader.GetOrdinal("NomePessoaExecucao");
+
+                        var di = new DemandaInfo
+                        {
+                            CodDemanda = reader.IsDBNull(oCodDemanda) ? 0 : reader.GetInt32(oCodDemanda),
+                            Titulo = reader.IsDBNull(oTitulo) ? string.Empty : reader.GetString(oTitulo),
+                            Categoria = reader.IsDBNull(oCategoria) ? string.Empty : reader.GetString(oCategoria),
+                            Status = reader.IsDBNull(oStatus) ? string.Empty : reader.GetString(oStatus),
+                            Solicitante = reader.IsDBNull(oSolicitante) ? string.Empty : reader.GetString(oSolicitante),
+                            DataSolicitacao = reader.IsDBNull(oDataSolicitacao) ? DateTime.MinValue : reader.GetDateTime(oDataSolicitacao),
+                            DataPrazo = reader.IsDBNull(oDataPrazo) ? (DateTime?)null : reader.GetDateTime(oDataPrazo),
+                            Importancia = reader.IsDBNull(oImportancia) ? null : reader.GetString(oImportancia),
+                            CodImportancia = reader.IsDBNull(oCodImportancia) ? (int?)null : reader.GetInt32(oCodImportancia),
+                            Prioridade = reader.IsDBNull(oPrioridade) ? string.Empty : reader.GetString(oPrioridade),
+                            CodPrioridade = reader.IsDBNull(oCodPrioridade) ? 0 : reader.GetInt32(oCodPrioridade),
+                            CodPessoaExecucao = reader.IsDBNull(oCodPessoaExecucao) ? (int?)null : reader.GetInt32(oCodPessoaExecucao),
+                            DataAceitacao = reader.IsDBNull(oDataAceitacao) ? (DateTime?)null : reader.GetDateTime(oDataAceitacao),
+                            NomePessoaExecucao = reader.IsDBNull(oNomePessoaExecucao) ? null : reader.GetString(oNomePessoaExecucao),
+                        };
+
+                        demandas.Add(di);
+                    }
+                }
+            }
+
+            return demandas;
+        }
+
+        // MÉTODOS - Adicione estes métodos no service
+        public DemandaInfo GetDemandaPorCodigo(int codDemanda)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.GetDemandaPorCodigo, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new DemandaInfo
+                        {
+                            CodDemanda = reader.GetInt32(reader.GetOrdinal("CodDemanda")),
+                            Titulo = reader.GetString(reader.GetOrdinal("Titulo")),
+                            CodPessoaExecucao = reader.IsDBNull(reader.GetOrdinal("CodPessoaExecucao")) ?
+                                                (int?)null : reader.GetInt32(reader.GetOrdinal("CodPessoaExecucao")),
+                            Status = reader.GetString(reader.GetOrdinal("Status")),
+                            Solicitante = reader.GetString(reader.GetOrdinal("Solicitante")),
+                            CodEstr_SituacaoDemanda = reader.GetInt32(reader.GetOrdinal("CodEstr_SituacaoDemanda"))
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        public void RecusarDemanda(int codDemanda, int codPessoaAlteracao, int codStatusAnterior)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.RecusarDemanda, con))
+            {
+                cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
+                cmd.Parameters.AddWithValue("@CodStatusRecusada", 20);
+                cmd.Parameters.AddWithValue("@CodStatusAnterior", codStatusAnterior);
+                cmd.Parameters.AddWithValue("@CodPessoaAlteracao", codPessoaAlteracao);
+
+                cmd.ExecuteNonQuery();
+            }
         }
 
         // No DemandaService.cs
