@@ -5,85 +5,85 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --primary: #6ebfe1;
-            --primary-hover: #58c0eb;
-            --success: #4cb07a;
-            --success-hover: #3b8b65;
-            --danger: #ea4335;
-            --warning: #fbbc04;
-            --gray-50: #f8f9fa;
-            --gray-100: #f1f3f4;
-            --gray-200: #e8eaed;
-            --gray-300: #dadce0;
-            --gray-400: #bdc1c6;
-            --gray-500: #9aa0a6;
-            --gray-600: #80868b;
-            --gray-700: #5f6368;
-            --gray-800: #3c4043;
-            --gray-900: #202124;
-            --border-radius: 8px;
-            --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
-            --transition: all 0.2s ease-in-out;
-        }
+    :root {
+        --primary: #6ebfe1;
+        --primary-hover: #58c0eb;
+        --success: #4cb07a;
+        --success-hover: #3b8b65;
+        --danger: #ea4335;
+        --warning: #fbbc04;
+        --gray-50: #f8f9fa;
+        --gray-100: #f1f3f4;
+        --gray-200: #e8eaed;
+        --gray-300: #dadce0;
+        --gray-400: #bdc1c6;
+        --gray-500: #9aa0a6;
+        --gray-600: #80868b;
+        --gray-700: #5f6368;
+        --gray-800: #3c4043;
+        --gray-900: #202124;
+        --border-radius: 8px;
+        --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+        --transition: all 0.2s ease-in-out;
+    }
 
-        body {
-            background: var(--gray-100);
-            font-family: 'Roboto', sans-serif;
-            color: var(--gray-800);
-            line-height: 1.5;
-        }
+    body {
+        background: var(--gray-100);
+        font-family: 'Roboto', sans-serif;
+        color: var(--gray-800);
+        line-height: 1.5;
+    }
 
-        .container-main {
-            max-width: 2206px;
-            margin: 20px auto;
-            padding: 0 16px;
-        }
+    .container-main {
+        max-width: 2206px;
+        margin: 20px auto;
+        padding: 0 16px;
+    }
 
       /* Cabeçalho da Demanda - CORREÇÃO DO TEXTO LONGO */
-.demand-header {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    padding: 32px;
-    margin-bottom: 24px;
-    border: 1px solid var(--gray-200);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
+    .demand-header {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 32px;
+        margin-bottom: 24px;
+        border: 1px solid var(--gray-200);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
 
-.demand-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--gray-900);
-    margin-bottom: 8px;
-    padding-bottom: 0;
-    border-bottom: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
+    .demand-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 8px;
+        padding-bottom: 0;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
 
-.demand-description {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    font-size: 16px;
-    color: var(--gray-800);
-    line-height: 1.6;
-    margin-bottom: 24px;
-    font-weight: 500;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: pre-wrap; /* Mantém quebras de linha */
-    max-height: 200px; /* Altura máxima */
-    overflow-y: auto; /* Scroll se necessário */
-}
+    .demand-description {
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        font-size: 16px;
+        color: var(--gray-800);
+        line-height: 1.6;
+        margin-bottom: 24px;
+        font-weight: 500;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap; /* Mantém quebras de linha */
+        max-height: 200px; /* Altura máxima */
+        overflow-y: auto; /* Scroll se necessário */
+    }
 
             .demand-description:before {
                 content: '"';
@@ -1338,40 +1338,43 @@
     <script>
         function configurarControleBotoes() {
             const ddlStatus = document.getElementById('<%= ddlStatusAcompanhamento.ClientID %>');
-        const hdnStatusOriginal = document.getElementById('<%= hdnStatusOriginal.ClientID %>');
+           const hdnStatusOriginal = document.getElementById('<%= hdnStatusOriginal.ClientID %>');
 
-        const btnSolicitarAprovacao = document.getElementById('<%= btnSolicitarAprovacao.ClientID %>');
-        const btnRecusar = document.getElementById('<%= btnRecusar.ClientID %>');
-        const btnEncerrar = document.getElementById('<%= btnEncerrar.ClientID %>');
+           const btnSolicitarAprovacao = document.getElementById('<%= btnSolicitarAprovacao.ClientID %>');
+           const btnRecusar = document.getElementById('<%= btnRecusar.ClientID %>');
+           const btnEncerrar = document.getElementById('<%= btnEncerrar.ClientID %>');
 
             if (ddlStatus && hdnStatusOriginal) {
                 ddlStatus.addEventListener('change', function () {
                     const statusAtual = ddlStatus.value;
                     const statusOriginal = hdnStatusOriginal.value;
+                    const textoStatusAtual = ddlStatus.options[ddlStatus.selectedIndex].text;
 
-                    // Habilita os botões apenas se o status foi alterado
-                    const habilitarBotoes = (statusAtual !== statusOriginal);
+                    // Habilita cada botão apenas para seu status específico
+                    const habilitarSolicitar = (statusAtual !== statusOriginal) && textoStatusAtual === "Aguardando Aprovação";
+                    const habilitarRecusar = (statusAtual !== statusOriginal) && textoStatusAtual === "Recusada";
+                    const habilitarConcluir = (statusAtual !== statusOriginal) && textoStatusAtual === "Concluída";
 
                     if (btnSolicitarAprovacao) {
-                        btnSolicitarAprovacao.disabled = !habilitarBotoes;
-                        btnSolicitarAprovacao.style.opacity = habilitarBotoes ? '1' : '0.5';
-                        btnSolicitarAprovacao.style.pointerEvents = habilitarBotoes ? 'auto' : 'none';
+                        btnSolicitarAprovacao.disabled = !habilitarSolicitar;
+                        btnSolicitarAprovacao.style.opacity = habilitarSolicitar ? '1' : '0.5';
+                        btnSolicitarAprovacao.style.pointerEvents = habilitarSolicitar ? 'auto' : 'none';
                     }
 
                     if (btnRecusar) {
-                        btnRecusar.disabled = !habilitarBotoes;
-                        btnRecusar.style.opacity = habilitarBotoes ? '1' : '0.5';
-                        btnRecusar.style.pointerEvents = habilitarBotoes ? 'auto' : 'none';
+                        btnRecusar.disabled = !habilitarRecusar;
+                        btnRecusar.style.opacity = habilitarRecusar ? '1' : '0.5';
+                        btnRecusar.style.pointerEvents = habilitarRecusar ? 'auto' : 'none';
                     }
 
                     if (btnEncerrar) {
-                        btnEncerrar.disabled = !habilitarBotoes;
-                        btnEncerrar.style.opacity = habilitarBotoes ? '1' : '0.5';
-                        btnEncerrar.style.pointerEvents = habilitarBotoes ? 'auto' : 'none';
+                        btnEncerrar.disabled = !habilitarConcluir;
+                        btnEncerrar.style.opacity = habilitarConcluir ? '1' : '0.5';
+                        btnEncerrar.style.pointerEvents = habilitarConcluir ? 'auto' : 'none';
                     }
                 });
 
-                // Configuração inicial - desabilita os botões
+                // Configuração inicial - desabilita todos os botões
                 if (btnSolicitarAprovacao) {
                     btnSolicitarAprovacao.disabled = true;
                     btnSolicitarAprovacao.style.opacity = '0.5';
