@@ -1066,7 +1066,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                     // 4) Atualizar a situação da Demanda para 'Aguardando aprovação'
                     using (var cmd = new SqlCommand(Demanda.UpdateSituacaoDemanda, con, tx))
                     {
-                        cmd.Parameters.AddWithValue("@CodEstr_SituacaoDemanda", codSituacaoAguardando);
+                        cmd.Parameters.AddWithValue("@NovoStatus", codSituacaoAguardando);
                         cmd.Parameters.AddWithValue("@CodDemanda", codDemanda);
                         cmd.ExecuteNonQuery();
                     }

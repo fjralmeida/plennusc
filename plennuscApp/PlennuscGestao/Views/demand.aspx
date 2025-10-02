@@ -438,7 +438,7 @@
 
 
     <div class="user-header">
-         <asp:Label ID="lblNomeUser" runat="server" Text="" CssClass="user-name" />
+         <asp:Label ID="lblNomeUser" runat="server" Text="" CssClass="user-name" /> - 
         <asp:Label ID="lblSetorUsuario" runat="server" Text="" CssClass="user-sector" />
     </div>
 

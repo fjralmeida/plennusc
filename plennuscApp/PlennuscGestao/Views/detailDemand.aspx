@@ -80,7 +80,6 @@
         font-weight: 500;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        white-space: pre-wrap; /* Mantém quebras de linha */
         max-height: 200px; /* Altura máxima */
         overflow-y: auto; /* Scroll se necessário */
     }
@@ -1147,12 +1146,12 @@
                     <span class="meta-value">
                         <asp:Label ID="lblDataSolicitacao" runat="server" /></span>
                 </div>
-                <div class="meta-item">
+              <%--  <div class="meta-item">
                     <span class="meta-label">Status Atual</span>
                     <span class="meta-value">
                         <asp:Label ID="lblStatusAtual" runat="server" CssClass="current-status-value" />
                     </span>
-                </div>
+                </div>--%>
             </div>
         </div>
 
@@ -1334,72 +1333,99 @@
             </asp:LinkButton>
         </div>
     </div>
+        </div>
+<script>
+    function configurarControleBotoes() {
+        const ddlStatus = document.getElementById('<%= ddlStatusAcompanhamento.ClientID %>');
+        const hdnStatusOriginal = document.getElementById('<%= hdnStatusOriginal.ClientID %>');
 
-    <script>
-        function configurarControleBotoes() {
-            const ddlStatus = document.getElementById('<%= ddlStatusAcompanhamento.ClientID %>');
-           const hdnStatusOriginal = document.getElementById('<%= hdnStatusOriginal.ClientID %>');
+        const btnSolicitarAprovacao = document.getElementById('<%= btnSolicitarAprovacao.ClientID %>');
+        const btnRecusar = document.getElementById('<%= btnRecusar.ClientID %>');
+        const btnEncerrar = document.getElementById('<%= btnEncerrar.ClientID %>');
+        const btnAdicionarAcompanhamento = document.getElementById('<%= btnAdicionarAcompanhamento.ClientID %>'); // 🔥 NOVO
 
-           const btnSolicitarAprovacao = document.getElementById('<%= btnSolicitarAprovacao.ClientID %>');
-           const btnRecusar = document.getElementById('<%= btnRecusar.ClientID %>');
-           const btnEncerrar = document.getElementById('<%= btnEncerrar.ClientID %>');
+        if (ddlStatus && hdnStatusOriginal) {
+            ddlStatus.addEventListener('change', function () {
+                const statusAtual = ddlStatus.value;
+                const statusOriginal = hdnStatusOriginal.value;
+                const textoStatusAtual = ddlStatus.options[ddlStatus.selectedIndex].text;
 
-            if (ddlStatus && hdnStatusOriginal) {
-                ddlStatus.addEventListener('change', function () {
-                    const statusAtual = ddlStatus.value;
-                    const statusOriginal = hdnStatusOriginal.value;
-                    const textoStatusAtual = ddlStatus.options[ddlStatus.selectedIndex].text;
+                // Habilita cada botão apenas para seu status específico
+                const habilitarSolicitar = (statusAtual !== statusOriginal) && textoStatusAtual === "Aguardando Aprovação";
+                const habilitarRecusar = (statusAtual !== statusOriginal) && textoStatusAtual === "Recusada";
+                const habilitarConcluir = (statusAtual !== statusOriginal) && textoStatusAtual === "Concluída";
 
-                    // Habilita cada botão apenas para seu status específico
-                    const habilitarSolicitar = (statusAtual !== statusOriginal) && textoStatusAtual === "Aguardando Aprovação";
-                    const habilitarRecusar = (statusAtual !== statusOriginal) && textoStatusAtual === "Recusada";
-                    const habilitarConcluir = (statusAtual !== statusOriginal) && textoStatusAtual === "Concluída";
+                // 🔥 NOVO: Desabilita botão de acompanhamento para "Aguardando Aprovação"
+                const desabilitarAcompanhamento = textoStatusAtual === "Aguardando Aprovação";
 
-                    if (btnSolicitarAprovacao) {
-                        btnSolicitarAprovacao.disabled = !habilitarSolicitar;
-                        btnSolicitarAprovacao.style.opacity = habilitarSolicitar ? '1' : '0.5';
-                        btnSolicitarAprovacao.style.pointerEvents = habilitarSolicitar ? 'auto' : 'none';
-                    }
-
-                    if (btnRecusar) {
-                        btnRecusar.disabled = !habilitarRecusar;
-                        btnRecusar.style.opacity = habilitarRecusar ? '1' : '0.5';
-                        btnRecusar.style.pointerEvents = habilitarRecusar ? 'auto' : 'none';
-                    }
-
-                    if (btnEncerrar) {
-                        btnEncerrar.disabled = !habilitarConcluir;
-                        btnEncerrar.style.opacity = habilitarConcluir ? '1' : '0.5';
-                        btnEncerrar.style.pointerEvents = habilitarConcluir ? 'auto' : 'none';
-                    }
-                });
-
-                // Configuração inicial - desabilita todos os botões
                 if (btnSolicitarAprovacao) {
-                    btnSolicitarAprovacao.disabled = true;
-                    btnSolicitarAprovacao.style.opacity = '0.5';
-                    btnSolicitarAprovacao.style.pointerEvents = 'none';
+                    btnSolicitarAprovacao.disabled = !habilitarSolicitar;
+                    btnSolicitarAprovacao.style.opacity = habilitarSolicitar ? '1' : '0.5';
+                    btnSolicitarAprovacao.style.pointerEvents = habilitarSolicitar ? 'auto' : 'none';
                 }
 
                 if (btnRecusar) {
-                    btnRecusar.disabled = true;
-                    btnRecusar.style.opacity = '0.5';
-                    btnRecusar.style.pointerEvents = 'none';
+                    btnRecusar.disabled = !habilitarRecusar;
+                    btnRecusar.style.opacity = habilitarRecusar ? '1' : '0.5';
+                    btnRecusar.style.pointerEvents = habilitarRecusar ? 'auto' : 'none';
                 }
 
                 if (btnEncerrar) {
-                    btnEncerrar.disabled = true;
-                    btnEncerrar.style.opacity = '0.5';
-                    btnEncerrar.style.pointerEvents = 'none';
+                    btnEncerrar.disabled = !habilitarConcluir;
+                    btnEncerrar.style.opacity = habilitarConcluir ? '1' : '0.5';
+                    btnEncerrar.style.pointerEvents = habilitarConcluir ? 'auto' : 'none';
                 }
+
+                // 🔥 NOVO: Controla botão de acompanhamento
+                if (btnAdicionarAcompanhamento) {
+                    btnAdicionarAcompanhamento.disabled = desabilitarAcompanhamento;
+                    btnAdicionarAcompanhamento.style.opacity = desabilitarAcompanhamento ? '0.5' : '1';
+                    btnAdicionarAcompanhamento.style.pointerEvents = desabilitarAcompanhamento ? 'none' : 'auto';
+                    btnAdicionarAcompanhamento.title = desabilitarAcompanhamento
+                        ? "Status aguardando aprovação - acompanhamento bloqueado"
+                        : "Enviar Acompanhamento";
+                }
+            });
+
+            // Configuração inicial - desabilita todos os botões
+            if (btnSolicitarAprovacao) {
+                btnSolicitarAprovacao.disabled = true;
+                btnSolicitarAprovacao.style.opacity = '0.5';
+                btnSolicitarAprovacao.style.pointerEvents = 'none';
+            }
+
+            if (btnRecusar) {
+                btnRecusar.disabled = true;
+                btnRecusar.style.opacity = '0.5';
+                btnRecusar.style.pointerEvents = 'none';
+            }
+
+            if (btnEncerrar) {
+                btnEncerrar.disabled = true;
+                btnEncerrar.style.opacity = '0.5';
+                btnEncerrar.style.pointerEvents = 'none';
+            }
+
+            // 🔥 NOVO: Configuração inicial do botão de acompanhamento
+            if (btnAdicionarAcompanhamento) {
+                const textoStatusAtual = ddlStatus.options[ddlStatus.selectedIndex].text;
+                const desabilitarAcompanhamento = textoStatusAtual === "Aguardando Aprovação";
+
+                btnAdicionarAcompanhamento.disabled = desabilitarAcompanhamento;
+                btnAdicionarAcompanhamento.style.opacity = desabilitarAcompanhamento ? '0.5' : '1';
+                btnAdicionarAcompanhamento.style.pointerEvents = desabilitarAcompanhamento ? 'none' : 'auto';
+                btnAdicionarAcompanhamento.title = desabilitarAcompanhamento
+                    ? "Status aguardando aprovação - acompanhamento bloqueado"
+                    : "Enviar Acompanhamento";
             }
         }
+    }
 
-        // Executa quando a página carrega
-        document.addEventListener('DOMContentLoaded', function () {
-            configurarControleBotoes();
-        });
-    </script>
+    // Executa quando a página carrega
+    document.addEventListener('DOMContentLoaded', function () {
+        configurarControleBotoes();
+    });
+</script>
 
     <script>
         function checkDemandStatus() {

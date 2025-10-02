@@ -382,7 +382,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
         LEFT JOIN Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
         WHERE (@CodPessoaFiltro IS NULL OR d.CodPessoaExecucao = @CodPessoaFiltro)
         ORDER BY d.DataDemanda DESC";
-
         public const string DemandasEmAbertoPorPessoa = @"
 SELECT 
     d.CodDemanda,
@@ -407,7 +406,14 @@ LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
 LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
 LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
 WHERE d.CodEstr_SituacaoDemanda = 17  -- Apenas status Aberta
-  AND (d.CodPessoaExecucao = @CodPessoa OR d.CodPessoaExecucao IS NULL)
+  AND (
+      -- Demandas que você ACEITOU (é o executor)
+      d.CodPessoaExecucao = @CodPessoa 
+      -- OU demandas que você SOLICITOU (é o solicitante)
+      OR d.CodPessoaSolicitacao = @CodPessoa
+      -- OU demandas sem executor atribuído
+      OR d.CodPessoaExecucao IS NULL
+  )
 ORDER BY 
     d.CodEstr_NivelPrioridade DESC,
     CASE WHEN d.DataPrazoMaximo IS NULL THEN 1 ELSE 0 END,

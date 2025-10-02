@@ -260,7 +260,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     // RECARREGA OS DADOS
                     CarregarAcompanhamentos();
-
+                    CarregarDemanda();
                 }
                 catch (Exception ex)
                 {
@@ -396,8 +396,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 MostrarMensagem("Demanda recusada com sucesso!", "success");
 
-                // Redirecionar para atualizar a página
-                Response.Redirect($"detailDemand.aspx?codDemanda={codDemanda}");
+                CarregarDemanda();
             }
             catch (Exception ex)
             {
