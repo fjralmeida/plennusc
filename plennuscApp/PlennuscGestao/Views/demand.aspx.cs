@@ -31,7 +31,17 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (!IsPostBack)
             {
+                lblNomeUser.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário não identificado";
+
                 BindAll();
+
+                // PEGAR O SETOR SELECIONADO NO DROPDOWN
+                if (!string.IsNullOrEmpty(ddlOrigem.SelectedItem.Text))
+                {
+
+                    lblSetorUsuario.Text = ddlOrigem.SelectedItem.Text;
+                }
+
                 // Esconder o campo de prazo inicialmente
                 divPrazo.Style["display"] = "none";
 
@@ -423,12 +433,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastDescricao", "showToastErro('Informe a descrição.');", true);
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "ScrollDescricao", "document.getElementById('" + txtDescricao.ClientID + "').scrollIntoView({ behavior: 'smooth', block: 'center' });", true);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(ddlOrigem.SelectedValue) || string.IsNullOrEmpty(ddlDestino.SelectedValue))
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastOrigemDestino", "showToastErro('Selecione origem e destino.');", true);
                 return;
             }
 

@@ -374,16 +374,26 @@
                 margin-bottom: 2px;
             }
 
-
-            .aprovação-info {
+/* 🔥 ADICIONE ESTE ESTILO PARA APROVAÇÃO */
+.aprovacao-info {
     font-size: 10px;
-    color: #2e7d32;
+    color: var(--gray-700);
     line-height: 1.2;
+    text-align: center;
+    padding: 6px 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary); /* Azul para aprovação */
+    display: block;
+    max-width: 140px;
+    word-wrap: break-word;
+    white-space: normal;
+    margin-bottom: 4px; /* Espaço entre as linhas */
 }
 
-.aprovação-info strong {
+.aprovacao-info strong {
     display: block;
-    color: #1b5e20;
+    color: var(--gray-800);
     font-size: 10px;
     font-weight: 600;
     margin-bottom: 2px;

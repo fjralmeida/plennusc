@@ -285,7 +285,7 @@
 /* 🔴 VERMELHO - ALTO/ATRASADO/URGENTE */
 .importancia-alta, .importancia-alto,
 .prioridade-alta, .prioridade-alto,
-.prazo-atrasado {
+.prazo-atrasado, .status-recusada{
     background: #ffebee !important;
     color: #c62828 !important;
     border: 1px solid #ffcdd2 !important;

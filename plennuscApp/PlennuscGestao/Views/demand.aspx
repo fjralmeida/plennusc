@@ -353,6 +353,29 @@
     --bs-btn-disabled-bg: var(--primary);
     --bs-btn-disabled-border-color: var(--primary); 
 }
+.user-header {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+
+.user-sector {
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    color: #6c757d;
+}
 
     </style>
 </asp:Content>
@@ -412,6 +435,25 @@
 
     <!-- Botão oculto fallback (dispara modal via data-bs) -->
     <button id="btnAbrirModalHidden" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#modalDemandas"></button>
+
+
+    <div class="user-header">
+         <asp:Label ID="lblNomeUser" runat="server" Text="" CssClass="user-name" />
+        <asp:Label ID="lblSetorUsuario" runat="server" Text="" CssClass="user-sector" />
+    </div>
+
+   <%-- Setor de Origem --%>
+   <div class="form-field">
+       <asp:DropDownList 
+           Visible="false"
+           ID="ddlOrigem" 
+           runat="server" 
+           CssClass="form-select" 
+           Required="true">
+           <asp:ListItem Value="">Selecione o setor...</asp:ListItem>
+           <asp:ListItem Value="Tecnologia">Tecnologia</asp:ListItem>
+       </asp:DropDownList>
+   </div>
 
     <div class="container-main">
         <div class="header-card">
@@ -522,38 +564,29 @@
                  </asp:UpdatePanel>
 
                     <!-- Roteamento em UpdatePanel -->
-                    <asp:UpdatePanel ID="upRoteamento" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
-                            <div class="mb-4">
-                                <h3 class="section-title"><i class="bi bi-signpost"></i>Roteamento</h3>
-                                <div class="form-card">
-                                    <div class="mb-3">
-                                        <label class="form-label required-field">Setor de Origem</label>
-                                        <asp:DropDownList ID="ddlOrigem" runat="server" CssClass="form-select">
-                                            <asp:ListItem Text="Selecione o setor de origem" Value="" />
-                                            <asp:ListItem Text="Financeiro" Value="1" />
-                                            <asp:ListItem Text="RH" Value="2" />
-                                            <asp:ListItem Text="TI" Value="3" />
-                                            <asp:ListItem Text="Operações" Value="4" />
-                                        </asp:DropDownList>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label required-field">Setor de Destino</label>
-                                        <asp:DropDownList ID="ddlDestino" runat="server" CssClass="form-select" 
-                                            AutoPostBack="true" 
-                                            OnSelectedIndexChanged="ddlDestino_SelectedIndexChanged">
-                                            <asp:ListItem Text="Selecione o setor de destino" Value="" />
-                                            <asp:ListItem Text="Financeiro" Value="1" />
-                                            <asp:ListItem Text="RH" Value="2" />
-                                            <asp:ListItem Text="TI" Value="3" />
-                                            <asp:ListItem Text="Operações" Value="4" />
-                                        </asp:DropDownList>
-                                    </div>
+                     <asp:UpdatePanel ID="upRoteamento" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="mb-4">
+                            <h3 class="section-title"><i class="bi bi-signpost"></i>Roteamento</h3>
+                            <div class="form-card">
+                                <!-- REMOVIDO: Setor de Origem daqui -->
+                                
+                                <div class="mb-3">
+                                    <label class="form-label required-field">Setor de Destino</label>
+                                    <asp:DropDownList ID="ddlDestino" runat="server" CssClass="form-select" 
+                                        AutoPostBack="true" 
+                                        OnSelectedIndexChanged="ddlDestino_SelectedIndexChanged">
+                                        <asp:ListItem Text="Selecione o setor de destino" Value="" />
+                                        <asp:ListItem Text="Financeiro" Value="1" />
+                                        <asp:ListItem Text="RH" Value="2" />
+                                        <asp:ListItem Text="TI" Value="3" />
+                                        <asp:ListItem Text="Operações" Value="4" />
+                                    </asp:DropDownList>
                                 </div>
                             </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
 
                     <!-- Categoria em UpdatePanel -->
                     <asp:UpdatePanel ID="upCategoria" runat="server" UpdateMode="Conditional">

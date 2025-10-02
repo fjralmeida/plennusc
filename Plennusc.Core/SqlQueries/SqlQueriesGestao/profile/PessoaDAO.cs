@@ -46,7 +46,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
 
         public DataTable TipoEstrutura()
         {
-            string query = "SELECT CodEstrutura, DescEstrutura FROM VW_PERFIL_PESSOA ORDER BY DescEstrutura";
+            string query = @"SELECT 
+                        MIN(CodEstrutura) as CodEstrutura, 
+                        DescEstrutura 
+                     FROM VW_PERFIL_PESSOA 
+                     GROUP BY DescEstrutura
+                     ORDER BY DescEstrutura";
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
             return db.LerPlennus(query);
