@@ -99,6 +99,7 @@
     <Compile Include="Models\ModelsGestao\DemandaListDto.cs" />
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
+    <Compile Include="Models\ModelsGestao\ModelsHome\homeManagementModels.cs" />
     <Compile Include="Models\ModelsGestao\OptionItem.cs" />
     <Compile Include="Models\ModelsGestao\RespostaDto.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
@@ -106,11 +107,13 @@
     <Compile Include="Models\Utils\EstruturaTipos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
+    <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
     <Compile Include="Service\ServiceGestao\WhatsappService.cs" />
     <Compile Include="Service\ServiceGestao\WhatsappServicePME.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\profileFinance\PessoaDAOFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\settingsFinance\PrivacySettingsFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\Demanda.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\demanda\homeManagementQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\department\EmpDepartment.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\import\importCVSPlannium.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\ItensPedIntegradoUtil.cs" />
