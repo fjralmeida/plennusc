@@ -362,22 +362,68 @@ namespace Plennusc.Core.Service.ServiceGestao
         }
 
         // ---------- Categoria/Subtipo ----------
-        public List<OptionItem> GetTiposDemandaGrupos()
+        //public List<OptionItem> GetTiposDemandaGrupos()
+        //{
+        //    var list = new List<OptionItem>();
+        //    using (var con = Open())
+        //    using (var cmd = new SqlCommand(Demanda.TiposDemandaGrupos, con))
+        //    {
+        //        cmd.Parameters.AddWithValue("@Tipo", EstruturaTipos.TipoDemanda); // 6
+        //        using (var rd = cmd.ExecuteReader())
+        //        {
+        //            while (rd.Read())
+        //                list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+        //        }
+        //    }
+        //    return list;
+        //}
+
+        public List<OptionItem> GetTiposDemandaGrupos(int? codSetor = null)
         {
             var list = new List<OptionItem>();
             using (var con = Open())
-            using (var cmd = new SqlCommand(Demanda.TiposDemandaGrupos, con))
             {
-                cmd.Parameters.AddWithValue("@Tipo", EstruturaTipos.TipoDemanda); // 6
-                using (var rd = cmd.ExecuteReader())
+                string query;
+
+                if (codSetor.HasValue)
                 {
-                    while (rd.Read())
-                        list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+                    query = @"
+                SELECT e.CodEstrutura AS Value, e.DescEstrutura AS Text
+                FROM dbo.Estrutura e
+                INNER JOIN dbo.SetorTipoDemanda std ON e.CodEstrutura = std.CodEstr_TipoDemanda
+                WHERE e.CodTipoEstrutura = @Tipo 
+                AND e.CodEstruturaPai IS NULL
+                AND std.CodSetor = @CodSetor
+                AND std.Conf_Status = 1
+                ORDER BY e.DescEstrutura";
+                }
+                else
+                {
+                    query = @"
+                SELECT CodEstrutura AS Value, DescEstrutura AS Text
+                FROM dbo.Estrutura
+                WHERE CodTipoEstrutura = @Tipo AND CodEstruturaPai IS NULL
+                ORDER BY DescEstrutura";
+                }
+
+                using (var cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Tipo", EstruturaTipos.TipoDemanda); // 6
+
+                    if (codSetor.HasValue)
+                    {
+                        cmd.Parameters.AddWithValue("@CodSetor", codSetor.Value);
+                    }
+
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                            list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+                    }
                 }
             }
             return list;
         }
-
         public List<OptionItem> GetSubtiposDemanda(int codGrupo)
         {
             var list = new List<OptionItem>();

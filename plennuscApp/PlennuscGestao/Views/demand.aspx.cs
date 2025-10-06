@@ -370,11 +370,20 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void BindGrupos()
         {
-            ddlTipoGrupo.DataSource = _svc.GetTiposDemandaGrupos();
+            int? codSetorDestino = null;
+
+            // Pega o setor de destino se estiver selecionado
+            if (!string.IsNullOrEmpty(ddlDestino.SelectedValue) && ddlDestino.SelectedValue != "")
+            {
+                codSetorDestino = int.Parse(ddlDestino.SelectedValue);
+            }
+
+            ddlTipoGrupo.DataSource = _svc.GetTiposDemandaGrupos(codSetorDestino);
             ddlTipoGrupo.DataValueField = "Value";
             ddlTipoGrupo.DataTextField = "Text";
             ddlTipoGrupo.DataBind();
 
+            // Mantém o comportamento original se não houver setor selecionado
             if (ddlTipoGrupo.Items.Count > 0)
                 ddlTipoGrupo.SelectedIndex = 0;
 
