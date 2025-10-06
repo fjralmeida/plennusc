@@ -1,10 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="structureType.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.structureType" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <title>Estruturas por Setor</title>
+    <!-- Importação do Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
             --primary: #83ceee;
-            --primary-hover: #0d62c9;
+            --primary-hover: #75bbd9;
             --success: #4cb07a;
             --success-hover: #3b8b65;
             --warning: #ffa726;
@@ -111,6 +113,9 @@
             color: var(--gray-800);
             font-size: 18px;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group {
@@ -123,6 +128,9 @@
             font-weight: 500;
             color: var(--gray-700);
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .form-control {
@@ -140,20 +148,64 @@
             box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.2);
         }
 
-        .input-with-button {
+        .input-with-button-wrapper {
+            position: relative;
             display: flex;
-            gap: 8px;
-            align-items: center;
+            align-items: stretch;
+        }
+
+        .input-with-button {
+            flex: 1;
+            display: flex;
         }
 
         .input-with-button .subtype-input {
             flex: 1;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px 0 0 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            border-right: none;
+        }
+
+        .input-with-button .subtype-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+
+        .input-with-button .subtype-input:focus + .btn-add-service-inside {
+            border-color: var(--primary);
+        }
+
+        .btn-add-service-inside {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 0 4px 4px 0;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            height: auto;
+        }
+
+        .btn-add-service-inside:hover {
+            background: var(--primary-hover);
         }
 
         .services-counter {
             font-size: 12px;
             color: var(--gray-500);
             margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .subtype-container {
@@ -169,24 +221,23 @@
             background: var(--gray-50);
             border-radius: var(--border-radius);
             transition: all 0.2s ease;
+            border-left: 3px solid var(--primary);
         }
 
         .subtype-item:hover {
             background: var(--gray-100);
         }
 
-        .subtype-input {
+        .servico-text {
+            flex: 1;
+            padding: 8px 12px;
+            background: white;
             border: 1px solid var(--gray-300);
             border-radius: 4px;
-            padding: 8px 12px;
             font-size: 14px;
-            transition: border-color 0.2s ease;
-        }
-
-        .subtype-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-remove {
@@ -200,34 +251,12 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: all 0.2s ease;
         }
 
         .btn-remove:hover {
             background: var(--danger-hover);
-            transform: scale(1.05);
-        }
-
-        .btn-add-service {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 16px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            height: 38px;
-        }
-
-        .btn-add-service:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
         }
 
         .empty-state {
@@ -238,6 +267,10 @@
             background: var(--gray-50);
             border-radius: var(--border-radius);
             margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-actions {
@@ -262,7 +295,7 @@
         <header class="page-header">
             <h1 class="page-title">
                 <span class="title-icon">
-                    <i class="fas fa-sitemap"></i>
+                    <i class="bi bi-diagram-3"></i>
                 </span>
                 Estruturas por Setor
             </h1>
@@ -270,9 +303,8 @@
 
         <!-- Seção de Seleção de Setor -->
         <div class="card">
-            <h3>Selecionar Setor</h3>
+            <h3><i class="bi bi-building"></i> Selecionar Setor</h3>
             <div class="form-group">
-                <label class="form-label">Setor de Destino</label>
                 <asp:DropDownList ID="ddlSetor" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlSetor_SelectedIndexChanged">
                     <asp:ListItem Text="Selecione um setor" Value="" />
                 </asp:DropDownList>
@@ -282,30 +314,41 @@
         <asp:Panel ID="pnlEstruturas" runat="server" Visible="false">
             <!-- Formulário de Cadastro de Estrutura -->
             <div class="card">
-                <h3>Cadastrar Nova Categoria</h3>
+                <h3><i class="bi bi-folder-plus"></i> Cadastrar Nova Categoria</h3>
                 
                 <div class="form-group">
-                    <label class="form-label">Nome da Categoria</label>
+                    <label class="form-label">
+                        <i class="bi bi-tag"></i>
+                        Nome da Categoria
+                    </label>
                     <asp:TextBox ID="txtNomeEstrutura" runat="server" CssClass="form-control" placeholder="Ex: Tecnologia, Financeiro, etc." />
                 </div>
 
                 <!-- Tipos de Serviço -->
                 <div class="form-group">
-                    <label class="form-label">Tipos de Serviço</label>
+                    <label class="form-label">
+                        <i class="bi bi-gear"></i>
+                        Tipos de Serviço
+                    </label>
                     
-                    <!-- Input com botão ao lado -->
-                    <div class="input-with-button">
-                        <input type="text" class="subtype-input form-control" id="novoServicoInput"/>
-                        <button type="button" class="btn-add-service" onclick="adicionarServico()">
-                            <i class="fas fa-plus"></i>
-                            Adicionar Serviço
-                        </button>
+                    <!-- Input com botão DENTRO do campo -->
+                    <div class="input-with-button-wrapper">
+                        <div class="input-with-button">
+                            <input type="text" class="subtype-input form-control" id="novoServicoInput" placeholder="Digite o nome do serviço..."/>
+                            <button type="button" class="btn-add-service-inside" onclick="adicionarServico()" title="Adicionar serviço">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
                     </div>
                     
-                    <span class="services-counter" id="subtypeCounter">0 serviço(s) adicionado(s)</span>
+                    <span class="services-counter" id="subtypeCounter">
+                        <i class="bi bi-list-check"></i>
+                        0 serviço(s) adicionado(s)
+                    </span>
 
                     <div class="service-item-container" id="subtypeContainer">
                         <div class="empty-state" id="emptyState">
+                            <i class="bi bi-inbox"></i>
                             Nenhum serviço adicionado.
                         </div>
                     </div>
@@ -351,7 +394,11 @@
             const container = document.getElementById('subtypeContainer');
 
             if (servicos.length === 0) {
-                container.innerHTML = '<div class="empty-state" id="emptyState">Nenhum serviço adicionado.</div>';
+                container.innerHTML = `
+                    <div class="empty-state" id="emptyState">
+                        <i class="bi bi-inbox"></i>
+                        Nenhum serviço adicionado.
+                    </div>`;
                 return;
             }
 
@@ -359,9 +406,12 @@
             servicos.forEach((servico, index) => {
                 html += `
                     <div class="subtype-item">
-                        <span class="subtype-input" style="background: white; border: 1px solid var(--gray-300);">${servico}</span>
+                        <div class="servico-text">
+                            <i class="bi bi-gear"></i>
+                            ${servico}
+                        </div>
                         <button type="button" class="btn-remove" onclick="removerServico(${index})" title="Remover serviço">
-                            <i class="fas fa-times"></i>
+                            <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 `;
@@ -372,7 +422,7 @@
 
         function atualizarContador() {
             const counter = document.getElementById('subtypeCounter');
-            counter.textContent = `${servicos.length} serviço(s) adicionado(s)`;
+            counter.innerHTML = `<i class="bi bi-list-check"></i> ${servicos.length} serviço(s) adicionado(s)`;
         }
 
         function validarFormulario() {
@@ -400,6 +450,7 @@
                     adicionarServico();
                 }
             });
+            input.focus();
         });
     </script>
 </asp:Content>
