@@ -197,6 +197,7 @@
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\profile.aspx" />
+    <Content Include="PlennuscGestao\Views\structureType.aspx" />
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscGestao\Views\updatePriceTable.aspx" />
@@ -487,6 +488,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\profile.aspx.designer.cs">
       <DependentUpon>profile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\structureType.aspx.cs">
+      <DependentUpon>structureType.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\structureType.aspx.designer.cs">
+      <DependentUpon>structureType.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\TelaEnvio.aspx.cs">
       <DependentUpon>TelaEnvio.aspx</DependentUpon>
