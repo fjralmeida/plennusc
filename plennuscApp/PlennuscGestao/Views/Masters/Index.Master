@@ -50,7 +50,7 @@
         /* === SIDEBAR === */
         .sidebar {
             cursor: pointer;
-            width: 250px;
+            width: 257px;
             background-color: #ffffff;
             border-right: 1px solid #e3e6ef;
             padding: 1.0rem 0.5rem;
