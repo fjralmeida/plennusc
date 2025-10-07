@@ -556,8 +556,8 @@
   </a>
   <div class="collapse ms-3" id="menuDemanda">
     <ul class="list-unstyled ps-3 submenu">
-      <li><a href="../demand.aspx" title="Criar Demanda"><i class="bi bi-plus-circle me-2"></i><span class="label">Criar Demanda</span></a></li>
-      <li><a href="../listDemand.aspx" title="Listar Demandas"><i class="bi bi-list-ul me-2"></i><span class="label">Listar Demandas</span></a></li>
+      <li><a href="demand.aspx" title="Criar Demanda"><i class="bi bi-plus-circle me-2"></i><span class="label">Criar Demanda</span></a></li>
+      <li><a href="listDemand.aspx" title="Listar Demandas"><i class="bi bi-list-ul me-2"></i><span class="label">Listar Demandas</span></a></li>
       <li>
         <a class="d-flex justify-content-between align-items-center"
            data-bs-toggle="collapse" href="#subMenuMinhasDemandas"
@@ -567,11 +567,11 @@
         </a>
         <div class="collapse ms-3" id="subMenuMinhasDemandas" runat="server">
           <ul class="list-unstyled ps-3">
-            <li><a href="../myDemandsOpen.aspx" title="Em Aberto"><i class="bi bi-folder2-open me-2"></i><span class="label">Em Aberto</span></a></li>
-            <li><a href="../myDemandsProgress.aspx" title="Em Andamento"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Em Andamento</span></a></li>
+            <li><a href="myDemandsOpen.aspx" title="Em Aberto"><i class="bi bi-folder2-open me-2"></i><span class="label">Em Aberto</span></a></li>
+            <li><a href="myDemandsProgress.aspx" title="Em Andamento"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Em Andamento</span></a></li>
             <li id="menuAguardandoAprovacao" runat="server"><a href="../myDemandsWaiting.aspx" title="Aguardando Aceite" id="linkAguardando" runat="server"><i class="bi bi-clock-history me-2"></i><span class="label">Aguardando Aprovação</span></a></li>
-            <li><a href="../myDemandsRefused.aspx" title="Recusadas"><i class="bi bi-x-circle me-2"></i><span class="label">Recusadas</span></a></li>
-            <li><a href="../myDemandsCompleted.aspx" title="Concluídas"><i class="bi bi-check-circle me-2"></i><span class="label">Concluídas</span></a></li>
+            <li><a href="myDemandsRefused.aspx" title="Recusadas"><i class="bi bi-x-circle me-2"></i><span class="label">Recusadas</span></a></li>
+            <li><a href="myDemandsCompleted.aspx" title="Concluídas"><i class="bi bi-check-circle me-2"></i><span class="label">Concluídas</span></a></li>
           </ul>
         </div>
       </li>
