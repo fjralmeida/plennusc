@@ -620,6 +620,14 @@ ORDER BY d.DataDemanda DESC";
               AND p.Conf_Ativo = 1
               AND p.CodCargo = 2";
 
+        public const string VerificarAdministrador = @"
+            SELECT COUNT(*) 
+            FROM AutenticacaoAcesso 
+            WHERE CodPessoa = @CodPessoa 
+            AND CodPerfilUsuario = 1
+            AND Conf_PermiteAcesso = 1 
+            AND Conf_Ativo = 1";
+
         public const string GetDemandaPorCodigo = @"
             SELECT 
                 d.CodDemanda,

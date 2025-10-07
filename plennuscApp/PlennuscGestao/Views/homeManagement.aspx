@@ -541,16 +541,15 @@
                 </div>
             </div>
 
-            <div class="dashboard-card" onclick="window.location.href='employeeManagement.aspx';">
+            <div class="dashboard-card" onclick="window.location.href='demand.aspx';">
                 <div class="card card-teste">
                     <div class="card-body">
                         <div class="card-content">
-                            <h6 class="card-title">teste</h6>
-                            <p class="card-value">-</p>
-                            <p class="card-description">teste</p>
+                            <h6 class="card-title">Demanda</h6>
+                            <p class="card-description">Criar Demanda</p>
                         </div>
                         <div class="card-icon">
-                            <i class="fas fa-chart-line"></i>
+                        <i class="bi bi-plus-lg"></i>
                         </div>
                     </div>
                 </div>

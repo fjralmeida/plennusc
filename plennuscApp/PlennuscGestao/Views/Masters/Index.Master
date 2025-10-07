@@ -451,53 +451,53 @@
 
         <ul class="list-unstyled">
           <!-- Pessoas -->
-          <li class="mb-2">
-            <a class="d-flex justify-content-between align-items-center menu-head"
-               data-bs-toggle="collapse" href="#menuGestaoPessoas"
-               role="button" aria-expanded="true" aria-controls="menuGestaoPessoas" title="Gestão de Pessoas">
-              <span><i class="bi bi-person-badge me-2"></i><strong class="label"> Pessoas</strong></span>
-              <i class="bi bi-chevron-right toggle-icon"></i>
-            </a>
+<li class="mb-2">
+    <a class="d-flex justify-content-between align-items-center menu-head"
+       data-bs-toggle="collapse" href="#menuGestaoPessoas"
+       role="button" aria-expanded="false" aria-controls="menuGestaoPessoas" title="Gestão de Pessoas">
+        <span><i class="bi bi-person-badge me-2"></i><strong class="label"> Pessoas</strong></span>
+        <i class="bi bi-chevron-right toggle-icon"></i>
+    </a>
 
-            <div class="collapse show ms-3" id="menuGestaoPessoas">
-              <ul class="list-unstyled ps-3 submenu">
-                <li class="mb-1">
-                  <a class="d-flex justify-content-between align-items-center"
-                     data-bs-toggle="collapse" href="#subMenuColaboradores"
-                     role="button" aria-expanded="false" aria-controls="subMenuColaboradores" title="Colaboradores">
+    <div class="collapse ms-3" id="menuGestaoPessoas"> <!-- REMOVEU O "show" -->
+        <ul class="list-unstyled ps-3 submenu">
+            <li class="mb-1">
+                <a class="d-flex justify-content-between align-items-center"
+                   data-bs-toggle="collapse" href="#subMenuColaboradores"
+                   role="button" aria-expanded="false" aria-controls="subMenuColaboradores" title="Colaboradores">
                     <span><i class="bi bi-people me-2"></i><span class="label">Colaboradores</span></span>
                     <i class="bi bi-chevron-right toggle-icon"></i>
-                  </a>
+                </a>
 
-                  <div class="collapse ms-3" id="subMenuColaboradores">
+                <div class="collapse ms-3" id="subMenuColaboradores"> <!-- REMOVEU O "show" -->
                     <ul class="list-unstyled ps-3">
-                      <li>
-                        <a runat="server" href="~/PlennuscGestao/Views/employeeManagement.aspx?acao=incluir" title="Incluir Usuário">
-                          <i class="bi bi-person-plus me-2"></i><span class="label">Incluir Usuário</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a runat="server" href="~/PlennuscGestao/Views/employeeManagement.aspx?acao=consultar" title="Consultar Usuário">
-                          <i class="bi bi-search me-2"></i><span class="label">Consultar Usuário</span>
-                        </a>
-                      </li>
+                        <li>
+                            <a runat="server" href="~/PlennuscGestao/Views/employeeManagement.aspx?acao=incluir" title="Incluir Usuário">
+                                <i class="bi bi-person-plus me-2"></i><span class="label">Incluir Usuário</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a runat="server" href="~/PlennuscGestao/Views/employeeManagement.aspx?acao=consultar" title="Consultar Usuário">
+                                <i class="bi bi-search me-2"></i><span class="label">Consultar Usuário</span>
+                            </a>
+                        </li>
                     </ul>
-                  </div>
-                </li>
+                </div>
+            </li>
 
-                <li>
-                  <a href="employeeDepartment.aspx" title="Departamentos">
+            <li>
+                <a href="employeeDepartment.aspx" title="Departamentos">
                     <i class="bi bi-diagram-3 me-2"></i><span class="label">Departamentos</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="employeePosition.aspx" title="Cargos">
+                </a>
+            </li>
+            <li>
+                <a href="employeePosition.aspx" title="Cargos">
                     <i class="bi bi-briefcase me-2"></i><span class="label">Cargos</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
 
           <!-- Chatbot -->
           <li class="mb-2">
@@ -532,54 +532,52 @@
             </div>
           </li>
 
-            <!-- Estruturas -->
-            <li class="mb-2">
-              <a class="d-flex justify-content-between align-items-center menu-head"
-                 data-bs-toggle="collapse" href="#menuEstruturas"
-                 role="button" aria-expanded="false" aria-controls="menuEstruturas" title="Estruturas do Sistema">
-                <span><i class="bi bi-diagram-3 me-2"></i><strong class="label"> Estruturas</strong></span>
-                <i class="bi bi-chevron-right toggle-icon"></i>
-              </a>
-              <div class="collapse ms-3" id="menuEstruturas">
-                <ul class="list-unstyled ps-3 submenu">
-                  <li><a href="structureType.aspx" title="Gerenciar Estruturas"><i class="bi bi-gear me-2"></i><span class="label">Gerenciar Estruturas</span></a></li>
-                </ul>
-              </div>
-            </li>
-
+           <li class="mb-2" id="liMenuEstruturas" runat="server">
+    <a class="d-flex justify-content-between align-items-center menu-head"
+       data-bs-toggle="collapse" href="#collapseMenuEstruturas"
+       role="button" aria-expanded="false" aria-controls="collapseMenuEstruturas" title="Estruturas do Sistema">
+        <span><i class="bi bi-diagram-3 me-2"></i><strong class="label"> Estruturas</strong></span>
+        <i class="bi bi-chevron-right toggle-icon"></i>
+    </a>
+    <div class="collapse ms-3" id="collapseMenuEstruturas">
+        <ul class="list-unstyled ps-3 submenu">
+            <li><a href="../structureType.aspx" title="Gerenciar Estruturas" id="linkEstruturas" runat="server"><i class="bi bi-gear me-2"></i><span class="label">Gerenciar Estruturas</span></a></li>
+        </ul>
+    </div>
+</li>
 
                    <!-- Demanda -->
-            <li class="mb-2">
-              <a class="d-flex justify-content-between align-items-center menu-head"
-                 data-bs-toggle="collapse" href="#menuDemanda"
-                 role="button" aria-expanded="false" aria-controls="menuDemanda" title="Demanda">
-                <span><i class="bi bi-envelope me-2"></i><strong class="label"> Demanda</strong></span>
-                <i class="bi bi-chevron-right toggle-icon"></i>
-              </a>
-              <div class="collapse ms-3" id="menuDemanda">
-                <ul class="list-unstyled ps-3 submenu">
-                  <li><a href="demand.aspx" title="Criar Demanda"><i class="bi bi-plus-circle me-2"></i><span class="label">Criar Demanda</span></a></li>
-                  <li><a href="listDemand.aspx" title="Listar Demandas"><i class="bi bi-list-ul me-2"></i><span class="label">Listar Demandas</span></a></li>
-                  <li>
-                    <a class="d-flex justify-content-between align-items-center"
-                       data-bs-toggle="collapse" href="#subMenuMinhasDemandas"
-                       role="button" aria-expanded="false" aria-controls="subMenuMinhasDemandas" title="Minhas Demandas">
-                      <span><i class="bi bi-inboxes me-2"></i><span class="label">Minhas Demandas</span></span>
-                      <i class="bi bi-chevron-right toggle-icon"></i>
-                    </a>
-                    <div class="collapse ms-3" id="subMenuMinhasDemandas">
-                      <ul class="list-unstyled ps-3">
-                        <li><a href="myDemandsOpen.aspx" title="Em Aberto"><i class="bi bi-folder2-open me-2"></i><span class="label">Em Aberto</span></a></li>
-                        <li><a href="myDemandsProgress.aspx" title="Em Andamento"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Em Andamento</span></a></li>
-                        <li><a href="myDemandsWaiting.aspx" title="Aguardando Aceite"><i class="bi bi-clock-history me-2"></i><span class="label">Aguardando Aprovação</span></a></li>
-                        <li><a href="myDemandsRefused.aspx" title="Recusadas"><i class="bi bi-x-circle me-2"></i><span class="label">Recusadas</span></a></li>
-                        <li><a href="myDemandsCompleted.aspx" title="Concluídas"><i class="bi bi-check-circle me-2"></i><span class="label">Concluídas</span></a></li>
-                      </ul>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </li>
+           <li class="mb-2">
+   <a class="d-flex justify-content-between align-items-center menu-head"
+      data-bs-toggle="collapse" href="#menuDemanda"
+      role="button" aria-expanded="false" aria-controls="menuDemanda" title="Demanda">
+     <span><i class="bi bi-envelope me-2"></i><strong class="label"> Demanda</strong></span>
+     <i class="bi bi-chevron-right toggle-icon"></i>
+   </a>
+   <div class="collapse ms-3" id="menuDemanda">
+     <ul class="list-unstyled ps-3 submenu">
+       <li><a href="demand.aspx" title="Criar Demanda"><i class="bi bi-plus-circle me-2"></i><span class="label">Criar Demanda</span></a></li>
+       <li><a href="listDemand.aspx" title="Listar Demandas"><i class="bi bi-list-ul me-2"></i><span class="label">Listar Demandas</span></a></li>
+       <li>
+         <a class="d-flex justify-content-between align-items-center"
+            data-bs-toggle="collapse" href="#subMenuMinhasDemandas"
+            role="button" aria-expanded="false" aria-controls="subMenuMinhasDemandas" title="Minhas Demandas">
+           <span><i class="bi bi-inboxes me-2"></i><span class="label">Minhas Demandas</span></span>
+           <i class="bi bi-chevron-right toggle-icon"></i>
+         </a>
+         <div class="collapse ms-3" id="subMenuMinhasDemandas" runat="server">
+           <ul class="list-unstyled ps-3">
+             <li><a href="myDemandsOpen.aspx" title="Em Aberto"><i class="bi bi-folder2-open me-2"></i><span class="label">Em Aberto</span></a></li>
+             <li><a href="myDemandsProgress.aspx" title="Em Andamento"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Em Andamento</span></a></li>
+             <li id="menuAguardandoAprovacao" runat="server"><a href="myDemandsWaiting.aspx" title="Aguardando Aceite" id="linkAguardando" runat="server"><i class="bi bi-clock-history me-2"></i><span class="label">Aguardando Aprovação</span></a></li>
+             <li><a href="myDemandsRefused.aspx" title="Recusadas"><i class="bi bi-x-circle me-2"></i><span class="label">Recusadas</span></a></li>
+             <li><a href="myDemandsCompleted.aspx" title="Concluídas"><i class="bi bi-check-circle me-2"></i><span class="label">Concluídas</span></a></li>
+           </ul>
+         </div>
+       </li>
+     </ul>
+   </div>
+ </li>
         </ul>
       </nav>
 

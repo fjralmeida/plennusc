@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace PlennuscGestao.Views.Masters
@@ -34,6 +35,7 @@ namespace PlennuscGestao.Views.Masters
 
                 // VERIFICA SE É GESTOR E CONFIGURA O MENU
                 VerificarPermissaoMenu();
+                VerificarPermissaoEstruturas();
 
                 int codUsuario = Convert.ToInt32(Session["codUsuario"]);
                 PessoaDAO pessoaDao = new PessoaDAO();
@@ -88,18 +90,48 @@ namespace PlennuscGestao.Views.Masters
 
         private void ConfigurarMenuGestor(bool eGestor)
         {
-            // Usa JavaScript para mostrar/esconder o item do menu
-            string script = $@"
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {{
-                var menuAguardando = document.querySelector('a[href=""myDemandsWaiting.aspx""]').closest('li');
-                if (menuAguardando) {{
-                    menuAguardando.style.display = '{(!eGestor ? "none" : "block")}';
-                }}
-            }});
-        </script>";
+            // Encontra o controle específico do menu "Aguardando Aprovação"
+            Control menuItem = FindControlRecursive(Page.Master, "menuAguardandoAprovacao");
 
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "MenuGestor", script);
+            if (menuItem != null)
+            {
+                menuItem.Visible = eGestor;
+            }
+            else
+            {
+                // Se não encontrar pelo ID, tenta encontrar pela URL
+                Control menuContainer = FindControlRecursive(Page.Master, "subMenuMinhasDemandas");
+                if (menuContainer != null)
+                {
+                    foreach (Control control in menuContainer.Controls)
+                    {
+                        if (control is HtmlGenericControl li)
+                        {
+                            var link = li.FindControl("linkAguardando") as HtmlAnchor;
+                            if (link != null && link.HRef.Contains("myDemandsWaiting.aspx"))
+                            {
+                                li.Visible = eGestor;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private Control FindControlRecursive(Control root, string id)
+        {
+            if (root == null) return null;
+
+            if(root.ID == id)
+                return root;
+            foreach(Control c in root.Controls)
+            {
+                Control t = FindControlRecursive(c, id);
+                if (t != null)
+                    return t;
+            }
+            return null;
         }
 
         private void CarregarInfoEmpresa(int codSistema)
@@ -111,6 +143,31 @@ namespace PlennuscGestao.Views.Masters
             {
                 //imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
                 //lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
+            }
+        }
+
+        private void VerificarPermissaoEstruturas()
+        {
+            if (Session["CodPessoa"] != null)
+            {
+                int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
+
+                var demandaService = new DemandaService("Plennus");
+                bool eAdministrador = demandaService.VerificarSeEAdministrador(codPessoa);
+
+                Session["EAdministrador"] = eAdministrador;
+                ConfigurarMenuEstruturas(eAdministrador);
+            }
+        }
+
+        private void ConfigurarMenuEstruturas(bool eAdministrador)
+        {
+            // Encontra o controle específico do menu "Estruturas"
+            Control menuItem = FindControlRecursive(this, "liMenuEstruturas");
+
+            if (menuItem != null)
+            {
+                menuItem.Visible = eAdministrador;
             }
         }
 

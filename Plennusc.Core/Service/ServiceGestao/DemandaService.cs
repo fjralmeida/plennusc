@@ -1666,5 +1666,17 @@ namespace Plennusc.Core.Service.ServiceGestao
                 return resultado != null && Convert.ToInt32(resultado) > 0;
             }
         }
+
+        public bool VerificarSeEAdministrador(int codPessoa)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.VerificarAdministrador, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
     }
 }
