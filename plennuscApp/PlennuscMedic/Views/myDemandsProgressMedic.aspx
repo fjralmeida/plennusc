@@ -1,10 +1,11 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="myDemandsOpen.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.myDemandsOpen" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscMedic/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="myDemandsProgressMedic.aspx.cs" Inherits="appWhatsapp.PlennuscMedic.Views.myDemandsProgressMedic" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
+
+<style>
         :root {
             --primary: #83ceee;
             --primary-hover: #0d62c9;
@@ -193,20 +194,20 @@
             overflow-x: auto;
         }
 
-            .custom-grid {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 1200px;
-    table-layout: fixed; /* 🔥 IMPORTANTE: Força o layout fixo */
-}
+        .custom-grid {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+            table-layout: fixed; /* 🔥 IMPORTANTE: Força o layout fixo */
+        }
 
-    .custom-grid th,
-.custom-grid td {
-    white-space: nowrap; /* 🔥 Impede quebra de linha */
-    overflow: hidden; /* 🔥 Esconde overflow */
-    text-overflow: ellipsis; /* 🔥 Adiciona "..." */
-    vertical-align: middle;
-}
+            .custom-grid th,
+            .custom-grid td {
+                white-space: nowrap; /* 🔥 Impede quebra de linha */
+                overflow: hidden; /* 🔥 Esconde overflow */
+                text-overflow: ellipsis; /* 🔥 Adiciona "..." */
+                vertical-align: middle;
+            }
 
             .custom-grid th {
                 background: var(--gray-50);
@@ -238,85 +239,85 @@
                 transition: var(--transition);
             }
 
-      
-/* BADGES - PADRÃO CONSISTENTE */
-.badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    text-align: center;
-    min-width: 80px;
-    white-space: nowrap;
-}
 
-/* 🟢 VERDE - BAIXO/NORMAL/DENTRO DO PRAZO */
-.importancia-baixa, .importancia-baixo,
-.prioridade-normal,
-.prioridade-com-prazo,
-.prazo-dentro-prazo,
-.status-aberta, .status-aberto {
-    background: #e8f5e9 !important;
-    color: #2e7d32 !important;
-    border: 1px solid #c8e6c9 !important;
-}
+        /* BADGES - PADRÃO CONSISTENTE */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            text-align: center;
+            min-width: 80px;
+            white-space: nowrap;
+        }
 
-/* 🔵 AZUL - BAIXA PRIORIDADE/EM ANDAMENTO */
-.prioridade-baixa, .prioridade-baixo,
-.status-em-andamento, .status-andamento, .status-em_andamento,
-.prazo-proximo {
-    background: #e3f2fd !important;
-    color: #1565c0 !important;
-    border: 1px solid #bbdefb !important;
-}
+        /* 🟢 VERDE - BAIXO/NORMAL/DENTRO DO PRAZO */
+        .importancia-baixa, .importancia-baixo,
+        .prioridade-normal,
+        .prioridade-com-prazo,
+        .prazo-dentro-prazo,
+        .status-aberta, .status-aberto {
+            background: #e8f5e9 !important;
+            color: #2e7d32 !important;
+            border: 1px solid #c8e6c9 !important;
+        }
 
-/* 🟠 LARANJA - MÉDIA/PROXIMIDADE */
-.importancia-media, .importancia-média, .importancia-medio, .importancia-médio,
-.prioridade-media, .prioridade-média, .prioridade-medio, .prioridade-médio,
-.prazo-hoje,
-.status-concluída, .status-concluida, .status-concluido, .status-concluído {
-    background: #fff3e0 !important;
-    color: #ef6c00 !important;
-    border: 1px solid #ffe0b2 !important;
-}
+        /* 🔵 AZUL - BAIXA PRIORIDADE/EM ANDAMENTO */
+        .prioridade-baixa, .prioridade-baixo,
+        .status-em-andamento, .status-andamento, .status-em_andamento,
+        .prazo-proximo {
+            background: #e3f2fd !important;
+            color: #1565c0 !important;
+            border: 1px solid #bbdefb !important;
+        }
 
-/* 🔴 VERMELHO - ALTO/ATRASADO/URGENTE */
-.importancia-alta, .importancia-alto,
-.prioridade-alta, .prioridade-alto,
-.prazo-atrasado {
-    background: #ffebee !important;
-    color: #c62828 !important;
-    border: 1px solid #ffcdd2 !important;
-}
+        /* 🟠 LARANJA - MÉDIA/PROXIMIDADE */
+        .importancia-media, .importancia-média, .importancia-medio, .importancia-médio,
+        .prioridade-media, .prioridade-média, .prioridade-medio, .prioridade-médio,
+        .prazo-hoje,
+        .status-concluída, .status-concluida, .status-concluido, .status-concluído {
+            background: #fff3e0 !important;
+            color: #ef6c00 !important;
+            border: 1px solid #ffe0b2 !important;
+        }
 
-/* 🟣 ROXO - CRÍTICO/MUITO URGENTE */
-.importancia-critica, .importancia-crítica, .importancia-critico, .importancia-crítico,
-.prioridade-critica, .prioridade-crítica, .prioridade-critico, .prioridade-crítico {
-    background: #f3e5f5 !important;
-    color: #7b1fa2 !important;
-    border: 1px solid #e1bee7 !important;
-    font-weight: 700 !important;
-}
+        /* 🔴 VERMELHO - ALTO/ATRASADO/URGENTE */
+        .importancia-alta, .importancia-alto,
+        .prioridade-alta, .prioridade-alto,
+        .prazo-atrasado, .prioridade-com-prazo {
+            background: #ffebee !important;
+            color: #c62828 !important;
+            border: 1px solid #ffcdd2 !important;
+        }
 
-/* ⚪ CINZA - SEM DEFINIÇÃO/FECHADO */
-.prazo-sem-data,
-.status-fechada, .status-fechado,
-.prioridade-nao-definida {
-    background: #f5f5f5 !important;
-    color: #616161 !important;
-    border: 1px solid #e0e0e0 !important;
-    font-style: italic !important;
-}
+        /* 🟣 ROXO - CRÍTICO/MUITO URGENTE */
+        .importancia-critica, .importancia-crítica, .importancia-critico, .importancia-crítico,
+        .prioridade-critica, .prioridade-crítica, .prioridade-critico, .prioridade-crítico {
+            background: #f3e5f5 !important;
+            color: #7b1fa2 !important;
+            border: 1px solid #e1bee7 !important;
+            font-weight: 700 !important;
+        }
 
-/* FALLBACK PARA VALORES DESCONHECIDOS */
-.badge:not([class*="status-"]):not([class*="prioridade-"]):not([class*="importancia-"]):not([class*="prazo-"]) {
-    background: #f1f3f4 !important;
-    color: #5f6368 !important;
-    border: 1px solid #dadce0 !important;
-}
+        /* ⚪ CINZA - SEM DEFINIÇÃO/FECHADO */
+        .prazo-sem-data,
+        .status-fechada, .status-fechado,
+        .prioridade-nao-definida {
+            background: #f5f5f5 !important;
+            color: #616161 !important;
+            border: 1px solid #e0e0e0 !important;
+            font-style: italic !important;
+        }
+
+        /* FALLBACK PARA VALORES DESCONHECIDOS */
+        .badge:not([class*="status-"]):not([class*="prioridade-"]):not([class*="importancia-"]):not([class*="prazo-"]) {
+            background: #f1f3f4 !important;
+            color: #5f6368 !important;
+            border: 1px solid #dadce0 !important;
+        }
 
         /* Botão de Aceite */
         .btn-aceitar {
@@ -375,6 +376,30 @@
                 margin-bottom: 2px;
             }
 
+        /* 🔥 ADICIONE ESTE ESTILO PARA APROVAÇÃO */
+        .aprovacao-info {
+            font-size: 10px;
+            color: var(--gray-700);
+            line-height: 1.2;
+            text-align: center;
+            padding: 6px 4px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary); /* Azul para aprovação */
+            display: block;
+            max-width: 140px;
+            word-wrap: break-word;
+            white-space: normal;
+            margin-bottom: 4px; /* Espaço entre as linhas */
+        }
+
+            .aprovacao-info strong {
+                display: block;
+                color: var(--gray-800);
+                font-size: 10px;
+                font-weight: 600;
+                margin-bottom: 2px;
+            }
         /* Botões de ação */
         .btn-action {
             background: white;
@@ -431,59 +456,113 @@
             width: 150px;
         }
 
-                .col-solicitante,
-.col-categoria {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .col-solicitante,
+        .col-categoria {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-/* COLUNAS CENTRALIZADAS - mantém uma linha */
-.col-id,
-.col-data-abertura,
-.col-importancia,
-.col-prioridade,
-.col-prazo,
-.col-status,
-.col-aceite,
-.col-acoes {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
+        /* COLUNAS CENTRALIZADAS - mantém uma linha */
+        .col-id,
+        .col-data-abertura,
+        .col-importancia,
+        .col-prioridade,
+        .col-prazo,
+        .col-status,
+        .col-aceite,
+        .col-acoes {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
 
-/* LARGURAS ESPECÍFICAS PARA CADA COLUNA */
-.col-id { width: 80px; min-width: 80px; }
-.col-titulo { width: 250px; min-width: 200px; max-width: 250px; }
-.col-solicitante { width: 180px; min-width: 150px; max-width: 180px; }
-.col-data-abertura { width: 120px; min-width: 100px; max-width: 120px; }
-.col-categoria { width: 150px; min-width: 120px; max-width: 150px; }
-.col-importancia { width: 100px; min-width: 90px; max-width: 100px; }
-.col-prioridade { width: 100px; min-width: 90px; max-width: 100px; }
-.col-prazo { width: 100px; min-width: 90px; max-width: 100px; }
-.col-status { width: 120px; min-width: 100px; max-width: 120px; }
-.col-aceite { width: 140px; min-width: 120px; max-width: 140px; }
-.col-acoes { width: 100px; min-width: 80px; max-width: 100px; }
+        /* LARGURAS ESPECÍFICAS PARA CADA COLUNA */
+        .col-id {
+            width: 80px;
+            min-width: 80px;
+        }
 
-/* GARANTIR QUE BADGES E BOTÕES NÃO QUEBREM */
-.badge,
-.btn-action,
-.btn-aceitar {
-    white-space: nowrap;
-    display: inline-block;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .col-titulo {
+            width: 250px;
+            min-width: 200px;
+            max-width: 250px;
+        }
 
-/* INFO DE ACEITE/APROVAÇÃO - permite quebra controlada */
-.aceite-info,
-.aprovacao-info {
-    white-space: normal !important;
-    word-wrap: break-word;
-    line-height: 1.3;
+        .col-solicitante {
+            width: 180px;
+            min-width: 150px;
+            max-width: 180px;
+        }
+
+        .col-data-abertura {
+            width: 120px;
+            min-width: 100px;
+            max-width: 120px;
+        }
+
+        .col-categoria {
+            width: 150px;
+            min-width: 120px;
+            max-width: 150px;
+        }
 
         .col-importancia {
+            width: 100px;
+            min-width: 90px;
+            max-width: 100px;
+        }
+
+        .col-prioridade {
+            width: 100px;
+            min-width: 90px;
+            max-width: 100px;
+        }
+
+        .col-prazo {
+            width: 100px;
+            min-width: 90px;
+            max-width: 100px;
+        }
+
+        .col-status {
+            width: 120px;
+            min-width: 100px;
+            max-width: 120px;
+        }
+
+        .col-aceite {
+            width: 140px;
+            min-width: 120px;
+            max-width: 140px;
+        }
+
+        .col-acoes {
+            width: 100px;
+            min-width: 80px;
+            max-width: 100px;
+        }
+
+        /* GARANTIR QUE BADGES E BOTÕES NÃO QUEBREM */
+        .badge,
+        .btn-action,
+        .btn-aceitar {
+            white-space: nowrap;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* INFO DE ACEITE/APROVAÇÃO - permite quebra controlada */
+        .aceite-info,
+        .aprovacao-info {
+            white-space: normal !important;
+            word-wrap: break-word;
+            line-height: 1.3;
+            .col-importancia
+
+        {
             width: 100px;
         }
 
@@ -565,6 +644,31 @@
             font-size: 12px;
         }
 
+        /* Informação de Aprovação - AGORA IGUAL AO ACEITE */
+        .aprovacao-info {
+            font-size: 10px;
+            color: var(--gray-700);
+            line-height: 1.2;
+            text-align: center;
+            padding: 6px 4px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary); /* Azul para aprovação */
+            display: block;
+            max-width: 140px;
+            word-wrap: break-word;
+            white-space: normal;
+            margin-bottom: 4px;
+        }
+
+            .aprovacao-info strong {
+                display: block;
+                color: var(--gray-800);
+                font-size: 10px;
+                font-weight: 600;
+                margin-bottom: 2px;
+            }
+
         /* Responsividade */
         @media (max-width: 1024px) {
             .filter-section {
@@ -606,20 +710,21 @@
                 font-size: 10px;
             }
         }
-    </style>
 
+</style>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-<div class="container-main">
+    <div class="container-main">
         <!-- Header -->
         <div class="page-header">
             <h1 class="page-title">
-                <span class="title-icon"> 
-                    <i class="bi bi-folder2-open"></i>
+                <span class="title-icon">
+                    <i class="bi bi-hourglass-split"></i>
                 </span>
-                Minhas Demandas em Aberto
+                Minhas Demandas em Andamento
             </h1>
-            <p class="text-muted">Acompanhe as demandas que você aceitou e estão em aberto</p>
+            <p class="text-muted">Aqui estão as demandas que você aceitou e estão em andamento</p>
         </div>
 
         <!-- Resultados -->
@@ -628,12 +733,12 @@
         </div>
 
         <div class="grid-container">
-                       <asp:GridView ID="gvDemandasAberto" runat="server" CssClass="custom-grid"
-     AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-     OnPageIndexChanging="gvDemandasAberto_PageIndexChanging"
-     OnRowCommand="gvDemandasAberto_RowCommand"
-     OnRowDataBound="gvDemandasAberto_RowDataBound"
-     EmptyDataText="Nenhuma demanda em aberto encontrada.">
+            <asp:GridView ID="gvMinhasDemandas" runat="server" CssClass="custom-grid"
+                AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
+                OnPageIndexChanging="gvMinhasDemandas_PageIndexChanging"
+                OnRowCommand="gvMinhasDemandas_RowCommand"
+                OnRowDataBound="gvMinhasDemandas_RowDataBound"
+                EmptyDataText="Nenhuma demanda em andamento encontrada.">
 
                 <Columns>
                     <asp:BoundField DataField="CodDemanda" HeaderText="ID"
@@ -651,67 +756,79 @@
                     <asp:BoundField DataField="Categoria" HeaderText="Categoria"
                         ItemStyle-CssClass="text-left col-categoria" HeaderStyle-CssClass="text-left" />
 
+                    <asp:TemplateField HeaderText="Importância"
+                        ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
+                            <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower()
+                     .Replace("é", "e").Replace("á", "a").Replace("í", "i")
+                     .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
+                     .Replace("û", "u").Replace("ç", "c") %>'>
+                                <%# Eval("Importancia") %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
-                   <asp:TemplateField HeaderText="Importância"
-                       ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
-                       <ItemTemplate>
-                           <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower().Replace("é", "e").Replace("á", "a").Replace("í", "i").Replace("ê", "e").Replace("â", "a").Replace("ô", "o").Replace("û", "u").Replace("ç", "c") %>'>
-                               <%# Eval("Importancia") %>
-                           </span>
-                       </ItemTemplate>
-                   </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Prioridade"
+                        ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
+                            <span class='badge prioridade-<%# Eval("Prioridade").ToString().ToLower()
+                    .Replace("é", "e").Replace("á", "a").Replace("í", "i")
+                    .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
+                    .Replace("û", "u").Replace("ç", "c")
+                    .Replace(" ", "-") %>'>
+                                <%# Eval("Prioridade") %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
-                <asp:TemplateField HeaderText="Prioridade"
-                ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
-                <ItemTemplate>
-                    <span class='badge <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? 
-                                          "prioridade-nao-definida" : 
-                                          "prioridade-" + Eval("Prioridade").ToString().ToLower()
-                                              .Replace(" ", "-")
-                                              .Replace("com-prazo", "com-prazo")
-                                              .Replace("é", "e").Replace("á", "a").Replace("í", "i")
-                                              .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
-                                              .Replace("û", "u").Replace("ç", "c") %>'>
-                        <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? "N/A" : Eval("Prioridade") %>
-                    </span>
-                </ItemTemplate>
-            </asp:TemplateField>
-
-                <asp:TemplateField HeaderText="Prazo" 
-                    ItemStyle-CssClass="text-center col-prazo" HeaderStyle-CssClass="text-center">
-                    <ItemTemplate>
-                        <span class='badge badge-prazo <%# GetClassePrazo(Eval("DataPrazo")) %>'>
+                    <asp:TemplateField HeaderText="Prazo"
+                        ItemStyle-CssClass="text-center col-prazo" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
                             <%# !string.IsNullOrEmpty(Eval("DataPrazo")?.ToString()) && 
-                                  Eval("DataPrazo") != DBNull.Value ? 
-                                  Convert.ToDateTime(Eval("DataPrazo")).ToString("dd/MM/yyyy") : 
-                                  "N/A" %>
-                        </span>
-                    </ItemTemplate>
-                </asp:TemplateField>
+                    Eval("DataPrazo") != DBNull.Value ? 
+                    Convert.ToDateTime(Eval("DataPrazo")).ToString("dd/MM/yyyy") : 
+                    "<span class='text-muted'>N/A</span>" %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
 
                     <asp:TemplateField HeaderText="Status"
                         ItemStyle-CssClass="text-center col-status" HeaderStyle-CssClass="text-center">
                         <ItemTemplate>
-                            <span class='badge status-<%# Eval("Status").ToString().ToLower().Replace(" ", "-").Replace("ê", "e").Replace("é", "e").Replace("á", "a").Replace("í", "i").Replace("ó", "o").Replace("ú", "u").Replace("ã", "a").Replace("õ", "o").Replace("ç", "c").Replace("â", "a").Replace("ô", "o") %>'>
+                            <span class='badge status-<%# Eval("Status").ToString().ToLower()
+                    .Replace(" ", "-").Replace("ê", "e").Replace("é", "e").Replace("á", "a")
+                    .Replace("í", "i").Replace("ó", "o").Replace("ú", "u").Replace("ã", "a")
+                    .Replace("õ", "o").Replace("ç", "c").Replace("â", "a").Replace("ô", "o") %>'>
                                 <%# Eval("Status") %>
                             </span>
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Aceite"
+                    <asp:TemplateField HeaderText="Situação"
                         ItemStyle-CssClass="text-center col-aceite" HeaderStyle-CssClass="text-center">
                         <ItemTemplate>
+                            <!-- Informação de Aceite -->
                             <asp:Label ID="lblAceiteInfo" runat="server" CssClass="aceite-info"
                                 Visible='<%# Eval("CodPessoaExecucao") != null && Convert.ToInt32(Eval("CodPessoaExecucao")) > 0 %>'>
-                    <strong>Aceita</strong>
-                    por: <%# Eval("NomePessoaExecucao") %><br/>
-                    em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
+            <strong>Aceita</strong>
+            por: <%# Eval("NomePessoaExecucao") %><br/>
+            em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
                             </asp:Label>
 
+                            <!-- Informação de Aprovação -->
+                            <asp:Label ID="lblAprovacaoInfo" runat="server" CssClass="aprovacao-info"
+                                Visible='<%# Eval("CodPessoaAprovacao") != null && Convert.ToInt32(Eval("CodPessoaAprovacao")) > 0 %>'>
+            <strong>Aprovada</strong>
+            por: <%# Eval("NomePessoaAprovacao") %><br/>
+            em <%# Eval("DataAprovacao", "{0:dd/MM/yyyy HH:mm}") %>
+                            </asp:Label>
+
+                            <!-- Botão Aceitar (só aparece para executores quando não aceitaram ainda) -->
                             <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-aceitar"
                                 CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
-                                Visible='<%# Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0 %>'>
-                    <i class="bi bi-check-circle"></i> Aceitar
+                                Visible='<%# Eval("PapelUsuario").ToString() == "Executor" && 
+                       (Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0) %>'>
+            <i class="bi bi-check-circle"></i> Aceitar
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -720,7 +837,8 @@
                         ItemStyle-CssClass="text-center col-acoes" HeaderStyle-CssClass="text-center">
                         <ItemTemplate>
                             <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
-                                CommandName="Ver" CommandArgument='<%# Eval("CodDemanda") %>'>
+                                CommandName="Ver" CommandArgument='<%# Eval("CodDemanda") %>'
+                                ToolTip="Visualizar demanda">
                     <i class="bi bi-eye"></i> Ver
                             </asp:LinkButton>
                         </ItemTemplate>
@@ -733,4 +851,51 @@
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            colorStatusBadges();
+        });
+
+        function colorStatusBadges() {
+            const badges = document.querySelectorAll('.status-badge');
+            badges.forEach(badge => {
+                const statusText = badge.textContent.trim().toLowerCase();
+                badge.style.backgroundColor = '';
+                badge.style.color = '';
+
+                if (statusText.includes('aberta')) {
+                    badge.style.backgroundColor = '#e6f4ea';
+                    badge.style.color = '#137333';
+                } else if (statusText.includes('andamento')) {
+                    badge.style.backgroundColor = '#e8f0fe';
+                    badge.style.color = '#1a73e8';
+                } else if (statusText.includes('concluída') || statusText.includes('concluida')) {
+                    badge.style.backgroundColor = '#fef7e0';
+                    badge.style.color = '#f9ab00';
+                } else if (statusText.includes('fechada')) {
+                    badge.style.backgroundColor = '#fce8e6';
+                    badge.style.color = '#c5221f';
+                } else {
+                    badge.style.backgroundColor = '#f1f3f4';
+                    badge.style.color = '#5f6368';
+                }
+            });
+        }
+
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.addedNodes.length) {
+                    colorStatusBadges();
+                }
+            });
+        });
+
+        window.addEventListener('load', function () {
+            const gridContainer = document.querySelector('.grid-container');
+            if (gridContainer) {
+                observer.observe(gridContainer, { childList: true, subtree: true });
+            }
+        });
+    </script>
 </asp:Content>

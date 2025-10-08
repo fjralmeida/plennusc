@@ -5,7 +5,6 @@
 <head runat="server">
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" sizes="180x180" href="<%= ResolveUrl("~/Uploads/logo_Plennus.png") %>" />
-    
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -18,388 +17,381 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet" />
 
+<style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
 
-  <style>
-      * {
-       font-family: 'Poppins', sans-serif;
-   }
+        body {
+            overflow: hidden;
+            background-color: #f5f7fb;
+        }
 
-   body {
-       overflow: hidden;
-       background-color: #f5f7fb;
-   }
+        .nome-sistema {
+            font-weight: 600;
+            background: linear-gradient(to right, #4CB07A, #83CEEE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
 
-   .nome-sistema {
-       font-weight: 600;
-       background: linear-gradient(to right, #4CB07A, #83CEEE);
-       -webkit-background-clip: text;
-       -webkit-text-fill-color: transparent;
-       font-size: 18px;
-       white-space: nowrap;
-       overflow: hidden;
-       text-overflow: ellipsis;
-       max-width: 200px;
-   }
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            object-fit: cover;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
-   .user-avatar {
-       width: 38px;
-       height: 38px;
-       object-fit: cover;
-       border-radius: 50%;
-       cursor: pointer;
-   }
+        /* === SIDEBAR === */
+        .sidebar {
+            cursor: pointer;
+            width: 257px;
+            background-color: #ffffff;
+            border-right: 1px solid #e3e6ef;
+            padding: 1.0rem 0.5rem;
+            height: 100%;
+            font-size: 13.5px;
+            overflow-y: auto;
+            flex-shrink: 0; /* Impede que a sidebar encolha */
+        }
 
-   /* === SIDEBAR === */
-   .sidebar {
-       cursor: pointer;
-       width: 250px;
-       background-color: #ffffff;
-       border-right: 1px solid #e3e6ef;
-       padding: 1.0rem 0.5rem;
-       height: 100%;
-       font-size: 13.5px;
-       overflow-y: auto;
-       flex-shrink: 0; /* Impede que a sidebar encolha */
-   }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #3b3f5c;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            /* >>> PREVINE QUEBRA <<< */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-       .sidebar a {
-           display: flex;
-           align-items: center;
-           gap: 10px;
-           text-decoration: none;
-           color: #3b3f5c;
-           padding: 8px 16px;
-           border-radius: 6px;
-           transition: background-color 0.2s, color 0.2s;
-           font-weight: 500;
-           /* >>> PREVINE QUEBRA <<< */
-           white-space: nowrap;
-           overflow: hidden;
-           text-overflow: ellipsis;
-       }
+        .sidebar a:hover {
+            background-color: #f1f5ff;
+            color: #1d4ed8;
+        }
 
-           .sidebar a:hover {
-               background-color: #f1f5ff;
-               color: #1d4ed8;
-           }
+        .sidebar a.active {
+            background-color: #e0edff;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
 
-           .sidebar a.active {
-               background-color: #e0edff;
-               color: #1d4ed8;
-               font-weight: 600;
-           }
+        .sidebar .collapse a {
+            font-size: 13px;
+            padding-left: 16px;
+            font-weight: 400;
+        }
 
-       .sidebar .collapse a {
-           font-size: 13px;
-           padding-left: 16px;
-           font-weight: 400;
-       }
+        .sidebar .bi {
+            font-size: 15px;
+            color: #9ca3af;
+            flex-shrink: 0; /* Ícone nunca encolhe */
+        }
 
-       .sidebar .bi {
-           font-size: 15px;
-           color: #9ca3af;
-           flex-shrink: 0; /* Ícone nunca encolhe */
-       }
+        .sidebar span {
+            padding-left: 6px; /* Espaço entre ícone e texto */
+        }
 
-       .sidebar span {
-           padding-left: 6px; /* Espaço entre ícone e texto */
-       }
+        .topbar {
+            height: 70px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 24px;
+        }
 
-   .topbar {
-       height: 70px;
-       background-color: #fff;
-       border-bottom: 1px solid #e0e0e0;
-       padding: 0 24px;
-   }
+        .highlight {
+            color: #000; /* Texto escuro */
+            font-weight: 600;
+            padding: 1px 3px;
+            border-radius: 3px;
+        }
 
-   .highlight {
-       color: #000; /* Texto escuro */
-       font-weight: 600;
-       padding: 1px 3px;
-       border-radius: 3px;
-   }
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #83CEEE !important;
+            color: #000 !important;
+        }
 
-   .dropdown-menu .dropdown-item:hover {
-       background-color: #83CEEE !important;
-       color: #000 !important;
-   }
+        .dropdown-menu .dropdown-item.text-danger:hover {
+            background-color: #f8d7da !important;
+            color: #842029 !important;
+        }
 
-   .dropdown-menu .dropdown-item.text-danger:hover {
-       background-color: #f8d7da !important;
-       color: #842029 !important;
-   }
+        .input-group .form-control {
+            border-left: none;
+        }
 
-   .input-group .form-control {
-       border-left: none;
-   }
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 0 16px;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+        }
 
-   .section-label {
-       font-size: 11px;
-       text-transform: uppercase;
-       padding: 0 16px;
-       margin-top: 1rem;
-       margin-bottom: 0.5rem;
-       color: #6b7280;
-   }
+        /* 🌟 USER DROPDOWN MODERNO */
+        .user-dropdown {
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            min-width: 280px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            transform-origin: top right;
+        }
 
-   /* 🌟 USER DROPDOWN MODERNO */
-   .user-dropdown {
-       border-radius: 12px;
-       border: 1px solid #e0e0e0;
-       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-       min-width: 280px;
-       transition: transform 0.2s ease, opacity 0.2s ease;
-       transform-origin: top right;
-   }
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
 
-   .dropdown-menu.show {
-       display: block;
-       opacity: 1 !important;
-       transform: translateY(0) !important;
-   }
+        .dropdown-menu {
+            opacity: 0;
+            transform: translateY(10px);
+        }
 
-   .dropdown-menu {
-       opacity: 0;
-       transform: translateY(10px);
-   }
+        .user-dropdown-avatar {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #4CB07A;
+            box-shadow: 0 0 5px rgba(0,0,0,0.05);
+        }
 
-   .user-dropdown-avatar {
-       width: 60px;
-       height: 60px;
-       object-fit: cover;
-       border-radius: 50%;
-       border: 2px solid #4CB07A;
-       box-shadow: 0 0 5px rgba(0,0,0,0.05);
-   }
+        .user-dropdown .form-control-sm {
+            font-size: 13px;
+            border-radius: 8px;
+        }
 
-   .user-dropdown .form-control-sm {
-       font-size: 13px;
-       border-radius: 8px;
-   }
+        .user-dropdown .dropdown-item {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            transition: background-color 0.2s ease-in-out;
+        }
 
-   .user-dropdown .dropdown-item {
-       font-size: 14px;
-       display: flex;
-       align-items: center;
-       padding: 8px 12px;
-       transition: background-color 0.2s ease-in-out;
-   }
+        .user-dropdown .dropdown-item i {
+            font-size: 16px;
+            color: #4CB07A;
+            margin-right: 8px;
+        }
 
-       .user-dropdown .dropdown-item i {
-           font-size: 16px;
-           color: #4CB07A;
-           margin-right: 8px;
-       }
+        .user-dropdown .dropdown-item:hover {
+            background-color: #f0fdf4;
+            color: #1e3a34;
+        }
 
-       .user-dropdown .dropdown-item:hover {
-           background-color: #f0fdf4;
-           color: #1e3a34;
-       }
+        .user-dropdown .btn-outline-danger {
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            margin-top: 6px;
+            width: 100%;
+        }
 
-   .user-dropdown .btn-outline-danger {
-       font-size: 14px;
-       padding: 6px 12px;
-       border-radius: 8px;
-       margin-top: 6px;
-       width: 100%;
-   }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-   @keyframes fadeIn {
-       from {
-           opacity: 0;
-           transform: translateY(10px);
-       }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-       to {
-           opacity: 1;
-           transform: translateY(0);
-       }
-   }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
-   .user-avatar {
-       width: 40px;
-       height: 40px;
-       border-radius: 50%;
-       cursor: pointer;
-   }
+        .user-dropdown-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
 
-   .user-dropdown-avatar {
-       width: 60px;
-       height: 60px;
-       border-radius: 50%;
-   }
+        .dropdown-item {
+            display: block;
+            padding: 8px 10px;
+            text-decoration: none;
+            color: #333;
+        }
 
-   .dropdown-item {
-       display: block;
-       padding: 8px 10px;
-       text-decoration: none;
-       color: #333;
-   }
+            .dropdown-item:hover {
+                background: #f1f1f1;
+            }
 
-       .dropdown-item:hover {
-           background: #f1f1f1;
-       }
+        /* seta gira suave baseado no aria-expanded do cabeçalho */
+        .toggle-icon {
+            transition: transform .18s ease;
+            transform-origin: 50% 50%;
+            transform: rotate(0deg); /* fechado = seta para a direita */
+            will-change: transform;
+        }
 
-   /* seta gira suave baseado no aria-expanded do cabeçalho */
-   .toggle-icon {
-       transition: transform .18s ease;
-       transform-origin: 50% 50%;
-       transform: rotate(0deg); /* fechado = seta para a direita */
-       will-change: transform;
-   }
+        /* aberto = seta apontando para baixo (90°), sem voltar “pelo outro lado” */
+        a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon {
+            transform: rotate(90deg);
+        }
 
-   /* aberto = seta apontando para baixo (90°), sem voltar “pelo outro lado” */
-   a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon {
-       transform: rotate(90deg);
-   }
+        /* topo da sidebar como na imagem 2 */
+        .sidebar-top{
+          display:flex; align-items:center; justify-content:space-between;
+          padding:8px 10px;
+          margin:0 8px 12px;
+          background:#f7f9fc;
+          border-radius:12px;
+        }
+        .sb-title{
+          font-weight:600;
+          font-size:15px;
+          color:#334155;
+        }
 
-    /* ===== Sidebar ===== */
-    #layout{ --sb-w:250px; --sb-w-collapsed:64px; }
-    .sidebar{
-      cursor:pointer; width:var(--sb-w); background:#fff; border-right:1px solid #e3e6ef;
-      padding:1rem .5rem; height:100%; font-size:13.5px; overflow-y:auto; flex-shrink:0;
-      transition:width .18s ease, box-shadow .18s ease;
-    }
-    .sidebar a{ display:flex; align-items:center; gap:10px; text-decoration:none; color:#3b3f5c;
-      padding:10px 12px; border-radius:8px; transition:background-color .2s,color .2s; font-weight:500; }
-    .sidebar a:hover{ background:#f4f7fb; color:#1d4ed8; }
-    .sidebar .bi{ font-size:15px; color:#9ca3af; flex-shrink:0; }
-    .label{ white-space:nowrap; }
-    .toggle-icon{ margin-left:auto; transition:transform .18s ease; }
+        /* botão “pill” só com o ícone */
+        .sb-toggle{
+          width:34px; height:34px;
+          display:inline-flex; align-items:center; justify-content:center;
+          border:0; outline:0;
+          border-radius:10px;
+          background:#f1f5f9;
+          box-shadow:0 1px 2px rgba(0,0,0,.05);
+          transition:background .15s ease;
+        }
+        .sb-toggle i{ font-size:18px; color:#6b7280; }
+        .sb-toggle:hover{ background:#eef2ff; }
 
-    .topbar{ height:70px; background:#fff; border-bottom:1px solid #e0e0e0; padding:0 24px; }
+        /* quando a barra estiver colapsada, esconda o texto e compacte o topo */
+        #layout.sb-collapsed .sb-title{ display:none; }
+        #layout.sb-collapsed .sidebar-top{
+          background:#ffffff;
+          padding:6px;
+          margin:0 8px 10px;
+          justify-content:flex-end;
+        }
 
-    /* topo da sidebar */
-    .sidebar-top{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 10px; margin:0 8px 12px; background:#f7f9fc; border-radius:12px;
-    }
-    .sb-title{ font-weight:600; font-size:15px; color:#334155; }
+        #layout{ --sb-w:250px; --sb-w-collapsed:64px; }
 
-    /* botão “pill” só com o ícone */
-    .sb-toggle{
-      width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center;
-      border:0; outline:0; border-radius:10px; background:#f1f5f9;
-      box-shadow:0 1px 2px rgba(0,0,0,.05); transition:background .15s ease;
-    }
-    .sb-toggle i{ font-size:18px; color:#6b7280; }
-    .sb-toggle:hover{ background:#eef2ff; }
+        /* fechada = compacta */
+        #layout.sb-collapsed .sidebar{ width:var(--sb-w-collapsed); }
 
-    /* estado colapsado */
-    #layout.sb-collapsed .sidebar{ width:var(--sb-w-collapsed); }
-    #layout.sb-collapsed .sb-title{ display:none; }
-    #layout.sb-collapsed .sidebar-top{ background:#ffffff; padding:6px; margin:0 8px 10px; justify-content:flex-end; }
+        /* quando fechada, não deixa submenus ocuparem espaço (evita “buraco”) */
+        #layout.sb-collapsed .sidebar .submenu,
+        #layout.sb-collapsed .sidebar .collapse{
+          display:none !important;
+          height:0 !important;
+          overflow:hidden !important;
+          padding:0 !important; margin:0 !important;
+        }
 
-    /* quando fechada, esconder textos/chevrons; centralizar ícone */
-    #layout.sb-collapsed .sidebar a{ justify-content:center !important; gap:0 !important; padding-left:0; padding-right:0; }
-    #layout.sb-collapsed .sidebar .label{ display:none !important; }
-    #layout.sb-collapsed .sidebar .toggle-icon{ display:none !important; }
-    #layout.sb-collapsed .sidebar .bi{ margin-right:0 !important; }
+        /* ícone centralizado e texto oculto quando fechada */
+        #layout.sb-collapsed .sidebar a{
+          justify-content:center !important; gap:0 !important;
+          padding-left:0; padding-right:0;
+        }
+        #layout.sb-collapsed .sidebar .label{ display:none !important; }
+        #layout.sb-collapsed .sidebar .toggle-icon{ display:none !important; }
+        #layout.sb-collapsed .sidebar .bi{ margin-right:0 !important; }
 
-    /* EXPANSÃO NO HOVER (preview) */
-    #layout.sb-collapsed .sidebar:hover,
-    #layout.sb-collapsed .sidebar.sb-forceopen{
-      width:var(--sb-w); box-shadow:0 8px 24px rgba(0,0,0,.08); z-index:1000;
-    }
-    #layout.sb-collapsed .sidebar:hover .label,
-    #layout.sb-collapsed .sidebar.sb-forceopen .label,
-    #layout.sb-collapsed .sidebar:hover .toggle-icon,
-    #layout.sb-collapsed .sidebar.sb-forceopen .toggle-icon{
-      display:inline-flex !important; white-space:nowrap;
-    }
-    /* mostrar submenus já abertos durante o hover */
-    #layout.sb-collapsed .sidebar:hover .collapse.show,
-    #layout.sb-collapsed .sidebar.sb-forceopen .collapse.show{
-      display:block !important; height:auto !important; overflow:visible !important;
-    }
+        /* ===== EXPANSÃO NO HOVER (ou “forçada” via classe) ===== */
+        #layout.sb-collapsed .sidebar:hover,
+        #layout.sb-collapsed .sidebar.sb-forceopen{
+          width:var(--sb-w);
+          box-shadow:0 8px 24px rgba(0,0,0,.08);
+          z-index:1000;
+        }
 
-    /* estado expandido (normal) */
-#layout:not(.sb-collapsed) .sidebar-top{
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;   /* título à esquerda */
-  gap: 10px;
-  padding: 10px 56px 10px 14px;  /* espaço à direita p/ o botão NÃO sobrepor o texto */
-  background: #f7f9fc;
-  border-radius: 12px;
-}
+        /* quando expandida (hover/forçada), volta a mostrar rótulos/chevrons */
+        #layout.sb-collapsed .sidebar:hover .label,
+        #layout.sb-collapsed .sidebar.sb-forceopen .label,
+        #layout.sb-collapsed .sidebar:hover .toggle-icon,
+        #layout.sb-collapsed .sidebar.sb-forceopen .toggle-icon{
+          display:inline-flex !important;
+          white-space:nowrap;
+        }
 
-/* botão “pill” encaixado à direita e centralizado verticalmente */
-#layout:not(.sb-collapsed) .sidebar-top .sb-toggle{
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 34px;
-  height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 10px;
-  background: #f1f5f9;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05);
-}
+        /* permite que os submenus ABERTOS apareçam durante o hover/força
+           (sem abrir todos automaticamente) */
+        #layout.sb-collapsed .sidebar:hover .collapse.show,
+        #layout.sb-collapsed .sidebar.sb-forceopen .collapse.show{
+          display:block !important;
+          height:auto !important;
+          overflow:visible !important;
+        }
 
-/* estado colapsado: mantém o botão central no “pill” e oculta o título */
-#layout.sb-collapsed .sidebar-top{
-  background: #ffffff;
-  padding: 6px;
-  margin: 0 8px 10px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center !important;  /* botão no centro */
-  align-items: center;
-}
-#layout.sb-collapsed .sb-title{ display: none; }
-#layout.sb-collapsed .sidebar-top .sb-toggle{
-  position: static;            /* volta ao fluxo normal */
-  transform: none;
-  width: 36px;
-  height: 36px;
-}
+        /* links: texto à esquerda, chevron à direita quando aberta */
+        .sidebar a{ display:flex; align-items:center; justify-content:flex-start !important; }
+        .sidebar .toggle-icon{ margin-left:auto; }
+        .sidebar .label{ white-space:nowrap; }
+        .sidebar .submenu{ display:block !important; }
+        .sidebar .submenu > li{ display:block; }
 
-    /* seta gira quando o cabeçalho está aberto (controlado via aria-expanded) */
-    a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon{ transform:rotate(90deg); }
+        /* deixa a linha toda “clicável” com área confortável */
+        .sidebar a.menu-head,
+        .sidebar .submenu a{
+          padding:10px 12px;
+          border-radius:8px;
+        }
+        .sidebar a.menu-head:hover,
+        .sidebar .submenu a:hover{
+          background:#f4f7fb;
+        }
+        .sidebar a, .sidebar button { cursor: pointer; }
 
-    /* links/click area */
-    .sidebar a{ justify-content:flex-start !important; }
-    .sidebar a.menu-head,
-    .sidebar .submenu a{ padding:10px 12px; border-radius:8px; }
-    .sidebar a.menu-head:hover,
-    .sidebar .submenu a:hover{ background:#f4f7fb; }
-    .sidebar a, .sidebar button{ cursor:pointer; }
+        /* transição suave de largura/sombra para dar fluidez */
+        .sidebar{ transition: width .18s ease, box-shadow .18s ease; }
+        @media (prefers-reduced-motion: reduce){
+          .sidebar{ transition: none; }
+        }
 
-    /* User dropdown */
-    .user-dropdown{ border-radius:12px; border:1px solid #e0e0e0; box-shadow:0 10px 30px rgba(0,0,0,.1); min-width:280px; }
-    .user-dropdown-avatar{ width:60px; height:60px; object-fit:cover; border-radius:50%; border:2px solid #4CB07A; }
-    .dropdown-item{ display:block; padding:8px 10px; color:#333; }
-    .dropdown-item:hover{ background:#f1f1f1; }
+        /* botão do topo: quando fechado, fica só o ícone; quando aberto, mostra o texto */
+        .sidebar-top .sb-toggle { display:inline-flex; align-items:center; gap:.5rem; }
+        .sidebar-top .sb-toggle .btn-label { font-weight:600; color:#334155; }
+        #layout.sb-collapsed .sidebar-top { justify-content:center !important; }
+        #layout.sb-collapsed .sidebar-top .sb-toggle {
+          width:36px; height:36px; padding:0; gap:0; justify-content:center;
+        }
+        #layout.sb-collapsed .sidebar-top .sb-toggle .btn-label { display:none; }
+        #layout.sb-collapsed .sidebar-top .sb-toggle .bi-list { margin:0; }
+    </style>
 
-    .highlight{ color:#000; font-weight:600; padding:1px 3px; border-radius:3px; background:transparent; }
 
-    @media (prefers-reduced-motion: reduce){
-      .sidebar{ transition:none; }
-    }
-  </style>
+    <script>
+        // Função para abrir/fechar menu
+        function toggleUserMenu() {
+            const menu = document.getElementById('userDropdown');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
 
-  <!-- NADA de JS da sidebar aqui em cima além do dropdown do usuário -->
-  <script>
-      // Dropdown do usuário (apenas um bloco)
-      function toggleUserMenu() {
-          const menu = document.getElementById('userDropdown');
-          menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-      }
-      document.addEventListener('click', function (e) {
-          const avatar = document.querySelector('.user-avatar');
-          const menu = document.getElementById('userDropdown');
-          if (!avatar || !menu) return;
-          if (!avatar.contains(e.target) && !menu.contains(e.target)) menu.style.display = 'none';
-      });
-  </script>
+        // Fecha menu clicando fora
+        document.addEventListener('click', function (e) {
+            const avatar = document.querySelector('.user-avatar');
+            const menu = document.getElementById('userDropdown');
+            if (!avatar.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+    </script>
 
-  <asp:ContentPlaceHolder ID="head" runat="server" />
+
+    <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
 <form id="form1" runat="server">
@@ -483,46 +475,46 @@
 
         <ul class="list-unstyled">
          <!-- Pessoas -->
-<li class="mb-2">
-  <a class="d-flex justify-content-between align-items-center menu-head"
-     data-bs-toggle="collapse" href="#menuGestaoPessoas"
-     role="button" aria-expanded="true" aria-controls="menuGestaoPessoas" title="Gestão de Pessoas">
-    <span>
-      <i class="bi bi-person-badge me-2"></i>
-      <strong class="label"> Pessoas</strong>
-    </span>
-    <i class="bi bi-chevron-right toggle-icon"></i>
-  </a>
+        <li class="mb-2">
+          <a class="d-flex justify-content-between align-items-center menu-head"
+             data-bs-toggle="collapse" href="#menuGestaoPessoas"
+             role="button" aria-expanded="true" aria-controls="menuGestaoPessoas" title="Gestão de Pessoas">
+            <span>
+              <i class="bi bi-person-badge me-2"></i>
+              <strong class="label"> Pessoas</strong>
+            </span>
+            <i class="bi bi-chevron-right toggle-icon"></i>
+          </a>
 
-  <div class="collapse show ms-3" id="menuGestaoPessoas">
-    <ul class="list-unstyled ps-3 submenu">
-      <!-- Submenu: Colaboradores -->
-      <li class="mb-1">
-        <a class="d-flex justify-content-between align-items-center"
-           data-bs-toggle="collapse" href="#subMenuColaboradores"
-           role="button" aria-expanded="false" aria-controls="subMenuColaboradores" title="Colaboradores">
-          <span>
-            <i class="bi bi-people me-2"></i>
-            <span class="label">Colaboradores</span>
-          </span>
-          <i class="bi bi-chevron-right toggle-icon"></i>
-        </a>
+          <div class="collapse show ms-3" id="menuGestaoPessoas">
+            <ul class="list-unstyled ps-3 submenu">
+              <!-- Submenu: Colaboradores -->
+              <li class="mb-1">
+                <a class="d-flex justify-content-between align-items-center"
+                   data-bs-toggle="collapse" href="#subMenuColaboradores"
+                   role="button" aria-expanded="false" aria-controls="subMenuColaboradores" title="Colaboradores">
+                  <span>
+                    <i class="bi bi-people me-2"></i>
+                    <span class="label">Colaboradores</span>
+                  </span>
+                  <i class="bi bi-chevron-right toggle-icon"></i>
+                </a>
 
-        <div class="collapse ms-3" id="subMenuColaboradores">
-          <ul class="list-unstyled ps-3">
-            <li>
-              <a href="employeeManagementMedic.aspx?acao=incluir" title="Incluir Usuário">
-                <i class="bi bi-person-plus me-2"></i><span class="label">Incluir Usuário</span>
-              </a>
-            </li>
-            <li>
-              <a href="employeeManagementMedic.aspx?acao=consultar" title="Consultar Usuário">
-                <i class="bi bi-search me-2"></i><span class="label">Consultar Usuário</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </li>
+                <div class="collapse ms-3" id="subMenuColaboradores">
+                  <ul class="list-unstyled ps-3">
+                    <li>
+                      <a href="employeeManagementMedic.aspx?acao=incluir" title="Incluir Usuário">
+                        <i class="bi bi-person-plus me-2"></i><span class="label">Incluir Usuário</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="employeeManagementMedic.aspx?acao=consultar" title="Consultar Usuário">
+                        <i class="bi bi-search me-2"></i><span class="label">Consultar Usuário</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
 
       <!-- Itens diretos -->
       <li>
@@ -562,6 +554,53 @@
             </div>
           </li>
 
+        <li class="mb-2" id="liMenuEstruturas" runat="server">
+            <a class="d-flex justify-content-between align-items-center menu-head"
+               data-bs-toggle="collapse" href="#collapseMenuEstruturas"
+               role="button" aria-expanded="false" aria-controls="collapseMenuEstruturas" title="Estruturas do Sistema">
+                <span><i class="bi bi-diagram-3 me-2"></i><strong class="label"> Estruturas</strong></span>
+                <i class="bi bi-chevron-right toggle-icon"></i>
+            </a>
+            <div class="collapse ms-3" id="collapseMenuEstruturas">
+                <ul class="list-unstyled ps-3 submenu">
+                    <li><a href="../structureTypeMedic.aspx" title="Gerenciar Estruturas" id="linkEstruturas" runat="server"><i class="bi bi-gear me-2"></i><span class="label">Gerenciar Estruturas</span></a></li>
+                </ul>
+            </div>
+        </li>
+
+                   <!-- Demanda -->
+        <li class="mb-2">
+          <a class="d-flex justify-content-between align-items-center menu-head"
+             data-bs-toggle="collapse" href="#menuDemanda"
+             role="button" aria-expanded="false" aria-controls="menuDemanda" title="Demanda">
+            <span><i class="bi bi-envelope me-2"></i><strong class="label"> Demanda</strong></span>
+            <i class="bi bi-chevron-right toggle-icon"></i>
+          </a>
+          <div class="collapse ms-3" id="menuDemanda">
+            <ul class="list-unstyled ps-3 submenu">
+              <li><a href="demandMedic.aspx" title="Criar Demanda"><i class="bi bi-plus-circle me-2"></i><span class="label">Criar Demanda</span></a></li>
+              <li><a href="listDemandMedic.aspx" title="Listar Demandas"><i class="bi bi-list-ul me-2"></i><span class="label">Listar Demandas</span></a></li>
+              <li>
+                <a class="d-flex justify-content-between align-items-center"
+                   data-bs-toggle="collapse" href="#subMenuMinhasDemandas"
+                   role="button" aria-expanded="false" aria-controls="subMenuMinhasDemandas" title="Minhas Demandas">
+                  <span><i class="bi bi-inboxes me-2"></i><span class="label">Minhas Demandas</span></span>
+                  <i class="bi bi-chevron-right toggle-icon"></i>
+                </a>
+                <div class="collapse ms-3" id="subMenuMinhasDemandas" runat="server">
+                  <ul class="list-unstyled ps-3">
+                    <li><a href="myDemandsOpenMedic.aspx" title="Em Aberto"><i class="bi bi-folder2-open me-2"></i><span class="label">Em Aberto</span></a></li>
+                    <li><a href="myDemandsProgressMedic.aspx" title="Em Andamento"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Em Andamento</span></a></li>
+                    <li id="menuAguardandoAprovacao" runat="server"><a href="../myDemandsWaitingMedic.aspx" title="Aguardando Aceite" id="linkAguardando" runat="server"><i class="bi bi-clock-history me-2"></i><span class="label">Aguardando Aprovação</span></a></li>
+                    <li><a href="myDemandsRefusedMedic.aspx" title="Recusadas"><i class="bi bi-x-circle me-2"></i><span class="label">Recusadas</span></a></li>
+                    <li><a href="myDemandsCompletedMedic.aspx" title="Concluídas"><i class="bi bi-check-circle me-2"></i><span class="label">Concluídas</span></a></li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+
         <%--  <li><a href="#"><i class="bi bi-chat-dots"></i><span class="label">Chat</span></a></li>--%>
         </ul>
       </nav>
@@ -574,18 +613,18 @@
   </div>
 </form>
 
-   <!-- Bootstrap JS (carrega só se ainda não estiver disponível; evita dupla carga com a página filha) -->
-   <script>
-       (function ensureBootstrapOnce() {
-           if (!(window.bootstrap && window.bootstrap.Collapse)) {
-               var s = document.createElement('script');
-               s.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js';
-               s.async = false;
-               document.head.appendChild(s);
-           }
-       })();
-   </script>
-<!-- ========== SEUS SCRIPTS (INTACTOS) ========== -->
+    <!-- Bootstrap JS (carrega só se ainda não estiver disponível; evita dupla carga com a página filha) -->
+    <script>
+        (function ensureBootstrapOnce() {
+            if (!(window.bootstrap && window.bootstrap.Collapse)) {
+                var s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js';
+                s.async = false;
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+
 <script>
     (function () {
         const layout = document.getElementById('layout');
@@ -668,164 +707,158 @@
     })();
 </script>
 
-<!-- Sidebar: estado, ícone e toggle robusto (anti-dupla carga) -->
-<script>
-    (function () {
-        if (window.__SIDEBAR_INIT_DONE__) return;
-        window.__SIDEBAR_INIT_DONE__ = true;
-
-        const STORAGE_KEY = 'openMenuIds';
-
-        function getHeadByCollapseId(id) {
-            return document.querySelector(`[data-bs-target="#${id}"]`)
-                || document.querySelector(`a[href="#${id}"]`);
-        }
-
-        function setIconByHead(head, isOpen) {
-            if (!head) return;
-            head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-
-            // garante que o glyph é sempre o mesmo; rotação fica por conta do CSS
-            const icon = head.querySelector('.toggle-icon');
-            if (!icon) return;
-            icon.classList.remove('bi-chevron-down');
-            icon.classList.add('bi', 'bi-chevron-right');
-        }
 
 
-        window.addEventListener('load', function () {
-            // Garante instâncias sem auto-toggle
-            document.querySelectorAll('.collapse[id]').forEach(el => {
-                bootstrap.Collapse.getOrCreateInstance(el, { toggle: false });
-            });
+    <!-- Sidebar: estado, ícone e toggle robusto (anti-dupla carga) -->
+    <script>
+        (function () {
+            if (window.__SIDEBAR_INIT_DONE__) return;
+            window.__SIDEBAR_INIT_DONE__ = true;
 
-            // helper local para saber se a barra está colapsada
-            const isSbCollapsed = () => document.getElementById('layout')?.classList.contains('sb-collapsed');
+            const STORAGE_KEY = 'openMenuIds';
 
-            // Toggle MANUAL em CAPTURA (sem brigar com o handler da sidebar)
-            document.addEventListener('click', function (ev) {
-                const head = ev.target.closest('a[data-bs-toggle="collapse"]');
+            function getHeadByCollapseId(id) {
+                return document.querySelector(`[data-bs-target="#${id}"]`)
+                    || document.querySelector(`a[href="#${id}"]`);
+            }
+
+            function setIconByHead(head, isOpen) {
                 if (!head) return;
+                head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 
-                // *** IMPORTANTE ***
-                // Se a barra está colapsada, NÃO toggla aqui.
-                // Deixe o handler da sidebar abrir a barra e dar show() no alvo.
-                if (isSbCollapsed()) return;
-
-                const sel = head.getAttribute('data-bs-target') || head.getAttribute('href');
-                if (!sel || sel.charAt(0) !== '#') return;
-
-                ev.preventDefault();
-                ev.stopPropagation();
-                if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
-
-                const target = document.querySelector(sel);
-                if (!target) return;
-
-                const inst = bootstrap.Collapse.getOrCreateInstance(target, { toggle: false });
-                target.classList.contains('show') ? inst.hide() : inst.show();
-            }, true);
+                // garante que o glyph é sempre o mesmo; rotação fica por conta do CSS
+                const icon = head.querySelector('.toggle-icon');
+                if (!icon) return;
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi', 'bi-chevron-right');
+            }
 
 
-            // Eventos finais (estado garantido): atualizam ícone e storage
-            document.addEventListener('shown.bs.collapse', function (e) {
-                const head = getHeadByCollapseId(e.target.id);
-                setIconByHead(head, true);
-                const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-                if (!list.includes(e.target.id)) {
-                    list.push(e.target.id);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-                }
-            });
+            window.addEventListener('load', function () {
+                // Garante instâncias sem auto-toggle
+                document.querySelectorAll('.collapse[id]').forEach(el => {
+                    bootstrap.Collapse.getOrCreateInstance(el, { toggle: false });
+                });
 
-            document.addEventListener('hidden.bs.collapse', function (e) {
-                const head = getHeadByCollapseId(e.target.id);
-                setIconByHead(head, false);
-                const list = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')).filter(x => x !== e.target.id);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-            });
+                // helper local para saber se a barra está colapsada
+                const isSbCollapsed = () => document.getElementById('layout')?.classList.contains('sb-collapsed');
 
-            // Restaura menus abertos
-            let open = [];
-            try { open = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { }
-            open.forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                bootstrap.Collapse.getOrCreateInstance(el, { toggle: false }).show();
-                const head = getHeadByCollapseId(id);
-                setIconByHead(head, true);
-            });
-        }, { once: true });
-    })();
-</script>
+                // Toggle MANUAL em CAPTURA (sem brigar com o handler da sidebar)
+                document.addEventListener('click', function (ev) {
+                    const head = ev.target.closest('a[data-bs-toggle="collapse"]');
+                    if (!head) return;
 
-<!-- Navegar limpando estado dos menus -->
-<script>
-    function limparMenuESeguir(url) {
-        localStorage.removeItem('openMenuIds');
-        window.location.href = url;
-    }
-</script>
+                    // *** IMPORTANTE ***
+                    // Se a barra está colapsada, NÃO toggla aqui.
+                    // Deixe o handler da sidebar abrir a barra e dar show() no alvo.
+                    if (isSbCollapsed()) return;
 
-<!-- Busca na sidebar (sem interferir nos cabeçalhos/ícones) -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const inputBusca = document.getElementById('txtBusca');
-        if (!inputBusca) return;
+                    const sel = head.getAttribute('data-bs-target') || head.getAttribute('href');
+                    if (!sel || sel.charAt(0) !== '#') return;
 
-        inputBusca.addEventListener('input', function () {
-            const termo = inputBusca.value.trim();
-            const esc = termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`(${esc})`, 'gi');
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
 
-            // limpa destaques antigos
-            document.querySelectorAll('.highlight').forEach(span => {
-                span.outerHTML = span.innerText;
-            });
+                    const target = document.querySelector(sel);
+                    if (!target) return;
 
-            if (!termo) return;
+                    const inst = bootstrap.Collapse.getOrCreateInstance(target, { toggle: false });
+                    target.classList.contains('show') ? inst.hide() : inst.show();
+                }, true);
 
-            const sidebar = document.querySelector('.sidebar');
-            if (!sidebar) return;
 
-            const walker = document.createTreeWalker(
-                sidebar,
-                NodeFilter.SHOW_TEXT,
-                {
-                    acceptNode(node) {
-                        const p = node.parentNode;
-                        if (!p) return NodeFilter.FILTER_REJECT;
-                        // não destacar textos dentro do cabeçalho do menu / ícone
-                        if (p.closest && p.closest('a[data-bs-toggle="collapse"]')) return NodeFilter.FILTER_REJECT;
-                        if (p.classList && p.classList.contains('toggle-icon')) return NodeFilter.FILTER_REJECT;
-                        return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                // Eventos finais (estado garantido): atualizam ícone e storage
+                document.addEventListener('shown.bs.collapse', function (e) {
+                    const head = getHeadByCollapseId(e.target.id);
+                    setIconByHead(head, true);
+                    const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                    if (!list.includes(e.target.id)) {
+                        list.push(e.target.id);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
                     }
-                }
-            );
+                });
 
-            const nodes = [];
-            while (walker.nextNode()) nodes.push(walker.currentNode);
+                document.addEventListener('hidden.bs.collapse', function (e) {
+                    const head = getHeadByCollapseId(e.target.id);
+                    setIconByHead(head, false);
+                    const list = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')).filter(x => x !== e.target.id);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+                });
 
-            nodes.forEach(node => {
-                const texto = node.nodeValue;
-                if (regex.test(texto)) {
-                    const wrap = document.createElement('span');
-                    wrap.innerHTML = texto.replace(regex, '<span class="highlight">$1</span>');
-                    const frag = document.createDocumentFragment();
-                    while (wrap.firstChild) frag.appendChild(wrap.firstChild);
-                    node.parentNode.replaceChild(frag, node);
-                }
+                // Restaura menus abertos
+                let open = [];
+                try { open = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { }
+                open.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    bootstrap.Collapse.getOrCreateInstance(el, { toggle: false }).show();
+                    const head = getHeadByCollapseId(id);
+                    setIconByHead(head, true);
+                });
+            }, { once: true });
+        })();
+    </script>
+
+    <!-- Navegar limpando estado dos menus -->
+    <script>
+        function limparMenuESeguir(url) {
+            localStorage.removeItem('openMenuIds');
+            window.location.href = url;
+        }
+    </script>
+
+    <!-- Busca na sidebar (sem interferir nos cabeçalhos/ícones) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputBusca = document.getElementById('txtBusca');
+            if (!inputBusca) return;
+
+            inputBusca.addEventListener('input', function () {
+                const termo = inputBusca.value.trim();
+                const esc = termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${esc})`, 'gi');
+
+                // limpa destaques antigos
+                document.querySelectorAll('.highlight').forEach(span => {
+                    span.outerHTML = span.innerText;
+                });
+
+                if (!termo) return;
+
+                const sidebar = document.querySelector('.sidebar');
+                if (!sidebar) return;
+
+                const walker = document.createTreeWalker(
+                    sidebar,
+                    NodeFilter.SHOW_TEXT,
+                    {
+                        acceptNode(node) {
+                            const p = node.parentNode;
+                            if (!p) return NodeFilter.FILTER_REJECT;
+                            // não destacar textos dentro do cabeçalho do menu / ícone
+                            if (p.closest && p.closest('a[data-bs-toggle="collapse"]')) return NodeFilter.FILTER_REJECT;
+                            if (p.classList && p.classList.contains('toggle-icon')) return NodeFilter.FILTER_REJECT;
+                            return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                        }
+                    }
+                );
+
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+
+                nodes.forEach(node => {
+                    const texto = node.nodeValue;
+                    if (regex.test(texto)) {
+                        const wrap = document.createElement('span');
+                        wrap.innerHTML = texto.replace(regex, '<span class="highlight">$1</span>');
+                        const frag = document.createDocumentFragment();
+                        while (wrap.firstChild) frag.appendChild(wrap.firstChild);
+                        node.parentNode.replaceChild(frag, node);
+                    }
+                });
             });
         });
-    });
-</script>
-
-<script>
-  function abrirPerfil(){
-    limparMenuESeguir('<%= ResolveUrl("~/PlennuscMedic/Views/profileMedic.aspx") %>');
-    }
-</script>
-<!-- ========== FIM: seus scripts ========== -->
-
+    </script>
 </body>
 </html>

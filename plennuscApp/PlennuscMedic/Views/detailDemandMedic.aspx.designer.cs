@@ -7,137 +7,182 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace PlunnuscMedic.Views.Masters
+namespace appWhatsapp.PlennuscMedic.Views
 {
 
 
-    public partial class Index
+    public partial class detailDemandMedic
     {
 
         /// <summary>
-        /// Controle head.
+        /// Controle globalToastContainer.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder head;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl globalToastContainer;
 
         /// <summary>
-        /// Controle form1.
+        /// Controle lblTitulo.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Label lblTitulo;
 
         /// <summary>
-        /// Controle lblNomeSistema.
+        /// Controle lblStatusBadge.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNomeSistema;
+        protected global::System.Web.UI.WebControls.Label lblStatusBadge;
 
         /// <summary>
-        /// Controle txtBusca.
+        /// Controle lblTexto.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBusca;
+        protected global::System.Web.UI.WebControls.Label lblTexto;
 
         /// <summary>
-        /// Controle imgAvatarUsuario.
+        /// Controle lblSolicitante.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAvatarUsuario;
+        protected global::System.Web.UI.WebControls.Label lblSolicitante;
 
         /// <summary>
-        /// Controle imgAvatarUsuarioDropdown.
+        /// Controle lblDataSolicitacao.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAvatarUsuarioDropdown;
+        protected global::System.Web.UI.WebControls.Label lblDataSolicitacao;
 
         /// <summary>
-        /// Controle lblUsuario.
+        /// Controle hdnStatusOriginal.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUsuario;
+        protected global::System.Web.UI.WebControls.HiddenField hdnStatusOriginal;
 
         /// <summary>
-        /// Controle btnLogout.
+        /// Controle rptAnexos.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnLogout;
+        protected global::System.Web.UI.WebControls.Repeater rptAnexos;
 
         /// <summary>
-        /// Controle liMenuEstruturas.
+        /// Controle lblSemAnexos.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liMenuEstruturas;
+        protected global::System.Web.UI.WebControls.Label lblSemAnexos;
 
         /// <summary>
-        /// Controle linkEstruturas.
+        /// Controle ddlStatusAcompanhamento.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkEstruturas;
+        protected global::System.Web.UI.WebControls.DropDownList ddlStatusAcompanhamento;
 
         /// <summary>
-        /// Controle subMenuMinhasDemandas.
+        /// Controle editorSection.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl subMenuMinhasDemandas;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl editorSection;
 
         /// <summary>
-        /// Controle menuAguardandoAprovacao.
+        /// Controle txtNovoAcompanhamento.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuAguardandoAprovacao;
+        protected global::System.Web.UI.WebControls.TextBox txtNovoAcompanhamento;
 
         /// <summary>
-        /// Controle linkAguardando.
+        /// Controle fuAnexos.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkAguardando;
+        protected global::System.Web.UI.WebControls.FileUpload fuAnexos;
 
         /// <summary>
-        /// Controle ContentPlaceHolder1.
+        /// Controle btnAdicionarAcompanhamento.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder1;
+        protected global::System.Web.UI.WebControls.Button btnAdicionarAcompanhamento;
+
+        /// <summary>
+        /// Controle rptAcompanhamentos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptAcompanhamentos;
+
+        /// <summary>
+        /// Controle rptHistorico.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptHistorico;
+
+        /// <summary>
+        /// Controle btnRecusar.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnRecusar;
+
+        /// <summary>
+        /// Controle btnSolicitarAprovacao.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnSolicitarAprovacao;
+
+        /// <summary>
+        /// Controle btnEncerrar.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnEncerrar;
     }
 }

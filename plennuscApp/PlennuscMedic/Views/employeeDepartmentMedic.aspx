@@ -1,89 +1,242 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscMedic/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="employeeDepartmentMedic.aspx.cs" Inherits="appWhatsapp.PlennuscMedic.Views.employeeDepartmentMedic" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
 
 <style>
-body { font-family: 'Poppins', sans-serif; background-color: #f9f9f9; }
-h3 {
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #4CB07A;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.card { border-radius: 10px; box-shadow: none; border: none; background: transparent; }
-.table-responsive { border-radius: 10px; overflow-x: auto; background: transparent; }
-.table {
-    font-size: 1rem;
-    background: #fff;
-    border-radius: 10px;
-    border: 1px solid #ececec;
-    margin-bottom: 0;
-    box-shadow: none;
-}
-.table thead { background: transparent; }
-.table thead th {
-    background-color: #83ceee !important;
-    color: #fff !important;
-    font-weight: 600;
-    border: none;
-    font-size: 1rem;
-    padding: 14px 10px;
-}
-    .table > :not(caption) > * > * {
-        color: #3b3f5c;
+    :root {
+        --primary: #83ceee;
+        --primary-hover: #0d62c9;
+        --success: #4cb07a;
+        --success-hover: #3b8b65;
+        --warning: #ffa726;
+        --warning-hover: #f57c00;
+        --danger: #f44336;
+        --danger-hover: #d32f2f;
+        --gray-50: #f8f9fa;
+        --gray-100: #f1f3f4;
+        --gray-200: #e8eaed;
+        --gray-300: #dadce0;
+        --gray-400: #bdc1c6;
+        --gray-500: #9aa0a6;
+        --gray-600: #80868b;
+        --gray-700: #5f6368;
+        --gray-800: #3c4043;
+        --gray-900: #202124;
+        --border-radius: 8px;
+        --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+        --transition: all 0.2s ease-in-out;
     }
-.table thead th:first-child { border-top-left-radius: 10px; }
-.table thead th:last-child { border-top-right-radius: 10px; }
-.table tbody td {
-    padding: 13px 10px;
-    color: #222;
-    font-size: 0.97rem;
-    border: none;
-    border-bottom: 1px solid #f1f1f1;
-    background: none;
-}
-.table tbody tr:last-child td { border-bottom: none; }
-.table tbody tr { background: none; }
-.table tbody tr:hover { background: none !important; }
-.table tbody tr:last-child td:first-child { border-bottom-left-radius: 10px; }
-.table tbody tr:last-child td:last-child { border-bottom-right-radius: 10px; }
-.table-striped > tbody > tr:nth-of-type(odd) { --bs-table-accent-bg: none; }
-.table, .table * { box-shadow: none !important; }
-@media (max-width: 900px) {
-    .table thead th, .table tbody td { font-size: 13px; padding: 10px 5px; }
-    h3 { font-size: 1.1rem; }
-}
+
+    body {
+        background: var(--gray-100);
+        font-family: 'Roboto', sans-serif;
+        color: var(--gray-800);
+        line-height: 1.5;
+    }
+
+    .container {
+        max-width: 2206px;
+        margin: 20px auto;
+        padding: 0 16px;
+    }
+
+    /* Header igual ao exemplo */
+    .titulo-pagina {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 24px;
+        font-weight: 500;
+        color: var(--gray-800);
+        margin: 0 0 24px 0;
+    }
+
+    .titulo-pagina i {
+        background: var(--success);
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    /* Grid container igual ao exemplo */
+    .grid-container {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        overflow-x: auto;
+    }
+
+    /* Tabela no padrão do exemplo */
+    .custom-grid {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1200px;
+        table-layout: fixed;
+    }
+
+        .custom-grid th,
+        .custom-grid td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+        }
+
+        .custom-grid th {
+            background: var(--gray-50);
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-300);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .custom-grid td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: middle;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .custom-grid tr:last-child td {
+            border-bottom: none;
+        }
+
+        .custom-grid tr:hover {
+            background: var(--gray-50);
+            transition: var(--transition);
+        }
+
+    /* Striped rows igual ao exemplo */
+    .custom-grid tbody tr:nth-child(even) {
+        background-color: var(--gray-50);
+    }
+
+    .custom-grid tbody tr:nth-child(even):hover {
+        background-color: var(--gray-100);
+    }
+
+    /* Larguras específicas para as colunas */
+    .col-codigo {
+        width: 100px;
+        min-width: 80px;
+        max-width: 100px;
+    }
+
+    .col-nome {
+        width: 250px;
+        min-width: 200px;
+        max-width: 250px;
+    }
+
+    .col-ramal {
+        width: 120px;
+        min-width: 100px;
+        max-width: 120px;
+    }
+
+    .col-email {
+        width: 200px;
+        min-width: 150px;
+        max-width: 200px;
+    }
+
+    .col-telefone {
+        width: 140px;
+        min-width: 120px;
+        max-width: 140px;
+    }
+
+    .col-informacoes {
+        width: 180px;
+        min-width: 150px;
+        max-width: 180px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+        .container {
+            padding: 0 12px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .titulo-pagina {
+            font-size: 20px;
+        }
+        
+        .titulo-pagina i {
+            width: 40px;
+            height: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .custom-grid th,
+        .custom-grid td {
+            font-size: 0.85rem;
+            padding: 12px 8px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .titulo-pagina {
+            font-size: 18px;
+            gap: 8px;
+        }
+        
+        .custom-grid th,
+        .custom-grid td {
+            font-size: 0.8rem;
+            padding: 10px 6px;
+        }
+    }
 </style>
-
-
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-   <div class="container-fluid p-3">
-    <h3>
-        <i class="bi bi-building me-2" style="color:#4CB07A;"></i>
-        Departamentos
-    </h3>
+    <div class="container">
+        <h2 class="titulo-pagina">
+            <i class="fa-solid fa-building"></i>
+            Departamentos
+        </h2>
 
-    <div class="card mt-3">
-        <div class="card-body p-0 table-responsive">
-            <asp:GridView ID="gvDepartments" runat="server" CssClass="table table-hover mb-0" AutoGenerateColumns="false" GridLines="None">
+        <div class="grid-container">
+            <asp:GridView ID="gvDepartments"
+                runat="server"
+                AutoGenerateColumns="false"
+                GridLines="None"
+                CssClass="custom-grid align-middle">
+
                 <Columns>
-                    <asp:BoundField DataField="CodDepartamento" HeaderText="Código" />
-                    <asp:BoundField DataField="Nome" HeaderText="Nome" />
-                    <asp:BoundField DataField="NumRamal" HeaderText="Ramal" />
-                    <asp:BoundField DataField="EmailGeral" HeaderText="Email" />
-                    <asp:BoundField DataField="Telefone" HeaderText="Telefone" />
-                    <asp:BoundField DataField="Informacoes_Log_I" HeaderText="Informações Log" />
+                    <asp:BoundField DataField="CodDepartamento" HeaderText="Código" 
+                        ItemStyle-CssClass="col-codigo" HeaderStyle-CssClass="col-codigo" />
+                    <asp:BoundField DataField="Nome" HeaderText="Nome" 
+                        ItemStyle-CssClass="col-nome" HeaderStyle-CssClass="col-nome" />
+                    <asp:BoundField DataField="NumRamal" HeaderText="Ramal" 
+                        ItemStyle-CssClass="col-ramal" HeaderStyle-CssClass="col-ramal" />
+                    <asp:BoundField DataField="EmailGeral" HeaderText="E-mail" 
+                        ItemStyle-CssClass="col-email" HeaderStyle-CssClass="col-email" />
+                    <asp:BoundField DataField="Telefone" HeaderText="Telefone" 
+                        ItemStyle-CssClass="col-telefone" HeaderStyle-CssClass="col-telefone" />
+                    <asp:BoundField DataField="Informacoes_Log_I" HeaderText="Informações Log" 
+                        ItemStyle-CssClass="col-informacoes" HeaderStyle-CssClass="col-informacoes" />
                 </Columns>
             </asp:GridView>
         </div>
     </div>
-</div>
-
 </asp:Content>

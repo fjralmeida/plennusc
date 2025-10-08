@@ -203,11 +203,21 @@
     <Content Include="PlennuscGestao\Views\updatePriceTable.aspx" />
     <Content Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\demandMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\detailDemandMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeeEditMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeeManagementMedic.aspx" />
     <Content Include="PlennuscMedic\Views\employeePositionMedic.aspx" />
     <Content Include="PlennuscMedic\Views\homeDoctor.aspx" />
+    <Content Include="PlennuscMedic\Views\listDemandMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\myDemandsCompletedMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\myDemandsOpenMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\myDemandsProgressMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\myDemandsRefusedMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\myDemandsWaitingMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\structureTypeMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx" />
     <Content Include="public\uploadgestao\docs\ModeloDeInserçãoTabPreços - PS1032.xlsx" />
     <Content Include="public\uploadgestao\docs\ModeloDeAtualizaçãoTabelaPreços - PS1032.xlsx" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
@@ -530,6 +540,20 @@
     <Compile Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx.designer.cs">
       <DependentUpon>csvImportPlaniumMedic.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscMedic\Views\demandMedic.aspx.cs">
+      <DependentUpon>demandMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\demandMedic.aspx.designer.cs">
+      <DependentUpon>demandMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\detailDemandMedic.aspx.cs">
+      <DependentUpon>detailDemandMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\detailDemandMedic.aspx.designer.cs">
+      <DependentUpon>detailDemandMedic.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscMedic\Views\employeeDepartmentMedic.aspx.cs">
       <DependentUpon>employeeDepartmentMedic.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -572,6 +596,13 @@
     <Compile Include="PlennuscMedic\Views\interviewIa.aspx.designer.cs">
       <DependentUpon>interviewIa.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscMedic\Views\listDemandMedic.aspx.cs">
+      <DependentUpon>listDemandMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\listDemandMedic.aspx.designer.cs">
+      <DependentUpon>listDemandMedic.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscMedic\Views\Masters\Index.Master.cs">
       <DependentUpon>Index.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -586,6 +617,41 @@
     <Compile Include="PlennuscMedic\Views\medicalInterview.aspx.designer.cs">
       <DependentUpon>medicalInterview.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsCompletedMedic.aspx.cs">
+      <DependentUpon>myDemandsCompletedMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsCompletedMedic.aspx.designer.cs">
+      <DependentUpon>myDemandsCompletedMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsOpenMedic.aspx.cs">
+      <DependentUpon>myDemandsOpenMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsOpenMedic.aspx.designer.cs">
+      <DependentUpon>myDemandsOpenMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsProgressMedic.aspx.cs">
+      <DependentUpon>myDemandsProgressMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsProgressMedic.aspx.designer.cs">
+      <DependentUpon>myDemandsProgressMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsRefusedMedic.aspx.cs">
+      <DependentUpon>myDemandsRefusedMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsRefusedMedic.aspx.designer.cs">
+      <DependentUpon>myDemandsRefusedMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsWaitingMedic.aspx.cs">
+      <DependentUpon>myDemandsWaitingMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\myDemandsWaitingMedic.aspx.designer.cs">
+      <DependentUpon>myDemandsWaitingMedic.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscMedic\Views\privacySettingsMedic.aspx.cs">
       <DependentUpon>privacySettingsMedic.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -599,6 +665,20 @@
     </Compile>
     <Compile Include="PlennuscMedic\Views\profileMedic.aspx.designer.cs">
       <DependentUpon>profileMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\structureTypeMedic.aspx.cs">
+      <DependentUpon>structureTypeMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\structureTypeMedic.aspx.designer.cs">
+      <DependentUpon>structureTypeMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx.cs">
+      <DependentUpon>viewDemandBeforeAcceptMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx.designer.cs">
+      <DependentUpon>viewDemandBeforeAcceptMedic.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewsApp\erro.aspx.cs">
       <DependentUpon>erro.aspx</DependentUpon>

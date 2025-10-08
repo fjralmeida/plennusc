@@ -1,10 +1,8 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="myDemandsOpen.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.myDemandsOpen" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscMedic/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="myDemandsCompletedMedic.aspx.cs" Inherits="appWhatsapp.PlennuscMedic.Views.myDemandsCompletedMedic" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+       <style>
         :root {
             --primary: #83ceee;
             --primary-hover: #0d62c9;
@@ -193,7 +191,7 @@
             overflow-x: auto;
         }
 
-            .custom-grid {
+    .custom-grid {
     width: 100%;
     border-collapse: collapse;
     min-width: 1200px;
@@ -238,7 +236,7 @@
                 transition: var(--transition);
             }
 
-      
+    
 /* BADGES - PADRÃO CONSISTENTE */
 .badge {
     display: inline-block;
@@ -286,7 +284,7 @@
 /* 🔴 VERMELHO - ALTO/ATRASADO/URGENTE */
 .importancia-alta, .importancia-alto,
 .prioridade-alta, .prioridade-alto,
-.prazo-atrasado {
+.prazo-atrasado, .prioridade-com-prazo { 
     background: #ffebee !important;
     color: #c62828 !important;
     border: 1px solid #ffcdd2 !important;
@@ -375,6 +373,20 @@
                 margin-bottom: 2px;
             }
 
+
+            .aprovação-info {
+    font-size: 10px;
+    color: #2e7d32;
+    line-height: 1.2;
+}
+
+.aprovação-info strong {
+    display: block;
+    color: #1b5e20;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
         /* Botões de ação */
         .btn-action {
             background: white;
@@ -431,7 +443,7 @@
             width: 150px;
         }
 
-                .col-solicitante,
+        .col-solicitante,
 .col-categoria {
     white-space: nowrap;
     overflow: hidden;
@@ -482,6 +494,7 @@
     white-space: normal !important;
     word-wrap: break-word;
     line-height: 1.3;
+}
 
         .col-importancia {
             width: 100px;
@@ -565,6 +578,31 @@
             font-size: 12px;
         }
 
+      /* Informação de Aprovação - AGORA IGUAL AO ACEITE */
+.aprovacao-info {
+    font-size: 10px;
+    color: var(--gray-700);
+    line-height: 1.2;
+    text-align: center;
+    padding: 6px 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary); /* Azul para aprovação */
+    display: block;
+    max-width: 140px;
+    word-wrap: break-word;
+    white-space: normal;
+    margin-bottom: 4px;
+}
+
+.aprovacao-info strong {
+    display: block;
+    color: var(--gray-800);
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
         /* Responsividade */
         @media (max-width: 1024px) {
             .filter-section {
@@ -609,17 +647,18 @@
     </style>
 
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-<div class="container-main">
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">  
+    <div class="container-main">
         <!-- Header -->
         <div class="page-header">
             <h1 class="page-title">
                 <span class="title-icon"> 
-                    <i class="bi bi-folder2-open"></i>
+                    <i class="bi bi-check-circle"></i>
                 </span>
-                Minhas Demandas em Aberto
+                Minhas Demandas Concluídas
             </h1>
-            <p class="text-muted">Acompanhe as demandas que você aceitou e estão em aberto</p>
+            <p class="text-muted">Aqui estão as demandas que você concluiu ou que foram concluídas para você</p>
         </div>
 
         <!-- Resultados -->
@@ -628,12 +667,11 @@
         </div>
 
         <div class="grid-container">
-                       <asp:GridView ID="gvDemandasAberto" runat="server" CssClass="custom-grid"
-     AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-     OnPageIndexChanging="gvDemandasAberto_PageIndexChanging"
-     OnRowCommand="gvDemandasAberto_RowCommand"
-     OnRowDataBound="gvDemandasAberto_RowDataBound"
-     EmptyDataText="Nenhuma demanda em aberto encontrada.">
+            <asp:GridView ID="gvDemandasConcluidas" runat="server" CssClass="custom-grid"
+                AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
+                OnPageIndexChanging="gvDemandasConcluidas_PageIndexChanging"
+                OnRowCommand="gvDemandasConcluidas_RowCommand"
+                EmptyDataText="Nenhuma demanda concluída encontrada.">
 
                 <Columns>
                     <asp:BoundField DataField="CodDemanda" HeaderText="ID"
@@ -651,68 +689,55 @@
                     <asp:BoundField DataField="Categoria" HeaderText="Categoria"
                         ItemStyle-CssClass="text-left col-categoria" HeaderStyle-CssClass="text-left" />
 
+                    <asp:TemplateField HeaderText="Importância"
+                        ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
+                            <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower().Replace(" ", "-") %>'>
+                                <%# Eval("Importancia") %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
-                   <asp:TemplateField HeaderText="Importância"
-                       ItemStyle-CssClass="text-center col-importancia" HeaderStyle-CssClass="text-center">
-                       <ItemTemplate>
-                           <span class='badge importancia-<%# Eval("Importancia").ToString().ToLower().Replace("é", "e").Replace("á", "a").Replace("í", "i").Replace("ê", "e").Replace("â", "a").Replace("ô", "o").Replace("û", "u").Replace("ç", "c") %>'>
-                               <%# Eval("Importancia") %>
-                           </span>
-                       </ItemTemplate>
-                   </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Prioridade"
+                        ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
+                            <span class='badge prioridade-<%# Eval("Prioridade").ToString().ToLower().Replace(" ", "-") %>'>
+                                <%# Eval("Prioridade") %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
-                <asp:TemplateField HeaderText="Prioridade"
-                ItemStyle-CssClass="text-center col-prioridade" HeaderStyle-CssClass="text-center">
-                <ItemTemplate>
-                    <span class='badge <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? 
-                                          "prioridade-nao-definida" : 
-                                          "prioridade-" + Eval("Prioridade").ToString().ToLower()
-                                              .Replace(" ", "-")
-                                              .Replace("com-prazo", "com-prazo")
-                                              .Replace("é", "e").Replace("á", "a").Replace("í", "i")
-                                              .Replace("ê", "e").Replace("â", "a").Replace("ô", "o")
-                                              .Replace("û", "u").Replace("ç", "c") %>'>
-                        <%# string.IsNullOrEmpty(Eval("Prioridade")?.ToString()) ? "N/A" : Eval("Prioridade") %>
-                    </span>
-                </ItemTemplate>
-            </asp:TemplateField>
-
-                <asp:TemplateField HeaderText="Prazo" 
-                    ItemStyle-CssClass="text-center col-prazo" HeaderStyle-CssClass="text-center">
-                    <ItemTemplate>
-                        <span class='badge badge-prazo <%# GetClassePrazo(Eval("DataPrazo")) %>'>
+                    <asp:TemplateField HeaderText="Prazo"
+                        ItemStyle-CssClass="text-center col-prazo" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
                             <%# !string.IsNullOrEmpty(Eval("DataPrazo")?.ToString()) && 
-                                  Eval("DataPrazo") != DBNull.Value ? 
-                                  Convert.ToDateTime(Eval("DataPrazo")).ToString("dd/MM/yyyy") : 
-                                  "N/A" %>
-                        </span>
-                    </ItemTemplate>
-                </asp:TemplateField>
+                                Eval("DataPrazo") != DBNull.Value ? 
+                                Convert.ToDateTime(Eval("DataPrazo")).ToString("dd/MM/yyyy") : 
+                                "<span class='text-muted'>N/A</span>" %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
                     <asp:TemplateField HeaderText="Status"
                         ItemStyle-CssClass="text-center col-status" HeaderStyle-CssClass="text-center">
                         <ItemTemplate>
-                            <span class='badge status-<%# Eval("Status").ToString().ToLower().Replace(" ", "-").Replace("ê", "e").Replace("é", "e").Replace("á", "a").Replace("í", "i").Replace("ó", "o").Replace("ú", "u").Replace("ã", "a").Replace("õ", "o").Replace("ç", "c").Replace("â", "a").Replace("ô", "o") %>'>
+                            <span class='badge status-concluida'>
                                 <%# Eval("Status") %>
                             </span>
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Aceite"
+                    <asp:TemplateField HeaderText="Executor"
                         ItemStyle-CssClass="text-center col-aceite" HeaderStyle-CssClass="text-center">
                         <ItemTemplate>
-                            <asp:Label ID="lblAceiteInfo" runat="server" CssClass="aceite-info"
+                            <asp:Label ID="lblExecutorInfo" runat="server" CssClass="aceite-info"
                                 Visible='<%# Eval("CodPessoaExecucao") != null && Convert.ToInt32(Eval("CodPessoaExecucao")) > 0 %>'>
-                    <strong>Aceita</strong>
-                    por: <%# Eval("NomePessoaExecucao") %><br/>
-                    em <%# Eval("DataAceitacao", "{0:dd/MM/yyyy HH:mm}") %>
+                                <strong>Executada por:</strong>
+                                <%# Eval("NomePessoaExecucao") %>
                             </asp:Label>
-
-                            <asp:LinkButton ID="btnAceitar" runat="server" CssClass="btn-aceitar"
-                                CommandName="Aceitar" CommandArgument='<%# Eval("CodDemanda") %>'
+                            <asp:Label ID="lblSemExecutor" runat="server" CssClass="text-muted"
                                 Visible='<%# Eval("CodPessoaExecucao") == null || Convert.ToInt32(Eval("CodPessoaExecucao")) == 0 %>'>
-                    <i class="bi bi-check-circle"></i> Aceitar
-                            </asp:LinkButton>
+                                Sem executor
+                            </asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
 
@@ -721,7 +746,7 @@
                         <ItemTemplate>
                             <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
                                 CommandName="Ver" CommandArgument='<%# Eval("CodDemanda") %>'>
-                    <i class="bi bi-eye"></i> Ver
+                                <i class="bi bi-eye"></i> Ver
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -730,7 +755,6 @@
                 <PagerStyle CssClass="pagination-container" />
                 <HeaderStyle CssClass="grid-header" />
             </asp:GridView>
-
         </div>
     </div>
 </asp:Content>

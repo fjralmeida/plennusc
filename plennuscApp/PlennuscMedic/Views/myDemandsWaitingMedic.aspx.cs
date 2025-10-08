@@ -6,9 +6,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace appWhatsapp.PlennuscGestao.Views
+namespace appWhatsapp.PlennuscMedic.Views
 {
-    public partial class myDemandsWaiting : System.Web.UI.Page
+    public partial class myDemandsWaitingMedic : System.Web.UI.Page
     {
         private readonly DemandaService _svc = new DemandaService("Plennus");
         private int CodPessoaAtual => Convert.ToInt32(Session["CodPessoa"] ?? 0);
@@ -91,7 +91,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             else if (e.CommandName == "Ver")
             {
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"~/PlennuscGestao/Views/detailDemand.aspx?codDemanda={codDemanda}");
+                Response.Redirect($"~/PlennuscMedic/Views/detailDemandMedic.aspx?codDemanda={codDemanda}");
             }
         }
 
