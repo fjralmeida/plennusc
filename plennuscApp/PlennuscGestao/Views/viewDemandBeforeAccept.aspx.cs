@@ -116,16 +116,14 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void VerificarPermissaoAceitar(DemandaDetalhesDto demanda)
         {
-            // Mantém a mesma lógica, mas agora recebe DemandaDetalhesDto
             if (demanda.StatusCodigo == 17) // Status "Aberta"
             {
-                btnAceitarDemanda.Enabled = true;
+                btnAceitarDemanda.Visible = true;
                 btnAceitarDemanda.CssClass = "btn-accept";
             }
             else
             {
-                btnAceitarDemanda.Enabled = false;
-                btnAceitarDemanda.CssClass = "btn-accept btn-secondary";
+                btnAceitarDemanda.Visible = false;
             }
         }
 

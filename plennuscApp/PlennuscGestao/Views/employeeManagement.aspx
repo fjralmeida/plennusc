@@ -377,9 +377,8 @@ justify-content: space-around;
             }
         }
     }
-}
-
-    </script>
+        }
+</script>
 
 
 </asp:Content>
