@@ -193,6 +193,8 @@
     <Content Include="PlennuscGestao\Views\myDemandsWaiting.aspx" />
     <Content Include="PlennuscGestao\Views\priceTable.aspx" />
     <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
+    <Content Include="PlennuscGestao\Views\registerStructures.aspx" />
+    <Content Include="PlennuscGestao\Views\registerStructureType.aspx" />
     <Content Include="PlennuscGestao\Views\sendCompanyMessage.aspx" />
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
@@ -463,6 +465,20 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\privacySettings.aspx.designer.cs">
       <DependentUpon>privacySettings.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\registerStructures.aspx.cs">
+      <DependentUpon>registerStructures.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\registerStructures.aspx.designer.cs">
+      <DependentUpon>registerStructures.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\registerStructureType.aspx.cs">
+      <DependentUpon>registerStructureType.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\registerStructureType.aspx.designer.cs">
+      <DependentUpon>registerStructureType.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\sendCompanyMessage.aspx.cs">
       <DependentUpon>sendCompanyMessage.aspx</DependentUpon>

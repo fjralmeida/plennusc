@@ -101,6 +101,8 @@
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\ModelsHome\homeManagementModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\OptionItemStructure.cs" />
+    <Compile Include="Models\ModelsGestao\modelsStructure\structureModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsStructure\structureTypeModel.cs" />
     <Compile Include="Models\ModelsGestao\OptionItem.cs" />
     <Compile Include="Models\ModelsGestao\RespostaDto.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
