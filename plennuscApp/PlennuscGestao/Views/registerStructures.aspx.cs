@@ -14,18 +14,14 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
         private StructureTypeService _service = new StructureTypeService();
 
-        // PROPRIEDADE PARA PERSISTIR O CÓDIGO DA ESTRUTURA PRINCIPAL
-        private int CodEstruturaPrincipal
-        {
-            get { return ViewState["CodEstruturaPrincipal"] != null ? (int)ViewState["CodEstruturaPrincipal"] : 0; }
-            set { ViewState["CodEstruturaPrincipal"] = value; }
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 CarregarViews();
+                // Esconde os painéis inicialmente
+                pnlMensagemEstruturaExistente.Visible = false;
+                pnlGridEstruturas.Visible = false;
             }
         }
 
@@ -33,7 +29,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             var views = _service.GetTodosTiposEstrutura();
             ddlView.DataSource = views;
-            ddlView.DataTextField = "NomeView";
+            ddlView.DataTextField = "DescTipoEstrutura";
             ddlView.DataValueField = "CodTipoEstrutura";
             ddlView.DataBind();
         }
@@ -43,31 +39,40 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!string.IsNullOrEmpty(ddlView.SelectedValue))
             {
                 int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
-                VerificarEstruturaPrincipalExistente(codTipoEstrutura);
-            }
-        }
-
-        private void VerificarEstruturaPrincipalExistente(int codTipoEstrutura)
-        {
-            var estruturasPrincipais = _service.GetEstruturasPai(codTipoEstrutura);
-
-            if (estruturasPrincipais.Count > 0)
-            {
-                // JÁ EXISTE ESTRUTURA PRINCIPAL - NÃO MOSTRA CAMPO PARA PREENCHER
-                CodEstruturaPrincipal = estruturasPrincipais[0].CodEstrutura;
-                pnlEstruturaPrincipal.Visible = false;
-                pnlMensagemEstruturaExistente.Visible = true;
-                lblMensagem.Text = $"Já existe estrutura principal: {estruturasPrincipais[0].DescEstrutura}. Adicione os subtipos abaixo.";
-                lblMensagem.CssClass = "text-success";
+                VerificarEstruturasExistentes(codTipoEstrutura);
             }
             else
             {
-                // NÃO EXISTE ESTRUTURA PRINCIPAL - MOSTRA CAMPO PARA PREENCHER
-                CodEstruturaPrincipal = 0;
-                pnlEstruturaPrincipal.Visible = true;
+                // Se não tem view selecionada, esconde tudo
                 pnlMensagemEstruturaExistente.Visible = false;
-                lblMensagem.Text = "Cadastre a estrutura principal primeiro";
-                lblMensagem.CssClass = "text-info";
+                pnlGridEstruturas.Visible = false;
+            }
+        }
+
+        private void VerificarEstruturasExistentes(int codTipoEstrutura)
+        {
+            var estruturasExistentes = _service.GetTodasEstruturasPorTipo(codTipoEstrutura);
+
+            if (estruturasExistentes.Count > 0)
+            {
+                // EXISTEM ESTRUTURAS - MOSTRA GRID
+                pnlMensagemEstruturaExistente.Visible = true;
+                pnlGridEstruturas.Visible = true;
+
+                gvEstruturas.DataSource = estruturasExistentes;
+                gvEstruturas.DataBind();
+
+                // Mostra mensagem no toast
+                MostrarMensagem($"Encontradas {estruturasExistentes.Count} estruturas para esta View.", "info");
+            }
+            else
+            {
+                // NÃO EXISTEM ESTRUTURAS - MOSTRA APENAS MENSAGEM
+                pnlMensagemEstruturaExistente.Visible = true;
+                pnlGridEstruturas.Visible = false;
+
+                // Mostra mensagem no toast
+                MostrarMensagem("Nenhuma estrutura encontrada para esta View. Você pode adicionar as primeiras estruturas abaixo.", "warning");
             }
         }
 
@@ -77,112 +82,136 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 if (string.IsNullOrEmpty(ddlView.SelectedValue))
                 {
-                    lblMensagem.Text = "Selecione uma View";
-                    lblMensagem.CssClass = "text-danger";
+                    MostrarMensagem("Selecione uma View", "error");
                     return;
                 }
 
                 int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
 
-                // VERIFICA NOVAMENTE SE EXISTE ESTRUTURA PRINCIPAL (PARA GARANTIR)
-                if (CodEstruturaPrincipal == 0)
-                {
-                    var estruturasPrincipais = _service.GetEstruturasPai(codTipoEstrutura);
-                    if (estruturasPrincipais.Count > 0)
-                    {
-                        CodEstruturaPrincipal = estruturasPrincipais[0].CodEstrutura;
-                        pnlEstruturaPrincipal.Visible = false;
-                        pnlMensagemEstruturaExistente.Visible = true;
-                    }
-                }
-
-                // SE AINDA NÃO EXISTIR ESTRUTURA PRINCIPAL, SALVAR PRIMEIRO
-                if (CodEstruturaPrincipal == 0)
-                {
-                    if (string.IsNullOrEmpty(txtEstruturaPrincipal.Text.Trim()))
-                    {
-                        lblMensagem.Text = "Informe a estrutura principal";
-                        lblMensagem.CssClass = "text-danger";
-                        return;
-                    }
-
-                    var modelPrincipal = new structureModel
-                    {
-                        CodTipoEstrutura = codTipoEstrutura,
-                        DescEstrutura = txtEstruturaPrincipal.Text.Trim(),
-                        Conf_IsDefault = false,
-                        ValorPadrao = 0
-                    };
-
-                    CodEstruturaPrincipal = _service.SalvarEstrutura(modelPrincipal);
-
-                    if (CodEstruturaPrincipal > 0)
-                    {
-                        lblMensagem.Text = $"Estrutura principal '{txtEstruturaPrincipal.Text}' salva com sucesso! ";
-                        lblMensagem.CssClass = "text-success";
-                    }
-                    else
-                    {
-                        lblMensagem.Text = "Erro ao salvar estrutura principal";
-                        lblMensagem.CssClass = "text-danger";
-                        return;
-                    }
-                }
-
-                // SALVAR SUBTIPOS DO CAMPO HIDDEN (ENVIADOS VIA JAVASCRIPT)
+                // SALVAR AS ESTRUTURAS (AGORA TODAS SÃO "PAI")
                 var serializer = new JavaScriptSerializer();
-                var subtiposJson = hdnSubtipos.Value;
+                var estruturasJson = hdnSubtipos.Value;
 
-                if (!string.IsNullOrEmpty(subtiposJson))
+                if (!string.IsNullOrEmpty(estruturasJson))
                 {
-                    var subtipos = serializer.Deserialize<List<string>>(subtiposJson);
-                    int subtiposSalvos = 0;
+                    var estruturas = serializer.Deserialize<List<subTypeDate>>(estruturasJson);
+                    int estruturasSalvas = 0;
+                    bool algumPrincipal = false;
 
-                    foreach (string subtipo in subtipos)
+                    foreach (var estrutura in estruturas)
                     {
-                        if (!string.IsNullOrEmpty(subtipo.Trim()))
+                        if (!string.IsNullOrEmpty(estrutura.nome.Trim()))
                         {
-                            var modelSubtipo = new structureModel
+                            // Verifica se já existe algum marcado como principal
+                            if (estrutura.isDefault)
+                            {
+                                if (algumPrincipal)
+                                {
+                                    // Já existe um principal, não marca este
+                                    estrutura.isDefault = false;
+                                }
+                                else
+                                {
+                                    algumPrincipal = true;
+                                }
+                            }
+
+                            var modelEstrutura = new structureModel
                             {
                                 CodTipoEstrutura = codTipoEstrutura,
-                                DescEstrutura = subtipo.Trim(),
-                                CodEstruturaPai = CodEstruturaPrincipal,
-                                Conf_IsDefault = false,
-                                ValorPadrao = 0
+                                DescEstrutura = estrutura.nome.Trim(),
+                                CodEstruturaPai = null, // Agora sempre NULL
+                                Conf_IsDefault = estrutura.isDefault,
+                                ValorPadrao = estrutura.ordem
                             };
 
-                            _service.SalvarEstrutura(modelSubtipo);
-                            subtiposSalvos++;
+                            _service.SalvarEstrutura(modelEstrutura);
+                            estruturasSalvas++;
                         }
                     }
 
-                    lblMensagem.Text += $"{subtiposSalvos} subtipos salvos com sucesso!";
+                    if (estruturasSalvas > 0)
+                    {
+                        MostrarMensagemSucesso($"{estruturasSalvas} estruturas salvas com sucesso!");
 
-                    // Limpa os campos
-                    hdnSubtipos.Value = "";
-                    txtEstruturaPrincipal.Text = "";
+                        // Limpa os campos e recarrega o grid
+                        hdnSubtipos.Value = "";
+                        ScriptManager.RegisterStartupScript(this, GetType(), "limparCampos", "limparCamposSubtipos();", true);
 
-                    // Limpa os campos dinâmicos via JavaScript
-                    ScriptManager.RegisterStartupScript(this, GetType(), "limparCampos", "limparCamposSubtipos();", true);
+                        // Recarrega as estruturas existentes
+                        VerificarEstruturasExistentes(codTipoEstrutura);
+                    }
+                    else
+                    {
+                        MostrarMensagem("Nenhuma estrutura válida para salvar.", "warning");
+                    }
                 }
                 else
                 {
-                    lblMensagem.Text += " Nenhum subtipo para salvar.";
+                    MostrarMensagem("Nenhuma estrutura para salvar.", "warning");
                 }
             }
             catch (Exception ex)
             {
-                lblMensagem.Text = "Erro: " + ex.Message;
-                lblMensagem.CssClass = "text-danger";
+                MostrarMensagem($"Erro: {ex.Message}", "error");
             }
-            finally
+        }
+
+        // MÉTODOS PARA EXIBIR MENSAGENS COM SWEETALERT2
+        private void MostrarMensagemSucesso(string mensagem)
+        {
+            string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Sucesso',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                }});
+            ";
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
+        }
+
+        private void MostrarMensagem(string mensagem, string tipo = "success")
+        {
+            string titulo;
+            switch (tipo.ToLower())
             {
-                // 🔥 ADICIONE ESTAS LINHAS NO FINAL DO MÉTODO
-                pnlMensagem.Visible = true;
-                divMensagem.Attributes["class"] = lblMensagem.CssClass.Contains("success") ? "message message-success" :
-                                                  lblMensagem.CssClass.Contains("danger") ? "message message-error" :
-                                                  "message message-info";
+                case "success":
+                    titulo = "Sucesso";
+                    break;
+                case "error":
+                    titulo = "Erro";
+                    break;
+                case "warning":
+                    titulo = "Atenção";
+                    break;
+                case "info":
+                    titulo = "Informação";
+                    break;
+                default:
+                    titulo = "Mensagem";
+                    break;
             }
+
+            string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: '{tipo}',
+                    title: '{titulo}',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true
+                }});
+            ";
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastMsg", script, true);
         }
     }
 }

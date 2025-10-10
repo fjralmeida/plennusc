@@ -21,11 +21,10 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
             try
-          {
+            {
                 if (string.IsNullOrEmpty(txtDescricao.Text.Trim()))
                 {
-                    lblMensagem.Text = "Informe a descrição";
-                    lblMensagem.CssClass = "text-danger";
+                    MostrarMensagem("Informe a descrição", "error");
                     return;
                 }
 
@@ -35,8 +34,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 // Valida se view já existe
                 if (_service.ViewExiste(nomeView))
                 {
-                    lblMensagem.Text = $"Erro: A view '{nomeView}' já existe no banco!";
-                    lblMensagem.CssClass = "text-danger";
+                    MostrarMensagem($"Erro: A view '{nomeView}' já existe no banco!", "error");
                     return;
                 }
 
@@ -58,8 +56,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     if (viewCriada)
                     {
-                        lblMensagem.Text = $"Sucesso! Tipo Estrutura salvo (Código: {codigo}) e View '{nomeView}' criada.";
-                        lblMensagem.CssClass = "text-success";
+                        MostrarMensagemSucesso($"Sucesso! Tipo Estrutura salvo (Código: {codigo}) e View '{nomeView}' criada.");
 
                         // Limpa o formulário
                         txtDescricao.Text = "";
@@ -67,29 +64,75 @@ namespace appWhatsapp.PlennuscGestao.Views
                     }
                     else
                     {
-                        lblMensagem.Text = $"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar a view.";
-                        lblMensagem.CssClass = "text-warning";
+                        MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar a view.", "warning");
                     }
                 }
                 else
                 {
-                    lblMensagem.Text = "Erro ao salvar Tipo Estrutura.";
-                    lblMensagem.CssClass = "text-danger";
+                    MostrarMensagem("Erro ao salvar Tipo Estrutura.", "error");
                 }
             }
             catch (Exception ex)
             {
-                lblMensagem.Text = "Erro: " + ex.Message;
-                lblMensagem.CssClass = "text-danger";
+                MostrarMensagem($"Erro: {ex.Message}", "error");
             }
-            finally
+        }
+
+        // MÉTODOS PARA EXIBIR MENSAGENS COM SWEETALERT2
+        private void MostrarMensagemSucesso(string mensagem)
+        {
+            string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Sucesso',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                }});
+            ";
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
+        }
+
+        private void MostrarMensagem(string mensagem, string tipo = "success")
+        {
+            string titulo;
+            switch (tipo.ToLower())
             {
-                // 🔥 ADICIONE ESTAS LINHAS NO FINAL
-                pnlMensagem.Visible = true;
-                divMensagem.Attributes["class"] = lblMensagem.CssClass.Contains("success") ? "message message-success" :
-                                                  lblMensagem.CssClass.Contains("danger") ? "message message-error" :
-                                                  "message message-info";
+                case "success":
+                    titulo = "Sucesso";
+                    break;
+                case "error":
+                    titulo = "Erro";
+                    break;
+                case "warning":
+                    titulo = "Atenção";
+                    break;
+                case "info":
+                    titulo = "Informação";
+                    break;
+                default:
+                    titulo = "Mensagem";
+                    break;
             }
+
+            string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: '{tipo}',
+                    title: '{titulo}',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true
+                }});
+            ";
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastMsg", script, true);
         }
     }
 }

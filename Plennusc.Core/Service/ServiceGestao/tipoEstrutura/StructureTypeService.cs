@@ -167,6 +167,36 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
             return lista;
         }
 
+        // MÉTODO PARA BUSCAR TODAS AS ESTRUTURAS DE UM TIPO (PAIS E FILHOS)
+        public List<structureModel> GetTodasEstruturasPorTipo(int codTipoEstrutura)
+        {
+            var lista = new List<structureModel>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(StructureTypeQueries.BuscarTodasEstruturasPorTipo, con))
+            {
+                cmd.Parameters.AddWithValue("@CodTipoEstrutura", codTipoEstrutura);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lista.Add(new structureModel
+                        {
+                            CodEstrutura = Convert.ToInt32(reader["CodEstrutura"]),
+                            DescEstrutura = reader["DescEstrutura"].ToString(),
+                            CodEstruturaPai = reader["CodEstruturaPai"] != DBNull.Value ?
+                                             Convert.ToInt32(reader["CodEstruturaPai"]) : (int?)null,
+                            Conf_IsDefault = Convert.ToBoolean(reader["Conf_IsDefault"]),
+                            ValorPadrao = Convert.ToInt32(reader["ValorPadrao"])
+                        });
+                    }
+                }
+            }
+
+            return lista;
+        }
+
         // MÉTODO PARA BUSCAR ESTRUTURAS PAI DE UM TIPO ESPECÍFICO
         public List<structureModel> GetEstruturasPai(int codTipoEstrutura)
         {

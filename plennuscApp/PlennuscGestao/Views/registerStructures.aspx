@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="registerStructures.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.registerStructures" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
             --primary: #83ceee;
@@ -194,16 +195,74 @@
             transform: scale(1.05);
         }
 
-       .subtipo-item {
+        .subtipo-item {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             align-items: center;
             margin-bottom: 12px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid var(--gray-200);
         }
 
         .subtipo-input {
             flex: 1;
         }
+
+        .subtipo-default {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 100px;
+}
+
+.subtipo-default label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-700);
+    white-space: nowrap;
+}
+
+.subtipo-ordem {
+    width: 80px;
+}
+
+.subtipo-actions {
+    display: flex;
+    gap: 4px;
+}
+
+/* Checkbox customizado para os subtipos */
+.subtipo-default .form-check-input-custom {
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background: white !important;
+    border: 2px solid var(--gray-400) !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+    position: relative !important;
+}
+
+.subtipo-default .form-check-input-custom:checked {
+    background: var(--success) !important;
+    border-color: var(--success) !important;
+}
+
+.subtipo-default .form-check-input-custom:checked::after {
+    content: "✓" !important;
+    color: white !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
 
         .btn-remove {
             background: #f44336;
@@ -341,52 +400,48 @@
             </div>
             
             <div class="card-body">
-                <!-- COMBO COM AS VIEWS -->
-                <div class="form-group">
-                    <label class="form-label">View *</label>
-                    <asp:DropDownList ID="ddlView" runat="server" CssClass="form-control form-select" AutoPostBack="true"
-                        OnSelectedIndexChanged="ddlView_SelectedIndexChanged">
-                        <asp:ListItem Text="Selecione uma View" Value=""></asp:ListItem>
-                    </asp:DropDownList>
+
+                                               <!-- COMBO COM AS VIEWS -->
+<div class="form-group">
+    <label class="form-label">View *</label>
+    <asp:DropDownList ID="ddlView" runat="server" CssClass="form-control form-select" AutoPostBack="true"
+        OnSelectedIndexChanged="ddlView_SelectedIndexChanged">
+        <asp:ListItem Text="Selecione uma View" Value=""></asp:ListItem>
+    </asp:DropDownList>
+</div>
+
+<!-- SUBTIPOS DINÂMICOS - SEMPRE VISÍVEL -->
+<div class="form-group mt-3">
+    <label class="form-label">Adicionar Novas Estruturas</label>
+    <div class="alert alert-warning">
+        <small><i class="bi bi-lightbulb"></i> <strong>Dica:</strong> Marque uma estrutura como "Principal" e defina a "Ordem" para organizar a exibição.</small>
+    </div>
+    <div class="subtipos-container">
+        <div id="containerSubtipos">
+            <!-- Primeiro campo com todos os dados -->
+            <div class="subtipo-item">
+                <div class="subtipo-input">
+                    <input type="text" class="form-control" name="subtipo_1" 
+                        placeholder="Digite o nome da estrutura" maxlength="100" />
                 </div>
-
-                <!-- ESTRUTURA PRINCIPAL - SÓ APARECE SE NÃO EXISTIR -->
-                <asp:Panel ID="pnlEstruturaPrincipal" runat="server" Visible="false">
-                    <div class="form-group">
-                        <label class="form-label">Estrutura Principal *</label>
-                        <asp:TextBox ID="txtEstruturaPrincipal" runat="server" CssClass="form-control" 
-                            placeholder="Digite o nome da estrutura principal" MaxLength="100"></asp:TextBox>
-                    </div>
-                </asp:Panel>
-
-                <!-- MENSAGEM SE JÁ EXISTIR ESTRUTURA PRINCIPAL -->
-                <asp:Panel ID="pnlMensagemEstruturaExistente" runat="server" Visible="false">
-                    <div class="alert alert-info">
-                        <strong><i class="bi bi-info-circle"></i> Estrutura principal existente</strong>
-                        <br />Já existe uma estrutura principal para esta View. Agora você pode adicionar subtipos abaixo.
-                    </div>
-                </asp:Panel>
-
-              <!-- SUBTIPOS DINÂMICOS -->
-                <div class="form-group">
-                    <label class="form-label">Subtipos</label>
-                    <div class="subtipos-container">
-                        <div id="containerSubtipos">
-                            <!-- Primeiro campo com botão + -->
-                            <div class="subtipo-item">
-                                <div class="subtipo-input">
-                                    <input type="text" class="form-control" name="subtipo_1" 
-                                        placeholder="Digite o nome do subtipo" maxlength="100" />
-                                </div>
-                                <div class="subtipo-actions">
-                                    <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outro subtipo">
-                                        <i class="bi bi-plus-lg"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="subtipo-default">
+                    <input type="checkbox" class="form-check-input-custom principal-checkbox" 
+                        name="default_1" id="default_1" checked onchange="atualizarCheckboxesPrincipais(this)" />
+                    <label for="default_1">Principal</label>
                 </div>
+                <div class="subtipo-ordem">
+                    <input type="number" class="form-control" name="ordem_1" 
+                        placeholder="Ordem" value="0" min="0" />
+                </div>
+                <div class="subtipo-actions">
+                    <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outra estrutura">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- BOTÕES DE AÇÃO -->
                 <div class="action-buttons">
@@ -401,67 +456,150 @@
                     </div>
                 </asp:Panel>
                 
+
+
+<!-- MENSAGEM SE JÁ EXISTIR ESTRUTURAS -->
+<asp:Panel ID="pnlMensagemEstruturaExistente" runat="server" Visible="false">
+    <div class="alert alert-info">
+        <strong><i class="bi bi-info-circle"></i> Estruturas existentes</strong>
+        <br />Esta View já possui estruturas cadastradas. Você pode visualizá-las abaixo e adicionar novas.
+    </div>
+</asp:Panel>
+
+<!-- GRID COM ESTRUTURAS EXISTENTES -->
+<asp:Panel ID="pnlGridEstruturas" runat="server" Visible="false" class="mt-3">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title"><i class="bi bi-list-ul"></i> Estruturas Existentes</h5>
+        </div>
+        <div class="card-body">
+            <asp:GridView ID="gvEstruturas" runat="server" CssClass="table table-striped table-bordered" 
+                AutoGenerateColumns="false" EmptyDataText="Nenhuma estrutura encontrada">
+                <Columns>
+                    <asp:BoundField DataField="DescEstrutura" HeaderText="Nome da Estrutura" />
+                    <asp:TemplateField HeaderText="Principal">
+                        <ItemTemplate>
+                            <%# Convert.ToBoolean(Eval("Conf_IsDefault")) ? "Sim" : "Não" %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:BoundField DataField="ValorPadrao" HeaderText="Ordem" />
+                </Columns>
+            </asp:GridView>
+        </div>
+    </div>
+</asp:Panel>
                 <!-- CAMPO HIDDEN PARA ARMAZENAR OS SUBTIPOS -->
                 <asp:HiddenField ID="hdnSubtipos" runat="server" />
             </div>
         </div>
     </div>
 
-    <script>
-        let subtipoCount = 1; // Começa com 1 porque já tem um campo
+  <script>
+      let subtipoCount = 1;
 
-        function adicionarSubtipo() {
-            subtipoCount++;
-            const container = document.getElementById('containerSubtipos');
+      function adicionarSubtipo() {
+          subtipoCount++;
+          const container = document.getElementById('containerSubtipos');
 
-            const subtipoItem = document.createElement('div');
-            subtipoItem.className = 'subtipo-item';
-            subtipoItem.innerHTML = `
+          const subtipoItem = document.createElement('div');
+          subtipoItem.className = 'subtipo-item';
+          subtipoItem.innerHTML = `
         <div class="subtipo-input">
             <input type="text" class="form-control" name="subtipo_${subtipoCount}" 
-                placeholder="Digite o nome do subtipo" maxlength="100" />
+                placeholder="Digite o nome da estrutura" maxlength="100" />
+        </div>
+        <div class="subtipo-default">
+            <input type="checkbox" class="form-check-input-custom principal-checkbox" 
+                name="default_${subtipoCount}" id="default_${subtipoCount}" 
+                onchange="atualizarCheckboxesPrincipais(this)" />
+            <label for="default_${subtipoCount}">Principal</label>
+        </div>
+        <div class="subtipo-ordem">
+            <input type="number" class="form-control" name="ordem_${subtipoCount}" 
+                placeholder="Ordem" value="0" min="0" />
         </div>
         <div class="subtipo-actions">
-            <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outro subtipo">
+            <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outra estrutura">
                 <i class="bi bi-plus-lg"></i>
             </button>
-            <button type="button" class="btn-remove" onclick="removerSubtipo(this)" title="Remover subtipo">
+            <button type="button" class="btn-remove" onclick="removerSubtipo(this)" title="Remover estrutura">
                 <i class="bi bi-dash-lg"></i>
             </button>
         </div>
     `;
 
-            container.appendChild(subtipoItem);
-        }
+          container.appendChild(subtipoItem);
+      }
 
-        function removerSubtipo(button) {
-            const subtipoItem = button.closest('.subtipo-item');
-            subtipoItem.remove();
-        }
-        function limparCamposSubtipos() {
-            document.getElementById('containerSubtipos').innerHTML = '';
-            subtipoCount = 0;
-        }
+      function atualizarCheckboxesPrincipais(checkboxClicado) {
+          if (checkboxClicado.checked) {
+              // Se este foi marcado, desmarca todos os outros
+              const todosCheckboxes = document.querySelectorAll('.principal-checkbox');
+              todosCheckboxes.forEach(checkbox => {
+                  if (checkbox !== checkboxClicado) {
+                      checkbox.checked = false;
+                  }
+              });
+          }
+      }
 
-        // Antes de enviar o formulário, coleta todos os subtipos e coloca no hidden field
-        document.getElementById('<%= btnSalvarTudo.ClientID %>').addEventListener('click', function() {
-            const inputs = document.querySelectorAll('#containerSubtipos input[type="text"]');
+      function removerSubtipo(button) {
+          const subtipoItem = button.closest('.subtipo-item');
+          subtipoItem.remove();
+
+          // Se o item removido era o principal, podemos marcar automaticamente o primeiro como principal
+          const checkboxesMarcados = document.querySelectorAll('.principal-checkbox:checked');
+          if (checkboxesMarcados.length === 0) {
+              // Se não há nenhum marcado como principal, marca o primeiro
+              const primeiroCheckbox = document.querySelector('.principal-checkbox');
+              if (primeiroCheckbox) {
+                  primeiroCheckbox.checked = true;
+              }
+          }
+      }
+
+      function limparCamposSubtipos() {
+          document.getElementById('containerSubtipos').innerHTML = '';
+          subtipoCount = 0;
+          adicionarSubtipo(); // Adiciona um campo vazio após limpar
+      }
+
+      // Antes de enviar o formulário, coleta todos os dados dos subtipos
+      document.getElementById('<%= btnSalvarTudo.ClientID %>').addEventListener('click', function () {
             const subtipos = [];
-            
-            inputs.forEach(input => {
-                if (input.value.trim() !== '') {
-                    subtipos.push(input.value.trim());
+
+            // Percorre todos os itens de subtipo
+            const subtipoItems = document.querySelectorAll('.subtipo-item');
+
+            subtipoItems.forEach((item, index) => {
+                const nome = item.querySelector('input[type="text"]').value.trim();
+                const isDefault = item.querySelector('input[type="checkbox"]').checked;
+                const ordem = item.querySelector('input[type="number"]').value;
+
+                if (nome !== '') {
+                    subtipos.push({
+                        nome: nome,
+                        isDefault: isDefault,
+                        ordem: parseInt(ordem) || 0
+                    });
                 }
             });
-            
+
             document.getElementById('<%= hdnSubtipos.ClientID %>').value = JSON.stringify(subtipos);
         });
 
-        // Adiciona um campo inicial se não houver nenhum
-        document.addEventListener('DOMContentLoaded', function () {
-            if (document.getElementById('containerSubtipos').children.length === 0) {
-                adicionarSubtipo();
-            }
-        });
-    </script>
+      // Adiciona um campo inicial se não houver nenhum
+      document.addEventListener('DOMContentLoaded', function () {
+          if (document.getElementById('containerSubtipos').children.length === 0) {
+              adicionarSubtipo();
+          }
+
+          // Marca o primeiro checkbox como principal por padrão
+          const primeiroCheckbox = document.querySelector('.principal-checkbox');
+          if (primeiroCheckbox) {
+              primeiroCheckbox.checked = true;
+          }
+      });
+  </script>
+
 </asp:Content>

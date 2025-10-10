@@ -52,7 +52,22 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
             );
             SELECT SCOPE_IDENTITY();";
 
-        // NOVAS QUERIES PARA ESTRUTURA
+        // BUSCAR TODAS AS ESTRUTURAS DE UM TIPO ESPECÍFICO
+        public const string BuscarTodasEstruturasPorTipo = @"
+            SELECT 
+                CodEstrutura,
+                DescEstrutura,
+                CodEstruturaPai,
+                Conf_IsDefault,
+                ValorPadrao
+            FROM Estrutura 
+            WHERE CodTipoEstrutura = @CodTipoEstrutura 
+            ORDER BY 
+                CASE WHEN CodEstruturaPai IS NULL THEN 0 ELSE 1 END,
+                ValorPadrao,
+                DescEstrutura";
+
+
         public const string BuscarTodosTiposEstrutura = @"
             SELECT CodTipoEstrutura, DescTipoEstrutura, NomeView 
             FROM TipoEstrutura 
