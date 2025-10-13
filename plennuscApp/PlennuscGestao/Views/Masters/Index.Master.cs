@@ -34,7 +34,7 @@ namespace PlennuscGestao.Views.Masters
                 }
 
                 // VERIFICA SE É GESTOR E CONFIGURA O MENU
-                VerificarPermissaoMenu();
+                VerificarPermissoesMenu();
                 VerificarPermissaoEstruturas();
 
                 int codUsuario = Convert.ToInt32(Session["codUsuario"]);
@@ -70,27 +70,42 @@ namespace PlennuscGestao.Views.Masters
             }
         }
 
-        private void VerificarPermissaoMenu()
+        private void VerificarPermissoesMenu()
         {
             if (Session["CodPessoa"] != null && Session["CodDepartamento"] != null)
             {
                 int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
                 int codSetor = Convert.ToInt32(Session["CodDepartamento"]);
 
-                var demandaService = new DemandaService("Plennus"); // ou sua connection string
+                var demandaService = new DemandaService("Plennus");
+
+                // Verifica ambas as permissões usando o service
                 bool eGestor = demandaService.VerificarSeEGestor(codPessoa, codSetor);
+                bool eAdministrador = demandaService.VerificarSeEAdministrador(codPessoa);
 
-                // Armazena na sessão para usar em outras páginas se necessário
+                // Armazena na sessão
                 Session["EGestor"] = eGestor;
+                Session["EAdministrador"] = eAdministrador;
 
-                // Configura a visibilidade do menu no front-end
+                // Configura os menus
                 ConfigurarMenuGestor(eGestor);
+                ConfigurarMenuAdministrador(eAdministrador);
+            }
+        }
+
+        private void ConfigurarMenuAdministrador(bool eAdministrador)
+        {
+            // Encontra o item do menu "Estruturas"
+            Control menuEstruturas = FindControlRecursive(Page.Master, "liMenuEstruturas");
+
+            if (menuEstruturas != null)
+            {
+                menuEstruturas.Visible = eAdministrador;
             }
         }
 
         private void ConfigurarMenuGestor(bool eGestor)
         {
-            // Encontra o controle específico do menu "Aguardando Aprovação"
             Control menuItem = FindControlRecursive(Page.Master, "menuAguardandoAprovacao");
 
             if (menuItem != null)
@@ -99,7 +114,6 @@ namespace PlennuscGestao.Views.Masters
             }
             else
             {
-                // Se não encontrar pelo ID, tenta encontrar pela URL
                 Control menuContainer = FindControlRecursive(Page.Master, "subMenuMinhasDemandas");
                 if (menuContainer != null)
                 {
@@ -123,9 +137,9 @@ namespace PlennuscGestao.Views.Masters
         {
             if (root == null) return null;
 
-            if(root.ID == id)
+            if (root.ID == id)
                 return root;
-            foreach(Control c in root.Controls)
+            foreach (Control c in root.Controls)
             {
                 Control t = FindControlRecursive(c, id);
                 if (t != null)
@@ -133,7 +147,6 @@ namespace PlennuscGestao.Views.Masters
             }
             return null;
         }
-
         private void CarregarInfoEmpresa(int codSistema)
         {
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
