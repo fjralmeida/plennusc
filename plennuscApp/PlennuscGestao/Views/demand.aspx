@@ -605,7 +605,6 @@
                                             <asp:ListItem Text="RH - Documentação" Value="3" />
                                             <asp:ListItem Text="Operações - Processos" Value="4" />
                                         </asp:DropDownList>
-                                        <div class="input-hint">Ex.: "Tecnologia - Suporte"</div>
                                     </div>
                                     
                                     <div class="mb-3">
@@ -617,7 +616,6 @@
                                             <asp:ListItem Text="Correção de dados" Value="3" />
                                             <asp:ListItem Text="Atualização de sistema" Value="4" />
                                         </asp:DropDownList>
-                                        <div class="input-hint">Ex.: "Criação Cx. Postal (email)"</div>
                                     </div>
                                 </div>
                             </div>

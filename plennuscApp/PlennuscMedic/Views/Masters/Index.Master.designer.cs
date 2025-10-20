@@ -96,13 +96,22 @@ namespace PlunnuscMedic.Views.Masters
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl liMenuEstruturas;
 
         /// <summary>
-        /// Controle linkEstruturas.
+        /// Controle linkTiposEstrutura.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkEstruturas;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkTiposEstrutura;
+
+        /// <summary>
+        /// Controle linkCadastrarEstruturas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkCadastrarEstruturas;
 
         /// <summary>
         /// Controle subMenuMinhasDemandas.

@@ -554,7 +554,7 @@
             </div>
           </li>
 
-        <li class="mb-2" id="liMenuEstruturas" runat="server">
+       <%-- <li class="mb-2" id="liMenuEstruturas" runat="server">
             <a class="d-flex justify-content-between align-items-center menu-head"
                data-bs-toggle="collapse" href="#collapseMenuEstruturas"
                role="button" aria-expanded="false" aria-controls="collapseMenuEstruturas" title="Estruturas do Sistema">
@@ -566,7 +566,37 @@
                     <li><a href="../structureTypeMedic.aspx" title="Gerenciar Estruturas" id="linkEstruturas" runat="server"><i class="bi bi-gear me-2"></i><span class="label">Gerenciar Estruturas</span></a></li>
                 </ul>
             </div>
-        </li>
+        </li>--%>
+
+              <li class="mb-2" id="liMenuEstruturas" runat="server">
+                  <a class="d-flex justify-content-between align-items-center menu-head"
+                     data-bs-toggle="collapse" href="#collapseMenuEstruturas"
+                     role="button" aria-expanded="false" aria-controls="collapseMenuEstruturas" title="Estruturas do Sistema">
+                      <span><i class="bi bi-diagram-3 me-2"></i><strong class="label"> Estruturas</strong></span>
+                      <i class="bi bi-chevron-right toggle-icon"></i>
+                  </a>
+                  <div class="collapse ms-3" id="collapseMenuEstruturas">
+                      <ul class="list-unstyled ps-3 submenu">
+                           <li>
+                               <a href="../registerStructureTypeMedic.aspx" title="Tipos de Estrutura" id="linkTiposEstrutura" runat="server">
+                                   <i class="bi bi-tags me-2"></i>
+                                   <span class="label">Tipos de Estrutura</span>
+                               </a>
+                           </li>
+
+                          <li>
+                              <a href="../registerStructuresMedic.aspx" title="Cadastrar Estruturas" id="linkCadastrarEstruturas" runat="server">
+                                  <i class="bi bi-building-add me-2"></i>
+                                  <span class="label">Cadastrar Estruturas</span>
+                              </a>
+                          </li>
+             
+                           <%--<ul class="list-unstyled ps-3 submenu">
+                              <li><a href="../structureType.aspx" title="Gerenciar Estruturas" id="linkEstruturas" runat="server"><i class="bi bi-gear me-2"></i><span class="label">Gerenciar Estruturas</span></a></li>
+                          </ul>--%>
+                      </ul>
+                  </div>
+              </li>
 
                    <!-- Demanda -->
         <li class="mb-2">

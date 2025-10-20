@@ -218,6 +218,8 @@
     <Content Include="PlennuscMedic\Views\myDemandsProgressMedic.aspx" />
     <Content Include="PlennuscMedic\Views\myDemandsRefusedMedic.aspx" />
     <Content Include="PlennuscMedic\Views\myDemandsWaitingMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\registerStructuresMedic.aspx" />
+    <Content Include="PlennuscMedic\Views\registerStructureTypeMedic.aspx" />
     <Content Include="PlennuscMedic\Views\structureTypeMedic.aspx" />
     <Content Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx" />
     <Content Include="public\uploadgestao\docs\ModeloDeInserçãoTabPreços - PS1032.xlsx" />
@@ -681,6 +683,20 @@
     </Compile>
     <Compile Include="PlennuscMedic\Views\profileMedic.aspx.designer.cs">
       <DependentUpon>profileMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\registerStructuresMedic.aspx.cs">
+      <DependentUpon>registerStructuresMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\registerStructuresMedic.aspx.designer.cs">
+      <DependentUpon>registerStructuresMedic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\registerStructureTypeMedic.aspx.cs">
+      <DependentUpon>registerStructureTypeMedic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscMedic\Views\registerStructureTypeMedic.aspx.designer.cs">
+      <DependentUpon>registerStructureTypeMedic.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\structureTypeMedic.aspx.cs">
       <DependentUpon>structureTypeMedic.aspx</DependentUpon>
