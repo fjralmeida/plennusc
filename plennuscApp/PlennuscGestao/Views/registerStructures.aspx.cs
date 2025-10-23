@@ -76,6 +76,62 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        protected void gvEstruturas_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Excluir")
+            {
+                int codEstrutura = Convert.ToInt32(e.CommandArgument);
+                ExcluirEstrutura(codEstrutura);
+            }
+        }
+
+        protected void gvEstruturas_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                // Você pode adicionar lógica adicional aqui se necessário
+                // Por exemplo, desabilitar exclusão para estruturas principais, etc.
+            }
+        }
+
+        private void ExcluirEstrutura(int codEstrutura)
+        {
+            try
+            {
+                // Primeiro verifica se existem estruturas filhas
+                bool temFilhos = _service.VerificarEstruturasFilhas(codEstrutura);
+
+                if (temFilhos)
+                {
+                    MostrarMensagem("Não é possível excluir esta estrutura pois existem estruturas filhas vinculadas. Exclua primeiro as estruturas filhas.", "error");
+                    return;
+                }
+
+                // Exclui a estrutura
+                bool excluido = _service.ExcluirEstrutura(codEstrutura);
+
+                if (excluido)
+                {
+                    MostrarMensagemSucesso("Estrutura excluída com sucesso!");
+
+                    // Recarrega o grid com as estruturas atualizadas
+                    if (!string.IsNullOrEmpty(ddlView.SelectedValue))
+                    {
+                        int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
+                        VerificarEstruturasExistentes(codTipoEstrutura);
+                    }
+                }
+                else
+                {
+                    MostrarMensagem("Erro ao excluir a estrutura.", "error");
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem($"Erro ao excluir estrutura: {ex.Message}", "error");
+            }
+        }
+
         protected void btnSalvarTudo_Click(object sender, EventArgs e)
         {
             try

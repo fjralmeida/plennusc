@@ -100,5 +100,15 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
                 @ValorPadrao
             );
             SELECT SCOPE_IDENTITY();";
+
+        //VERIFICAR E EXCLUIR ESTRUTURAS
+        public const string VerificarEstruturasFilhas = @"
+            SELECT COUNT(*) 
+            FROM Estrutura 
+            WHERE CodEstruturaPai = @CodEstruturaPai";
+
+        public const string ExcluirEstrutura = @"
+            DELETE FROM Estrutura 
+            WHERE CodEstrutura = @CodEstrutura";
     }
 }

@@ -554,6 +554,14 @@
                             <span class="label">Cadastrar Estruturas</span>
                         </a>
                     </li>
+
+                     <li>
+                         <a href="../linkSector.aspx" title="Vincular Setor" id="linkVincularSetor" runat="server">
+                             <i class="bi bi-building-add me-2"></i>
+                             <span class="label">Vincular Setor</span>
+                         </a>
+                     </li>
+
                    
                      <%--<ul class="list-unstyled ps-3 submenu">
                         <li><a href="../structureType.aspx" title="Gerenciar Estruturas" id="linkEstruturas" runat="server"><i class="bi bi-gear me-2"></i><span class="label">Gerenciar Estruturas</span></a></li>

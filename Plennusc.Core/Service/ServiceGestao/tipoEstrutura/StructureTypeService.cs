@@ -241,6 +241,30 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
             }
         }
 
+        //VERIFICAR ESTRUTURAS FILHAS
+        public bool VerificarEstruturasFilhas(int codEstruturaPai)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(StructureTypeQueries.VerificarEstruturasFilhas, con))
+            {
+                cmd.Parameters.AddWithValue("@CodEstruturaPai", codEstruturaPai);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
+
+        //EXCLUIR ESTRUTURA
+        public bool ExcluirEstrutura(int codEstrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(StructureTypeQueries.ExcluirEstrutura, con))
+            {
+                cmd.Parameters.AddWithValue("@CodEstrutura", codEstrutura);
+                int affectedRows = cmd.ExecuteNonQuery();
+                return affectedRows > 0;
+            }
+        }
+
         public int InserirEstruturaPai(string nomeEstrutura, string descricao)
         {
             using (var con = Open())
