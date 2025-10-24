@@ -264,7 +264,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                             CodDemanda = rd.GetInt32(0),
                             Titulo = rd.GetString(1),
                             DataDemanda = rd.GetDateTime(2),
-                            Situacao = rd.GetString(3)
+                            Situacao = rd.GetString(3),
+                            Prioridade = rd.GetString(4) 
                         });
                 }
             }
@@ -331,6 +332,67 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
 
             return list;
+        }
+
+        // Busca categorias (views/pais) vinculadas a um setor
+        public List<dynamic> GetCategoriasPorSetor(int codSetor)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+                SELECT DISTINCT
+                    e.CodEstrutura,
+                    e.DescEstrutura
+                FROM SetorTipoDemanda std
+                INNER JOIN Estrutura e ON std.CodEstr_TipoDemanda = e.CodEstrutura
+                WHERE std.CodSetor = @CodSetor
+                AND e.CodEstruturaPai IS NULL  -- Apenas os pais (categorias/views)
+                AND std.Conf_Status = 1
+                ORDER BY e.DescEstrutura", con))
+            {
+                cmd.Parameters.AddWithValue("@CodSetor", codSetor);
+                var list = new List<dynamic>();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new
+                        {
+                            CodEstrutura = reader.GetInt32(0),
+                            DescEstrutura = reader.GetString(1)
+                        });
+                    }
+                }
+                return list;
+            }
+        }
+
+        // Busca subtipos (filhos) de uma categoria
+        public List<dynamic> GetSubtiposPorCategoria(int codEstruturaPai)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+                SELECT 
+                    CodEstrutura,
+                    DescEstrutura
+                FROM Estrutura
+                WHERE CodEstruturaPai = @CodEstruturaPai
+                ORDER BY ValorPadrao, DescEstrutura", con))
+            {
+                cmd.Parameters.AddWithValue("@CodEstruturaPai", codEstruturaPai);
+                var list = new List<dynamic>();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new
+                        {
+                            CodEstrutura = reader.GetInt32(0),
+                            DescEstrutura = reader.GetString(1)
+                        });
+                    }
+                }
+                return list;
+            }
         }
 
         public int ObterPrioridadeDemanda(int codDemanda)

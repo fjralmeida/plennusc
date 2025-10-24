@@ -381,6 +381,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <!-- SCRIPTMANAGER DEVE VOLTAR AQUI - PRIMEIRA LINHA -->
     <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
     
    <asp:UpdatePanel ID="upModalDemandas" runat="server" UpdateMode="Conditional">
@@ -436,6 +437,7 @@
     <!-- Botão oculto fallback (dispara modal via data-bs) -->
     <button id="btnAbrirModalHidden" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#modalDemandas"></button>
 
+    <!-- RESTO DO SEU CÓDIGO ORIGINAL -->
 
     <div class="user-header">
          <asp:Label ID="lblNomeUser" runat="server" Text="" CssClass="user-name" /> - 

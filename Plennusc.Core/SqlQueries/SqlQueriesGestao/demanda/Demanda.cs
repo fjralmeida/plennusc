@@ -296,17 +296,19 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             ORDER BY ISNULL(e.ValorPadrao, 999), e.DescEstrutura";
 
         public const string DemandasCriticasAbertas = @"
-            SELECT 
-                d.CodDemanda,
-                d.Titulo,
-                d.DataDemanda,
-                s.DescEstrutura AS Situacao
-            FROM dbo.Demanda d
-            INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
-            WHERE d.CodPessoaSolicitacao = @CodPessoa
-            AND d.CodEstr_NivelPrioridade = 33
-            AND d.CodEstr_SituacaoDemanda IN (17, 18, 23)
-            ORDER BY d.DataDemanda DESC";
+    SELECT 
+        d.CodDemanda,
+        d.Titulo,
+        d.DataDemanda,
+        s.DescEstrutura AS Situacao,
+        p.DescEstrutura AS Prioridade
+    FROM dbo.Demanda d
+    INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
+    INNER JOIN dbo.Estrutura p ON d.CodEstr_NivelPrioridade = p.CodEstrutura
+    WHERE d.CodPessoaSolicitacao = @CodPessoa
+    AND d.CodEstr_NivelPrioridade IN (32, 33) 
+    AND d.CodEstr_SituacaoDemanda NOT IN (22, 65)  
+    ORDER BY d.DataDemanda DESC";
 
 
         public const string SituacoesParaFechamento = @"

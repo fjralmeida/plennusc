@@ -1,7 +1,7 @@
 ﻿using Plennusc.Core.Models.ModelsGestao;
 using Plennusc.Core.Service.ServiceGestao;
 using System;
-using System.CodeDom; // para usar .Value no <input type="date" runat="server">
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -24,7 +24,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         private int? CodDepartamentoAtual =>
             Session["CodDepartamento"] == null ? (int?)null : Convert.ToInt32(Session["CodDepartamento"]);
 
-        // Adicione esta propriedade para armazenar as prioridades com limites
         private List<DemandaComLimite> PrioridadesComLimites;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -32,43 +31,34 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!IsPostBack)
             {
                 lblNomeUser.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário não identificado";
-
                 BindAll();
 
-                // PEGAR O SETOR SELECIONADO NO DROPDOWN
                 if (!string.IsNullOrEmpty(ddlOrigem.SelectedItem.Text))
                 {
-
                     lblSetorUsuario.Text = ddlOrigem.SelectedItem.Text;
                 }
 
-                // Esconder o campo de prazo inicialmente
                 divPrazo.Style["display"] = "none";
-
                 CarregarNiveisImportancia();
             }
             else
             {
-                // RECARREGAR as prioridades durante postback para que estejam disponíveis nos eventos
                 PrioridadesComLimites = _svc.GetPrioridadesComLimites();
             }
         }
 
         private void BindAll()
         {
-            // Departamentos - Filtrado pelo usuário logado (ORIGEM)
             ddlOrigem.DataSource = _svc.GetDepartamentoUsuario(CodPessoaAtual);
             ddlOrigem.DataValueField = "Value";
             ddlOrigem.DataTextField = "Text";
             ddlOrigem.DataBind();
 
-            // Se houver apenas um departamento, selecione-o automaticamente
-            if (ddlOrigem.Items.Count == 2) // 1 item + o "Selecione"
+            if (ddlOrigem.Items.Count == 2)
             {
                 ddlOrigem.SelectedIndex = 1;
             }
 
-            // Destino - Mantém todos os departamentos (sem filtro)
             ddlDestino.DataSource = _svc.GetDepartamentos();
             ddlDestino.DataValueField = "Value";
             ddlDestino.DataTextField = "Text";
@@ -80,19 +70,17 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlPrioridade.DataTextField = "Text";
             ddlPrioridade.DataBind();
 
-            // GARANTIR que o item vazio existe como primeiro item
             if (ddlPrioridade.Items.Count > 0 && ddlPrioridade.Items[0].Value != "")
             {
                 ddlPrioridade.Items.Insert(0, new ListItem("Selecione a prioridade", ""));
             }
-            // Origem default pela sessão (se existir)
+
             if (CodDepartamentoAtual.HasValue)
             {
                 var it = ddlOrigem.Items.FindByValue(CodDepartamentoAtual.Value.ToString());
                 if (it != null) ddlOrigem.SelectedValue = it.Value;
             }
 
-            // Categoria/Subtipo (sem filtro por setor)
             BindGrupos();
         }
 
@@ -102,7 +90,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             try { upPrioridade.Update(); } catch { }
         }
 
-        // Método para validar o limite de prioridade
         private bool ValidarLimitePrioridade()
         {
             if (string.IsNullOrEmpty(ddlPrioridade.SelectedValue) || PrioridadesComLimites == null)
@@ -121,7 +108,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     MostrarMensagem($"Você já atingiu o limite máximo de {prioridade.Limite} demanda(s) com prioridade '{prioridade.Text}'.", "warning");
 
-                    // abre modal conforme prioridade
                     if (prioridadeSelecionada == 33)
                     {
                         CarregarDemandasGenerica(isCritica: true);
@@ -173,14 +159,10 @@ namespace appWhatsapp.PlennuscGestao.Views
                     return;
                 }
 
-                // DataBind no repeater
                 rptDemandas.DataSource = demandas;
                 rptDemandas.DataBind();
-
-                // Atualiza o UpdatePanel do modal para enviar o HTML atualizado ao cliente
                 upModalDemandas.Update();
 
-                // Mensagens dinâmicas
                 if (isCritica)
                 {
                     litTituloModal.Text = "<i class='bi bi-exclamation-triangle'></i> Você possui demandas CRÍTICAS em aberto";
@@ -192,7 +174,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     litTextoModal.Text = "<p>Para criar uma nova demanda ALTA, você precisa fechar ou alterar a situação de uma das demandas existentes:</p>";
                 }
 
-                // Script para abrir modal (será enviado junto com HTML atualizado)
                 string key = isCritica ? "AbrirModalCriticas" : "AbrirModalAltas";
                 string script = @"
             (function() {
@@ -240,7 +221,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             catch (Exception ex)
             {
-                // Falha silenciosa
                 System.Diagnostics.Debug.WriteLine($"Erro ao carregar importâncias: {ex.Message}");
             }
         }
@@ -253,7 +233,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (ddlNovaPrioridade != null && PrioridadesComLimites != null)
                 {
-                    // Filtrar apenas prioridades NÃO críticas/altas (33 e 32)
                     var prioridadesPermitidas = PrioridadesComLimites
                         .Where(p => p.Value != 33 && p.Value != 32)
                         .ToList();
@@ -289,10 +268,8 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (sucesso)
                 {
-                    // Mostrar toast de sucesso
                     MostrarMensagem("Demanda alterada com sucesso!", "success");
 
-                    // Verificar se ainda existem demandas do tipo (crítica/alta) para o usuário
                     bool isCritica = litTituloModal.Text.Contains("CRÍTICAS");
                     List<DemandaCriticaInfo> demandasRemanescentes = isCritica
                         ? _svc.GetDemandasCriticasAbertas(CodPessoaAtual)
@@ -300,39 +277,53 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     if (demandasRemanescentes != null && demandasRemanescentes.Any())
                     {
-                        // Recarrega o modal com as demandas atualizadas (vai fazer DataBind e abrir o modal)
                         CarregarDemandasGenerica(isCritica);
                     }
                     else
                     {
-                        // Se não houverem mais demandas, fechar modal e limpar backdrop (script robusto)
+                        // CORREÇÃO DO PROBLEMA DO MODAL - FECHAMENTO CORRETO
                         string fecharScript = @"
                             (function(){
                                 try {
                                     var modalEl = document.getElementById('modalDemandas');
                                     if (modalEl) {
-                                        // tenta usar Bootstrap 5 API
-                                        if (window.bootstrap && typeof bootstrap.Modal !== 'undefined' && typeof bootstrap.Modal.getInstance === 'function') {
+                                        // Método 1: Bootstrap 5
+                                        if (window.bootstrap && typeof bootstrap.Modal !== 'undefined') {
                                             var inst = bootstrap.Modal.getInstance(modalEl);
-                                            if (inst) inst.hide();
-                                        } else {
-                                            // fallback jQuery se estiver disponível
-                                            if (typeof jQuery !== 'undefined' && jQuery('#modalDemandas').length) {
-                                                jQuery('#modalDemandas').modal('hide');
+                                            if (inst) {
+                                                inst.hide();
+                                            } else {
+                                                modalEl.style.display = 'none';
                                             }
+                                        } 
+                                        // Método 2: JavaScript puro
+                                        else {
+                                            modalEl.style.display = 'none';
+                                            modalEl.classList.remove('show');
                                         }
                                     }
-                                } catch(e) { console.error('erro ao esconder modal:', e); }
-                                // remove qualquer backdrop e a classe modal-open do body (com pequeno delay para segurança)
-                                setTimeout(function(){
-                                    try{
-                                        document.querySelectorAll('.modal-backdrop').forEach(function(el){ el.parentNode && el.parentNode.removeChild(el); });
-                                        document.body.classList.remove('modal-open');
-                                    }catch(e){ console.error('erro cleanup backdrop:', e); }
-                                }, 200);
+                                    
+                                    // Remove todos os backdrops
+                                    var backdrops = document.querySelectorAll('.modal-backdrop');
+                                    backdrops.forEach(function(backdrop) {
+                                        backdrop.remove();
+                                    });
+                                    
+                                    // Restaura o body
+                                    document.body.classList.remove('modal-open');
+                                    document.body.style.overflow = 'auto';
+                                    document.body.style.paddingRight = '';
+                                    
+                                } catch(e) { 
+                                    console.error('Erro ao fechar modal:', e);
+                                    // Fallback: força a remoção de tudo
+                                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                                    document.querySelectorAll('.modal').forEach(el => el.style.display = 'none');
+                                    document.body.classList.remove('modal-open');
+                                }
                             })();
-                            ";
-                        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "FecharModalCleanup", fecharScript, true);
+                        ";
+                        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "FecharModalScript", fecharScript, true);
                     }
                 }
                 else
@@ -346,7 +337,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-
         protected void rptDemandasCriticas_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
@@ -355,14 +345,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (ddlSituacao != null)
                 {
-                    // Carregar situações de fechamento diretamente
                     var situacoesFechamento = _svc.GetSituacoesParaFechamento();
                     ddlSituacao.DataSource = situacoesFechamento;
                     ddlSituacao.DataValueField = "Value";
                     ddlSituacao.DataTextField = "Text";
                     ddlSituacao.DataBind();
-
-                    // Adicionar item vazio no início
                     ddlSituacao.Items.Insert(0, new ListItem("-- Selecionar --", ""));
                 }
             }
@@ -372,7 +359,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             int? codSetorDestino = null;
 
-            // Pega o setor de destino se estiver selecionado
             if (!string.IsNullOrEmpty(ddlDestino.SelectedValue) && ddlDestino.SelectedValue != "")
             {
                 codSetorDestino = int.Parse(ddlDestino.SelectedValue);
@@ -383,7 +369,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlTipoGrupo.DataTextField = "Text";
             ddlTipoGrupo.DataBind();
 
-            // Mantém o comportamento original se não houver setor selecionado
             if (ddlTipoGrupo.Items.Count > 0)
                 ddlTipoGrupo.SelectedIndex = 0;
 
@@ -408,20 +393,92 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void ddlDestino_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindGrupos();
+            if (!string.IsNullOrEmpty(ddlDestino.SelectedValue))
+            {
+                int codSetor = Convert.ToInt32(ddlDestino.SelectedValue);
+                CarregarCategoriasPorSetor(codSetor);
+            }
+            else
+            {
+                ddlTipoGrupo.Items.Clear();
+                ddlTipoGrupo.Items.Add(new ListItem("Selecione uma categoria", ""));
+                ddlTipoDetalhe.Items.Clear();
+                ddlTipoDetalhe.Items.Add(new ListItem("Selecione um subtipo", ""));
+            }
+
             try { upRoteamento.Update(); } catch { }
             try { upCategoria.Update(); } catch { }
         }
 
+        private void CarregarCategoriasPorSetor(int codSetor)
+        {
+            try
+            {
+                var categorias = _svc.GetCategoriasPorSetor(codSetor);
+
+                ddlTipoGrupo.DataSource = categorias;
+                ddlTipoGrupo.DataValueField = "CodEstrutura";
+                ddlTipoGrupo.DataTextField = "DescEstrutura";
+                ddlTipoGrupo.DataBind();
+
+                ddlTipoDetalhe.Items.Clear();
+                ddlTipoDetalhe.Items.Add(new ListItem("Selecione um subtipo", ""));
+
+                if (categorias.Count == 0)
+                {
+                    MostrarMensagem("Nenhuma categoria encontrada para este setor.", "info");
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem($"Erro ao carregar categorias: {ex.Message}", "error");
+            }
+        }
+
         protected void ddlTipoGrupo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindSubtiposDoGrupo();
+            if (!string.IsNullOrEmpty(ddlTipoGrupo.SelectedValue))
+            {
+                int codEstruturaPai = Convert.ToInt32(ddlTipoGrupo.SelectedValue);
+                CarregarSubtiposDaCategoria(codEstruturaPai);
+            }
+            else
+            {
+                ddlTipoDetalhe.Items.Clear();
+                ddlTipoDetalhe.Items.Add(new ListItem("Selecione um subtipo", ""));
+            }
+
             try { upCategoria.Update(); } catch { }
+        }
+
+        private void CarregarSubtiposDaCategoria(int codEstruturaPai)
+        {
+            try
+            {
+                var subtipos = _svc.GetSubtiposPorCategoria(codEstruturaPai);
+
+                ddlTipoDetalhe.DataSource = subtipos;
+                ddlTipoDetalhe.DataValueField = "CodEstrutura";
+                ddlTipoDetalhe.DataTextField = "DescEstrutura";
+                ddlTipoDetalhe.DataBind();
+
+                if (subtipos.Count == 0)
+                {
+                    ddlTipoDetalhe.Items.Insert(0, new ListItem("— Nenhum subtipo disponível —", ""));
+                }
+                else
+                {
+                    ddlTipoDetalhe.Items.Insert(0, new ListItem("— selecionar —", ""));
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem($"Erro ao carregar subtipos: {ex.Message}", "error");
+            }
         }
 
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
-            // Validar limite de prioridade antes de tudo
             if (!ValidarLimitePrioridade())
                 return;
 
@@ -457,7 +514,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            // Validação adicional para prioridades que exigem prazo
             int prioridadeSelecionada = Convert.ToInt32(ddlPrioridade.SelectedValue);
             if ((prioridadeSelecionada == 33 || prioridadeSelecionada == 32) && string.IsNullOrEmpty(txtPrazo.Value))
             {
@@ -466,14 +522,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            // Decide o tipo a gravar: Subtipo (se selecionado) ou o próprio Grupo
             int codTipoDemanda;
             if (!string.IsNullOrEmpty(ddlTipoDetalhe.SelectedValue))
                 codTipoDemanda = int.Parse(ddlTipoDetalhe.SelectedValue);
             else
                 codTipoDemanda = int.Parse(ddlTipoGrupo.SelectedValue);
 
-            // Prazo (input type="date" -> usar .Value)
             DateTime? prazo = null;
             var rawPrazo = (txtPrazo.Value ?? "").Trim();
             if (!string.IsNullOrEmpty(rawPrazo))
@@ -511,7 +565,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 int id = _svc.CriarDemanda(dto);
 
-                // Salvar anexos se houver
                 if (fuAnexos.HasFiles)
                 {
                     int arquivosSalvos = 0;
@@ -521,7 +574,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     {
                         try
                         {
-                            // Validar tamanho (10MB máximo)
                             if (arquivo.ContentLength > 10 * 1024 * 1024)
                             {
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivoTamanho",
@@ -530,7 +582,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                                 continue;
                             }
 
-                            // Validar extensão
                             string extensao = Path.GetExtension(arquivo.FileName).ToLower();
                             string[] extensoesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".gif" };
 
@@ -542,10 +593,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                                 continue;
                             }
 
-                            // PRIMEIRO salva o arquivo físico
                             string nomeArquivoSalvo = _svc.SalvarAnexoFisico(arquivo, id);
 
-                            // DEPOIS lê o conteúdo para salvar no banco (se necessário)
                             byte[] conteudo;
                             using (MemoryStream ms = new MemoryStream())
                             {
@@ -553,7 +602,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                                 conteudo = ms.ToArray();
                             }
 
-                            // Salvar anexo - passa o nome único que foi salvo fisicamente
                             _svc.SalvarAnexoDemanda(id, nomeArquivoSalvo, conteudo, arquivo.ContentType, CodPessoaAtual);
                             arquivosSalvos++;
                         }
@@ -565,7 +613,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                         }
                     }
 
-                    // Feedback sobre os anexos processados
                     if (arquivosSalvos > 0)
                     {
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivosSucesso",
@@ -579,22 +626,18 @@ namespace appWhatsapp.PlennuscGestao.Views
                     }
                 }
 
-                // Mensagem de sucesso
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso",
                     "showToastSucesso('Demanda criada com sucesso! (Código: " + id + ")');", true);
 
-                // Limpa campos
                 txtTitulo.Text = "";
                 txtDescricao.Text = "";
                 txtPrazo.Value = "";
                 divPrazo.Style["display"] = "none";
 
-                // Limpar arquivos selecionados
                 fuAnexos.Attributes.Clear();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "LimparArquivos",
                     "selectedFiles = []; updateFilePreview();", true);
 
-                // Recarrega categorias/subtipos
                 BindGrupos();
             }
             catch (Exception ex)
@@ -623,27 +666,55 @@ namespace appWhatsapp.PlennuscGestao.Views
                     {
                         MostrarMensagemSucesso("Situação da demanda alterada com sucesso!");
 
-                        // Descobrir prioridade da demanda (32 = Alta, 33 = Crítica)
                         int prioridadeDemanda = _svc.ObterPrioridadeDemanda(codDemanda);
 
-                        if (prioridadeDemanda == 33) // Crítica
+                        if (prioridadeDemanda == 33)
                         {
                             CarregarDemandasGenerica(true);
 
                             if (!_svc.GetDemandasCriticasAbertas(CodPessoaAtual).Any())
                             {
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModalCriticas",
-                                    "var m = bootstrap.Modal.getInstance(document.getElementById('modalDemandas')); if(m) m.hide();", true);
+                                // CORREÇÃO: Fechamento correto do modal
+                                string fecharScript = @"
+                                    try {
+                                        var modal = document.getElementById('modalDemandas');
+                                        if (modal) {
+                                            if (window.bootstrap && bootstrap.Modal) {
+                                                var instance = bootstrap.Modal.getInstance(modal);
+                                                if (instance) instance.hide();
+                                            } else {
+                                                modal.style.display = 'none';
+                                            }
+                                        }
+                                        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                                        document.body.classList.remove('modal-open');
+                                    } catch(e) { console.error(e); }
+                                ";
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModalSituacao", fecharScript, true);
                             }
                         }
-                        else if (prioridadeDemanda == 32) // Alta
+                        else if (prioridadeDemanda == 32)
                         {
                             CarregarDemandasGenerica(false);
 
                             if (!_svc.GetDemandasAltasAbertas(CodPessoaAtual).Any())
                             {
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModalAltas",
-                                    "var m = bootstrap.Modal.getInstance(document.getElementById('modalDemandas')); if(m) m.hide();", true);
+                                string fecharScript = @"
+                                    try {
+                                        var modal = document.getElementById('modalDemandas');
+                                        if (modal) {
+                                            if (window.bootstrap && bootstrap.Modal) {
+                                                var instance = bootstrap.Modal.getInstance(modal);
+                                                if (instance) instance.hide();
+                                            } else {
+                                                modal.style.display = 'none';
+                                            }
+                                        }
+                                        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                                        document.body.classList.remove('modal-open');
+                                    } catch(e) { console.error(e); }
+                                ";
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModalSituacaoAlta", fecharScript, true);
                             }
                         }
                     }
@@ -654,19 +725,17 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensagem($"Erro: {ex.Message}",  "error");
+                    MostrarMensagem($"Erro: {ex.Message}", "error");
                 }
             }
             else
             {
-                MostrarMensagem("Selecione uma situação válida.",  "error");
+                MostrarMensagem("Selecione uma situação válida.", "error");
             }
         }
 
-
-        // Método para exibir mensagens com SweetAlert2
-       private void MostrarMensagemSucesso(string mensagem)
-       {
+        private void MostrarMensagemSucesso(string mensagem)
+        {
             string script = $@"
                 Swal.fire({{
                     toast: true,
@@ -679,7 +748,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     timerProgressBar: true
                 }});
             ";
-
             ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
         }
 
@@ -717,14 +785,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                     timerProgressBar: true
                 }});
             ";
-
             ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastMsg", script, true);
         }
 
-
         protected void btnRemoverArquivo_Click(object sender, EventArgs e)
         {
-
+            // Implementação do método se necessário
         }
     }
 }
