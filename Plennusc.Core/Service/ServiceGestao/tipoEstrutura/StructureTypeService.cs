@@ -41,40 +41,98 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
         }
 
         // MÉTODO PARA CRIAR A VIEW AUTOMATICAMENTE
-        public bool CriarView(string nomeView, string descTipoEstrutura)
+        public bool CriarView(string nomeView, int codTipoEstrutura)
         {
             try
             {
                 using (var con = Open())
                 {
-                    // Gera o SQL dinâmico para criar a view
+                    // APENAS CRIA A VIEW
                     var sqlView = $@"
-                    CREATE VIEW {nomeView} AS
-                    SELECT 
-                        e.CodEstrutura,
-                        e.CodEstruturaPai,
-                        e.CodTipoEstrutura,
-                        e.DescEstrutura,
-                        e.MemoEstrutura,
-                        e.InfoEstrutura,
-                        e.Conf_IsDefault,
-                        e.ValorPadrao,
-                        te.DescTipoEstrutura
-                    FROM Estrutura e
-                    INNER JOIN TipoEstrutura te ON e.CodTipoEstrutura = te.CodTipoEstrutura
-                    WHERE te.DescTipoEstrutura = '{descTipoEstrutura.Replace("'", "''")}'";
+                        CREATE VIEW {nomeView} AS
+                        SELECT 
+                            e.CodEstrutura,
+                            e.CodEstruturaPai,
+                            e.CodTipoEstrutura,
+                            e.DescEstrutura,
+                            e.MemoEstrutura,
+                            e.InfoEstrutura,
+                            e.Conf_IsDefault,
+                            e.ValorPadrao,
+                            te.DescTipoEstrutura
+                        FROM Estrutura e
+                        INNER JOIN TipoEstrutura te ON e.CodTipoEstrutura = te.CodTipoEstrutura
+                        WHERE te.CodTipoEstrutura = {codTipoEstrutura}";
 
-                    using (var cmd = new SqlCommand(sqlView, con))
+                    using (var cmdView = new SqlCommand(sqlView, con))
                     {
-                        cmd.ExecuteNonQuery();
-                        return true;
+                        cmdView.ExecuteNonQuery();
                     }
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Erro ao criar view: {ex.Message}");
                 return false;
+            }
+        }
+
+        public bool CriarEstruturaPai(int codTipoEstrutura, string descEstrutura)
+        {
+            try
+            {
+                using (var con = Open())
+                {
+                    // APENAS INSERE O REGISTRO PAI NA ESTRUTURA
+                    var sqlInserirEstruturaPai = @"
+                        INSERT INTO Estrutura (
+                            CodEstruturaPai,
+                            CodTipoEstrutura, 
+                            DescEstrutura,
+                            Conf_IsDefault,
+                            ValorPadrao
+                        ) 
+                        VALUES (
+                            NULL,
+                            @CodTipoEstrutura,
+                            @DescEstrutura,
+                            1,
+                            0
+                        )";
+
+                    using (var cmdInserir = new SqlCommand(sqlInserirEstruturaPai, con))
+                    {
+                        cmdInserir.Parameters.AddWithValue("@CodTipoEstrutura", codTipoEstrutura);
+                        cmdInserir.Parameters.AddWithValue("@DescEstrutura", descEstrutura);
+                        int result = cmdInserir.ExecuteNonQuery();
+                        return result > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao criar estrutura pai: {ex.Message}");
+                return false;
+            }
+        }
+
+        public int BuscarPaiPorTipoEstrutura(int codTipoEstrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+                SELECT TOP 1 CodEstrutura 
+                FROM Estrutura 
+                WHERE CodTipoEstrutura = @CodTipoEstrutura 
+                AND CodEstruturaPai IS NULL", con))
+            {
+                cmd.Parameters.AddWithValue("@CodTipoEstrutura", codTipoEstrutura);
+
+                var result = cmd.ExecuteScalar();
+                if (result == null)
+                    throw new Exception($"Não foi encontrado o pai para o TipoEstrutura {codTipoEstrutura}");
+
+                return Convert.ToInt32(result);
             }
         }
 

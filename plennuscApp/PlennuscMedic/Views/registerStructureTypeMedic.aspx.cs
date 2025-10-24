@@ -46,25 +46,33 @@ namespace appWhatsapp.PlennuscMedic.Views
                     NomeView = nomeView
                 };
 
-                // Salva o TipoEstrutura
+                // 1. SALVA APENAS NO TipoEstrutura
                 int codigo = _service.SalvarTipoEstrutura(model);
 
                 if (codigo > 0)
                 {
-                    // Cria a View
-                    bool viewCriada = _service.CriarView(nomeView, descricao);
+                    // 2. CRIA O PAI NA ESTRUTURA SEPARADAMENTE
+                    bool estruturaPaiCriada = _service.CriarEstruturaPai(codigo, descricao);
 
-                    if (viewCriada)
+                    if (estruturaPaiCriada)
                     {
-                        MostrarMensagemSucesso($"Sucesso! Tipo Estrutura salvo (Código: {codigo}) e View '{nomeView}' criada.");
+                        // 3. CRIA A VIEW SEPARADAMENTE
+                        bool viewCriada = _service.CriarView(nomeView, codigo);
 
-                        // Limpa o formulário
-                        txtDescricao.Text = "";
-                        chkEditavel.Checked = false;
+                        if (viewCriada)
+                        {
+                            MostrarMensagemSucesso($"Sucesso! Tipo Estrutura salvo (Código: {codigo}) e View '{nomeView}' criada.");
+                            txtDescricao.Text = "";
+                            chkEditavel.Checked = false;
+                        }
+                        else
+                        {
+                            MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar a view.", "warning");
+                        }
                     }
                     else
                     {
-                        MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar a view.", "warning");
+                        MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar estrutura pai.", "warning");
                     }
                 }
                 else

@@ -45,6 +45,13 @@
                                 AutoGenerateColumns="false" EmptyDataText="Nenhuma estrutura encontrada para esta View"
                                 OnRowDataBound="gvEstruturas_RowDataBound">
                                 <Columns>
+
+                                      <asp:TemplateField Visible="false">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblCodEstrutura" runat="server" Text='<%# Eval("CodEstrutura") %>' />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+
                                     <asp:BoundField DataField="DescEstrutura" HeaderText="Nome da Estrutura" />
                                     <asp:BoundField DataField="ValorPadrao" HeaderText="Ordem" />
                                    

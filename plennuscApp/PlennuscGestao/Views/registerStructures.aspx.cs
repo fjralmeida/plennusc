@@ -144,7 +144,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
 
-                // SALVAR AS ESTRUTURAS (AGORA TODAS SÃO "PAI")
                 var serializer = new JavaScriptSerializer();
                 var estruturasJson = hdnSubtipos.Value;
 
@@ -152,36 +151,25 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     var estruturas = serializer.Deserialize<List<subTypeDate>>(estruturasJson);
                     int estruturasSalvas = 0;
-                    bool algumPrincipal = false;
+
+                    // **BUSCA O PAI EXISTENTE - SEMPRE DEVE EXISTIR**
+                    int codEstruturaPai = _service.BuscarPaiPorTipoEstrutura(codTipoEstrutura);
 
                     foreach (var estrutura in estruturas)
                     {
                         if (!string.IsNullOrEmpty(estrutura.nome.Trim()))
                         {
-                            // Verifica se já existe algum marcado como principal
-                            if (estrutura.isDefault)
-                            {
-                                if (algumPrincipal)
-                                {
-                                    // Já existe um principal, não marca este
-                                    estrutura.isDefault = false;
-                                }
-                                else
-                                {
-                                    algumPrincipal = true;
-                                }
-                            }
-
-                            var modelEstrutura = new structureModel
+                            // **TODAS AS ESTRUTURAS SÃO FILHAS DO PAI EXISTENTE**
+                            var modelEstruturaFilha = new structureModel
                             {
                                 CodTipoEstrutura = codTipoEstrutura,
                                 DescEstrutura = estrutura.nome.Trim(),
-                                CodEstruturaPai = null, // Agora sempre NULL
-                                Conf_IsDefault = estrutura.isDefault,
+                                CodEstruturaPai = codEstruturaPai, // Sempre o pai existente
+                                Conf_IsDefault = false, // Filhas não são principais
                                 ValorPadrao = estrutura.ordem
                             };
 
-                            _service.SalvarEstrutura(modelEstrutura);
+                            _service.SalvarEstrutura(modelEstruturaFilha);
                             estruturasSalvas++;
                         }
                     }
@@ -189,12 +177,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                     if (estruturasSalvas > 0)
                     {
                         MostrarMensagemSucesso($"{estruturasSalvas} estruturas salvas com sucesso!");
-
-                        // Limpa os campos e recarrega o grid
                         hdnSubtipos.Value = "";
                         ScriptManager.RegisterStartupScript(this, GetType(), "limparCampos", "limparCamposSubtipos();", true);
-
-                        // Recarrega as estruturas existentes
                         VerificarEstruturasExistentes(codTipoEstrutura);
                     }
                     else

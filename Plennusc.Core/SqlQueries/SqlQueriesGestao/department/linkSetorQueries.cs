@@ -8,7 +8,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.department
 {
     public class linkSetorQueries
     {
-        public const string BuscarTodasViews = @"
+          public const string BuscarTodasViews = @"
             SELECT CodTipoEstrutura, DescTipoEstrutura, NomeView 
             FROM TipoEstrutura 
             ORDER BY DescTipoEstrutura";
@@ -21,6 +21,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.department
                 e.CodTipoEstrutura
             FROM Estrutura e
             WHERE e.CodTipoEstrutura = @CodTipoEstrutura
+            AND e.CodEstruturaPai IS NULL
             ORDER BY e.ValorPadrao, e.DescEstrutura";
 
         public const string BuscarVinculosExistentes = @"

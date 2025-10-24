@@ -9,7 +9,6 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsStructure
     public class subTypeDate
     {
         public string nome { get; set; }
-        public bool isDefault { get; set; }
         public int ordem { get; set; }
     }
 }

@@ -92,7 +92,14 @@ namespace Plennusc.Core.Service.ServiceGestao.vinculaDepartameto
 
         public bool VincularSetor(int codSetor, int codEstrutura)
         {
-            // Primeiro verifica se já existe
+            // PRIMEIRO: Verificar se a estrutura existe MESMO
+            bool estruturaExiste = VerificarEstruturaExiste(codEstrutura);
+            if (!estruturaExiste)
+            {
+                throw new Exception($"Estrutura {codEstrutura} não existe na tabela Estrutura!");
+            }
+
+            // SEGUNDO: Verifica se já existe o vínculo
             if (VerificarVinculoExistente(codSetor, codEstrutura))
                 return false;
 
@@ -101,8 +108,30 @@ namespace Plennusc.Core.Service.ServiceGestao.vinculaDepartameto
             {
                 cmd.Parameters.AddWithValue("@CodSetor", codSetor);
                 cmd.Parameters.AddWithValue("@CodEstrutura", codEstrutura);
-                int affectedRows = cmd.ExecuteNonQuery();
-                return affectedRows > 0;
+
+                try
+                {
+                    int affectedRows = cmd.ExecuteNonQuery();
+                    return affectedRows > 0;
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception($"Erro ao inserir: Setor={codSetor}, Estrutura={codEstrutura}. Detalhes: {ex.Message}");
+                }
+            }
+        }
+
+        private bool VerificarEstruturaExiste(int codEstrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+                SELECT COUNT(*) 
+                FROM Estrutura 
+                WHERE CodEstrutura = @CodEstrutura", con))
+            {
+                cmd.Parameters.AddWithValue("@CodEstrutura", codEstrutura);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
             }
         }
 

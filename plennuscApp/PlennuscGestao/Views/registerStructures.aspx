@@ -647,48 +647,43 @@
             
             <div class="card-body">
 
-                                               <!-- COMBO COM AS VIEWS -->
-<div class="form-group">
-    <label class="form-label">View *</label>
-    <asp:DropDownList ID="ddlView" runat="server" CssClass="form-control form-select" AutoPostBack="true"
-        OnSelectedIndexChanged="ddlView_SelectedIndexChanged">
-        <asp:ListItem Text="Selecione uma View" Value=""></asp:ListItem>
-    </asp:DropDownList>
-</div>
+                <!-- COMBO COM AS VIEWS -->
+                <div class="form-group">
+                    <label class="form-label">View *</label>
+                    <asp:DropDownList ID="ddlView" runat="server" CssClass="form-control form-select" AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlView_SelectedIndexChanged">
+                        <asp:ListItem Text="Selecione uma View" Value=""></asp:ListItem>
+                    </asp:DropDownList>
+                </div>
 
-<!-- SUBTIPOS DINÂMICOS - SEMPRE VISÍVEL -->
-<div class="form-group mt-3">
-    <label class="form-label">Adicionar Novas Estruturas</label>
-    <div class="alert alert-warning">
-        <small><i class="bi bi-lightbulb"></i> <strong>Dica:</strong> Marque uma estrutura como "Principal" e defina a "Ordem" para organizar a exibição.</small>
-    </div>
-    <div class="subtipos-container">
-        <div id="containerSubtipos">
-            <!-- Primeiro campo com todos os dados -->
-           <div class="subtipo-item">
-                <div class="subtipo-input">
-                    <input type="text" class="form-control" name="subtipo_1" 
-                        placeholder="Digite o nome da estrutura" maxlength="100" />
+                <!-- SUBTIPOS DINÂMICOS - SEMPRE VISÍVEL -->
+                <div class="form-group mt-3">
+                    <label class="form-label">Adicionar Novas Estruturas</label>
+                    <div class="alert alert-warning">
+                        <small><i class="bi bi-lightbulb"></i> <strong>Dica:</strong> Defina a "Ordem" para organizar a exibição.</small>
+                    </div>
+                    <div class="subtipos-container">
+                        <div id="containerSubtipos">
+                            <!-- Primeiro campo com todos os dados -->
+                            <div class="subtipo-item">
+                                <div class="subtipo-input">
+                                    <input type="text" class="form-control" name="subtipo_1" 
+                                        placeholder="Digite o nome da estrutura" maxlength="100" />
+                                </div>
+                                <div class="subtipo-ordem">
+                                    <input type="number" class="form-control campo-ordem" name="ordem_1" 
+                                        placeholder="Ordem" value="1" min="1" 
+                                        onchange="reordenarAutomaticamente(this)" />
+                                </div>
+                                <div class="subtipo-actions">
+                                    <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outra estrutura">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="subtipo-default">
-                    <input type="checkbox" class="form-check-input-custom principal-checkbox" 
-                        name="default_1" id="default_1" checked onchange="atualizarCheckboxesPrincipais(this)" />
-                    <label for="default_1">Principal</label>
-                </div>
-                <div class="subtipo-ordem">
-                    <input type="number" class="form-control campo-ordem" name="ordem_1" 
-                        placeholder="Ordem" value="1" min="1" 
-                        onchange="reordenarAutomaticamente(this)" />
-                </div>
-                <div class="subtipo-actions">
-                    <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outra estrutura">
-                        <i class="bi bi-plus-lg"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
                 <!-- BOTÕES DE AÇÃO -->
                 <div class="action-buttons">
@@ -702,264 +697,200 @@
                         <asp:Label ID="lblMensagem" runat="server"></asp:Label>
                     </div>
                 </asp:Panel>
-                
 
+                <!-- MENSAGEM SE JÁ EXISTIR ESTRUTURAS -->
+                <asp:Panel ID="pnlMensagemEstruturaExistente" runat="server" Visible="false">
+                    <div class="alert alert-info">
+                        <strong><i class="bi bi-info-circle"></i> Estruturas existentes</strong>
+                        <br />Esta View já possui estruturas cadastradas. Você pode visualizá-las abaixo e adicionar novas.
+                    </div>
+                </asp:Panel>
 
-<!-- MENSAGEM SE JÁ EXISTIR ESTRUTURAS -->
-<asp:Panel ID="pnlMensagemEstruturaExistente" runat="server" Visible="false">
-    <div class="alert alert-info">
-        <strong><i class="bi bi-info-circle"></i> Estruturas existentes</strong>
-        <br />Esta View já possui estruturas cadastradas. Você pode visualizá-las abaixo e adicionar novas.
-    </div>
-</asp:Panel>
+                <!-- GRID COM ESTRUTURAS EXISTENTES -->
+                <asp:Panel ID="pnlGridEstruturas" runat="server" Visible="false" class="mt-3">
+                    <div class="grid-card">
+                        <div class="grid-card-header">
+                            <h5 class="grid-card-title"><i class="bi bi-list-ul"></i> Estruturas Existentes</h5>
+                        </div>
+                        <div class="grid-card-body">
+                            <asp:GridView ID="gvEstruturas" runat="server" CssClass="table table-striped table-bordered" 
+                                AutoGenerateColumns="false" EmptyDataText="Nenhuma estrutura encontrada"
+                                OnRowCommand="gvEstruturas_RowCommand" OnRowDataBound="gvEstruturas_RowDataBound">
+                                <Columns>
+                                    <asp:BoundField DataField="DescEstrutura" HeaderText="Nome da Estrutura" 
+                                        ItemStyle-CssClass="column-text" HeaderStyle-CssClass="column-text" />
+                                    <asp:BoundField DataField="ValorPadrao" HeaderText="Ordem" 
+                                        ItemStyle-CssClass="column-number" HeaderStyle-CssClass="column-number" />
+                                    <asp:TemplateField HeaderText="Ações" 
+                                        ItemStyle-CssClass="column-actions" HeaderStyle-CssClass="column-actions">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="btnExcluir" runat="server" CssClass="btn btn-danger btn-sm"
+                                                CommandName="Excluir" CommandArgument='<%# Eval("CodEstrutura") %>'
+                                                OnClientClick='<%# "return confirm(\"Tem certeza que deseja excluir a estrutura \\\"" + Eval("DescEstrutura") + "\\\"?\");" %>'
+                                                ToolTip="Excluir estrutura">
+                                                <i class="bi bi-trash"></i> Excluir
+                                            </asp:LinkButton>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </asp:Panel>
 
-<!-- GRID COM ESTRUTURAS EXISTENTES -->
-<asp:Panel ID="pnlGridEstruturas" runat="server" Visible="false" class="mt-3">
-    <div class="grid-card">
-        <div class="grid-card-header">
-            <h5 class="grid-card-title"><i class="bi bi-list-ul"></i> Estruturas Existentes</h5>
-        </div>
-        <div class="grid-card-body">
-            <asp:GridView ID="gvEstruturas" runat="server" CssClass="table table-striped table-bordered" 
-                AutoGenerateColumns="false" EmptyDataText="Nenhuma estrutura encontrada"
-                OnRowCommand="gvEstruturas_RowCommand" OnRowDataBound="gvEstruturas_RowDataBound">
-                <Columns>
-                    <asp:BoundField DataField="DescEstrutura" HeaderText="Nome da Estrutura" 
-                        ItemStyle-CssClass="column-text" HeaderStyle-CssClass="column-text" />
-                    <asp:TemplateField HeaderText="Principal" 
-                        ItemStyle-CssClass="column-boolean" HeaderStyle-CssClass="column-boolean">
-                        <ItemTemplate>
-                            <span class='badge <%# Convert.ToBoolean(Eval("Conf_IsDefault")) ? "badge-success" : "badge-secondary" %>'>
-                                <%# Convert.ToBoolean(Eval("Conf_IsDefault")) ? "Sim" : "Não" %>
-                            </span>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:BoundField DataField="ValorPadrao" HeaderText="Ordem" 
-                        ItemStyle-CssClass="column-number" HeaderStyle-CssClass="column-number" />
-                    <asp:TemplateField HeaderText="Ações" 
-                        ItemStyle-CssClass="column-actions" HeaderStyle-CssClass="column-actions">
-                        <ItemTemplate>
-                            <asp:LinkButton ID="btnExcluir" runat="server" CssClass="btn btn-danger btn-sm"
-                                CommandName="Excluir" CommandArgument='<%# Eval("CodEstrutura") %>'
-                                OnClientClick='<%# "return confirm(\"Tem certeza que deseja excluir a estrutura \\\"" + Eval("DescEstrutura") + "\\\"?\");" %>'
-                                ToolTip="Excluir estrutura">
-                                <i class="bi bi-trash"></i> Excluir
-                            </asp:LinkButton>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
-        </div>
-    </div>
-</asp:Panel>
                 <!-- CAMPO HIDDEN PARA ARMAZENAR OS SUBTIPOS -->
                 <asp:HiddenField ID="hdnSubtipos" runat="server" />
             </div>
         </div>
     </div>
 
-  <script>
-      let subtipoCount = 1;
+    <script>
+        let subtipoCount = 1;
 
-      function adicionarSubtipo() {
-          subtipoCount++;
-          const container = document.getElementById('containerSubtipos');
+        function adicionarSubtipo() {
+            subtipoCount++;
+            const container = document.getElementById('containerSubtipos');
 
-          // Pega a próxima ordem disponível (maior ordem atual + 1)
-          const proximaOrdem = obterProximaOrdem();
+            // Pega a próxima ordem disponível (maior ordem atual + 1)
+            const proximaOrdem = obterProximaOrdem();
 
-          const subtipoItem = document.createElement('div');
-          subtipoItem.className = 'subtipo-item';
-          subtipoItem.innerHTML = `
-        <div class="subtipo-input">
-            <input type="text" class="form-control" name="subtipo_${subtipoCount}" 
-                placeholder="Digite o nome da estrutura" maxlength="100" />
-        </div>
-        <div class="subtipo-default">
-            <input type="checkbox" class="form-check-input-custom principal-checkbox" 
-                name="default_${subtipoCount}" id="default_${subtipoCount}" 
-                onchange="atualizarCheckboxesPrincipais(this)" />
-            <label for="default_${subtipoCount}">Principal</label>
-        </div>
-        <div class="subtipo-ordem">
-            <input type="number" class="form-control campo-ordem" name="ordem_${subtipoCount}" 
-                placeholder="Ordem" value="${proximaOrdem}" min="1" 
-                onchange="reordenarAutomaticamente(this)" />
-        </div>
-        <div class="subtipo-actions">
-            <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outra estrutura">
-                <i class="bi bi-plus-lg"></i>
-            </button>
-            <button type="button" class="btn-remove" onclick="removerSubtipo(this)" title="Remover estrutura">
-                <i class="bi bi-dash-lg"></i>
-            </button>
-        </div>
-    `;
+            const subtipoItem = document.createElement('div');
+            subtipoItem.className = 'subtipo-item';
+            subtipoItem.innerHTML = `
+                <div class="subtipo-input">
+                    <input type="text" class="form-control" name="subtipo_${subtipoCount}" 
+                        placeholder="Digite o nome da estrutura" maxlength="100" />
+                </div>
+                <div class="subtipo-ordem">
+                    <input type="number" class="form-control campo-ordem" name="ordem_${subtipoCount}" 
+                        placeholder="Ordem" value="${proximaOrdem}" min="1" 
+                        onchange="reordenarAutomaticamente(this)" />
+                </div>
+                <div class="subtipo-actions">
+                    <button type="button" class="btn-add-small" onclick="adicionarSubtipo()" title="Adicionar outra estrutura">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <button type="button" class="btn-remove" onclick="removerSubtipo(this)" title="Remover estrutura">
+                        <i class="bi bi-dash-lg"></i>
+                    </button>
+                </div>
+            `;
 
-          container.appendChild(subtipoItem);
-      }
+            container.appendChild(subtipoItem);
+        }
 
-      // Função para obter a próxima ordem disponível
-      function obterProximaOrdem() {
-          const camposOrdem = document.querySelectorAll('.campo-ordem');
-          let maiorOrdem = 0;
+        // Função para obter a próxima ordem disponível
+        function obterProximaOrdem() {
+            const camposOrdem = document.querySelectorAll('.campo-ordem');
+            let maiorOrdem = 0;
 
-          camposOrdem.forEach(campo => {
-              const ordem = parseInt(campo.value) || 0;
-              if (ordem > maiorOrdem) {
-                  maiorOrdem = ordem;
-              }
-          });
+            camposOrdem.forEach(campo => {
+                const ordem = parseInt(campo.value) || 0;
+                if (ordem > maiorOrdem) {
+                    maiorOrdem = ordem;
+                }
+            });
 
-          return maiorOrdem + 1;
-      }
+            return maiorOrdem + 1;
+        }
 
-      // Função principal de reordenação automática
-      function reordenarAutomaticamente(campoAlterado) {
-          const novaOrdem = parseInt(campoAlterado.value);
-          const ordemAntiga = parseInt(campoAlterado.getAttribute('data-ordem-anterior')) || parseInt(campoAlterado.value);
+        // Função principal de reordenação automática
+        function reordenarAutomaticamente(campoAlterado) {
+            const novaOrdem = parseInt(campoAlterado.value);
+            const ordemAntiga = parseInt(campoAlterado.getAttribute('data-ordem-anterior')) || parseInt(campoAlterado.value);
 
-          if (isNaN(novaOrdem) || novaOrdem < 1) {
-              campoAlterado.value = ordemAntiga;
-              return;
-          }
+            if (isNaN(novaOrdem) || novaOrdem < 1) {
+                campoAlterado.value = ordemAntiga;
+                return;
+            }
 
-          const todosCamposOrdem = document.querySelectorAll('.campo-ordem');
-          let campoParaTrocar = null;
+            const todosCamposOrdem = document.querySelectorAll('.campo-ordem');
+            let campoParaTrocar = null;
 
-          // Encontra o campo que tem a ordem para a qual estamos mudando
-          todosCamposOrdem.forEach(campo => {
-              if (campo !== campoAlterado && parseInt(campo.value) === novaOrdem) {
-                  campoParaTrocar = campo;
-              }
-          });
+            // Encontra o campo que tem a ordem para a qual estamos mudando
+            todosCamposOrdem.forEach(campo => {
+                if (campo !== campoAlterado && parseInt(campo.value) === novaOrdem) {
+                    campoParaTrocar = campo;
+                }
+            });
 
-          // Se encontrou um campo com a mesma ordem, faz a troca
-          if (campoParaTrocar) {
-              campoParaTrocar.value = ordemAntiga;
-              campoParaTrocar.setAttribute('data-ordem-anterior', ordemAntiga);
-          }
+            // Se encontrou um campo com a mesma ordem, faz a troca
+            if (campoParaTrocar) {
+                campoParaTrocar.value = ordemAntiga;
+                campoParaTrocar.setAttribute('data-ordem-anterior', ordemAntiga);
+            }
 
-          // Atualiza a ordem anterior para o novo valor
-          campoAlterado.setAttribute('data-ordem-anterior', novaOrdem);
-      }
+            // Atualiza a ordem anterior para o novo valor
+            campoAlterado.setAttribute('data-ordem-anterior', novaOrdem);
+        }
 
-      function atualizarCheckboxesPrincipais(checkboxClicado) {
-          if (checkboxClicado.checked) {
-              const todosCheckboxes = document.querySelectorAll('.principal-checkbox');
-              todosCheckboxes.forEach(checkbox => {
-                  if (checkbox !== checkboxClicado) {
-                      checkbox.checked = false;
-                  }
-              });
-          }
-      }
+        function removerSubtipo(button) {
+            const subtipoItem = button.closest('.subtipo-item');
+            const ordemRemovida = parseInt(subtipoItem.querySelector('.campo-ordem').value);
 
-      function removerSubtipo(button) {
-          const subtipoItem = button.closest('.subtipo-item');
-          const ordemRemovida = parseInt(subtipoItem.querySelector('.campo-ordem').value);
+            subtipoItem.remove();
 
-          subtipoItem.remove();
+            // Reorganiza as ordens dos itens restantes
+            reorganizarOrdensAposRemocao(ordemRemovida);
+        }
 
-          // Reorganiza as ordens dos itens restantes
-          reorganizarOrdensAposRemocao(ordemRemovida);
+        // Reorganiza as ordens quando um item é removido
+        function reorganizarOrdensAposRemocao(ordemRemovida) {
+            const camposOrdem = document.querySelectorAll('.campo-ordem');
+            const ordens = [];
 
-          // Se o item removido era o principal, marca o primeiro como principal
-          const checkboxesMarcados = document.querySelectorAll('.principal-checkbox:checked');
-          if (checkboxesMarcados.length === 0) {
-              const primeiroCheckbox = document.querySelector('.principal-checkbox');
-              if (primeiroCheckbox) {
-                  primeiroCheckbox.checked = true;
-              }
-          }
-      }
+            // Coleta todas as ordens atuais
+            camposOrdem.forEach(campo => {
+                ordens.push(parseInt(campo.value));
+            });
 
-      // Reorganiza as ordens quando um item é removido
-      function reorganizarOrdensAposRemocao(ordemRemovida) {
-          const camposOrdem = document.querySelectorAll('.campo-ordem');
-          const ordens = [];
+            // Ordena as ordens
+            ordens.sort((a, b) => a - b);
 
-          // Coleta todas as ordens atuais
-          camposOrdem.forEach(campo => {
-              ordens.push(parseInt(campo.value));
-          });
-
-          // Ordena as ordens
-          ordens.sort((a, b) => a - b);
-
-          // Reatribui as ordens sequencialmente
-          camposOrdem.forEach((campo, index) => {
-              campo.value = index + 1;
-              campo.setAttribute('data-ordem-anterior', index + 1);
-          });
-      }
-
-      function limparCamposSubtipos() {
-          document.getElementById('containerSubtipos').innerHTML = '';
-          subtipoCount = 0;
-          adicionarSubtipo();
-      }
-
-      // Antes de enviar o formulário, coleta todos os dados dos subtipos
-      document.getElementById('<%= btnSalvarTudo.ClientID %>').addEventListener('click', function () {
-    const subtipos = [];
-    const subtipoItems = document.querySelectorAll('.subtipo-item');
-
-    subtipoItems.forEach((item, index) => {
-        const nome = item.querySelector('input[type="text"]').value.trim();
-        const isDefault = item.querySelector('input[type="checkbox"]').checked;
-        const ordem = item.querySelector('.campo-ordem').value;
-
-        if (nome !== '') {
-            subtipos.push({
-                nome: nome,
-                isDefault: isDefault,
-                ordem: parseInt(ordem) || 0
+            // Reatribui as ordens sequencialmente
+            camposOrdem.forEach((campo, index) => {
+                campo.value = index + 1;
+                campo.setAttribute('data-ordem-anterior', index + 1);
             });
         }
-    });
 
-    document.getElementById('<%= hdnSubtipos.ClientID %>').value = JSON.stringify(subtipos);
-});
+        function limparCamposSubtipos() {
+            document.getElementById('containerSubtipos').innerHTML = '';
+            subtipoCount = 0;
+            adicionarSubtipo();
+        }
 
-      // Adiciona um campo inicial se não houver nenhum
-      document.addEventListener('DOMContentLoaded', function () {
-          if (document.getElementById('containerSubtipos').children.length === 0) {
-              adicionarSubtipo();
-          }
+        // Antes de enviar o formulário, coleta todos os dados dos subtipos
+        document.getElementById('<%= btnSalvarTudo.ClientID %>').addEventListener('click', function () {
+            const subtipos = [];
+            const subtipoItems = document.querySelectorAll('.subtipo-item');
 
-          // Inicializa os data-atributes de ordem anterior
-          const camposOrdem = document.querySelectorAll('.campo-ordem');
-          camposOrdem.forEach(campo => {
-              campo.setAttribute('data-ordem-anterior', campo.value);
-          });
+            subtipoItems.forEach((item, index) => {
+                const nome = item.querySelector('input[type="text"]').value.trim();
+                const ordem = item.querySelector('.campo-ordem').value;
 
-          // Marca o primeiro checkbox como principal por padrão
-          const primeiroCheckbox = document.querySelector('.principal-checkbox');
-          if (primeiroCheckbox) {
-              primeiroCheckbox.checked = true;
-          }
-      });
+                if (nome !== '') {
+                    subtipos.push({
+                        nome: nome,
+                        ordem: parseInt(ordem) || 0
+                    });
+                }
+            });
 
-      // FUNÇÃO CORRIGIDA PARA CONFIRMAÇÃO DE EXCLUSÃO
-      function confirmarExclusao(codEstrutura, nomeEstrutura) {
-          Swal.fire({
-              title: 'Confirmar Exclusão',
-              html: `Tem certeza que deseja excluir a estrutura <strong>"${nomeEstrutura}"</strong>?`,
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#d33',
-              cancelButtonColor: '#3085d6',
-              confirmButtonText: 'Sim, excluir!',
-              cancelButtonText: 'Cancelar'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  // Chama o método do servidor via __doPostBack
-                  __doPostBack('ExcluirEstrutura', codEstrutura);
-              }
-          });
-          return confirm('Tem certeza que deseja excluir a estrutura "' + nomeEstrutura + '"?');
-      }
-  </script>
+            document.getElementById('<%= hdnSubtipos.ClientID %>').value = JSON.stringify(subtipos);
+        });
 
+        // Adiciona um campo inicial se não houver nenhum
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.getElementById('containerSubtipos').children.length === 0) {
+                adicionarSubtipo();
+            }
+
+            // Inicializa os data-atributes de ordem anterior
+            const camposOrdem = document.querySelectorAll('.campo-ordem');
+            camposOrdem.forEach(campo => {
+                campo.setAttribute('data-ordem-anterior', campo.value);
+            });
+        });
+    </script>
 </asp:Content>

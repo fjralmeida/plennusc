@@ -88,7 +88,6 @@ namespace appWhatsapp.PlennuscMedic.Views
 
                 int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
 
-                // SALVAR AS ESTRUTURAS (AGORA TODAS SÃO "PAI")
                 var serializer = new JavaScriptSerializer();
                 var estruturasJson = hdnSubtipos.Value;
 
@@ -96,49 +95,52 @@ namespace appWhatsapp.PlennuscMedic.Views
                 {
                     var estruturas = serializer.Deserialize<List<subTypeDate>>(estruturasJson);
                     int estruturasSalvas = 0;
-                    bool algumPrincipal = false;
+                    int? codEstruturaPai = null;
 
                     foreach (var estrutura in estruturas)
                     {
                         if (!string.IsNullOrEmpty(estrutura.nome.Trim()))
                         {
-                            // Verifica se já existe algum marcado como principal
-                            if (estrutura.isDefault)
+                            // PRIMEIRA ESTRUTURA É O PAI
+                            if (codEstruturaPai == null)
                             {
-                                if (algumPrincipal)
+                                var modelEstruturaPai = new structureModel
                                 {
-                                    // Já existe um principal, não marca este
-                                    estrutura.isDefault = false;
-                                }
-                                else
-                                {
-                                    algumPrincipal = true;
-                                }
+                                    CodTipoEstrutura = codTipoEstrutura,
+                                    DescEstrutura = estrutura.nome.Trim(),
+                                    CodEstruturaPai = null, // É o pai
+                                    Conf_IsDefault = true,  // Pai é sempre principal
+                                    ValorPadrao = estrutura.ordem
+                                };
+
+                                // Salva o pai e pega o código
+                                int codigoPai = _service.SalvarEstrutura(modelEstruturaPai);
+                                codEstruturaPai = codigoPai; // Este será o pai para TODAS as filhas
+                                estruturasSalvas++;
                             }
-
-                            var modelEstrutura = new structureModel
+                            else
                             {
-                                CodTipoEstrutura = codTipoEstrutura,
-                                DescEstrutura = estrutura.nome.Trim(),
-                                CodEstruturaPai = null, // Agora sempre NULL
-                                Conf_IsDefault = estrutura.isDefault,
-                                ValorPadrao = estrutura.ordem
-                            };
+                                // DEMAIS ESTRUTURAS SÃO FILHAS DO PRIMEIRO PAI
+                                var modelEstruturaFilha = new structureModel
+                                {
+                                    CodTipoEstrutura = codTipoEstrutura,
+                                    DescEstrutura = estrutura.nome.Trim(),
+                                    CodEstruturaPai = codEstruturaPai, // Sempre o código do PRIMEIRO pai
+                                    Conf_IsDefault = false, // Filhas não são principais
+                                    ValorPadrao = estrutura.ordem
+                                };
 
-                            _service.SalvarEstrutura(modelEstrutura);
-                            estruturasSalvas++;
+                                _service.SalvarEstrutura(modelEstruturaFilha);
+                                estruturasSalvas++;
+                            }
                         }
                     }
 
                     if (estruturasSalvas > 0)
                     {
                         MostrarMensagemSucesso($"{estruturasSalvas} estruturas salvas com sucesso!");
-
-                        // Limpa os campos e recarrega o grid
                         hdnSubtipos.Value = "";
                         ScriptManager.RegisterStartupScript(this, GetType(), "limparCampos", "limparCamposSubtipos();", true);
-
-                        // Recarrega as estruturas existentes
                         VerificarEstruturasExistentes(codTipoEstrutura);
                     }
                     else

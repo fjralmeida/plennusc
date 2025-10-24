@@ -94,17 +94,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Button btn = (Button)sender;
                 GridViewRow row = (GridViewRow)btn.NamingContainer;
 
-                // CORREÇÃO: Obter CodEstrutura diretamente do DataItem
-                int codEstrutura = 0;
-                var dataItem = row.DataItem;
-                if (dataItem != null)
-                {
-                    var prop = dataItem.GetType().GetProperty("CodEstrutura");
-                    if (prop != null)
-                    {
-                        codEstrutura = (int)prop.GetValue(dataItem);
-                    }
-                }
+                // PEGA O CÓDIGO DIRETO DA LABEL
+                Label lblCodEstrutura = (Label)row.FindControl("lblCodEstrutura");
+                int codEstrutura = Convert.ToInt32(lblCodEstrutura.Text);
 
                 DropDownList ddlSetor = (DropDownList)row.FindControl("ddlSetor");
 
@@ -120,11 +112,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (sucesso)
                 {
                     MostrarMensagem("Setor vinculado com sucesso!", "success");
-                    if (!string.IsNullOrEmpty(ddlView.SelectedValue))
-                    {
-                        int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
-                        CarregarEstruturasDaView(codTipoEstrutura);
-                    }
+                    // Recarrega o grid se necessário
                 }
                 else
                 {
