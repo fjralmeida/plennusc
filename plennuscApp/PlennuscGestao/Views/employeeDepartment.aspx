@@ -212,7 +212,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container">
         <h2 class="titulo-pagina">
-            <i class="fa-solid fa-building"></i>
+            <i class="bi bi-diagram-3 me-2"></i>
             Departamentos
         </h2>
 
