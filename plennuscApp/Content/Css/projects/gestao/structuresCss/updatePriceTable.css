@@ -1,0 +1,143 @@
+﻿* {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f2f4f8;
+    font-size: 13px;
+    color: #333;
+}
+
+.container {
+    max-width: 2600px;
+    margin: auto;
+    padding: 32px 16px;
+}
+
+.titulo-pagina {
+    font-size: 22px;
+    font-weight: 600;
+    color: #4CB07A;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+    .titulo-pagina::after {
+        content: "";
+        width: 60px;
+        height: 3px;
+        background-color: #83CEEE;
+        display: block;
+        margin: 0.5rem auto 0 auto;
+        border-radius: 2px;
+    }
+
+.card-container {
+    background: white;
+    padding: 13px;
+    border-radius: 16px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.btn-pill {
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.btn-success {
+    background-color: #4CB07A;
+    border-color: #4CB07A;
+    color: #fff;
+}
+
+    .btn-success:hover {
+        background-color: #3B8B65;
+    }
+
+.btn-purple {
+    background-color: #C06ED4;
+    border-color: #C06ED4;
+    color: #fff;
+}
+
+    .btn-purple:hover {
+        background-color: #a14db8;
+    }
+
+.filter-panel {
+    background: #f0f2f5;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.grid-wrapper {
+    max-height: 530px;
+    overflow: auto;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 0px solid #ddd; /* você tinha sem 'solid' */
+}
+
+    /* garante alinhamento e sticky funcionando bem */
+    .grid-wrapper table {
+        min-width: 1200px;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    /* Header fixo, neutro */
+    .grid-wrapper thead th {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background: #f8f9fa !important; /* tom claro tipo Bootstrap */
+        color: #333 !important;
+        box-shadow: none; /* sem sombra */
+        border-bottom: 1px solid #e6e7eb; /* linha sutil */
+        font-weight: 600; /* leve destaque só na fonte */
+    }
+
+.table th {
+    white-space: nowrap;
+    padding: 10px 16px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.table td {
+    white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.btn-outline-excel {
+    border: 1px solid #dbe7e1;
+    color: #107C41;
+    background: #f5fbf8;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+    .btn-outline-excel:hover {
+        background: #107C41;
+        color: #fff;
+        border-color: #107C41;
+    }
+
+.hint-line {
+    font-size: 12px;
+}
+
+.filter-panel .form-control {
+    height: 38px; /* deixa a altura do input parecida com os botões */
+}
+
+.btn-pill {
+    line-height: 1;
+}

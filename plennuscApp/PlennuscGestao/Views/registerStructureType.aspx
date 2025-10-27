@@ -1,7 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="registerStructureType.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.registerStructureType" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <link href="../../Content/Css/projects/gestao/structuresCss/register-structure-type.css" rel="stylesheet" />
+    <script src="../../Content/Css/js/projects/gestaoJs/structuresJs/registerStructureType.js"></script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-main">
@@ -58,25 +61,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Atualiza nome da view automaticamente
-        function atualizarViewNome() {
-            var descricao = document.getElementById('<%= txtDescricao.ClientID %>').value;
-            var lblView = document.getElementById('<%= lblViewNome.ClientID %>');
-
-            if (descricao) {
-                lblView.innerText = 'VW_' + descricao.toUpperCase().replace(/ /g, '_');
-            } else {
-                lblView.innerText = 'VW_';
-            }
-        }
-
-        document.getElementById('<%= txtDescricao.ClientID %>').addEventListener('input', atualizarViewNome);
-
-        // Executa uma vez ao carregar a página
-        document.addEventListener('DOMContentLoaded', function () {
-            atualizarViewNome();
-        });
-    </script>
 </asp:Content>

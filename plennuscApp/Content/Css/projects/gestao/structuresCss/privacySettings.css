@@ -1,0 +1,111 @@
+﻿* {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f2f4f8;
+    font-size: 13px;
+    color: #333;
+}
+
+.titulo-pagina {
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 8px;
+    position: relative;
+}
+
+    .titulo-pagina::after {
+        content: "";
+        width: 80px;
+        height: 4px;
+        background-color: #4CB07A;
+        display: block;
+        margin: 0.5rem auto 0 auto;
+        border-radius: 2px;
+    }
+
+.grid-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+}
+
+.card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    flex: 1;
+    min-width: 340px;
+    max-width: 480px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+    .card-title i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+
+.login-title {
+    color: #83ceee;
+}
+
+.senha-title {
+    color: #4CB07A;
+}
+
+.form-label {
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.privacy-settings-page .form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+}
+
+.btn-salvar {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-login {
+    background-color: #83ceee;
+    color: white;
+}
+
+    .btn-login:hover {
+        background-color: #6ec1e3;
+    }
+
+.btn-senha {
+    background-color: #4CB07A;
+    color: white;
+}
+
+    .btn-senha:hover {
+        background-color: #3a9e65;
+    }

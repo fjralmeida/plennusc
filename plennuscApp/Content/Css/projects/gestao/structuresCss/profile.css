@@ -1,0 +1,145 @@
+﻿* {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+body, html {
+    background-color: #f2f4f8;
+    color: #333;
+    font-size: 14px;
+}
+
+.perfil-titulo {
+    font-size: 24px;
+    font-weight: 600;
+    color: #4CB07A;
+    text-align: center;
+    margin: 2rem auto 1.5rem auto;
+    position: relative;
+    max-width: 100%;
+    display: block;
+}
+
+    .perfil-titulo::after {
+        content: "";
+        width: 60px;
+        height: 3px;
+        background-color: #83CEEE;
+        display: block;
+        margin: 0.5rem auto 0 auto;
+        border-radius: 2px;
+    }
+
+
+.avatar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4CB07A;
+    transition: 0.3s;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+    .avatar-img:hover {
+        transform: scale(1.05);
+    }
+
+.upload-label {
+    font-size: 0.875rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.file-upload {
+    display: none;
+}
+
+.btn-salvar-foto {
+    background-color: #c06ed4;
+    color: white;
+    font-size: 0.875rem;
+    padding: 0.45rem 1rem;
+    border: none;
+    border-radius: 10px;
+    margin-top: 0.75rem;
+    transition: 0.2s;
+}
+
+    .btn-salvar-foto:hover {
+        background-color: #a650b1;
+    }
+
+.form-control:focus {
+    border-color: #83CEEE;
+    box-shadow: 0 0 0 3px rgba(131, 206, 238, 0.25);
+}
+
+.section-block {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+}
+
+.bg-gray-section {
+    background-color: #f4f6f9;
+}
+
+h5 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #444;
+    border-left: 4px solid #83CEEE;
+    padding-left: 12px;
+    margin-bottom: 20px;
+}
+
+.erro-upload-foto {
+    color: #DC8689;
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.row.g-3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.col-md-4 {
+    flex: 1 1 calc(33.33% - 20px);
+    min-width: 250px;
+}
+
+.col-md-6 {
+    flex: 1 1 calc(50% - 20px);
+    min-width: 250px;
+}
+
+.row-eleitorais {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+    .row-eleitorais > .col-md-4 {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+@media (max-width: 768px) {
+    .col-md-4, .col-md-6 {
+        flex: 1 1 100%;
+    }
+}
