@@ -171,6 +171,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Css\custom-notifications.css.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\register-structure-type.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
@@ -783,7 +784,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\Img\" />
+    <Folder Include="Content\Css\js\projects\finance\financeJs\" />
+    <Folder Include="Content\Css\js\projects\gestao\gestaoJs\" />
+    <Folder Include="Content\Css\js\projects\medic\medicJs\" />
+    <Folder Include="Content\Css\projects\finance\structuresCss\" />
+    <Folder Include="Content\Css\projects\medic\structuresCss\" />
     <Folder Include="Data_Bd\" />
   </ItemGroup>
   <ItemGroup>
