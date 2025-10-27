@@ -27,6 +27,11 @@
             --transition: all 0.2s ease-in-out;
         }
 
+        .bi-list-ul::before {
+    content: "\f478";
+    width: 15px;
+}
+
         body {
             background: var(--gray-100);
             font-family: 'Roboto', sans-serif;
@@ -613,7 +618,7 @@
         <div class="page-header">
             <h1 class="page-title">
                 <span class="title-icon">
-                    <i class="bi bi-clipboard-check"></i>
+                    <i class="bi bi-list-ul me-2"></i>
                 </span>
                 Lista de Demandas
             </h1>

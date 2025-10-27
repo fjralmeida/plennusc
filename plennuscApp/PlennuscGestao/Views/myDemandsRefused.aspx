@@ -33,6 +33,11 @@
             line-height: 1.5;
         }
 
+        .bi-x-circle::before {
+            content: "\f623";
+            width: 15px;
+        }
+
         .container-main {
             max-width: 2206px;
             margin: 20px auto;
@@ -709,7 +714,7 @@
     <div class="page-header">
         <h1 class="page-title">
             <span class="title-icon"> 
-                <i class="bi bi-check-circle"></i>
+                <i class="bi bi-x-circle me-2"></i>
             </span>
             Minhas Demandas Recusadas
         </h1>

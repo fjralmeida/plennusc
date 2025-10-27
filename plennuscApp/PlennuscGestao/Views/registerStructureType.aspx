@@ -246,6 +246,11 @@
             color: #1565c0;
         }
 
+        .bi-tags::before {
+    content: "\f5b2";
+    width: 13px;
+}
+
         /* Responsividade */
         @media (max-width: 768px) {
             .page-header {
@@ -274,7 +279,7 @@
         <div class="page-header">
             <div class="page-title">
                 <div class="title-icon">
-                    <i class="bi bi-layers"></i>
+                     <i class="bi bi-tags me-2"></i>
                 </div>
                 Cadastro de Tipo Estrutura
             </div>

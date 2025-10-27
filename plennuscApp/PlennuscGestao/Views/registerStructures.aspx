@@ -160,6 +160,7 @@
             background: #e3f2fd;
             border-color: #2196f3;
             color: #1565c0;
+            margin-top: 10px;
         }
 
         /* Subtipos Dinâmicos */
@@ -602,6 +603,11 @@
     background: #f8fbff;
 }
 
+.bi-building-add::before {
+    content: "\f867";
+    width: 15px;
+}
+
         /* Responsividade */
         @media (max-width: 768px) {
             .page-header {
@@ -630,7 +636,7 @@
         <div class="page-header">
             <div class="page-title">
                 <div class="title-icon">
-                    <i class="bi bi-diagram-3"></i>
+                   <i class="bi bi-building-add me-2"></i>
                 </div>
                 Cadastro de Estrutura
             </div>

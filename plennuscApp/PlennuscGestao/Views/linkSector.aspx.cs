@@ -157,8 +157,19 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void MostrarMensagem(string mensagem, string tipo = "success")
         {
-            ScriptManager.RegisterStartupScript(this, GetType(), "Mensagem",
-                $"alert('{mensagem}');", true);
+            string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: '{tipo}',
+                    title: '{mensagem.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: {(tipo == "error" || tipo == "warning" ? "4000" : "3000")},
+                    timerProgressBar: true
+                }});
+            ";
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), $"Toast{tipo}", script, true);
         }
     }
 }

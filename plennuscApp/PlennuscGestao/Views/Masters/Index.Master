@@ -557,7 +557,7 @@
 
                      <li>
                          <a href="../linkSector.aspx" title="Vincular Setor" id="linkVincularSetor" runat="server">
-                             <i class="bi bi-building-add me-2"></i>
+                             <i class="bi bi-link-45deg"></i>
                              <span class="label">Vincular Setor</span>
                          </a>
                      </li>
@@ -592,7 +592,7 @@
         <div class="collapse ms-3" id="subMenuMinhasDemandas" runat="server">
           <ul class="list-unstyled ps-3">
             <li><a href="myDemandsOpen.aspx" title="Em Aberto"><i class="bi bi-folder2-open me-2"></i><span class="label">Em Aberto</span></a></li>
-            <li><a href="myDemandsProgress.aspx" title="Em Andamento"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Em Andamento</span></a></li>
+            <li><a href="myDemandsProgress.aspx" title="Em Andamento"> <i class="bi bi-hourglass-split"></i><span class="label">Em Andamento</span></a></li>
             <li id="menuAguardandoAprovacao" runat="server"><a href="../myDemandsWaiting.aspx" title="Aguardando Aceite" id="linkAguardando" runat="server"><i class="bi bi-clock-history me-2"></i><span class="label">Aguardando Aprovação</span></a></li>
             <li><a href="myDemandsRefused.aspx" title="Recusadas"><i class="bi bi-x-circle me-2"></i><span class="label">Recusadas</span></a></li>
             <li><a href="myDemandsCompleted.aspx" title="Concluídas"><i class="bi bi-check-circle me-2"></i><span class="label">Concluídas</span></a></li>
