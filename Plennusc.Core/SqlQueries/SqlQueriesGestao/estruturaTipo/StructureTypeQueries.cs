@@ -36,7 +36,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
                 DescTipoEstrutura, 
                 CodTipoEstruturaPai, 
                 NomeView, 
-                Editavel, 
                 Definicao, 
                 Utilizacao, 
                 Informacoes_Log_I
@@ -45,7 +44,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
                 @DescTipoEstrutura, 
                 @CodTipoEstruturaPai, 
                 @NomeView, 
-                @Editavel, 
                 @Definicao, 
                 @Utilizacao, 
                 GETDATE()
@@ -70,8 +68,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
 
         public const string BuscarTodosTiposEstrutura = @"
             SELECT CodTipoEstrutura, DescTipoEstrutura, NomeView 
-            FROM TipoEstrutura 
-            ORDER BY DescTipoEstrutura";
+                FROM TipoEstrutura 
+                ORDER BY DescTipoEstrutura";
 
         public const string BuscarEstruturasPai = @"
             SELECT CodEstrutura, DescEstrutura 

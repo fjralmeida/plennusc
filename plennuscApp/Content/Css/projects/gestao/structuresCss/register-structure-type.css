@@ -3,44 +3,34 @@
     --primary-hover: #0d62c9;
     --success: #4cb07a;
     --success-hover: #3b8b65;
-    --warning: #ffa726;
-    --warning-hover: #f57c00;
     --gray-50: #f8f9fa;
     --gray-100: #f1f3f4;
     --gray-200: #e8eaed;
     --gray-300: #dadce0;
     --gray-400: #bdc1c6;
     --gray-500: #9aa0a6;
-    --gray-600: #80868b;
     --gray-700: #5f6368;
     --gray-800: #3c4043;
-    --gray-900: #202124;
     --border-radius: 8px;
     --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
-    --transition: all 0.2s ease-in-out;
 }
 
 body {
     background: var(--gray-100);
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--gray-800);
     line-height: 1.5;
 }
 
 .container-main {
-    max-width: 2206px;
+    max-width: 800px;
     margin: 20px auto;
-    padding: 0 16px;
+    padding: 0 20px;
 }
 
 /* Header */
 .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
 }
 
 .page-title {
@@ -48,7 +38,7 @@ body {
     align-items: center;
     gap: 12px;
     font-size: 24px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--gray-800);
     margin: 0;
 }
@@ -56,8 +46,8 @@ body {
 .title-icon {
     background: var(--primary);
     color: white;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -81,7 +71,7 @@ body {
 
 .card-title {
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--gray-800);
     margin: 0;
     display: flex;
@@ -101,59 +91,68 @@ body {
 .form-label {
     display: block;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--gray-700);
     margin-bottom: 8px;
-    white-space: nowrap;
 }
 
-.form-control, .form-select {
+.form-control {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--gray-300);
     border-radius: 4px;
     font-size: 14px;
-    transition: var(--transition);
+    transition: all 0.2s ease-in-out;
     background: white;
-    height: 40px;
     box-sizing: border-box;
+    font-family: inherit;
 }
 
-    .form-control:focus, .form-select:focus {
+    .form-control:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.2);
     }
 
-/* Checkbox CUSTOMIZADO - SEM BOOTSTRAP */
+/* Textareas específicas */
+textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Checkbox */
 .form-check {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 20px;
-    padding-left: 0.5em;
+    margin: 24px 0;
 }
 
-.form-check-input-custom:checked {
-    background: var(--success) !important;
-    border-color: var(--success) !important;
+.form-check-input-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--gray-400);
+    border-radius: 3px;
+    background: white;
+    cursor: pointer;
+    position: relative;
 }
 
-    .form-check-input-custom:checked::after {
-        content: "✓" !important;
-        color: white !important;
-        font-size: 12px !important;
-        font-weight: bold !important;
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
+    .form-check-input-custom:checked {
+        background: var(--success);
+        border-color: var(--success);
     }
 
-.form-check-input-custom:focus {
-    border-color: var(--primary) !important;
-    outline: none !important;
-}
+        .form-check-input-custom:checked::after {
+            content: "✓";
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
 .form-check-label {
     font-size: 14px;
@@ -168,7 +167,7 @@ body {
     border: 1px solid #bbdefb;
     border-radius: 4px;
     padding: 16px;
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 
 .view-label {
@@ -191,7 +190,6 @@ body {
 .action-buttons {
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
     margin-top: 24px;
     padding-top: 20px;
     border-top: 1px solid var(--gray-200);
@@ -202,18 +200,15 @@ body {
     border: none;
     color: white;
     font-weight: 500;
-    padding: 12px 24px;
+    padding: 12px 32px;
     border-radius: 4px;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 14px;
     cursor: pointer;
+    transition: background 0.2s ease-in-out;
 }
 
     .btn-save:hover {
         background: var(--success-hover);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
 /* Mensagens */
@@ -224,34 +219,10 @@ body {
     font-size: 14px;
 }
 
-.message-success {
-    background: #e8f5e9;
-    border: 1px solid #c8e6c9;
-    color: #2e7d32;
-}
-
-.message-error {
-    background: #ffebee;
-    border: 1px solid #ffcdd2;
-    color: #c62828;
-}
-
-.message-info {
-    background: #e3f2fd;
-    border: 1px solid #bbdefb;
-    color: #1565c0;
-}
-
-.bi-tags::before {
-    content: "\f5b2";
-    width: 13px;
-}
-
 /* Responsividade */
 @media (max-width: 768px) {
-    .page-header {
-        flex-direction: column;
-        align-items: flex-start;
+    .container-main {
+        padding: 0 16px;
     }
 
     .card-body {
@@ -259,11 +230,10 @@ body {
     }
 
     .action-buttons {
-        flex-direction: column;
+        justify-content: center;
     }
 
     .btn-save {
         width: 100%;
-        justify-content: center;
     }
 }

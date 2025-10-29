@@ -16,20 +16,44 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void Page_Load(object sender, EventArgs e)
         {
             _service = new StructureTypeService();
+
+            if (!IsPostBack)
+            {
+                CarregarTiposEstruturaPai();
+            }
+        }
+
+        private void CarregarTiposEstruturaPai()
+        {
+            try
+            {
+                var tiposEstrutura = _service.GetTodosTiposEstrutura();
+
+                ddlTipoEstruturaPai.DataSource = tiposEstrutura;
+                ddlTipoEstruturaPai.DataTextField = "DescTipoEstrutura";
+                ddlTipoEstruturaPai.DataValueField = "CodTipoEstrutura";
+                ddlTipoEstruturaPai.DataBind();
+
+                ddlTipoEstruturaPai.Items.Insert(0, new ListItem("-- Não tem --", ""));
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem($"Erro ao carregar tipos de estrutura: {ex.Message}", "error");
+            }
         }
 
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
             try
             {
-                if (string.IsNullOrEmpty(txtDescricao.Text.Trim()))
+                if (string.IsNullOrEmpty(txtTipoEstrutura.Text.Trim()))
                 {
-                    MostrarMensagem("Informe a descrição", "error");
+                    MostrarMensagem("Informe o Tipo Estrutura", "error");
                     return;
                 }
 
-                var nomeView = "VW_" + txtDescricao.Text.Trim().ToUpper().Replace(" ", "_");
-                var descricao = txtDescricao.Text.Trim();
+                var nomeView = "VW_" + txtTipoEstrutura.Text.Trim().ToUpper().Replace(" ", "_");
+                var tipoEstrutura = txtTipoEstrutura.Text.Trim();
 
                 // Valida se view já existe
                 if (_service.ViewExiste(nomeView))
@@ -38,12 +62,21 @@ namespace appWhatsapp.PlennuscGestao.Views
                     return;
                 }
 
+                // Obtém o CodTipoEstruturaPai do dropdown
+                int? codTipoEstruturaPai = null;
+                if (!string.IsNullOrEmpty(ddlTipoEstruturaPai.SelectedValue))
+                {
+                    codTipoEstruturaPai = Convert.ToInt32(ddlTipoEstruturaPai.SelectedValue);
+                }
+
                 // Cria o model
                 var model = new structureTypeModel
                 {
-                    DescTipoEstrutura = descricao,
-                    Editavel = chkEditavel.Checked,
-                    NomeView = nomeView
+                    DescTipoEstrutura = tipoEstrutura,
+                    NomeView = nomeView,
+                    CodTipoEstruturaPai = codTipoEstruturaPai,
+                    Definicao = txtDescricao.Text.Trim(), // Descrição vai para Definicao
+                    Utilizacao = txtUtilizacao.Text.Trim()
                 };
 
                 // 1. SALVA APENAS NO TipoEstrutura
@@ -52,7 +85,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (codigo > 0)
                 {
                     // 2. CRIA O PAI NA ESTRUTURA SEPARADAMENTE
-                    bool estruturaPaiCriada = _service.CriarEstruturaPai(codigo, descricao);
+                    bool estruturaPaiCriada = _service.CriarEstruturaPai(codigo, tipoEstrutura);
 
                     if (estruturaPaiCriada)
                     {
@@ -61,9 +94,12 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                         if (viewCriada)
                         {
-                            MostrarMensagemSucesso($"Sucesso! Tipo Estrutura salvo (Código: {codigo}) e View '{nomeView}' criada.");
-                            txtDescricao.Text = "";
-                            chkEditavel.Checked = false;
+                            string tipoHierarquia = codTipoEstruturaPai.HasValue ?
+                                $"Sub-tipo vinculado ao código {codTipoEstruturaPai.Value}" :
+                                "Tipo Estrutura Pai/Raiz";
+
+                            MostrarMensagemSucesso($"Sucesso! Tipo Estrutura salvo (Código: {codigo}), {tipoHierarquia} e View '{nomeView}' criada.");
+                            LimparCampos();
                         }
                         else
                         {
@@ -84,6 +120,14 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 MostrarMensagem($"Erro: {ex.Message}", "error");
             }
+        }
+
+        private void LimparCampos()
+        {
+            txtTipoEstrutura.Text = "";
+            txtUtilizacao.Text = "";
+            txtDescricao.Text = "";
+            ddlTipoEstruturaPai.SelectedIndex = 0;
         }
 
         // MÉTODOS PARA EXIBIR MENSAGENS COM SWEETALERT2

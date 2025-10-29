@@ -15,6 +15,33 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
+        /// Controle ddlTipoEstruturaPai.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTipoEstruturaPai;
+
+        /// <summary>
+        /// Controle txtTipoEstrutura.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTipoEstrutura;
+
+        /// <summary>
+        /// Controle txtUtilizacao.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtUtilizacao;
+
+        /// <summary>
         /// Controle txtDescricao.
         /// </summary>
         /// <remarks>
@@ -22,15 +49,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDescricao;
-
-        /// <summary>
-        /// Controle chkEditavel.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkEditavel;
 
         /// <summary>
         /// Controle lblViewNome.

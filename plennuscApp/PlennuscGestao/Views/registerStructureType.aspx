@@ -46,19 +46,35 @@
             </div>
 
             <div class="card-body">
-                <!-- DESCRIÇÃO -->
+                <!-- TIPO ESTRUTURA PAI -->
                 <div class="form-group">
-                    <label class="form-label">Descrição *</label>
-                    <asp:TextBox ID="txtDescricao" runat="server" CssClass="form-control"
+                    <label class="form-label">Tipo Estrutura Pai</label>
+                    <asp:DropDownList ID="ddlTipoEstruturaPai" runat="server" CssClass="form-control">
+                        <asp:ListItem Text="-- Não tem --" Value=""></asp:ListItem>
+                    </asp:DropDownList>
+                </div>
+
+                <!-- TIPO ESTRUTURA -->
+                <div class="form-group">
+                    <label class="form-label">Tipo Estrutura *</label>
+                    <asp:TextBox ID="txtTipoEstrutura" runat="server" CssClass="form-control"
                         placeholder="Ex: PERFIL PESSOA, TIPO EMPRESA, etc." MaxLength="100"></asp:TextBox>
                 </div>
 
-                <!-- EDITÁVEL -->
-                <div class="form-check">
-                    <asp:CheckBox ID="chkEditavel" runat="server" CssClass="form-check-input-custom" />
-                    <label class="form-check-label" for="<%= chkEditavel.ClientID %>">Editável</label>
+                <!-- UTILIZAÇÃO -->
+                <div class="form-group">
+                    <label class="form-label">Utilização</label>
+                    <asp:TextBox ID="txtUtilizacao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3"
+                        placeholder="Descreva a utilização deste tipo de estrutura..." MaxLength="500"></asp:TextBox>
                 </div>
 
+
+                <!-- DESCRIÇÃO -->
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <asp:TextBox ID="txtDescricao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3"
+                        placeholder="Descreva este tipo de estrutura..." MaxLength="500"></asp:TextBox>
+                </div>
                 <!-- INFO DA VIEW -->
                 <div class="view-info">
                     <div class="view-label">View que será criada</div>

@@ -144,7 +144,6 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
                 cmd.Parameters.AddWithValue("@DescTipoEstrutura", model.DescTipoEstrutura);
                 cmd.Parameters.AddWithValue("@CodTipoEstruturaPai", (object)model.CodTipoEstruturaPai ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@NomeView", model.NomeView ?? "");
-                cmd.Parameters.AddWithValue("@Editavel", model.Editavel);
                 cmd.Parameters.AddWithValue("@Definicao", model.Definicao ?? "");
                 cmd.Parameters.AddWithValue("@Utilizacao", model.Utilizacao ?? "");
 
