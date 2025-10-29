@@ -121,6 +121,10 @@ namespace appWhatsapp.PlennuscGestao.Views
                 btnAceitarDemanda.Visible = true;
                 btnAceitarDemanda.CssClass = "btn-accept";
             }
+            if (demanda.CodPessoaSolicitacao == CodPessoaAtual)
+            {
+                btnAceitarDemanda.Visible = false;
+            }
             else
             {
                 btnAceitarDemanda.Visible = false;

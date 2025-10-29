@@ -172,6 +172,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Css\custom-notifications.css.css" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\demand.js" />
+    <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\detailDemand.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\employeeManagement.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\FixedMessageSending.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\homeManagement.js" />
@@ -183,6 +184,7 @@
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\sendCompanyMessage.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\sendMessageBeneficiary.js" />
     <Content Include="Content\Css\projects\gestao\structuresCss\demand-Gestao.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\detailDemand.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Department.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Management.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Position.css" />
@@ -203,6 +205,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\sendCompanyMessage.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageBeneficiary.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\updatePriceTable.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\view-Demand-Before-Accept.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
