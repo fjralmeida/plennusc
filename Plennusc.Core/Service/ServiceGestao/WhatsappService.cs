@@ -189,10 +189,13 @@ namespace appWhatsapp.Service
         {
             var util = new ItensPedIntegradoUtil();
 
-            if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
-            {
-                return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
-            }
+            #region RESOLVER PROBLEMA PARA ENVIADOS NAS ULTIMAS 24 HORAS
+            //if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            //{
+            //    return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            //}
+            #endregion
+
 
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";

@@ -9,6 +9,21 @@
     <link href="../../Content/Css/projects/gestao/structuresCss/FixedMessageSending.css" rel="stylesheet" />
     <script src="../../Content/Css/js/projects/gestaoJs/structuresJs/FixedMessageSending.js"></script>
 
+
+    <script type="text/javascript">
+
+        function mostrarResultadoModal(texto) {
+            document.getElementById("modalResultadoConteudo").textContent = texto;
+            var modal = new bootstrap.Modal(document.getElementById('resultadoModal'));
+            modal.show();
+        }
+
+        function mostrarLoading() {
+            document.getElementById('loadingOverlay').style.display = 'block';
+        }
+
+    </script>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">

@@ -4,23 +4,161 @@
 
     <title>Gestão de Funcionários</title>
 
-    <!-- jQuery -->
+    <!-- jQuery e plugins -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <!-- jQuery Mask Plugin (FALTAVA ESSE AQUI!) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
-    <!-- Outras bibliotecas -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
     <link href="../../Content/Css/projects/gestao/structuresCss/employee-Management.css" rel="stylesheet" />
-    <script src="../../Content/Css/js/projects/gestaoJs/structuresJs/employeeManagement.js"></script>
+
+    <!-- ============================================
+         INLINE: tudo que depende de ClientID do servidor
+         Coloquei aqui as funções que precisam dos controles ASP.NET
+         ============================================ -->
+    <script type="text/javascript">
+        (function () {
+            // ---------- HELPERS que usam ClientIDs do servidor ----------
+            var selectors = {
+                hfCodPessoaInativa: '#<%= hfCodPessoaInativa.ClientID %>',
+                lblNomeUsuarioInativa: '#lblNomeUsuarioInativa', // span estático no markup
+                modalInativarId: 'modalInativarUsuario',
+
+                txtDocCPF: '#<%= txtDocCPF.ClientID %>',
+                txtBuscaCPF: '#<%= txtBuscaCPF.ClientID %>',
+                txtTelefone1: '#<%= txtTelefone1.ClientID %>',
+                txtTelefone2: '#<%= txtTelefone2.ClientID %>',
+                txtTelefone3: '#<%= txtTelefone3.ClientID %>',
+
+                panelCadastroId: '<%= PanelCadastro.ClientID %>'
+            };
+
+            // ---------- ABRE MODAL DE INATIVAÇÃO ----------
+            window.abrirModalInativarBtn = function (btn) {
+                try {
+                    if (!btn) return;
+                    var codPessoa = btn.getAttribute('data-codpessoa');
+                    var nome = btn.getAttribute('data-nome');
+
+                    // Preenche HiddenField (server control)
+                    if ($(selectors.hfCodPessoaInativa).length) {
+                        $(selectors.hfCodPessoaInativa).val(codPessoa);
+                    }
+
+                    // Preenche label do modal (span estático)
+                    if ($(selectors.lblNomeUsuarioInativa).length) {
+                        $(selectors.lblNomeUsuarioInativa).text(nome);
+                    }
+
+                    // Mostra modal Bootstrap
+                    var modalEl = document.getElementById(selectors.modalInativarId);
+                    if (modalEl) {
+                        var m = new bootstrap.Modal(modalEl);
+                        m.show();
+                    }
+                } catch (err) {
+                    console.error('abrirModalInativarBtn error:', err);
+                }
+            };
+
+            // ---------- APLICA MÁSCARAS (jQuery Mask) ----------
+            window.aplicarMascaras = function () {
+                try {
+                    var $cpf = $(selectors.txtDocCPF || '');
+                    var $cpfBusca = $(selectors.txtBuscaCPF || '');
+
+                    if ($cpf.length) $cpf.unmask().mask('000.000.000-00', { reverse: true });
+                    if ($cpfBusca.length) $cpfBusca.unmask().mask('000.000.000-00', { reverse: true });
+
+                    function phoneBehavior(val) {
+                        var nums = val.replace(/\D/g, '').slice(0, 11);
+                        return nums.length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+                    }
+                    var phoneOptions = {
+                        onKeyPress: function (val, e, field, options) {
+                            field.mask(phoneBehavior.apply({}, arguments), options);
+                        }
+                    };
+
+                    var $tel1 = $(selectors.txtTelefone1 || '');
+                    var $tel2 = $(selectors.txtTelefone2 || '');
+                    var $tel3 = $(selectors.txtTelefone3 || '');
+
+                    if ($tel1.length) $tel1.attr('maxlength', 15).unmask().mask(phoneBehavior, phoneOptions);
+                    if ($tel2.length) $tel2.attr('maxlength', 15).unmask().mask(phoneBehavior, phoneOptions);
+                    if ($tel3.length) $tel3.attr('maxlength', 15).unmask().mask(phoneBehavior, phoneOptions);
+                } catch (err) {
+                    console.error('aplicarMascaras error:', err);
+                }
+            };
+
+            // ---------- TOAST DE ERRO PARA VALIDAÇÃO ----------
+            window.showToastErroObrigatorio = function () {
+                try {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Preencha todos os campos obrigatórios.',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                } catch (err) {
+                    console.error('showToastErroObrigatorio error:', err);
+                }
+            };
+
+            // ---------- ROLAR PARA O PRIMEIRO CAMPO INVÁLIDO DO ValidationGroup ----------
+            window.rolarParaPrimeiroCampoInvalido = function (validationGroup) {
+                try {
+                    var validators = window.Page_Validators || [];
+                    for (var i = 0; i < validators.length; i++) {
+                        var v = validators[i];
+                        if (v.validationGroup === validationGroup && !v.isvalid) {
+                            var campo = document.getElementById(v.controltovalidate);
+                            if (campo) {
+                                campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                campo.focus();
+                                break;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('rolarParaPrimeiroCampoInvalido error:', err);
+                }
+            };
+
+            // ---------- BINDs e inicializações ----------
+            $(document).ready(function () {
+                // aplica máscaras no load
+                try { window.aplicarMascaras(); } catch (e) { console.error(e); }
+
+                // se PanelCadastro estiver visível no carregamento, reaplica máscaras (caso o Panel seja mostrado via server)
+                try {
+                    var panel = document.getElementById(selectors.panelCadastroId);
+                    if (panel && $(panel).is(':visible')) {
+                        window.aplicarMascaras();
+                    }
+                } catch (e) { /*silent*/ }
+            });
+
+            // Reaplica máscaras após postback parcial (UpdatePanel) se estiver presente
+            if (typeof (Sys) !== "undefined" && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                try {
+                    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                        try { window.aplicarMascaras(); } catch (e) { console.error(e); }
+                    });
+                } catch (e) { /*silent*/ }
+            }
+
+        })();
+    </script>
 
 </asp:Content>
-
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container py-4">
