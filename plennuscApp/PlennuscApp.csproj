@@ -191,6 +191,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\FixedMessageSending.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\homeManagement.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\link-Sector.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\list-structure-types.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\listDemand.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsCompleted.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsOpen.css" />
@@ -221,6 +222,7 @@
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
     <Content Include="PlennuscGestao\Views\linkSector.aspx" />
     <Content Include="PlennuscGestao\Views\listDemand.aspx" />
+    <Content Include="PlennuscGestao\Views\listStructureTypes.aspx" />
     <Content Include="PlennuscGestao\Views\myDemands.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsCompleted.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsOpen.aspx" />
@@ -454,6 +456,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\listDemand.aspx.designer.cs">
       <DependentUpon>listDemand.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\listStructureTypes.aspx.cs">
+      <DependentUpon>listStructureTypes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\listStructureTypes.aspx.designer.cs">
+      <DependentUpon>listStructureTypes.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\myDemands.aspx.cs">
       <DependentUpon>myDemands.aspx</DependentUpon>

@@ -153,6 +153,7 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
 
 
 
+        // No StructureTypeService.cs - método já existente
         public List<structureTypeModel> GetTipoEstrutura(string filtro = "")
         {
             var lista = new List<structureTypeModel>();
@@ -160,13 +161,14 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
             using (var con = Open())
             {
                 var query = @"SELECT CodTipoEstrutura, DescTipoEstrutura, CodTipoEstruturaPai, 
-                             NomeView, Editavel, Informacoes_Log_I, Informacoes_Log_A 
+                             NomeView, Editavel, Definicao, Utilizacao, 
+                             Informacoes_Log_I, Informacoes_Log_A 
                       FROM TipoEstrutura 
                       WHERE 1=1";
 
                 if (!string.IsNullOrEmpty(filtro))
                 {
-                    query += " AND (DescTipoEstrutura LIKE @filtro OR NomeView LIKE @filtro)";
+                    query += " AND (DescTipoEstrutura LIKE @filtro OR NomeView LIKE @filtro OR Definicao LIKE @filtro)";
                 }
 
                 query += " ORDER BY CodTipoEstrutura";
@@ -189,6 +191,8 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
                                 CodTipoEstruturaPai = reader["CodTipoEstruturaPai"] == DBNull.Value ? null : (int?)Convert.ToInt32(reader["CodTipoEstruturaPai"]),
                                 NomeView = reader["NomeView"].ToString(),
                                 Editavel = Convert.ToBoolean(reader["Editavel"]),
+                                Definicao = reader["Definicao"].ToString(),
+                                Utilizacao = reader["Utilizacao"].ToString(),
                                 Informacoes_Log_I = Convert.ToDateTime(reader["Informacoes_Log_I"]),
                                 Informacoes_Log_A = reader["Informacoes_Log_A"] == DBNull.Value ? null : (DateTime?)Convert.ToDateTime(reader["Informacoes_Log_A"])
                             });
@@ -198,6 +202,95 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
             }
 
             return lista;
+        }
+
+        // Método para atualizar tipo estrutura
+        public bool AtualizarTipoEstrutura(structureTypeModel model)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+        UPDATE TipoEstrutura 
+        SET DescTipoEstrutura = @DescTipoEstrutura,
+            CodTipoEstruturaPai = @CodTipoEstruturaPai,
+            Editavel = @Editavel,
+            Definicao = @Definicao,
+            Utilizacao = @Utilizacao,
+            Informacoes_Log_A = GETDATE()
+        WHERE CodTipoEstrutura = @CodTipoEstrutura", con))
+            {
+                cmd.Parameters.AddWithValue("@CodTipoEstrutura", model.CodTipoEstrutura);
+                cmd.Parameters.AddWithValue("@DescTipoEstrutura", model.DescTipoEstrutura);
+                cmd.Parameters.AddWithValue("@CodTipoEstruturaPai", (object)model.CodTipoEstruturaPai ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Editavel", model.Editavel);
+                cmd.Parameters.AddWithValue("@Definicao", model.Definicao ?? "");
+                cmd.Parameters.AddWithValue("@Utilizacao", model.Utilizacao ?? "");
+
+                int affectedRows = cmd.ExecuteNonQuery();
+                return affectedRows > 0;
+            }
+        }
+
+        // Verifica se existem estruturas vinculadas a este tipo
+        public bool VerificarEstruturasVinculadas(int codTipoEstrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+        SELECT COUNT(*) 
+        FROM Estrutura 
+        WHERE CodTipoEstrutura = @CodTipoEstrutura", con))
+            {
+                cmd.Parameters.AddWithValue("@CodTipoEstrutura", codTipoEstrutura);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
+
+        // Verifica se existem tipos filhos (sub-tipos)
+        public bool VerificarTiposFilhos(int codTipoEstrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+        SELECT COUNT(*) 
+        FROM TipoEstrutura 
+        WHERE CodTipoEstruturaPai = @CodTipoEstrutura", con))
+            {
+                cmd.Parameters.AddWithValue("@CodTipoEstrutura", codTipoEstrutura);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
+
+        // Exclui a view do banco
+        public bool ExcluirView(string nomeView)
+        {
+            try
+            {
+                using (var con = Open())
+                using (var cmd = new SqlCommand($@"DROP VIEW IF EXISTS {nomeView}", con))
+                {
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao excluir view {nomeView}: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Exclui o tipo de estrutura
+        public bool ExcluirTipoEstrutura(int codTipoEstrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+        DELETE FROM TipoEstrutura 
+        WHERE CodTipoEstrutura = @CodTipoEstrutura", con))
+            {
+                cmd.Parameters.AddWithValue("@CodTipoEstrutura", codTipoEstrutura);
+                int affectedRows = cmd.ExecuteNonQuery();
+                return affectedRows > 0;
+            }
         }
 
 

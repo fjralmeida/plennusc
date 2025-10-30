@@ -548,6 +548,13 @@
                          </a>
                      </li>
 
+                     <li>
+                         <a href="../listStructureTypes.aspx" title="Lista Tipos Estrutura" id="A1" runat="server">
+                             <i class="bi bi-tags me-2"></i>
+                             <span class="label">Lista de Estrutura</span>
+                         </a>
+                     </li>
+
                     <li>
                         <a href="../registerStructures.aspx" title="Cadastrar Estruturas" id="linkCadastrarEstruturas" runat="server">
                             <i class="bi bi-building-add me-2"></i>
