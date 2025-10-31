@@ -88,16 +88,16 @@
                                 <ItemStyle HorizontalAlign="Center" />
                             </asp:BoundField>
 
-                            <asp:TemplateField HeaderText="Ações">
+                            <asp:TemplateField HeaderText="Excluir">
                                 <HeaderStyle Width="120px" />
                                 <ItemStyle HorizontalAlign="Center" />
                                 <ItemTemplate>
                                     <div class="action-buttons">
-                                        <asp:LinkButton ID="btnEditar" runat="server" CssClass="btn-action btn-edit" 
+                                        <%--<asp:LinkButton ID="btnEditar" runat="server" CssClass="btn-action btn-edit" 
                                             CommandArgument='<%# Eval("CodTipoEstrutura") %>' OnClick="btnEditar_Click"
                                             ToolTip="Editar Tipo Estrutura">
                                             <i class="bi bi-pencil"></i>
-                                        </asp:LinkButton>
+                                        </asp:LinkButton>--%>
                                         <asp:LinkButton ID="btnExcluir" runat="server" CssClass="btn-action btn-delete" 
                                             CommandArgument='<%# Eval("CodTipoEstrutura") %>' OnClick="btnExcluir_Click"
                                             ToolTip="Excluir Tipo Estrutura">

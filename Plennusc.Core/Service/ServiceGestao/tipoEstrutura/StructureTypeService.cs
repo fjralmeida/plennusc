@@ -415,6 +415,51 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
             }
         }
 
+        // No seu service/repository
+        public structureModel GetEstruturaPorCodigo(int codEstrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(StructureTypeQueries.GetEstruturaPorCodigo, con))
+            {
+                cmd.Parameters.AddWithValue("@CodEstrutura", codEstrutura);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new structureModel
+                        {
+                            CodEstrutura = Convert.ToInt32(reader["CodEstrutura"]),
+                            CodEstruturaPai = reader["CodEstruturaPai"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["CodEstruturaPai"]),
+                            CodTipoEstrutura = Convert.ToInt32(reader["CodTipoEstrutura"]),
+                            DescEstrutura = reader["DescEstrutura"].ToString(),
+                            MemoEstrutura = reader["MemoEstrutura"] == DBNull.Value ? null : reader["MemoEstrutura"].ToString(),
+                            InfoEstrutura = reader["InfoEstrutura"] == DBNull.Value ? null : reader["InfoEstrutura"].ToString(),
+                            Conf_IsDefault = Convert.ToBoolean(reader["Conf_IsDefault"]),
+                            ValorPadrao = Convert.ToInt32(reader["ValorPadrao"])
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        public bool AtualizarEstrutura(structureModel estrutura)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(StructureTypeQueries.AtualizarEstrutura, con))
+            {
+                cmd.Parameters.AddWithValue("@CodEstrutura", estrutura.CodEstrutura);
+                cmd.Parameters.AddWithValue("@DescEstrutura", estrutura.DescEstrutura);
+                cmd.Parameters.AddWithValue("@ValorPadrao", estrutura.ValorPadrao);
+                cmd.Parameters.AddWithValue("@MemoEstrutura", (object)estrutura.MemoEstrutura ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@InfoEstrutura", (object)estrutura.InfoEstrutura ?? DBNull.Value);
+
+                int affectedRows = cmd.ExecuteNonQuery();
+                return affectedRows > 0;
+            }
+        }
+
         public int InserirEstruturaPai(string nomeEstrutura, string descricao)
         {
             using (var con = Open())

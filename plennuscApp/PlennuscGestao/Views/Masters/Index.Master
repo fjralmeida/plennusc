@@ -550,7 +550,7 @@
 
                      <li>
                          <a href="../listStructureTypes.aspx" title="Lista Tipos Estrutura" id="A1" runat="server">
-                             <i class="bi bi-tags me-2"></i>
+                             <i class="bi bi-list-ul me-2"></i>
                              <span class="label">Lista de Estrutura</span>
                          </a>
                      </li>
@@ -564,12 +564,12 @@
 
                      <li>
                          <a href="../linkSector.aspx" title="Vincular Setor" id="linkVincularSetor" runat="server">
-                             <i class="bi bi-link-45deg"></i>
+                             <i class="bi bi-link-45deg me-2"></i>
                              <span class="label">Vincular Setor</span>
                          </a>
                      </li>
 
-                   
+           
                      <%--<ul class="list-unstyled ps-3 submenu">
                         <li><a href="../structureType.aspx" title="Gerenciar Estruturas" id="linkEstruturas" runat="server"><i class="bi bi-gear me-2"></i><span class="label">Gerenciar Estruturas</span></a></li>
                     </ul>--%>

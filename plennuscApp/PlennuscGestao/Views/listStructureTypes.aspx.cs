@@ -84,19 +84,19 @@ namespace appWhatsapp.PlennuscGestao.Views
             Response.Redirect("registerStructureType.aspx");
         }
 
-        protected void btnEditar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                LinkButton btn = (LinkButton)sender;
-                int codTipoEstrutura = Convert.ToInt32(btn.CommandArgument);
-                Response.Redirect($"registerStructureType.aspx?cod={codTipoEstrutura}");
-            }
-            catch (Exception ex)
-            {
-                MostrarMensagem($"Erro ao editar: {ex.Message}", "error");
-            }
-        }
+        //protected void btnEditar_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        LinkButton btn = (LinkButton)sender;
+        //        int codTipoEstrutura = Convert.ToInt32(btn.CommandArgument);
+        //        Response.Redirect($"registerStructureType.aspx?cod={codTipoEstrutura}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MostrarMensagem($"Erro ao editar: {ex.Message}", "error");
+        //    }
+        //}
 
         protected void btnExcluir_Click(object sender, EventArgs e)
         {

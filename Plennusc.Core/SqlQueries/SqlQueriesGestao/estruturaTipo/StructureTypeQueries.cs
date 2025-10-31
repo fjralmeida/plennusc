@@ -108,5 +108,20 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
         public const string ExcluirEstrutura = @"
             DELETE FROM Estrutura 
             WHERE CodEstrutura = @CodEstrutura";
+
+        // No seu StructureTypeQueries
+        public const string GetEstruturaPorCodigo = @"
+            SELECT CodEstrutura, CodEstruturaPai, CodTipoEstrutura, DescEstrutura, 
+                   MemoEstrutura, InfoEstrutura, Conf_IsDefault, ValorPadrao
+            FROM Estrutura 
+            WHERE CodEstrutura = @CodEstrutura";
+
+        public const string AtualizarEstrutura = @"
+            UPDATE Estrutura 
+            SET DescEstrutura = @DescEstrutura,
+                ValorPadrao = @ValorPadrao,
+                MemoEstrutura = @MemoEstrutura,
+                InfoEstrutura = @InfoEstrutura
+            WHERE CodEstrutura = @CodEstrutura";
     }
 }

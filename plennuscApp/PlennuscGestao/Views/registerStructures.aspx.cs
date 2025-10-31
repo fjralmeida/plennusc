@@ -19,9 +19,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!IsPostBack)
             {
                 CarregarViews();
-                // Esconde os painéis inicialmente
-                pnlMensagemEstruturaExistente.Visible = false;
-                pnlGridEstruturas.Visible = false;
             }
         }
 
@@ -43,7 +40,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             else
             {
-                // Se não tem view selecionada, esconde tudo
                 pnlMensagemEstruturaExistente.Visible = false;
                 pnlGridEstruturas.Visible = false;
             }
@@ -55,23 +51,16 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (estruturasExistentes.Count > 0)
             {
-                // EXISTEM ESTRUTURAS - MOSTRA GRID
                 pnlMensagemEstruturaExistente.Visible = true;
                 pnlGridEstruturas.Visible = true;
-
                 gvEstruturas.DataSource = estruturasExistentes;
                 gvEstruturas.DataBind();
-
-                // Mostra mensagem no toast
                 MostrarMensagem($"Encontradas {estruturasExistentes.Count} estruturas para esta View.", "info");
             }
             else
             {
-                // NÃO EXISTEM ESTRUTURAS - MOSTRA APENAS MENSAGEM
                 pnlMensagemEstruturaExistente.Visible = true;
                 pnlGridEstruturas.Visible = false;
-
-                // Mostra mensagem no toast
                 MostrarMensagem("Nenhuma estrutura encontrada para esta View. Você pode adicionar as primeiras estruturas abaixo.", "warning");
             }
         }
@@ -85,12 +74,54 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        protected void btnSalvarEdicao_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Page.IsValid && !string.IsNullOrEmpty(hdnCodEstruturaEditar.Value))
+                {
+                    var estrutura = new structureModel
+                    {
+                        CodEstrutura = Convert.ToInt32(hdnCodEstruturaEditar.Value),
+                        DescEstrutura = txtDescEstruturaEditar.Text.Trim(),
+                        ValorPadrao = Convert.ToInt32(txtValorPadraoEditar.Text),
+                        MemoEstrutura = string.IsNullOrEmpty(txtMemoEstruturaEditar.Text) ? null : txtMemoEstruturaEditar.Text.Trim(),
+                        InfoEstrutura = string.IsNullOrEmpty(txtInfoEstruturaEditar.Text) ? null : txtInfoEstruturaEditar.Text.Trim()
+                    };
+
+                    bool atualizado = _service.AtualizarEstrutura(estrutura);
+
+                    if (atualizado)
+                    {
+                        //// MENSAGEM SIMPLES QUE SEMPRE FUNCIONA
+                        //ScriptManager.RegisterStartupScript(this, this.GetType(), "sucesso",
+                        //    "alert('Estrutura atualizada com sucesso!');", true);
+
+                        // Recarrega o grid
+                        if (!string.IsNullOrEmpty(ddlView.SelectedValue))
+                        {
+                            int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
+                            VerificarEstruturasExistentes(codTipoEstrutura);
+                        }
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "erro",
+                            "alert('Erro ao atualizar estrutura!');", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "erro2",
+                    $"alert('Erro: {ex.Message.Replace("'", "")}');", true);
+            }
+        }
         protected void gvEstruturas_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                // Você pode adicionar lógica adicional aqui se necessário
-                // Por exemplo, desabilitar exclusão para estruturas principais, etc.
+                // Lógica adicional se necessário
             }
         }
 
@@ -98,7 +129,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                // Primeiro verifica se existem estruturas filhas
                 bool temFilhos = _service.VerificarEstruturasFilhas(codEstrutura);
 
                 if (temFilhos)
@@ -107,14 +137,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                     return;
                 }
 
-                // Exclui a estrutura
                 bool excluido = _service.ExcluirEstrutura(codEstrutura);
 
                 if (excluido)
                 {
                     MostrarMensagemSucesso("Estrutura excluída com sucesso!");
 
-                    // Recarrega o grid com as estruturas atualizadas
                     if (!string.IsNullOrEmpty(ddlView.SelectedValue))
                     {
                         int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
@@ -152,20 +180,18 @@ namespace appWhatsapp.PlennuscGestao.Views
                     var estruturas = serializer.Deserialize<List<subTypeDate>>(estruturasJson);
                     int estruturasSalvas = 0;
 
-                    // **BUSCA O PAI EXISTENTE - SEMPRE DEVE EXISTIR**
                     int codEstruturaPai = _service.BuscarPaiPorTipoEstrutura(codTipoEstrutura);
 
                     foreach (var estrutura in estruturas)
                     {
                         if (!string.IsNullOrEmpty(estrutura.nome.Trim()))
                         {
-                            // **TODAS AS ESTRUTURAS SÃO FILHAS DO PAI EXISTENTE**
                             var modelEstruturaFilha = new structureModel
                             {
                                 CodTipoEstrutura = codTipoEstrutura,
                                 DescEstrutura = estrutura.nome.Trim(),
-                                CodEstruturaPai = codEstruturaPai, // Sempre o pai existente
-                                Conf_IsDefault = false, // Filhas não são principais
+                                CodEstruturaPai = codEstruturaPai,
+                                Conf_IsDefault = false,
                                 ValorPadrao = estrutura.ordem
                             };
 
@@ -197,7 +223,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        // MÉTODOS PARA EXIBIR MENSAGENS COM SWEETALERT2
         private void MostrarMensagemSucesso(string mensagem)
         {
             string script = $@"
@@ -212,7 +237,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     timerProgressBar: true
                 }});
             ";
-
             ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
         }
 
@@ -250,7 +274,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     timerProgressBar: true
                 }});
             ";
-
             ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastMsg", script, true);
         }
     }

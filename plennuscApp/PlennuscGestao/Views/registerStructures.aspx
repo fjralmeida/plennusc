@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="registerStructures.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.registerStructures" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="../../Content/Css/projects/gestao/structuresCss/register-Structures.css" rel="stylesheet" />
 
@@ -96,6 +98,22 @@
             return true;
         }
 
+        // Função para abrir o modal de edição
+        function abrirModalEdicao(codEstrutura, descEstrutura, valorPadrao, memoEstrutura, infoEstrutura, isDefault) {
+            // Preenche os campos do modal
+            document.getElementById('<%= txtDescEstruturaEditar.ClientID %>').value = descEstrutura;
+            document.getElementById('<%= txtValorPadraoEditar.ClientID %>').value = valorPadrao;
+            document.getElementById('<%= txtMemoEstruturaEditar.ClientID %>').value = memoEstrutura || '';
+            document.getElementById('<%= txtInfoEstruturaEditar.ClientID %>').value = infoEstrutura || '';
+            
+            // Guarda o código da estrutura
+            document.getElementById('<%= hdnCodEstruturaEditar.ClientID %>').value = codEstrutura;
+            
+            // Abre o modal
+            var modal = new bootstrap.Modal(document.getElementById('modalEditarEstrutura'));
+            modal.show();
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             if (document.getElementById('containerSubtipos').children.length === 0)
                 adicionarSubtipo();
@@ -175,11 +193,24 @@
                                     <asp:BoundField DataField="ValorPadrao" HeaderText="Ordem" />
                                     <asp:TemplateField HeaderText="Ações">
                                         <ItemTemplate>
+                                            <button type="button" class="btn btn-primary btn-sm me-1"
+                                                onclick="abrirModalEdicao(
+                                                    '<%# Eval("CodEstrutura") %>',
+                                                    '<%# Eval("DescEstrutura").ToString().Replace("'", "\\'") %>',
+                                                    '<%# Eval("ValorPadrao") %>',
+                                                    '<%# (Eval("MemoEstrutura") ?? "").ToString().Replace("'", "\\'") %>',
+                                                    '<%# (Eval("InfoEstrutura") ?? "").ToString().Replace("'", "\\'") %>',
+                                                    '<%# Eval("Conf_IsDefault") %>'
+                                                )"
+                                                title="Editar estrutura">
+                                                <i class="bi bi-pencil"></i> Editar
+                                            </button>
                                             <asp:LinkButton ID="btnExcluir" runat="server"
                                                 CssClass="btn btn-danger btn-sm"
                                                 CommandName="Excluir"
                                                 CommandArgument='<%# Eval("CodEstrutura") %>'
-                                                OnClientClick='<%# "return confirm(\"Excluir a estrutura \\\"" + Eval("DescEstrutura") + "\\\"?\");" %>'>
+                                                OnClientClick='<%# "return confirm(\"Excluir a estrutura \\\"" + Eval("DescEstrutura") + "\\\"?\");" %>'
+                                                ToolTip="Excluir estrutura">
                                                 <i class="bi bi-trash"></i> Excluir
                                             </asp:LinkButton>
                                         </ItemTemplate>
@@ -191,6 +222,53 @@
                 </asp:Panel>
 
                 <asp:HiddenField ID="hdnSubtipos" runat="server" />
+                <asp:HiddenField ID="hdnCodEstruturaEditar" runat="server" />
+            </div>
+        </div>
+
+        <!-- Modal de Edição VERDADEIRO -->
+        <div class="modal fade" id="modalEditarEstrutura" tabindex="-1" aria-labelledby="modalEditarEstruturaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="modalEditarEstruturaLabel">
+                            <i class="bi bi-pencil-square me-2"></i>Editar Estrutura
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="txtDescEstruturaEditar" class="form-label">Nome da Estrutura *</label>
+                            <asp:TextBox ID="txtDescEstruturaEditar" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvDescEstruturaEditar" runat="server" 
+                                ControlToValidate="txtDescEstruturaEditar" ErrorMessage="Nome da estrutura é obrigatório"
+                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtValorPadraoEditar" class="form-label">Ordem *</label>
+                            <asp:TextBox ID="txtValorPadraoEditar" runat="server" CssClass="form-control" 
+                                TextMode="Number" min="0" max="999"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvValorPadraoEditar" runat="server" 
+                                ControlToValidate="txtValorPadraoEditar" ErrorMessage="Ordem é obrigatória"
+                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtMemoEstruturaEditar" class="form-label">Descrição</label>
+                            <asp:TextBox ID="txtMemoEstruturaEditar" runat="server" CssClass="form-control" 
+                                TextMode="MultiLine" Rows="3" MaxLength="500" placeholder="Descrição opcional da estrutura"></asp:TextBox>
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtInfoEstruturaEditar" class="form-label">Informações Adicionais</label>
+                            <asp:TextBox ID="txtInfoEstruturaEditar" runat="server" CssClass="form-control" 
+                                TextMode="MultiLine" Rows="2" MaxLength="200" placeholder="Informações adicionais opcionais"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <asp:Button ID="btnSalvarEdicao" runat="server" Text="Salvar Alterações" 
+                            CssClass="btn btn-primary" OnClick="btnSalvarEdicao_Click" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
