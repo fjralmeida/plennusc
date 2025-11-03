@@ -190,6 +190,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Position.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\FixedMessageSending.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\homeManagement.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\indexGestao.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\link-Sector.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\list-structure-types.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\listDemand.css" />

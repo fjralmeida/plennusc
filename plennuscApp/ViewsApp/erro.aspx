@@ -68,13 +68,12 @@
 </head>
 <body>
     <div class="container-erro">
-        <img  src="../Uploads/logo_plennus.png" alt="Logo Plennus Connect" class="logo" />
-
+        <img src="../Uploads/logo_plennus.png" alt="Logo Plennus Connect" class="logo" />
         <div class="card-erro">
             <h1>Ocorreu um erro</h1>
-            <p>Algo deu errado em nossa aplicação. Estamos trabalhando para resolver o mais rápido possível.</p>
-            <p>Por favor, tente novamente mais tarde ou entre em contato com o suporte.</p>
-            <%--<a href="/ViewsApp/Signin.aspx" class="btn btn-voltar">Voltar ao Login</a>--%>
+            <p>Algo inesperado aconteceu em nossa aplicação. Nossa equipe já está trabalhando para resolver o problema o mais rápido possível.</p>
+            <p>Por favor, volte ao início e recarregue a página, ou entre em contato com o suporte caso o erro persista.</p>
+            <a href="SignIn.aspx" class="btn btn-voltar">Voltar ao Login</a>
         </div>
     </div>
 </body>
