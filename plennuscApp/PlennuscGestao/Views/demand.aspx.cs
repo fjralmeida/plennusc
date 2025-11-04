@@ -1,4 +1,5 @@
 ﻿using Plennusc.Core.Models.ModelsGestao;
+using Plennusc.Core.Models.ModelsGestao.modelsAnnex;
 using Plennusc.Core.Service.ServiceGestao;
 using System;
 using System.CodeDom;
@@ -26,6 +27,18 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private List<DemandaComLimite> PrioridadesComLimites;
 
+        // Lista para armazenar os anexos temporários
+        private List<temporaryAnnex> AnexosSelecionados
+        {
+            get
+            {
+                if (ViewState["AnexosSelecionados"] == null)
+                    ViewState["AnexosSelecionados"] = new List<temporaryAnnex>();
+                return (List<temporaryAnnex>)ViewState["AnexosSelecionados"];
+            }
+            set { ViewState["AnexosSelecionados"] = value; }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -40,10 +53,12 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 divPrazo.Style["display"] = "none";
                 CarregarNiveisImportancia();
+                AtualizarListaAnexos();
             }
             else
             {
                 PrioridadesComLimites = _svc.GetPrioridadesComLimites();
+                AtualizarListaAnexos(); // ATUALIZA A CADA POSTBACK
             }
         }
 
@@ -281,13 +296,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                     }
                     else
                     {
-                        // CORREÇÃO DO PROBLEMA DO MODAL - FECHAMENTO CORRETO
                         string fecharScript = @"
                             (function(){
                                 try {
                                     var modalEl = document.getElementById('modalDemandas');
                                     if (modalEl) {
-                                        // Método 1: Bootstrap 5
                                         if (window.bootstrap && typeof bootstrap.Modal !== 'undefined') {
                                             var inst = bootstrap.Modal.getInstance(modalEl);
                                             if (inst) {
@@ -296,27 +309,23 @@ namespace appWhatsapp.PlennuscGestao.Views
                                                 modalEl.style.display = 'none';
                                             }
                                         } 
-                                        // Método 2: JavaScript puro
                                         else {
                                             modalEl.style.display = 'none';
                                             modalEl.classList.remove('show');
                                         }
                                     }
                                     
-                                    // Remove todos os backdrops
                                     var backdrops = document.querySelectorAll('.modal-backdrop');
                                     backdrops.forEach(function(backdrop) {
                                         backdrop.remove();
                                     });
                                     
-                                    // Restaura o body
                                     document.body.classList.remove('modal-open');
                                     document.body.style.overflow = 'auto';
                                     document.body.style.paddingRight = '';
                                     
                                 } catch(e) { 
                                     console.error('Erro ao fechar modal:', e);
-                                    // Fallback: força a remoção de tudo
                                     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
                                     document.querySelectorAll('.modal').forEach(el => el.style.display = 'none');
                                     document.body.classList.remove('modal-open');
@@ -477,6 +486,125 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        // MÉTODOS PARA ANEXOS
+        protected void rptAnexos_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "Remover")
+            {
+                int index = Convert.ToInt32(e.CommandArgument);
+                if (index >= 0 && index < AnexosSelecionados.Count)
+                {
+                    AnexosSelecionados.RemoveAt(index);
+                    AtualizarListaAnexos();
+                    MostrarMensagem("Arquivo removido com sucesso!", "success");
+                }
+            }
+        }
+
+        protected void btnAdicionarAnexos_Click(object sender, EventArgs e)
+        {
+            if (fuAnexos.HasFiles)
+            {
+                foreach (HttpPostedFile arquivo in fuAnexos.PostedFiles)
+                {
+                    // Validação de tamanho
+                    if (arquivo.ContentLength > 10 * 1024 * 1024) // 10MB
+                    {
+                        MostrarMensagem($"O arquivo {arquivo.FileName} excede o limite de 10MB.", "error");
+                        continue;
+                    }
+
+                    // Validação de tipo
+                    string extensao = Path.GetExtension(arquivo.FileName).ToLower();
+                    string[] extensoesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".gif" };
+
+                    if (!extensoesPermitidas.Contains(extensao))
+                    {
+                        MostrarMensagem($"Tipo de arquivo não permitido: {arquivo.FileName}", "error");
+                        continue;
+                    }
+
+                    // Adiciona à lista temporária
+                    var anexo = new temporaryAnnex
+                    {
+                        FileName = arquivo.FileName,
+                        Size = arquivo.ContentLength,
+                        SizeFormatted = FormatFileSize(arquivo.ContentLength),
+                        ContentType = arquivo.ContentType,
+                        Index = AnexosSelecionados.Count
+                    };
+
+                    // Lê o conteúdo do arquivo
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        arquivo.InputStream.CopyTo(ms);
+                        anexo.Content = ms.ToArray();
+                    }
+
+                    AnexosSelecionados.Add(anexo);
+                }
+
+                // Atualiza a lista
+                AtualizarListaAnexos();
+
+                // Limpa o FileUpload
+                fuAnexos.Attributes.Clear();
+
+                MostrarMensagem($"{fuAnexos.PostedFiles.Count} arquivo(s) adicionado(s) com sucesso!", "success");
+            }
+        }
+
+        private void AtualizarListaAnexos()
+        {
+            rptAnexos.DataSource = AnexosSelecionados;
+            rptAnexos.DataBind();
+
+            // Mostra/oculta o container baseado na quantidade
+            if (AnexosSelecionados.Count > 0)
+            {
+                rptAnexos.Visible = true;
+            }
+            else
+            {
+                rptAnexos.Visible = false;
+            }
+        }
+
+        // Método para formatar tamanho do arquivo
+        private string FormatFileSize(long bytes)
+        {
+            if (bytes == 0) return "0 Bytes";
+            string[] sizes = { "Bytes", "KB", "MB", "GB" };
+            int i = (int)Math.Floor(Math.Log(bytes) / Math.Log(1024));
+            return Math.Round(bytes / Math.Pow(1024, i), 2) + " " + sizes[i];
+        }
+
+        // Método auxiliar para salvar arquivo do byte array
+        private string SalvarAnexoFisicoTemp(string fileName, byte[] content, int codDemanda)
+        {
+            try
+            {
+                string pastaAnexos = HttpContext.Current.Server.MapPath("~/public/uploadgestao/docs/");
+
+                if (!Directory.Exists(pastaAnexos))
+                {
+                    Directory.CreateDirectory(pastaAnexos);
+                }
+
+                string nomeUnico = $"{codDemanda}_{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(fileName)}";
+                string caminhoCompleto = Path.Combine(pastaAnexos, nomeUnico);
+
+                // Salva o conteúdo do byte array no arquivo
+                File.WriteAllBytes(caminhoCompleto, content);
+
+                return nomeUnico;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao salvar arquivo {fileName}: {ex.Message}");
+            }
+        }
+
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
             if (!ValidarLimitePrioridade())
@@ -484,41 +612,44 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (CodPessoaAtual == 0)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSessao", "showToastErro('Sessão inválida.');", true);
+                MostrarMensagem("Sessão inválida.", "error");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(txtTitulo.Text))
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastTitulo", "showToastErro('Informe o título.');", true);
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ScrollTitulo", "document.getElementById('" + txtTitulo.ClientID + "').scrollIntoView({ behavior: 'smooth', block: 'center' });", true);
+                MostrarMensagem("Informe o título.", "error");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "ScrollTitulo",
+                    $"document.getElementById('{txtTitulo.ClientID}').scrollIntoView({{ behavior: 'smooth', block: 'center' }});", true);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(txtDescricao.Text))
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastDescricao", "showToastErro('Informe a descrição.');", true);
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ScrollDescricao", "document.getElementById('" + txtDescricao.ClientID + "').scrollIntoView({ behavior: 'smooth', block: 'center' });", true);
+                MostrarMensagem("Informe a descrição.", "error");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "ScrollDescricao",
+                    $"document.getElementById('{txtDescricao.ClientID}').scrollIntoView({{ behavior: 'smooth', block: 'center' }});", true);
                 return;
             }
 
             if (string.IsNullOrEmpty(ddlPrioridade.SelectedValue))
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastPrioridade", "showToastErro('Selecione a prioridade.');", true);
+                MostrarMensagem("Selecione a prioridade.", "error");
                 return;
             }
 
             if (string.IsNullOrEmpty(ddlTipoGrupo.SelectedValue))
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastCategoria", "showToastErro('Selecione a categoria.');", true);
+                MostrarMensagem("Selecione a categoria.", "error");
                 return;
             }
 
             int prioridadeSelecionada = Convert.ToInt32(ddlPrioridade.SelectedValue);
             if ((prioridadeSelecionada == 33 || prioridadeSelecionada == 32) && string.IsNullOrEmpty(txtPrazo.Value))
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastPrazo", "showToastErro('Para prioridades Alta ou Crítica, é necessário informar um prazo.');", true);
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ScrollPrazo", "document.getElementById('" + txtPrazo.ClientID + "').scrollIntoView({ behavior: 'smooth', block: 'center' });", true);
+                MostrarMensagem("Para prioridades Alta ou Crítica, é necessário informar um prazo.", "error");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "ScrollPrazo",
+                    $"document.getElementById('{txtPrazo.ClientID}').scrollIntoView({{ behavior: 'smooth', block: 'center' }});", true);
                 return;
             }
 
@@ -565,85 +696,50 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 int id = _svc.CriarDemanda(dto);
 
-                if (fuAnexos.HasFiles)
+                // Salva os anexos da lista temporária
+                if (AnexosSelecionados.Count > 0)
                 {
                     int arquivosSalvos = 0;
                     int arquivosComErro = 0;
 
-                    foreach (HttpPostedFile arquivo in fuAnexos.PostedFiles)
+                    foreach (var anexo in AnexosSelecionados)
                     {
                         try
                         {
-                            if (arquivo.ContentLength > 10 * 1024 * 1024)
-                            {
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivoTamanho",
-                                    "showToastErro('O arquivo " + arquivo.FileName.Replace("'", "\\'") + " excede o limite de 10MB.');", true);
-                                arquivosComErro++;
-                                continue;
-                            }
-
-                            string extensao = Path.GetExtension(arquivo.FileName).ToLower();
-                            string[] extensoesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".gif" };
-
-                            if (!extensoesPermitidas.Contains(extensao))
-                            {
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivoTipo",
-                                    "showToastErro('Tipo de arquivo não permitido: " + arquivo.FileName.Replace("'", "\\'") + "');", true);
-                                arquivosComErro++;
-                                continue;
-                            }
-
-                            string nomeArquivoSalvo = _svc.SalvarAnexoFisico(arquivo, id);
-
-                            byte[] conteudo;
-                            using (MemoryStream ms = new MemoryStream())
-                            {
-                                arquivo.InputStream.CopyTo(ms);
-                                conteudo = ms.ToArray();
-                            }
-
-                            _svc.SalvarAnexoDemanda(id, nomeArquivoSalvo, conteudo, arquivo.ContentType, CodPessoaAtual);
+                            // Usa o método auxiliar
+                            string nomeArquivoSalvo = SalvarAnexoFisicoTemp(anexo.FileName, anexo.Content, id);
+                            _svc.SalvarAnexoDemanda(id, nomeArquivoSalvo, anexo.Content, anexo.ContentType, CodPessoaAtual);
                             arquivosSalvos++;
                         }
                         catch (Exception exArquivo)
                         {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivoErro",
-                                "showToastErro('Erro ao processar " + arquivo.FileName.Replace("'", "\\'") + ": " + exArquivo.Message.Replace("'", "\\'") + "');", true);
+                            MostrarMensagem($"Erro ao processar {anexo.FileName}: {exArquivo.Message}", "error");
                             arquivosComErro++;
                         }
                     }
 
-                    if (arquivosSalvos > 0)
-                    {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivosSucesso",
-                            "showToastSucesso('" + arquivosSalvos + " arquivo(s) anexado(s) com sucesso!');", true);
-                    }
-
                     if (arquivosComErro > 0)
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivosErro",
-                            "showToastAviso('" + arquivosComErro + " arquivo(s) não puderam ser anexados.');", true);
+                        MostrarMensagem($"{arquivosComErro} arquivo(s) não puderam ser anexados.", "warning");
                     }
+
+                    // Limpa a lista de anexos após salvar
+                    AnexosSelecionados.Clear();
+                    AtualizarListaAnexos();
                 }
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso",
-                    "showToastSucesso('Demanda criada com sucesso! (Código: " + id + ")');", true);
+                MostrarMensagem($"Demanda criada com sucesso! (Código: {id})", "success");
 
+                // Limpa os campos
                 txtTitulo.Text = "";
                 txtDescricao.Text = "";
                 txtPrazo.Value = "";
                 divPrazo.Style["display"] = "none";
 
-                fuAnexos.Attributes.Clear();
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "LimparArquivos",
-                    "selectedFiles = []; updateFilePreview();", true);
-
-                BindGrupos();
             }
             catch (Exception ex)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastErro",
-                    "showToastErro('Erro ao salvar: " + ex.Message.Replace("'", "\\'") + "');", true);
+                MostrarMensagem($"Erro ao salvar: {ex.Message}", "error");
             }
         }
 
@@ -664,7 +760,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     if (sucesso)
                     {
-                        MostrarMensagemSucesso("Situação da demanda alterada com sucesso!");
+                        MostrarMensagem("Situação da demanda alterada com sucesso!", "success");
 
                         int prioridadeDemanda = _svc.ObterPrioridadeDemanda(codDemanda);
 
@@ -674,7 +770,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                             if (!_svc.GetDemandasCriticasAbertas(CodPessoaAtual).Any())
                             {
-                                // CORREÇÃO: Fechamento correto do modal
                                 string fecharScript = @"
                                     try {
                                         var modal = document.getElementById('modalDemandas');
@@ -734,23 +829,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        private void MostrarMensagemSucesso(string mensagem)
-        {
-            string script = $@"
-                Swal.fire({{
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Sucesso',
-                    text: '{mensagem.Replace("'", "\\'")}',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                }});
-            ";
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso", script, true);
-        }
-
         private void MostrarMensagem(string mensagem, string tipo = "success")
         {
             string titulo;
@@ -786,11 +864,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }});
             ";
             ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastMsg", script, true);
-        }
-
-        protected void btnRemoverArquivo_Click(object sender, EventArgs e)
-        {
-            // Implementação do método se necessário
         }
     }
 }

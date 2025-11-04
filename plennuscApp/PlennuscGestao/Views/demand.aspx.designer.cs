@@ -114,6 +114,24 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.FileUpload fuAnexos;
 
         /// <summary>
+        /// Controle btnAdicionarAnexos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAdicionarAnexos;
+
+        /// <summary>
+        /// Controle rptAnexos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptAnexos;
+
+        /// <summary>
         /// Controle upPrioridade.
         /// </summary>
         /// <remarks>

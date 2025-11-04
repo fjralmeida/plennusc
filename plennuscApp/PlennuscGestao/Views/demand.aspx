@@ -123,129 +123,9 @@ function rolarParaPrimeiroCampoInvalido(validationGroup) {
         }
     }
 }
-
-// Variável global para armazenar os arquivos selecionados
-let selectedFiles = [];
-
-// Função para lidar com a seleção de arquivos
-function handleFileSelection(fileInput) {
-    if (fileInput.files.length > 0) {
-        selectedFiles = Array.from(fileInput.files);
-        updateFilePreview();
-
-        // Mostrar toast de sucesso
-        showToastSucesso(selectedFiles.length + ' arquivo(s) selecionado(s) com sucesso!');
-    }
-}
-
-// Função para atualizar o preview dos arquivos
-function updateFilePreview() {
-    const container = document.getElementById('filePreviewContainer');
-    const list = document.getElementById('filePreviewList');
-
-    if (selectedFiles.length === 0) {
-        container.style.display = 'none';
-        list.innerHTML = '';
-        return;
-    }
-
-    container.style.display = 'block';
-    list.innerHTML = '';
-
-    selectedFiles.forEach((file, index) => {
-        const fileItem = document.createElement('div');
-        fileItem.className = 'file-preview-item';
-        fileItem.innerHTML = `
-                    <div class="file-preview-info">
-                        <i class="bi bi-file-earmark"></i>
-                        <span class="file-preview-name">${file.name}</span>
-                        <span class="file-preview-size">(${formatFileSize(file.size)})</span>
-                    </div>
-                    <button type="button" class="file-preview-remove" onclick="removeFile(${index})">
-                        <i class="bi bi-x-circle"></i>
-                    </button>
-                `;
-        list.appendChild(fileItem);
-    });
-}
-
-// Função para formatar o tamanho do arquivo
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-// Função para remover arquivo da seleção
-function removeFile(index) {
-    selectedFiles.splice(index, 1);
-    updateFilePreview();
-
-    // Atualizar o FileUpload ASP.NET
-    const fileInput = document.getElementById('<%= fuAnexos.ClientID %>');
-    const dataTransfer = new DataTransfer();
-
-    selectedFiles.forEach(file => {
-        dataTransfer.items.add(file);
-    });
-
-    fileInput.files = dataTransfer.files;
-}
-
-// Função para arrastar e soltar arquivos
-function setupDragAndDrop() {
-    const dropArea = document.querySelector('.file-upload-area');
-
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false);
-    });
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, highlight, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, unhighlight, false);
-    });
-
-    function highlight() {
-        dropArea.style.borderColor = 'var(--primary)';
-        dropArea.style.backgroundColor = 'rgba(37, 99, 235, 0.1)';
-    }
-
-    function unhighlight() {
-        dropArea.style.borderColor = 'var(--gray-300)';
-        dropArea.style.backgroundColor = 'var(--gray-50)';
-    }
-
-    dropArea.addEventListener('drop', handleDrop, false);
-
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-
-        if (files.length > 0) {
-                    const fileInput = document.getElementById('<%= fuAnexos.ClientID %>');
-                    fileInput.files = files;
-                    handleFileSelection(fileInput);
-                }
-            }
-        }
-
-        // Inicializar quando a página carregar
-        document.addEventListener('DOMContentLoaded', function () {
-            setupCharacterCounters();
-            autoResizeTextarea();
-            setupDragAndDrop();
-        });
     </script>
+
+
 
 </asp:Content>
 
@@ -367,36 +247,55 @@ function setupDragAndDrop() {
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Anexos (FORA dos UpdatePanels) -->
-                    <div class="mb-4">
-                        <h3 class="section-title"><i class="bi bi-paperclip"></i>Anexos</h3>
-                        <div class="form-card">
-                            <label class="form-label">Adicionar arquivos (Máx. 10MB cada)</label>
-                            
-                            <!-- FileUpload ASP.NET -->
-                            <div class="file-upload-area">
-                                <i class="bi bi-cloud-arrow-up text-muted mb-2"></i>
-                                <p class="mb-2 small text-muted">Arraste arquivos aqui ou clique para selecionar</p>
-                                <asp:FileUpload ID="fuAnexos" runat="server" CssClass="d-none" AllowMultiple="true" 
-                                    onchange="handleFileSelection(this);" />
-                                <button type="button" class="btn btn-outline-secondary btn-sm" 
-                                    onclick="document.getElementById('<%= fuAnexos.ClientID %>').click()">
-                                    Selecionar Arquivos
-                                </button>
-                            </div>
-                            
-                            <div class="input-hint">
-                                Formatos permitidos: PDF, Word, Excel, imagens (JPG, PNG, GIF)
-                            </div>
-                            
-                            <!-- Container para preview dos arquivos selecionados -->
-                            <div id="filePreviewContainer" class="file-preview-container" style="display: none;">
-                                <h6 class="small text-muted">Arquivos selecionados:</h6>
-                                <div id="filePreviewList"></div>
-                            </div>
-                        </div>
+       
+<div class="mb-4">
+    <h3 class="section-title"><i class="bi bi-paperclip"></i>Anexos</h3>
+    <div class="form-card">
+        <label class="form-label">Adicionar arquivos (Máx. 10MB cada)</label>
+
+        <div class="file-upload-area">
+            <i class="bi bi-cloud-arrow-up text-muted mb-2"></i>
+            <p class="mb-2 small text-muted">Selecione os arquivos e clique em Adicionar</p>
+            
+            <!-- FILEUPLOAD VISÍVEL E SIMPLES -->
+            <asp:FileUpload ID="fuAnexos" runat="server" CssClass="form-control mb-2" AllowMultiple="true" />
+            
+            <!-- BOTÃO para adicionar arquivos -->
+            <asp:Button ID="btnAdicionarAnexos" runat="server" Text="Adicionar Arquivos à Lista" 
+                CssClass="btn btn-primary btn-sm" OnClick="btnAdicionarAnexos_Click" />
+        </div>
+
+        <div class="input-hint">
+            Formatos permitidos: PDF, Word, Excel, imagens (JPG, PNG, GIF)
+        </div>
+   
+        <asp:Repeater ID="rptAnexos" runat="server" OnItemCommand="rptAnexos_ItemCommand">
+            <HeaderTemplate>
+                <div class="file-preview-container mt-3">
+                    <h6 class="small text-muted">Arquivos selecionados:</h6>
+            </HeaderTemplate>
+            <ItemTemplate>
+                <div class="file-preview-item">
+                    <div class="file-preview-info">
+                        <i class="bi bi-file-earmark"></i>
+                        <span class="file-preview-name"><%# Eval("FileName") %></span>
+                        <span class="file-preview-size">(<%# Eval("SizeFormatted") %>)</span>
                     </div>
+                    <asp:LinkButton ID="btnRemoverAnexo" runat="server" 
+                        CommandName="Remover" 
+                        CommandArgument='<%# Eval("Index") %>'
+                        CssClass="file-preview-remove"
+                        OnClientClick="return confirm('Remover este arquivo?');">
+                        <i class="bi bi-x-circle"></i>
+                    </asp:LinkButton>
+                </div>
+            </ItemTemplate>
+            <FooterTemplate>
+                </div>
+            </FooterTemplate>
+        </asp:Repeater>
+    </div>
+</div>
                 </div>
                 
                 <!-- Coluna lateral - Categoria, Roteamento e Prioridade -->

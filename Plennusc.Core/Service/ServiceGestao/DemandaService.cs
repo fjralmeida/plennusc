@@ -193,11 +193,11 @@ namespace Plennusc.Core.Service.ServiceGestao
                 }
             }
         }
+        // Método original (mantém)
         public string SalvarAnexoFisico(HttpPostedFile arquivo, int codDemanda)
         {
             try
             {
-                // CAMINHO CORRETO - com /public/
                 string pastaAnexos = HttpContext.Current.Server.MapPath("~/public/uploadgestao/docs/");
                 System.Diagnostics.Debug.WriteLine($"Caminho da pasta: {pastaAnexos}");
 
@@ -207,13 +207,10 @@ namespace Plennusc.Core.Service.ServiceGestao
                     Directory.CreateDirectory(pastaAnexos);
                 }
 
-                // Gera um nome único para o arquivo
                 string nomeUnico = $"{codDemanda}_{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(arquivo.FileName)}";
                 string caminhoCompleto = Path.Combine(pastaAnexos, nomeUnico);
 
                 System.Diagnostics.Debug.WriteLine($"Salvando arquivo em: {caminhoCompleto}");
-
-                // Salva o arquivo
                 arquivo.SaveAs(caminhoCompleto);
 
                 System.Diagnostics.Debug.WriteLine("Arquivo salvo com sucesso!");
@@ -223,7 +220,40 @@ namespace Plennusc.Core.Service.ServiceGestao
             {
                 System.Diagnostics.Debug.WriteLine($"ERRO ao salvar arquivo: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
-                throw; // Re-lança a exception para ver o erro na interface
+                throw;
+            }
+        }
+
+        // SOBRECARGA nova para aceitar os 3 argumentos
+        public string SalvarAnexoFisico(string fileName, byte[] content, int codDemanda)
+        {
+            try
+            {
+                string pastaAnexos = HttpContext.Current.Server.MapPath("~/public/uploadgestao/docs/");
+                System.Diagnostics.Debug.WriteLine($"Caminho da pasta: {pastaAnexos}");
+
+                if (!Directory.Exists(pastaAnexos))
+                {
+                    System.Diagnostics.Debug.WriteLine("Criando pasta...");
+                    Directory.CreateDirectory(pastaAnexos);
+                }
+
+                string nomeUnico = $"{codDemanda}_{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(fileName)}";
+                string caminhoCompleto = Path.Combine(pastaAnexos, nomeUnico);
+
+                System.Diagnostics.Debug.WriteLine($"Salvando arquivo em: {caminhoCompleto}");
+
+                // Salva o conteúdo do byte array no arquivo
+                File.WriteAllBytes(caminhoCompleto, content);
+
+                System.Diagnostics.Debug.WriteLine("Arquivo salvo com sucesso!");
+                return nomeUnico;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO ao salvar arquivo: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw;
             }
         }
 
