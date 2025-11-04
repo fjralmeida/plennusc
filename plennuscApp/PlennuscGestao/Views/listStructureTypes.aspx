@@ -21,22 +21,27 @@
 
         <!-- Card Principal -->
         <div class="main-card">
-            <div class="card-header">
+          <%--  <div class="card-header">
                 <h2 class="card-title">
                     <i class="bi bi-table"></i>
                     Tipos de Estrutura Cadastrados
                 </h2>
-            </div>
+            </div>--%>
 
             <div class="card-body">
                 <!-- Filtros -->
-                <div class="filters-section">
-                    <div class="filter-group">
-                        <label>Filtrar por:</label>
-                        <asp:TextBox ID="txtFiltro" runat="server" CssClass="form-control filter-input" 
-                            placeholder="Digite para filtrar..." AutoPostBack="true" OnTextChanged="txtFiltro_TextChanged"></asp:TextBox>
+             <div class="filters-section">
+                <div class="filter-group">
+                    <label>Filtrar por:</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <asp:TextBox ID="txtFiltro" runat="server" CssClass="form-control" 
+                            placeholder="Tipo Estrutura..." AutoPostBack="true" OnTextChanged="txtFiltro_TextChanged"></asp:TextBox>
                     </div>
                 </div>
+            </div>
 
                 <!-- GridView -->
                 <div class="table-container">
