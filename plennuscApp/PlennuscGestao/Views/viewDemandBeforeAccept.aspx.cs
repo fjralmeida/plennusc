@@ -13,7 +13,14 @@ namespace appWhatsapp.PlennuscGestao.Views
     public partial class viewDemandBeforeAccept : System.Web.UI.Page
     {
         private readonly DemandaService _service = new DemandaService("Plennus");
-        private int CodDemanda => Convert.ToInt32(Request.QueryString["codDemanda"]);
+        // ✅ MUDANÇA AQUI - PEGA DA SESSION EM VEZ DA URL
+        private int CodDemanda
+        {
+            get
+            {
+                return Convert.ToInt32(Session["CurrentDemandId"] ?? "0");
+            }
+        }
         private int CodPessoaAtual => Convert.ToInt32(Session["CodPessoa"] ?? 0);
 
         protected void Page_Load(object sender, EventArgs e)
@@ -140,10 +147,12 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (aceitou)
                 {
-                    // Redirecionar para a página de detalhes completa
+                    // ✅ LIMPA A SESSION DEPOIS DE USAR
+                    Session.Remove("CurrentDemandId");
+
                     Response.Redirect($"detailDemand.aspx?codDemanda={CodDemanda}", false);
-                    Context.ApplicationInstance.CompleteRequest(); // Opcional
-                    return; // Para a execução
+                    Context.ApplicationInstance.CompleteRequest();
+                    return;
                 }
                 else
                 {

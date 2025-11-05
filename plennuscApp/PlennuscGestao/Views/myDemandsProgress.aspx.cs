@@ -54,8 +54,10 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (e.CommandName == "Ver")
             {
+                // ✅ PADRÃO PARA ESCONDER ID
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"detailDemand.aspx?codDemanda={codDemanda}");
+                Session["CurrentDemandId"] = codDemanda;
+                Response.Redirect("~/detailDemand");
             }
         }
 

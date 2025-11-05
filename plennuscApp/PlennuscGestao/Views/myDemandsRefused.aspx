@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="myDemandsRefused.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.myDemandsRefused" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+
+         <title>Demandas recusadas</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../../Content/Css/projects/gestao/structuresCss/myDemandsRefused.css" rel="stylesheet" />
 </asp:Content>

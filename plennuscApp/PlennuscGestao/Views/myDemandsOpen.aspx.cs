@@ -95,12 +95,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
                 int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
 
-                // Registrar o aceite da demanda
                 var svc = new DemandaService("Plennus");
                 if (svc.AceitarDemanda(codDemanda, codPessoa))
                 {
                     MostrarMensagem("Demanda aceita com sucesso!", "success");
-                    BindGrid(); // Recarregar o grid
+                    BindGrid();
                 }
                 else
                 {
@@ -109,8 +108,14 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             else if (e.CommandName == "Ver")
             {
+                // ✅ CORREÇÃO AQUI - USA SESSION EM VEZ DE QUERYSTRING
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"~/PlennuscGestao/Views/detailDemand.aspx?codDemanda={codDemanda}");
+
+                // SALVA O ID NA SESSION
+                Session["CurrentDemandId"] = codDemanda;
+
+                // REDIRECIONA PARA URL LIMPA
+                Response.Redirect("~/detailDemand");
             }
         }
 

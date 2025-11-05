@@ -45,12 +45,15 @@ namespace appWhatsapp.PlennuscGestao.Views
             BindGrid();
         }
 
+        // ✅ CORREÇÃO AQUI - NOME DO MÉTODO DEVE BATER COM O ASPX
         protected void gvDemandasRecusadas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Ver")
             {
+                // ✅ PADRÃO PARA ESCONDER ID
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"detailDemand.aspx?codDemanda={codDemanda}");
+                Session["CurrentDemandId"] = codDemanda;
+                Response.Redirect("~/detailDemand");
             }
         }
     }

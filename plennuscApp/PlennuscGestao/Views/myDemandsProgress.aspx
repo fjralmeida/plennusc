@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="myDemandsProgress.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.myDemandsProgress" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+
+     <title>Demandas em andamento</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 

@@ -17,7 +17,13 @@ namespace appWhatsapp.PlennuscGestao.Views
     public partial class detailDemand : System.Web.UI.Page
     {
         private readonly DemandaService _service = new DemandaService("Plennus");
-        private int CodDemanda => Convert.ToInt32(Request.QueryString["codDemanda"]);
+        private int CodDemanda
+        {
+            get
+            {
+                return Convert.ToInt32(Session["CurrentDemandId"] ?? "0");
+            }
+        }
         private int CodPessoaAtual => Convert.ToInt32(Session["CodPessoa"] ?? 0);
         private bool DemandaFechada => (demandaAtual?.StatusCodigo == 23); // 23 = Status "Concluída"
 
@@ -485,7 +491,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                int codDemanda = Convert.ToInt32(Request.QueryString["codDemanda"]);
+                int codDemanda = Convert.ToInt32(Session["CurrentDemandId"] ?? "0");
                 int codPessoaAtual = Convert.ToInt32(Session["CodPessoa"]);
 
                 // Verificar se a demanda existe

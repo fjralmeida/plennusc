@@ -162,9 +162,14 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             else if (e.CommandName == "Ver")
             {
-                // Sua lógica existente para visualizar
+                // ✅ CORREÇÃO AQUI - USA SESSION EM VEZ DE QUERYSTRING
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"viewDemandBeforeAccept.aspx?codDemanda={codDemanda}");
+
+                // SALVA O ID NA SESSION
+                Session["CurrentDemandId"] = codDemanda;
+
+                // REDIRECIONA PARA URL LIMPA
+                Response.Redirect("~/viewDemandBeforeAccept");
             }
         }
 

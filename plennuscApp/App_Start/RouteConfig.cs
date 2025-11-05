@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Routing;
@@ -10,21 +10,90 @@ namespace appWhatsapp
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            //// Primeiro registra as rotas personalizadas
-            //routes.MapPageRoute("LoginRoute", "login", "~/Views/SignIn.aspx");
-            //routes.MapPageRoute("EnvioMensagemRoute", "mensagem", "~/Views/EnvioMensagemBeneficiario.aspx");
-            //routes.MapPageRoute("TelaEnvioRoute", "telaenvio", "~/Views/TelaEnvio.aspx");
-            //routes.MapPageRoute(
-            //    "HomeRoute",
-            //    "home",
-            //    "~/Views/Home.aspx"
-            //);
+            // ✅ ROTAS PARA ESTRUTURAS
+            routes.MapPageRoute(
+                "RegisterStructureTypeRoute",
+                "estruturas/tipos/cadastrar",
+                "~/PlennuscGestao/Views/registerStructureType.aspx"
+            );
 
-            // Depois habilita FriendlyUrls para o resto do site
+            routes.MapPageRoute(
+                "ListStructureTypesRoute",
+                "estruturas/tipos/listar",
+                "~/PlennuscGestao/Views/listStructureTypes.aspx"
+            );
+
+            routes.MapPageRoute(
+                "RegisterStructuresRoute",
+                "estruturas/cadastrar",
+                "~/PlennuscGestao/Views/registerStructures.aspx"
+            );
+
+            routes.MapPageRoute(
+                "LinkSectorRoute",
+                "estruturas/vincular-setor",
+                "~/PlennuscGestao/Views/linkSector.aspx"
+            );
+
+            // ✅ ROTAS PARA DEMANDAS (que já tínhamos)
+            routes.MapPageRoute(
+                "DetailDemandRoute",
+                "detailDemand",
+                "~/PlennuscGestao/Views/detailDemand.aspx"
+            );
+
+            routes.MapPageRoute(
+                "ViewDemandBeforeAcceptRoute",
+                "viewDemandBeforeAccept",
+                "~/PlennuscGestao/Views/viewDemandBeforeAccept.aspx"
+            );
+
+            routes.MapPageRoute(
+                "DemandRoute",
+                "demand",
+                "~/PlennuscGestao/Views/demand.aspx"
+            );
+
+            routes.MapPageRoute(
+                "ListDemandRoute",
+                "listDemand",
+                "~/PlennuscGestao/Views/listDemand.aspx"
+            );
+
+            // ✅ OUTRAS ROTAS DE DEMANDAS
+            routes.MapPageRoute(
+                "MyDemandsOpenRoute",
+                "minhas-demandas/abertas",
+                "~/PlennuscGestao/Views/myDemandsOpen.aspx"
+            );
+
+            routes.MapPageRoute(
+                "MyDemandsProgressRoute",
+                "minhas-demandas/andamento",
+                "~/PlennuscGestao/Views/myDemandsProgress.aspx"
+            );
+
+            routes.MapPageRoute(
+                "MyDemandsWaitingRoute",
+                "minhas-demandas/aguardando",
+                "~/PlennuscGestao/Views/myDemandsWaiting.aspx"
+            );
+
+            routes.MapPageRoute(
+                "MyDemandsRefusedRoute",
+                "minhas-demandas/recusadas",
+                "~/PlennuscGestao/Views/myDemandsRefused.aspx"
+            );
+
+            routes.MapPageRoute(
+                "MyDemandsCompletedRoute",
+                "minhas-demandas/concluidas",
+                "~/PlennuscGestao/Views/myDemandsCompleted.aspx"
+            );
+
             var settings = new FriendlyUrlSettings();
             settings.AutoRedirectMode = RedirectMode.Permanent;
             routes.EnableFriendlyUrls(settings);
-
         }
     }
 }

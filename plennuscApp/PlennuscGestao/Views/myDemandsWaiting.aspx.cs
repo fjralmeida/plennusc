@@ -90,8 +90,10 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             else if (e.CommandName == "Ver")
             {
+                // ✅ CORREÇÃO AQUI - USA SESSION EM VEZ DE QUERYSTRING
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"~/PlennuscGestao/Views/detailDemand.aspx?codDemanda={codDemanda}");
+                Session["CurrentDemandId"] = codDemanda;
+                Response.Redirect("~/detailDemand");
             }
         }
 

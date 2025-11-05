@@ -1,6 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="viewDemandBeforeAccept.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.viewDemandBeforeAccept" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    
+    <title>Visualizar demandas</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <link href="../../Content/Css/projects/gestao/structuresCss/view-Demand-Before-Accept.css" rel="stylesheet" />
