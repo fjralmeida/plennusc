@@ -19,6 +19,7 @@
 
             const subtipoItem = document.createElement('div');
             subtipoItem.className = 'subtipo-item';
+
             subtipoItem.innerHTML = `
                 <div class="subtipo-input">
                     <input type="text" class="form-control" name="subtipo_${subtipoCount}"
@@ -146,7 +147,7 @@
 
             <div class="card-body">
                 <div class="form-group">
-                    <label class="form-label">View *</label>
+                    <label class="form-label">Tipo Estrtura</label>
                     <asp:DropDownList ID="ddlView" runat="server" CssClass="form-control form-select"
                         AutoPostBack="true" OnSelectedIndexChanged="ddlView_SelectedIndexChanged">
                         <asp:ListItem Text="Selecione uma View" Value=""></asp:ListItem>
@@ -163,9 +164,10 @@
                     </div>
                 </div>
 
-                <div class="action-buttons">
-                    <asp:Button ID="btnSalvarTudo" runat="server" Text="Salvar Tudo"
-                        CssClass="btn-save" OnClick="btnSalvarTudo_Click" />
+              <div class="action-buttons">
+                    <asp:Button ID="btnSalvarTudo" runat="server" Text="Salvar"
+                        CssClass="btn-save" OnClick="btnSalvarTudo_Click" 
+                        OnClientClick="return prepararDadosParaSalvar();" />
                 </div>
 
                 <asp:Panel ID="pnlMensagem" runat="server" Visible="false">
