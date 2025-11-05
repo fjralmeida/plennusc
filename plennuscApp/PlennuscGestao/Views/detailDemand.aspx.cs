@@ -1,4 +1,5 @@
 ﻿using Plennusc.Core.Models.ModelsGestao;
+using Plennusc.Core.Models.ModelsGestao.modelsAnnex;
 using Plennusc.Core.Service.ServiceGestao;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,20 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 CarregarTudo();
                 ConfigurarFormularioAcompanhamento();
+                AtualizarListaAnexos();
             }
+        }
+
+
+        private List<temporaryAnnex> AnexosSelecionados
+        {
+            get
+            {
+                if (ViewState["AnexosSelecionados"] == null)
+                    ViewState["AnexosSelecionados"] = new List<temporaryAnnex>();
+                return (List<temporaryAnnex>)ViewState["AnexosSelecionados"];
+            }
+            set { ViewState["AnexosSelecionados"] = value; }
         }
 
         private void CarregarTudo()
@@ -152,17 +166,148 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        // MÉTODOS PARA ANEXOS
+        // MÉTODOS PARA ANEXOS
+        protected void rptAnexos_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "Remover")
+            {
+                int index = Convert.ToInt32(e.CommandArgument);
+                if (index >= 0 && index < AnexosSelecionados.Count)
+                {
+                    AnexosSelecionados.RemoveAt(index);
+                    AtualizarListaAnexos();
+                    MostrarMensagem("Arquivo removido com sucesso!", "success");
+                }
+            }
+        }
+
+        protected void btnAdicionarAnexos_Click(object sender, EventArgs e)
+        {
+            if (fuAnexos.HasFiles)
+            {
+                foreach (HttpPostedFile arquivo in fuAnexos.PostedFiles)
+                {
+                    // Validação de tamanho
+                    if (arquivo.ContentLength > 10 * 1024 * 1024) // 10MB
+                    {
+                        MostrarMensagem($"O arquivo {arquivo.FileName} excede o limite de 10MB.", "error");
+                        continue;
+                    }
+
+                    // Validação de tipo
+                    string extensao = Path.GetExtension(arquivo.FileName).ToLower();
+                    string[] extensoesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".gif" };
+
+                    if (!extensoesPermitidas.Contains(extensao))
+                    {
+                        MostrarMensagem($"Tipo de arquivo não permitido: {arquivo.FileName}", "error");
+                        continue;
+                    }
+
+                    // Adiciona à lista temporária
+                    var anexo = new temporaryAnnex
+                    {
+                        FileName = arquivo.FileName,
+                        Size = arquivo.ContentLength,
+                        SizeFormatted = FormatFileSize(arquivo.ContentLength),
+                        ContentType = arquivo.ContentType,
+                        Index = AnexosSelecionados.Count
+                    };
+
+                    // Lê o conteúdo do arquivo
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        arquivo.InputStream.CopyTo(ms);
+                        anexo.Content = ms.ToArray();
+                    }
+
+                    AnexosSelecionados.Add(anexo);
+                }
+
+                // Atualiza a lista
+                AtualizarListaAnexos();
+
+                // Limpa o FileUpload
+                fuAnexos.Attributes.Clear();
+
+                MostrarMensagem($"{fuAnexos.PostedFiles.Count} arquivo(s) adicionado(s) com sucesso!", "success");
+            }
+            else
+            {
+                MostrarMensagem("Selecione pelo menos um arquivo para adicionar.", "info");
+            }
+        }
+
+        private void AtualizarListaAnexos()
+        {
+            // CORREÇÃO: Use o Repeater correto - você tem Repeater1 no HTML
+            Repeater1.DataSource = AnexosSelecionados;
+            Repeater1.DataBind();
+
+            // Mostra/oculta o container baseado na quantidade
+            if (AnexosSelecionados.Count > 0)
+            {
+                Repeater1.Visible = true;
+            }
+            else
+            {
+                Repeater1.Visible = false;
+            }
+        }
+
+        // Método para formatar tamanho do arquivo
+        private string FormatFileSize(long bytes)
+        {
+            if (bytes == 0) return "0 Bytes";
+            string[] sizes = { "Bytes", "KB", "MB", "GB" };
+            int i = (int)Math.Floor(Math.Log(bytes) / Math.Log(1024));
+            return Math.Round(bytes / Math.Pow(1024, i), 2) + " " + sizes[i];
+        }
+
+        // Método auxiliar para salvar arquivo do byte array
+        private string SalvarAnexoFisicoTemp(string fileName, byte[] content, int codDemanda)
+        {
+            try
+            {
+                string pastaAnexos = HttpContext.Current.Server.MapPath("~/public/uploadgestao/docs/");
+
+                if (!Directory.Exists(pastaAnexos))
+                {
+                    Directory.CreateDirectory(pastaAnexos);
+                }
+
+                string nomeUnico = $"{codDemanda}_{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(fileName)}";
+                string caminhoCompleto = Path.Combine(pastaAnexos, nomeUnico);
+
+                // Salva o conteúdo do byte array no arquivo
+                File.WriteAllBytes(caminhoCompleto, content);
+
+                return nomeUnico;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao salvar arquivo {fileName}: {ex.Message}");
+            }
+        }
+
         protected void btnAdicionarAcompanhamento_Click(object sender, EventArgs e)
         {
             // Verificar se a demanda está fechada
             if (DemandaFechada)
             {
-                ScriptManager.RegisterStartupScript(this, GetType(), "demandaFechada",
-                    "showToastErro('Esta demanda está fechada. Não é possível adicionar acompanhamentos.');", true);
+                MostrarMensagem("Esta demanda está fechada. Não é possível adicionar acompanhamentos.", "error");
                 return;
             }
 
             var texto = txtNovoAcompanhamento.Text?.Trim();
+
+            // CORREÇÃO: Verificar se o dropdown tem valor selecionado
+            if (string.IsNullOrEmpty(ddlStatusAcompanhamento.SelectedValue))
+            {
+                MostrarMensagem("Selecione um status para o acompanhamento.", "error");
+                return;
+            }
 
             int novoStatus = int.Parse(ddlStatusAcompanhamento.SelectedValue);
 
@@ -176,87 +321,59 @@ namespace appWhatsapp.PlennuscGestao.Views
                         texto,
                         novoStatus);
 
-                    // Salvar anexos se houver
-                    if (fuAnexos.HasFiles)
+                    // SALVAR ANEXOS DA LISTA TEMPORÁRIA (usando sua estrutura)
+                    if (AnexosSelecionados.Count > 0)
                     {
                         int arquivosSalvos = 0;
                         int arquivosComErro = 0;
 
-                        foreach (HttpPostedFile arquivo in fuAnexos.PostedFiles)
+                        foreach (var anexo in AnexosSelecionados)
                         {
                             try
                             {
-                                // Validar tamanho (10MB máximo)
-                                if (arquivo.ContentLength > 10 * 1024 * 1024)
-                                {
-                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivoTamanho",
-                                        "showToastErro('O arquivo " + arquivo.FileName.Replace("'", "\\'") + " excede o limite de 10MB.');", true);
-                                    arquivosComErro++;
-                                    continue;
-                                }
+                                // Salva o arquivo fisicamente
+                                string nomeArquivoSalvo = SalvarAnexoFisicoTemp(anexo.FileName, anexo.Content, CodDemanda);
 
-                                // Validar extensão
-                                string extensao = Path.GetExtension(arquivo.FileName).ToLower();
-                                string[] extensoesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png", ".gif" };
-
-                                if (!extensoesPermitidas.Contains(extensao))
-                                {
-                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivoTipo",
-                                        "showToastErro('Tipo de arquivo não permitido: " + arquivo.FileName.Replace("'", "\\'") + "');", true);
-                                    arquivosComErro++;
-                                    continue;
-                                }
-
-                                // Salva o arquivo físico (MÉTODO QUE JÁ EXISTE)
-                                string nomeArquivoSalvo = _service.SalvarAnexoFisico(arquivo, CodDemanda);
-
-                                // Lê o conteúdo para salvar no banco
-                                byte[] conteudo;
-                                using (MemoryStream ms = new MemoryStream())
-                                {
-                                    arquivo.InputStream.CopyTo(ms);
-                                    conteudo = ms.ToArray();
-                                }
-
-                                // Dentro do loop dos arquivos, depois de salvar o arquivo físico:
+                                // USA SEU MÉTODO EXISTENTE - só passa o nome do arquivo
                                 _service.SalvarAnexoAcompanhamento(CodDemanda, idAcompanhamento, nomeArquivoSalvo);
+
+                                arquivosSalvos++;
                             }
                             catch (Exception exArquivo)
                             {
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivoErro",
-                                    "showToastErro('Erro ao processar " + arquivo.FileName.Replace("'", "\\'") + ": " + exArquivo.Message.Replace("'", "\\'") + "');", true);
+                                MostrarMensagem($"Erro ao processar {anexo.FileName}: {exArquivo.Message}", "error");
                                 arquivosComErro++;
                             }
                         }
 
-                        // Feedback sobre os anexos processados
-                        if (arquivosSalvos > 0)
-                        {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivosSucesso",
-                                "showToastSucesso('" + arquivosSalvos + " arquivo(s) anexado(s) com sucesso!');", true);
-                        }
+                        //// Feedback sobre os anexos processados
+                        //if (arquivosSalvos > 0)
+                        //{
+                        //    MostrarMensagem($"{arquivosSalvos} arquivo(s) anexado(s) com sucesso!", "success");
+                        //}
 
-                        if (arquivosComErro > 0)
-                        {
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastArquivosErro",
-                                "showToastAviso('" + arquivosComErro + " arquivo(s) não puderam ser anexados.');", true);
-                        }
-                        hdnStatusOriginal.Value = novoStatus.ToString();
+                        //if (arquivosComErro > 0)
+                        //{
+                        //    MostrarMensagem($"{arquivosComErro} arquivo(s) não puderam ser anexados.", "warning");
+                        //}
+
+                        // LIMPA A LISTA DE ANEXOS APÓS SALVAR
+                        AnexosSelecionados.Clear();
+                        AtualizarListaAnexos();
                     }
+
+                    hdnStatusOriginal.Value = novoStatus.ToString();
 
                     CarregarAnexos();
 
                     // Mensagem de sucesso do acompanhamento
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastSucesso",
-                        "showToastSucesso('Acompanhamento adicionado com sucesso!');", true);
+                    MostrarMensagem("Acompanhamento adicionado com sucesso!", "success");
 
                     // LIMPA OS CAMPOS
                     txtNovoAcompanhamento.Text = string.Empty;
 
-                    // Limpar arquivos selecionados
+                    // Limpar FileUpload
                     fuAnexos.Attributes.Clear();
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "LimparArquivos",
-                        "selectedFiles = []; updateFilePreview();", true);
 
                     // RECARREGA OS DADOS
                     CarregarAcompanhamentos();
@@ -264,9 +381,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }
                 catch (Exception ex)
                 {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastErro",
-                        "showToastErro('Erro ao adicionar acompanhamento: " + ex.Message.Replace("'", "\\'") + "');", true);
+                    MostrarMensagem($"Erro ao adicionar acompanhamento: {ex.Message}", "error");
                 }
+            }
+            else
+            {
+                MostrarMensagem("Digite o texto do acompanhamento.", "error");
             }
         }
 
