@@ -51,10 +51,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                     MostrarMensagem("Informe o Tipo Estrutura", "error");
                     return;
                 }
-
-                var nomeView = "VW_" + txtTipoEstrutura.Text.Trim().ToUpper().Replace(" ", "_");
+                var nomeView = "VW_" + RemoveAcentos(txtTipoEstrutura.Text.Trim().ToUpper().Replace(" ", "_"));
                 var tipoEstrutura = txtTipoEstrutura.Text.Trim();
-
                 // Valida se view já existe
                 if (_service.ViewExiste(nomeView))
                 {
@@ -84,36 +82,28 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (codigo > 0)
                 {
-                    // 2. CRIA O PAI NA ESTRUTURA SEPARADAMENTE
-                    bool estruturaPaiCriada = _service.CriarEstruturaPai(codigo, tipoEstrutura);
+                    //// 2. CRIA O PAI NA ESTRUTURA SEPARADAMENTE
+                    //bool estruturaPaiCriada = _service.CriarEstruturaPai(codigo, tipoEstrutura);
 
-                    if (estruturaPaiCriada)
+                    bool viewCriada = _service.CriarView(nomeView, codigo);
+
+                    if (viewCriada)
                     {
-                        // 3. CRIA A VIEW SEPARADAMENTE
-                        bool viewCriada = _service.CriarView(nomeView, codigo);
+                        string tipoHierarquia = codTipoEstruturaPai.HasValue ?
+                            $"Sub-tipo vinculado ao código {codTipoEstruturaPai.Value}" :
+                            "Tipo Estrutura Pai/Raiz";
 
-                        if (viewCriada)
-                        {
-                            string tipoHierarquia = codTipoEstruturaPai.HasValue ?
-                                $"Sub-tipo vinculado ao código {codTipoEstruturaPai.Value}" :
-                                "Tipo Estrutura Pai/Raiz";
-
-                            MostrarMensagemSucesso($"Sucesso! Tipo Estrutura salvo (Código: {codigo}), {tipoHierarquia} e View '{nomeView}' criada.");
-                            LimparCampos();
-                        }
-                        else
-                        {
-                            MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar a view.", "warning");
-                        }
+                        MostrarMensagemSucesso($"Sucesso! Tipo Estrutura salvo (Código: {codigo}), {tipoHierarquia} e View '{nomeView}' criada.");
+                        LimparCampos();
                     }
                     else
                     {
-                        MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar estrutura pai.", "warning");
+                        MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar a view.", "warning");
                     }
                 }
                 else
                 {
-                    MostrarMensagem("Erro ao salvar Tipo Estrutura.", "error");
+                    MostrarMensagem($"Tipo Estrutura salvo (Código: {codigo}), mas houve erro ao criar estrutura pai.", "warning");
                 }
             }
             catch (Exception ex)
@@ -122,6 +112,23 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        // Método para remover acentuações
+        private string RemoveAcentos(string texto)
+        {
+            if (string.IsNullOrEmpty(texto))
+                return texto;
+
+            string comAcentos = "ÄÅÁÂÀÃäáâàãÉÊËÈéêëèÍÎÏÌíîïìÖÓÔÒÕöóôòõÜÚÛüúûùÇç";
+            string semAcentos = "AAAAAAaaaaaEEEEeeeeIIIIiiiiOOOOOoooooUUUuuuuCc";
+
+            for (int i = 0; i < comAcentos.Length; i++)
+            {
+                texto = texto.Replace(comAcentos[i], semAcentos[i]);
+            }
+
+            // Remove caracteres especiais e mantém apenas letras, números e underscore
+            return System.Text.RegularExpressions.Regex.Replace(texto, @"[^a-zA-Z0-9_]", "");
+        }
         private void LimparCampos()
         {
             txtTipoEstrutura.Text = "";

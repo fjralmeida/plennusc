@@ -10,7 +10,7 @@
     <script type="text/javascript">
         // Atualiza nome da view automaticamente
         function atualizarViewNome() {
-            var descricao = document.getElementById('<%= txtDescricao.ClientID %>').value;
+            var descricao = document.getElementById('<%= txtTipoEstrutura.ClientID %>').value;
             var lblView = document.getElementById('<%= lblViewNome.ClientID %>');
 
             if (descricao) {
@@ -21,7 +21,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('<%= txtDescricao.ClientID %>').addEventListener('input', atualizarViewNome);
+            document.getElementById('<%= txtTipoEstrutura.ClientID %>').addEventListener('input', atualizarViewNome);
             atualizarViewNome();
         });
     </script>

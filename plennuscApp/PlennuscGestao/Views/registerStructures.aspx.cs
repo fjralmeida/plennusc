@@ -83,6 +83,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     var estrutura = new structureModel
                     {
+
                         CodEstrutura = Convert.ToInt32(hdnCodEstruturaEditar.Value),
                         DescEstrutura = txtDescEstruturaEditar.Text.Trim(),
                         ValorPadrao = Convert.ToInt32(txtValorPadraoEditar.Text),
@@ -188,23 +189,21 @@ namespace appWhatsapp.PlennuscGestao.Views
                     var estruturas = serializer.Deserialize<List<subTypeDate>>(estruturasJson);
                     int estruturasSalvas = 0;
 
-                    int codEstruturaPai = _service.BuscarPaiPorTipoEstrutura(codTipoEstrutura);
-
                     foreach (var estrutura in estruturas)
                     {
                         if (!string.IsNullOrEmpty(estrutura.nome.Trim()))
                         {
-                            var modelEstruturaFilha = new structureModel
+                            var modelEstrutura = new structureModel
                             {
                                 CodTipoEstrutura = codTipoEstrutura,
                                 DescEstrutura = estrutura.nome.Trim(),
-                                CodEstruturaPai = codEstruturaPai,
+                                CodEstruturaPai = null,
                                 Conf_IsDefault = false,
                                 ValorPadrao = estrutura.ordem
                             };
 
-                            _service.SalvarEstrutura(modelEstruturaFilha);
-                            estruturasSalvas++;
+                            int codEstruturaSalva = _service.SalvarEstrutura(modelEstrutura);
+                            if (codEstruturaSalva > 0) estruturasSalvas++;
                         }
                     }
 
