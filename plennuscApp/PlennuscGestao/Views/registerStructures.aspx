@@ -1,8 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="registerStructures.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.registerStructures" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-
-          <title>Cadastro de estrutura</title>
-
+    <title>Cadastro de estrutura</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -104,18 +102,24 @@
 
         // Função para abrir o modal de edição
         function abrirModalEdicao(codEstrutura, descEstrutura, valorPadrao, memoEstrutura, infoEstrutura, isDefault) {
-            // Preenche os campos do modal
             document.getElementById('<%= txtDescEstruturaEditar.ClientID %>').value = descEstrutura;
             document.getElementById('<%= txtValorPadraoEditar.ClientID %>').value = valorPadrao;
             document.getElementById('<%= txtMemoEstruturaEditar.ClientID %>').value = memoEstrutura || '';
             document.getElementById('<%= txtInfoEstruturaEditar.ClientID %>').value = infoEstrutura || '';
-            
-            // Guarda o código da estrutura
             document.getElementById('<%= hdnCodEstruturaEditar.ClientID %>').value = codEstrutura;
             
-            // Abre o modal
             var modal = new bootstrap.Modal(document.getElementById('modalEditarEstrutura'));
             modal.show();
+        }
+
+        // Função para abrir o modal de confirmação de exclusão
+        function abrirModalExclusao(codEstrutura, nomeEstrutura) {
+            document.getElementById('textoConfirmacao').textContent = `Deseja realmente excluir a estrutura "${nomeEstrutura}"?`;
+            document.getElementById('<%= hdnCodEstruturaExcluir.ClientID %>').value = codEstrutura;
+
+            var modal = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
+            modal.show();
+            return false;
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -164,7 +168,7 @@
                     </div>
                 </div>
 
-              <div class="action-buttons">
+                <div class="action-buttons">
                     <asp:Button ID="btnSalvarTudo" runat="server" Text="Salvar"
                         CssClass="btn-save" OnClick="btnSalvarTudo_Click" 
                         OnClientClick="return prepararDadosParaSalvar();" />
@@ -189,10 +193,11 @@
                             <h5 class="grid-card-title"><i class="bi bi-list-ul"></i> Estruturas Existentes</h5>
                         </div>
                         <div class="grid-card-body">
-                            <asp:GridView ID="gvEstruturas" runat="server"
-                                CssClass="table table-striped table-bordered"
-                                AutoGenerateColumns="false" EmptyDataText="Nenhuma estrutura encontrada"
-                                OnRowCommand="gvEstruturas_RowCommand" OnRowDataBound="gvEstruturas_RowDataBound">
+                           <asp:GridView ID="gvEstruturas" runat="server"
+    CssClass="table table-striped table-bordered"
+    AutoGenerateColumns="false" EmptyDataText="Nenhuma estrutura encontrada"
+    OnRowCommand="gvEstruturas_RowCommand" OnRowDataBound="gvEstruturas_RowDataBound"
+    EnableViewState="true">
                                 <Columns>
                                     <asp:BoundField DataField="DescEstrutura" HeaderText="Nome da Estrutura" />
                                     <asp:BoundField DataField="ValorPadrao" HeaderText="Ordem" />
@@ -210,14 +215,15 @@
                                                 title="Editar estrutura">
                                                 <i class="bi bi-pencil"></i> Editar
                                             </button>
-                                            <asp:LinkButton ID="btnExcluir" runat="server"
-                                                CssClass="btn btn-danger btn-sm"
-                                                CommandName="Excluir"
-                                                CommandArgument='<%# Eval("CodEstrutura") %>'
-                                                OnClientClick='<%# "return confirm(\"Excluir a estrutura \\\"" + Eval("DescEstrutura") + "\\\"?\");" %>'
-                                                ToolTip="Excluir estrutura">
+        
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                onclick="abrirModalExclusao(
+                                                    '<%# Eval("CodEstrutura") %>',
+                                                    '<%# Eval("DescEstrutura").ToString().Replace("'", "\\'") %>'
+                                                )"
+                                                title="Excluir estrutura">
                                                 <i class="bi bi-trash"></i> Excluir
-                                            </asp:LinkButton>
+                                            </button>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
@@ -231,7 +237,7 @@
             </div>
         </div>
 
-        <!-- Modal de Edição VERDADEIRO -->
+        <!-- Modal de Edição -->
         <div class="modal fade" id="modalEditarEstrutura" tabindex="-1" aria-labelledby="modalEditarEstruturaLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -276,5 +282,32 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Confirmação de Exclusão - FORA DO PANEL -->
+        <div class="modal fade" id="modalConfirmarExclusao" tabindex="-1" aria-labelledby="modalConfirmarExclusaoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="modalConfirmarExclusaoLabel">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Confirmar Exclusão
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="textoConfirmacao">Deseja realmente excluir esta estrutura?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                     <asp:Button ID="btnConfirmarExclusao" runat="server" Text="Excluir" 
+    CssClass="btn btn-danger"
+    OnClick="btnConfirmarExclusao_Click"
+    CausesValidation="false" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <asp:HiddenField ID="hdnCodEstruturaExcluir" runat="server" />
     </div>
 </asp:Content>

@@ -74,6 +74,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+
         protected void btnSalvarEdicao_Click(object sender, EventArgs e)
         {
             try
@@ -133,7 +134,9 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (temFilhos)
                 {
-                    MostrarMensagem("Não é possível excluir esta estrutura pois existem estruturas filhas vinculadas. Exclua primeiro as estruturas filhas.", "error");
+                    // Usa SweetAlert para mensagem de erro
+                    string script = @"Swal.fire({icon: 'error', title: 'Erro', text: 'Não é possível excluir: existem estruturas filhas vinculadas.'});";
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ErroExclusao", script, true);
                     return;
                 }
 
@@ -141,8 +144,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (excluido)
                 {
-                    MostrarMensagemSucesso("Estrutura excluída com sucesso!");
+                    // Usa SweetAlert para mensagem de sucesso
+                    string script = @"Swal.fire({icon: 'success', title: 'Sucesso', text: 'Estrutura excluída com sucesso!'});";
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "SucessoExclusao", script, true);
 
+                    // Recarrega o grid se houver uma view selecionada
                     if (!string.IsNullOrEmpty(ddlView.SelectedValue))
                     {
                         int codTipoEstrutura = Convert.ToInt32(ddlView.SelectedValue);
@@ -151,12 +157,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }
                 else
                 {
-                    MostrarMensagem("Erro ao excluir a estrutura.", "error");
+                    string script = @"Swal.fire({icon: 'error', title: 'Erro', text: 'Erro ao excluir a estrutura.'});";
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ErroExclusao2", script, true);
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensagem($"Erro ao excluir estrutura: {ex.Message}", "error");
+                string script = $@"Swal.fire({{icon: 'error', title: 'Erro', text: 'Erro ao excluir: {ex.Message.Replace("'", "\\'")}'}});";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "ErroExclusao3", script, true);
             }
         }
 
@@ -275,6 +283,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }});
             ";
             ScriptManager.RegisterStartupScript(this, this.GetType(), "ToastMsg", script, true);
+        }
+
+        protected void btnConfirmarExclusao_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(hdnCodEstruturaExcluir.Value))
+            {
+                int codEstrutura = Convert.ToInt32(hdnCodEstruturaExcluir.Value);
+                ExcluirEstrutura(codEstrutura);
+
+                // Fecha o modal via JavaScript
+                string script = @"var modal = bootstrap.Modal.getInstance(document.getElementById('modalConfirmarExclusao')); modal.hide();";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FecharModal", script, true);
+            }
         }
     }
 }
