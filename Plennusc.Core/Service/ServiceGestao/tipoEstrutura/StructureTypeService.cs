@@ -265,11 +265,43 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
         {
             try
             {
+                if (string.IsNullOrEmpty(nomeView))
+                    return false;
+
                 using (var con = Open())
-                using (var cmd = new SqlCommand($@"DROP VIEW IF EXISTS {nomeView}", con))
                 {
-                    cmd.ExecuteNonQuery();
-                    return true;
+                    // Primeiro verifica se a view existe usando parâmetro
+                    string checkSql = @"
+                SELECT COUNT(*) 
+                FROM sys.views 
+                WHERE name = @nomeView";
+
+                    using (var cmdCheck = new SqlCommand(checkSql, con))
+                    {
+                        cmdCheck.Parameters.AddWithValue("@nomeView", nomeView);
+                        int viewExists = (int)cmdCheck.ExecuteScalar();
+
+                        if (viewExists > 0)
+                        {
+                            // View existe - exclui usando concatenação, mas com validação
+                            // Remove caracteres perigosos para prevenir SQL injection
+                            string safeViewName = new string(nomeView.Where(c => char.IsLetterOrDigit(c) || c == '_').ToArray());
+
+                            string dropSql = $"DROP VIEW [{safeViewName}]";
+
+                            using (var cmdDrop = new SqlCommand(dropSql, con))
+                            {
+                                cmdDrop.ExecuteNonQuery();
+                                System.Diagnostics.Debug.WriteLine($"View {safeViewName} excluída com sucesso.");
+                            }
+                            return true;
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"View {nomeView} não existe.");
+                            return true; // Retorna true pois não há view para excluir
+                        }
+                    }
                 }
             }
             catch (Exception ex)

@@ -111,8 +111,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                 // Obtém os valores das células de forma segura
                 string descricao = row.Cells[1].Text; // Coluna DescTipoEstrutura
 
-                // Para a coluna NomeView (BoundField), precisamos usar DataBinder
-                string view = DataBinder.Eval(row.DataItem, "NomeView")?.ToString() ?? "";
+                // CORREÇÃO: Para BoundField, pegamos diretamente da célula
+                string view = row.Cells[2].Text; // Coluna NomeView (índice 2)
+
+                // Remove "&nbsp;" que aparece quando o campo está vazio
+                if (view == "&nbsp;")
+                    view = "";
 
                 // Chama o JavaScript para abrir o modal
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AbrirModal",
