@@ -78,26 +78,33 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
             AND CodEstruturaPai IS NULL
             ORDER BY DescEstrutura";
 
+        //public const string InserirEstrutura = @"
+        //    INSERT INTO Estrutura (
+        //        CodEstruturaPai, 
+        //        CodTipoEstrutura, 
+        //        DescEstrutura, 
+        //        MemoEstrutura, 
+        //        InfoEstrutura, 
+        //        Conf_IsDefault, 
+        //        ValorPadrao
+        //    ) 
+        //    VALUES (
+        //        @CodEstruturaPai, 
+        //        @CodTipoEstrutura, 
+        //        @DescEstrutura, 
+        //        @MemoEstrutura, 
+        //        @InfoEstrutura, 
+        //        @Conf_IsDefault, 
+        //        @ValorPadrao
+        //    );
+        //    SELECT SCOPE_IDENTITY();";
+
         public const string InserirEstrutura = @"
-            INSERT INTO Estrutura (
-                CodEstruturaPai, 
-                CodTipoEstrutura, 
-                DescEstrutura, 
-                MemoEstrutura, 
-                InfoEstrutura, 
-                Conf_IsDefault, 
-                ValorPadrao
-            ) 
-            VALUES (
-                @CodEstruturaPai, 
-                @CodTipoEstrutura, 
-                @DescEstrutura, 
-                @MemoEstrutura, 
-                @InfoEstrutura, 
-                @Conf_IsDefault, 
-                @ValorPadrao
-            );
-            SELECT SCOPE_IDENTITY();";
+        INSERT INTO Estrutura 
+        (CodEstruturaPai, CodTipoEstrutura, DescEstrutura, MemoEstrutura, InfoEstrutura, Conf_IsDefault, ValorPadrao)
+        VALUES 
+        (@CodEstruturaPai, @CodTipoEstrutura, @DescEstrutura, @MemoEstrutura, @InfoEstrutura, @Conf_IsDefault, @ValorPadrao);
+        SELECT SCOPE_IDENTITY();";
 
         //VERIFICAR E EXCLUIR ESTRUTURAS
         public const string VerificarEstruturasFilhas = @"
@@ -123,5 +130,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
                 MemoEstrutura = @MemoEstrutura,
                 InfoEstrutura = @InfoEstrutura
             WHERE CodEstrutura = @CodEstrutura";
+
+
     }
 }
