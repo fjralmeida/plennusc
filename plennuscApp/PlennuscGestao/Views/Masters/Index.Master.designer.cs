@@ -87,13 +87,13 @@ namespace PlennuscGestao.Views.Masters
         protected global::System.Web.UI.WebControls.LinkButton btnLogout;
 
         /// <summary>
-        /// Controle liMenuEstruturas.
+        /// Controle liMenuParametrizacao.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liMenuEstruturas;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liMenuParametrizacao;
 
         /// <summary>
         /// Controle linkTiposEstrutura.
@@ -130,6 +130,60 @@ namespace PlennuscGestao.Views.Masters
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor linkVincularSetor;
+
+        /// <summary>
+        /// Controle linkCadastroEmpresa.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkCadastroEmpresa;
+
+        /// <summary>
+        /// Controle linkEmpresaMenu.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkEmpresaMenu;
+
+        /// <summary>
+        /// Controle linkEmpresaSistema.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkEmpresaSistema;
+
+        /// <summary>
+        /// Controle linkSistemaConfig.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkSistemaConfig;
+
+        /// <summary>
+        /// Controle linkCadastrarSistema.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkCadastrarSistema;
+
+        /// <summary>
+        /// Controle linkListarSistemas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor linkListarSistemas;
 
         /// <summary>
         /// Controle subMenuMinhasDemandas.

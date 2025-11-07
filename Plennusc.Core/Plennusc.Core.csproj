@@ -112,11 +112,13 @@
     <Compile Include="Models\ModelsGestao\OptionItem.cs" />
     <Compile Include="Models\ModelsGestao\RespostaDto.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
+    <Compile Include="Models\ModelsSysPlatform\SysPlatformModel.cs" />
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Models\Utils\EstruturaTipos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
     <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
+    <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />
     <Compile Include="Service\ServiceGestao\vinculaDepartameto\departmentService.cs" />
     <Compile Include="Service\ServiceGestao\vinculaDepartameto\linkSectorService.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\SysPlatform\listPlatformQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\department\EmpDepartmentMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\import\importCVSPlanniumMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\interview\MedicalInterview.cs" />

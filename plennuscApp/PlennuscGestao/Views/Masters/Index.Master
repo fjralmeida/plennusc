@@ -181,50 +181,122 @@
                             </div>
                         </li>
 
-                      <%--Estrutura--%>
-       <li class="mb-2" id="liMenuEstruturas" runat="server">
-        <a class="d-flex justify-content-between align-items-center menu-head"
-            data-bs-toggle="collapse" href="#collapseMenuEstruturas"
-            role="button" aria-expanded="false" aria-controls="collapseMenuEstruturas" title="Estruturas do Sistema">
-            <span><i class="bi bi-diagram-3 me-2"></i><strong class="label">Estruturas</strong></span>
-            <i class="bi bi-chevron-right toggle-icon"></i>
-        </a>
-        <div class="collapse ms-3" id="collapseMenuEstruturas">
-            <ul class="list-unstyled ps-3 submenu">
-                <li>
-                    <!-- ✅ URL AMIGÁVEL -->
-                    <a href="/estruturas/tipos/cadastrar" title="Tipos de Estrutura" id="linkTiposEstrutura" runat="server">
-                        <i class="bi bi-tags me-2"></i>
-                        <span class="label">Tipos de Estrutura</span>
-                    </a>
-                </li>
+                      <%-- Parametrização --%>
+<li class="mb-2" id="liMenuParametrizacao" runat="server">
+    <a class="d-flex justify-content-between align-items-center menu-head"
+        data-bs-toggle="collapse" href="#collapseMenuParametrizacao"
+        role="button" aria-expanded="false" aria-controls="collapseMenuParametrizacao" title="Parametrização do Sistema">
+        <span><i class="bi bi-gear me-2"></i><strong class="label">Parametrização</strong></span>
+        <i class="bi bi-chevron-right toggle-icon"></i>
+    </a>
+    <div class="collapse ms-3" id="collapseMenuParametrizacao">
+        <ul class="list-unstyled ps-3 submenu">
+            
+            <%-- Submenu: Estruturas --%>
+            <li class="mb-2">
+                <a class="d-flex justify-content-between align-items-center submenu-head"
+                    data-bs-toggle="collapse" href="#collapseSubMenuEstruturas"
+                    role="button" aria-expanded="false" aria-controls="collapseSubMenuEstruturas" title="Estruturas do Sistema">
+                    <span><i class="bi bi-diagram-3 me-2"></i><span class="label">Estruturas</span></span>
+                    <i class="bi bi-chevron-right toggle-icon"></i>
+                </a>
+                <div class="collapse ms-3" id="collapseSubMenuEstruturas">
+                    <ul class="list-unstyled ps-3 submenu">
+                        <li>
+                            <a href="/estruturas/tipos/cadastrar" title="Tipos de Estrutura" id="linkTiposEstrutura" runat="server">
+                                <i class="bi bi-tags me-2"></i>
+                                <span class="label">Tipos de Estrutura</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/estruturas/tipos/listar" title="Lista Tipos Estrutura" id="A1" runat="server">
+                                <i class="bi bi-list-ul me-2"></i>
+                                <span class="label">Lista de Estrutura</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/estruturas/cadastrar" title="Cadastrar Estruturas" id="linkCadastrarEstruturas" runat="server">
+                                <i class="bi bi-building-add me-2"></i>
+                                <span class="label">Cadastrar Estruturas</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/estruturas/vincular-setor" title="Vincular Setor" id="linkVincularSetor" runat="server">
+                                <i class="bi bi-link-45deg me-2"></i>
+                                <span class="label">Vincular Setor</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                <li>
-                    <!-- ✅ URL AMIGÁVEL -->
-                    <a href="/estruturas/tipos/listar" title="Lista Tipos Estrutura" id="A1" runat="server">
-                        <i class="bi bi-list-ul me-2"></i>
-                        <span class="label">Lista de Estrutura</span>
-                    </a>
-                </li>
+        <%-- Submenu: Menu --%>
+        <li class="mb-2">
+            <a class="d-flex justify-content-between align-items-center submenu-head"
+                data-bs-toggle="collapse" href="#collapseSubMenuMenu"
+                role="button" aria-expanded="false" aria-controls="collapseSubMenuMenu" title="Configurações de Menu">
+                <span><i class="bi bi-menu-button me-2"></i><span class="label">Menu</span></span>
+                <i class="bi bi-chevron-right toggle-icon"></i>
+            </a>
+            <div class="collapse ms-3" id="collapseSubMenuMenu">
+                <ul class="list-unstyled ps-3 submenu">
+                    <li>
+                        <a href="/parametrizacao/empresa/cadastrar" title="Cadastro Empresa" id="linkCadastroEmpresa" runat="server">
+                            <i class="bi bi-building-add me-2"></i>
+                            <span class="label">Cadastro Empresa</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/parametrizacao/menu/empresa-menu" title="Empresa x Menu" id="linkEmpresaMenu" runat="server">
+                            <i class="bi bi-building-gear me-2"></i>
+                            <span class="label">Empresa x Menu</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/parametrizacao/menu/empresa-sistema" title="Empresa x Sistema" id="linkEmpresaSistema" runat="server">
+                            <i class="bi bi-building-check me-2"></i>
+                            <span class="label">Empresa x Sistema</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
 
-                <li>
-                    <!-- ✅ URL AMIGÁVEL -->
-                    <a href="/estruturas/cadastrar" title="Cadastrar Estruturas" id="linkCadastrarEstruturas" runat="server">
-                        <i class="bi bi-building-add me-2"></i>
-                        <span class="label">Cadastrar Estruturas</span>
-                    </a>
-                </li>
+            <%-- Submenu: Sistemas --%>
+            <li class="mb-2">
+                <a class="d-flex justify-content-between align-items-center submenu-head"
+                    data-bs-toggle="collapse" href="#collapseSubMenuSistemas"
+                    role="button" aria-expanded="false" aria-controls="collapseSubMenuSistemas" title="Configurações de Sistemas">
+                    <span><i class="bi bi-window-stack me-2"></i><span class="label">Sistemas</span></span>
+                    <i class="bi bi-chevron-right toggle-icon"></i>
+                </a>
+                <div class="collapse ms-3" id="collapseSubMenuSistemas">
+                    <ul class="list-unstyled ps-3 submenu">
+                        <li>
+                            <a href="/parametrizacao/sistemas/config" title="Configuração do Sistema" id="linkSistemaConfig" runat="server">
+                                <i class="bi bi-gear-wide-connected me-2"></i>
+                                <span class="label">Configuração do Sistema</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/parametrizacao/sistemas/cadastrar" title="Cadastrar Sistema" id="linkCadastrarSistema" runat="server">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                <span class="label">Cadastrar Sistema</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a  href="../listPlatform.aspx" title="Listar Sistemas" id="linkListarSistemas" runat="server">
+                                <i class="bi bi-list-check me-2"></i>
+                                <span class="label">Listar Sistemas</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                <li>
-                    <!-- ✅ URL AMIGÁVEL -->
-                    <a href="/estruturas/vincular-setor" title="Vincular Setor" id="linkVincularSetor" runat="server">
-                        <i class="bi bi-link-45deg me-2"></i>
-                        <span class="label">Vincular Setor</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
+        </ul>
+    </div>
+</li>
 
       <!-- Demanda -->
         <li class="mb-2">
