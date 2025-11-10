@@ -25,6 +25,11 @@ body {
     line-height: 1.5;
 }
 
+.bi-list-ul::before {
+    content: "\f478";
+    width: 15px;
+}
+
 .container-main {
     max-width: 100%;
     margin: 20px auto;
