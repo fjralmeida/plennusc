@@ -320,16 +320,29 @@
                 </div>
             </div>
 
-            <!-- CARGO E DEPARTAMENTO -->
+           <!-- CARGO E DEPARTAMENTO -->
             <div class="section-block bg-white-section">
                 <h5>Cargo e Departamento</h5>
                 <div class="row g-3">
+        
+                    <!-- NOVO CAMPO: EMPRESA -->
+                    <div class="col-md-12">
+                        <label>Empresa *</label>
+                        <asp:DropDownList ID="ddlEmpresa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
+                            <asp:ListItem Text="Selecione a empresa" Value="" />
+                        </asp:DropDownList>
+                        <asp:RequiredFieldValidator ID="rfvEmpresa" runat="server" ControlToValidate="ddlEmpresa" 
+                            InitialValue="" ErrorMessage="Selecione a empresa" CssClass="text-danger" 
+                            Display="Dynamic" ValidationGroup="Cadastro" />
+                    </div>
 
                     <div class="col-md-12">
                         <label>Perfil Pessoa *</label>
                         <asp:DropDownList ID="ddlPerfilPessoa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
                         </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvPerfilPessoa" runat="server" ControlToValidate="ddlPerfilPessoa" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvPerfilPessoa" runat="server" ControlToValidate="ddlPerfilPessoa" 
+                            InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                            Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
 
                     <div class="col-md-6">
@@ -337,13 +350,18 @@
                         <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-control">
                             <asp:ListItem Text="Selecione" Value="" />
                         </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvCargo" runat="server" ControlToValidate="ddlCargo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvCargo" runat="server" ControlToValidate="ddlCargo" 
+                            InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                            Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
+        
                     <div class="col-md-6">
                         <label>Departamento *</label>
                         <asp:DropDownList ID="ddlDepartamento" runat="server" CssClass="form-control">
                         </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvDepartamento" runat="server" ControlToValidate="ddlDepartamento" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvDepartamento" runat="server" ControlToValidate="ddlDepartamento" 
+                            InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                            Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
                 </div>
             </div>

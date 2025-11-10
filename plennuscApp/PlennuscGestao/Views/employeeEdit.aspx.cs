@@ -29,6 +29,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CarregarPerfilPessoa();
                 CarregarCargo();
                 CarregarDepartamento();
+                CarregarEmpresas();
 
                 if (!int.TryParse(Request.QueryString["id"], out var codPessoa))
                 {
@@ -75,6 +76,17 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlDepartamento.DataValueField = "CodDepartamento";
             ddlDepartamento.DataBind();
             ddlDepartamento.Items.Insert(0, new ListItem("Selecione", ""));
+        }
+
+        private void CarregarEmpresas()
+        {
+            PessoaDAO daoEmpresa = new PessoaDAO();
+            DataTable dt = daoEmpresa.TipoEmpresa();
+
+            ddlEmpresa.DataSource = dt;
+            ddlEmpresa.DataTextField = "NomeFantasia"; // ou "RazaoSocial"
+            ddlEmpresa.DataValueField = "CodEmpresa";
+            ddlEmpresa.DataBind();
         }
 
         private void CarregarDadosColaborador(int codPessoa)
@@ -163,7 +175,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 int codSistema = Convert.ToInt32(Session["CodSistema"]);
                 int codUsuario = Convert.ToInt32(Session["CodUsuario"]);
-                int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]); // se quiser usar em log
+                //int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]); // se quiser usar em log
 
                 string nome = txtNome.Text.Trim();
                 string sobrenome = txtSobrenome.Text.Trim();
@@ -199,6 +211,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 bool cadastraPonto = chkCadastraPonto.Checked;
                 bool ativo = chkAtivo.Checked;
                 bool permiteAcesso = chkPermiteAcesso.Checked;
+                int codEmpresa = int.TryParse(ddlEmpresa.SelectedValue, out int empResult) ? empResult : 0;
 
                 DateTime? dataNascDt = null;
                 DateTime? dataAdmissaoDt = null;
@@ -220,6 +233,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                     criaContaAD, cadastraPonto, ativo, permiteAcesso,
                     codSistema, codUsuario, observacao
                 );
+
+                // VINCULAR USUÁRIO À EMPRESA (usando o método existente)
+                if (codEmpresa > 0)
+                {
+                    pessoa.VincularUsuarioEmpresa(codPessoa, codEmpresa);
+                }
 
                 ScriptManager.RegisterStartupScript(this, GetType(), "UpdateOK", @"
                     Swal.fire({
@@ -287,9 +306,16 @@ namespace appWhatsapp.PlennuscGestao.Views
             txtLoginNome.Text = nome;
             txtLoginSobrenome.Text = sobrenome;
             txtLoginEmail.Text = email;
-
             txtLoginUsuario.Text = sugestao;
-            ddlPerfilUsuario.SelectedValue = ""; 
+
+            // NOVO: Preencher a empresa
+            int codEmpresa = pessoaDao.ObterEmpresaDoUsuario(codPessoa);
+            string nomeEmpresa = pessoaDao.ObterNomeEmpresa(codEmpresa);
+
+            txtLoginEmpresa.Text = nomeEmpresa;
+            hfCodEmpresa.Value = codEmpresa.ToString();
+
+            ddlPerfilUsuario.SelectedValue = "";
             chkLoginAtivo.Checked = true;
             chkLoginPermiteAcesso.Checked = true;
 
@@ -392,6 +418,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             bool ativo = chkLoginAtivo.Checked;
             bool permite = chkLoginPermiteAcesso.Checked;
             string cpf = txtDocCPF.Text.Trim();
+            int codEmpresa = int.TryParse(hfCodEmpresa.Value, out int emp) ? emp : 0;
 
             if (emailAlt == null || emailAlt == "")
             {
@@ -469,14 +496,16 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 if (novoId > 0)
                 {
-                    // 5.1) vínculos com sistemas
-                    int codEmpresa = 0;
-                    int.TryParse(Convert.ToString(Session["CodEmpresa"]), out codEmpresa);
+                    //// 5.1) vínculos com sistemas
+                    //int codEmpresa = 0;
+                    //int.TryParse(Convert.ToString(Session["CodEmpresa"]), out codEmpresa);
+
+                    authDao.AtualizarAutenticacaoUsuario(codPessoa, novoId, codEmpresa);
 
                     authDao.ConcederAcessoSistemas(
                         codAutenticacaoAcesso: novoId,
                         codPessoa: codPessoa,
-                        codEmpresa: codEmpresa,
+                        codEmpresa: codEmpresa,  // Agora usa a empresa correta
                         codSistemas: sistemasSelecionados
                     );
 

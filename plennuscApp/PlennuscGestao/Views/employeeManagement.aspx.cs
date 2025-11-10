@@ -32,7 +32,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CarregarPerfilPessoa();
                 CarregarCargo();
                 CarregarDepartamento();
+                CarregarEmpresa();
             }
+        }
+
+        private void CarregarEmpresa()
+        {
+            PessoaDAO daoEmpresa = new PessoaDAO();
+            DataTable dt = daoEmpresa.TipoEmpresa();
+
+            ddlEmpresa.DataSource = dt;
+            ddlEmpresa.DataTextField = "NomeFantasia"; // ou "RazaoSocial"
+            ddlEmpresa.DataValueField = "CodEmpresa";
+            ddlEmpresa.DataBind();
         }
 
         private void CarregarPerfilSessao()
@@ -182,7 +194,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 int codSistema = Convert.ToInt32(Session["CodSistema"]);
                 int codUsuario = Convert.ToInt32(Session["CodUsuario"]);
-                int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
+                //int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
 
                 string nome = txtNome.Text.Trim();
                 string sobrenome = txtSobrenome.Text.Trim();
@@ -236,6 +248,15 @@ namespace appWhatsapp.PlennuscGestao.Views
                 bool ativo = chkAtivo.Checked;
                 bool permiteAcesso = chkPermiteAcesso.Checked;
 
+                int codEmpresa = int.TryParse(ddlEmpresa.SelectedValue, out int empResult) ? empResult : 0;
+
+                if(codEmpresa == 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "EmpresaObrigatoria",
+              "Swal.fire('Atenção','Selecione uma empresa.','warning');", true);
+                    return;
+                }
+
                 DateTime? dataNascDt = null;
                 DateTime? dataAdmissaoDt = null;
                 //DateTime? dataDemissaoDt = null;
@@ -250,30 +271,33 @@ namespace appWhatsapp.PlennuscGestao.Views
                 //    dataDemissaoDt = parsedDemissao;
 
                 PessoaDAO pessoa = new PessoaDAO();
-                pessoa.InsertPersonSystem(
+                int novoCodPessoa = pessoa.InsertPersonSystem(
                     codEstrutura, nome, sobrenome, apelido, sexo, dataNascDt, cpf, rg,
                     tituloEleitor, zona, secao, ctps, serie, uf, pis, matricula,
                     dataAdmissaoDt, filiacao1, filiacao2,
                     telefone1, telefone2, telefone3,
-                    email, emailAlt, codCargo, codDepartamento,
+                    email, emailAlt, codCargo, codDepartamento, codEmpresa,
                     criaContaAD, cadastraPonto, ativo, permiteAcesso,
                     codSistema, codUsuario, observacao
                 );
 
-                // ✅ Limpar os campos do formulário
-                LimparFormulario();
+                if (novoCodPessoa > 0)
+                {
+                    // AGORA VAI FUNCIONAR - método público no PessoaDAO
+                    pessoa.VincularUsuarioEmpresa(novoCodPessoa, codEmpresa);
 
-                // Mostrar toast moderno
-                ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
+                    LimparFormulario();
+                    ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
                     Swal.fire({
                         icon: 'success',
                         title: 'Cadastro realizado!',
-                        text: 'O colaborador foi salvo com sucesso.',
+                        text: 'O colaborador foi salvo e vinculado à empresa com sucesso.',
                         confirmButtonText: 'OK',
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }
                     });", true);
+                }
             }
             catch (Exception ex)
             {

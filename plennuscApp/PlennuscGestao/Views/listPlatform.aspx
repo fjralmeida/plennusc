@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="listPlatform.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.listPlatform" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+
+    <link href="../../Content/Css/projects/gestao/structuresCss/list-Platform.css" rel="stylesheet" />
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 

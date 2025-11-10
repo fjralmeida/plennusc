@@ -186,6 +186,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\demand-Gestao.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\detailDemand.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Department.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\employee-Edit.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Management.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Position.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\FixedMessageSending.css" />

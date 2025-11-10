@@ -86,14 +86,14 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
             db.ExecutarPlennus(sql, parametros);
         }
 
-        public void InsertPersonSystem(
-                                     int codEstrutura, string nome, string sobrenome, string apelido, string sexo, DateTime? dataNasc, string cpf, string rg,
-                                     string tituloEleitor, string zona, string secao, string ctps, string serie, string uf, string pis, string matricula,
-                                     DateTime? dataAdmissao, string filiacao1, string filiacao2,
-                                     string telefone1, string telefone2, string telefone3,
-                                     string email, string emailAlt, int codCargo, int codDepartamento,
-                                     bool criaContaAD, bool cadastraPonto, bool ativo, bool permiteAcesso,
-                                     int codSistema, int codUsuario, string observacao)
+        public int InsertPersonSystem(
+      int codEstrutura, string nome, string sobrenome, string apelido, string sexo, DateTime? dataNasc, string cpf, string rg,
+      string tituloEleitor, string zona, string secao, string ctps, string serie, string uf, string pis, string matricula,
+      DateTime? dataAdmissao, string filiacao1, string filiacao2,
+      string telefone1, string telefone2, string telefone3,
+      string email, string emailAlt, int codCargo, int codDepartamento, int codEmpresa,
+      bool criaContaAD, bool cadastraPonto, bool ativo, bool permiteAcesso,
+      int codSistema, int codUsuario, string observacao)
         {
             string sql = @"
                 INSERT INTO Pessoa (
@@ -106,7 +106,9 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                     Conf_CadastraPonto, DataHora_CadastraPonto,
                     Conf_Ativo, PermiteAcesso, AcessoSite, DataUltimoAcesso,
                     Observacao, Informacoes_Log_I
-                ) VALUES (
+                ) 
+                OUTPUT INSERTED.CodPessoa
+                VALUES (
                     @CodEstr_TipoPessoa, @Nome, @Sobrenome, @Apelido, @Sexo, @DataNasc, @DocCPF, @DocRG,
                     @TituloEleitor, @ZonaEleitor, @SecaoEleitor, @NumCTPS, @NumCTPSSerie, @NumCTPSUf,
                     @NumPIS, @Matricula, @DataAdmissao,
@@ -118,51 +120,54 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                     @Observacao, @Informacoes_Log_I
                 )";
 
-            DateTime agora = DateTime.Now;
-            DateTime agoraSemSegundos = new DateTime(agora.Year, agora.Month, agora.Day, agora.Hour, agora.Minute, 0);
+                    DateTime agora = DateTime.Now;
+                    DateTime agoraSemSegundos = new DateTime(agora.Year, agora.Month, agora.Day, agora.Hour, agora.Minute, 0);
 
-            var parametros = new Dictionary<string, object>
-                {
-                    { "@CodEstr_TipoPessoa", codEstrutura },
-                    { "@Nome", nome },
-                    { "@Sobrenome", sobrenome },
-                    { "@Apelido", string.IsNullOrWhiteSpace(apelido) ? "" : apelido },
-                    { "@Sexo", sexo },
-                    { "@DataNasc", dataNasc.HasValue ? (object)dataNasc.Value : DBNull.Value },
-                    { "@DocCPF", cpf },
-                    { "@DocRG", rg },
-                    { "@TituloEleitor", string.IsNullOrWhiteSpace(tituloEleitor) ? "" : tituloEleitor },
-                    { "@ZonaEleitor", string.IsNullOrWhiteSpace(zona) ? "" : zona },
-                    { "@SecaoEleitor", string.IsNullOrWhiteSpace(secao) ? "" : secao },
-                    { "@NumCTPS", string.IsNullOrWhiteSpace(ctps) ? "" : ctps },
-                    { "@NumCTPSSerie", string.IsNullOrWhiteSpace(serie) ? "" : serie },
-                    { "@NumCTPSUf", string.IsNullOrWhiteSpace(uf) ? "" : uf },
-                    { "@NumPIS", string.IsNullOrWhiteSpace(pis) ? (object)DBNull.Value : pis },
-                    { "@Matricula", string.IsNullOrWhiteSpace(matricula) ? "" : matricula },
-                    { "@DataAdmissao", dataAdmissao.HasValue ? (object)dataAdmissao.Value : DBNull.Value },
-                    { "@NomeFiliacao1", string.IsNullOrWhiteSpace(filiacao1) ? "Não informado" : filiacao1 },
-                    { "@NomeFiliacao2", string.IsNullOrWhiteSpace(filiacao2) ? "" : filiacao2 },
-                    { "@Telefone1", telefone1 },
-                    { "@Telefone2", string.IsNullOrWhiteSpace(telefone2) ? "" : telefone2 },
-                    { "@Telefone3", string.IsNullOrWhiteSpace(telefone3) ? "" : telefone3 },
-                    { "@Email", email },
-                    { "@EmailAlt", string.IsNullOrWhiteSpace(emailAlt) ? "" : emailAlt },
-                    { "@CodCargo", codCargo },
-                    { "@CodDepartamento", codDepartamento },
-                    { "@Conf_CriaContaAD", criaContaAD ? 1 : 0 },
-                    { "@DataHora_CriaContaAD", criaContaAD ? (object)agora : DBNull.Value },
-                    { "@Conf_CadastraPonto", cadastraPonto ? 1 : 0 },
-                    { "@DataHora_CadastraPonto", cadastraPonto ? (object)agora : DBNull.Value },
-                    { "@Conf_Ativo", ativo ? 1 : 0 },
-                    { "@PermiteAcesso", permiteAcesso ? 1 : 0 },
-                    { "@AcessoSite", 0 },
-                    { "@DataUltimoAcesso", DBNull.Value },
-                    { "@Observacao", string.IsNullOrWhiteSpace(observacao) ? "" : observacao },
-                    { "@Informacoes_Log_I", agoraSemSegundos }
-                };
+                    var parametros = new Dictionary<string, object>
+            {
+                { "@CodEstr_TipoPessoa", codEstrutura },
+                { "@Nome", nome },
+                { "@Sobrenome", sobrenome },
+                { "@Apelido", string.IsNullOrWhiteSpace(apelido) ? "" : apelido },
+                { "@Sexo", sexo },
+                { "@DataNasc", dataNasc.HasValue ? (object)dataNasc.Value : DBNull.Value },
+                { "@DocCPF", cpf },
+                { "@DocRG", rg },
+                { "@TituloEleitor", string.IsNullOrWhiteSpace(tituloEleitor) ? "" : tituloEleitor },
+                { "@ZonaEleitor", string.IsNullOrWhiteSpace(zona) ? "" : zona },
+                { "@SecaoEleitor", string.IsNullOrWhiteSpace(secao) ? "" : secao },
+                { "@NumCTPS", string.IsNullOrWhiteSpace(ctps) ? "" : ctps },
+                { "@NumCTPSSerie", string.IsNullOrWhiteSpace(serie) ? "" : serie },
+                { "@NumCTPSUf", string.IsNullOrWhiteSpace(uf) ? "" : uf },
+                { "@NumPIS", string.IsNullOrWhiteSpace(pis) ? (object)DBNull.Value : pis },
+                { "@Matricula", string.IsNullOrWhiteSpace(matricula) ? "" : matricula },
+                { "@DataAdmissao", dataAdmissao.HasValue ? (object)dataAdmissao.Value : DBNull.Value },
+                { "@NomeFiliacao1", string.IsNullOrWhiteSpace(filiacao1) ? "Não informado" : filiacao1 },
+                { "@NomeFiliacao2", string.IsNullOrWhiteSpace(filiacao2) ? "" : filiacao2 },
+                { "@Telefone1", telefone1 },
+                { "@Telefone2", string.IsNullOrWhiteSpace(telefone2) ? "" : telefone2 },
+                { "@Telefone3", string.IsNullOrWhiteSpace(telefone3) ? "" : telefone3 },
+                { "@Email", email },
+                { "@EmailAlt", string.IsNullOrWhiteSpace(emailAlt) ? "" : emailAlt },
+                { "@CodCargo", codCargo },
+                { "@CodDepartamento", codDepartamento },
+                { "@Conf_CriaContaAD", criaContaAD ? 1 : 0 },
+                { "@DataHora_CriaContaAD", criaContaAD ? (object)agora : DBNull.Value },
+                { "@Conf_CadastraPonto", cadastraPonto ? 1 : 0 },
+                { "@DataHora_CadastraPonto", cadastraPonto ? (object)agora : DBNull.Value },
+                { "@Conf_Ativo", ativo ? 1 : 0 },
+                { "@PermiteAcesso", permiteAcesso ? 1 : 0 },
+                { "@AcessoSite", 0 },
+                { "@DataUltimoAcesso", DBNull.Value },
+                { "@Observacao", string.IsNullOrWhiteSpace(observacao) ? "" : observacao },
+                { "@Informacoes_Log_I", agoraSemSegundos }
+            };
 
             Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
-            db.ExecutarPlennus(sql, parametros);
+
+            // MUDANÇA AQUI: Use o método que JÁ EXISTE
+            var result = db.ExecutarPlennusScalar(sql, parametros);
+            return result != null ? Convert.ToInt32(result) : 0;
         }
 
         public void UpdatePersonSystem(
@@ -549,5 +554,96 @@ END CATCH;";
             return (dt != null && dt.Rows.Count > 0) ? dt.Rows[0] : null;
         }
 
+        public DataTable TipoEmpresa()
+        {
+            string query = @"SELECT CodEmpresa, NomeFantasia, RazaoSocial 
+                     FROM Empresa 
+                     WHERE Conf_Ativo = 1 
+                     ORDER BY NomeFantasia";
+
+          Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+          return db.LerPlennus(query);
+        }
+
+        public void VincularUsuarioEmpresa(int codPessoa, int codEmpresa)
+        {
+            try
+            {
+                string sql = @"
+            INSERT INTO SistemaEmpresaUsuario 
+            (CodSistemaEmpresa, CodPessoa, CodAutenticacaoAcesso, Conf_LiberaAcesso, Conf_BloqueiaAcesso, DataHoraLiberacao, Informacoes_Log_I)
+            SELECT 
+                se.CodSistemaEmpresa, 
+                @CodPessoa, 
+                NULL,  -- CodAutenticacaoAcesso como NULL inicialmente
+                1, 0, GETDATE(), GETDATE()
+            FROM SistemaEmpresa se
+            WHERE se.CodEmpresa = @CodEmpresa 
+              AND se.Conf_LiberaAcesso = 1";
+
+                var parametros = new Dictionary<string, object>
+                {
+                    { "@CodPessoa", codPessoa },
+                    { "@CodEmpresa", codEmpresa }
+                };
+
+                Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+                db.ExecutarPlennus(sql, parametros);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao vincular usuário à empresa: {ex.Message}");
+            }
+        }
+
+        public int ObterEmpresaDoUsuario(int codPessoa)
+        {
+            string sql = @"
+                SELECT TOP 1 se.CodEmpresa
+                FROM SistemaEmpresaUsuario seu
+                INNER JOIN SistemaEmpresa se ON seu.CodSistemaEmpresa = se.CodSistemaEmpresa
+                WHERE seu.CodPessoa = @CodPessoa
+                ORDER BY seu.CodSistemaEmpresaUsuario DESC";
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@CodPessoa", codPessoa }
+            };
+
+            var db = new Banco_Dados_SQLServer();
+            var dt = db.LerPlennus(sql, parametros);
+
+            if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["CodEmpresa"] != DBNull.Value)
+            {
+                return Convert.ToInt32(dt.Rows[0]["CodEmpresa"]);
+            }
+
+            return 0;
+        }
+
+        public string ObterNomeEmpresa(int codEmpresa)
+        {
+            if (codEmpresa <= 0) return "";
+
+            string sql = @"
+                SELECT TOP 1 NomeEmpresa 
+                FROM Empresa 
+                WHERE CodEmpresa = @CodEmpresa";
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@CodEmpresa", codEmpresa }
+            };
+
+            var db = new Banco_Dados_SQLServer();
+            var dt = db.LerPlennus(sql, parametros);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                return dt.Rows[0]["NomeEmpresa"]?.ToString() ?? "";
+            }
+
+            return "";
+        }
     }
 }
