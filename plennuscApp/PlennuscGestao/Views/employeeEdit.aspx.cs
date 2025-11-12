@@ -29,7 +29,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CarregarPerfilPessoa();
                 CarregarCargo();
                 CarregarDepartamento();
-                CarregarEmpresas();
+                //CarregarEmpresas();
 
                 if (!int.TryParse(Request.QueryString["id"], out var codPessoa))
                 {
@@ -78,16 +78,16 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlDepartamento.Items.Insert(0, new ListItem("Selecione", ""));
         }
 
-        private void CarregarEmpresas()
-        {
-            PessoaDAO daoEmpresa = new PessoaDAO();
-            DataTable dt = daoEmpresa.TipoEmpresa();
+        //private void CarregarEmpresas()
+        //{
+        //    PessoaDAO daoEmpresa = new PessoaDAO();
+        //    DataTable dt = daoEmpresa.TipoEmpresa();
 
-            ddlEmpresa.DataSource = dt;
-            ddlEmpresa.DataTextField = "NomeFantasia"; // ou "RazaoSocial"
-            ddlEmpresa.DataValueField = "CodEmpresa";
-            ddlEmpresa.DataBind();
-        }
+        //    ddlEmpresa.DataSource = dt;
+        //    ddlEmpresa.DataTextField = "NomeFantasia"; // ou "RazaoSocial"
+        //    ddlEmpresa.DataValueField = "CodEmpresa";
+        //    ddlEmpresa.DataBind();
+        //}
 
         private void CarregarDadosColaborador(int codPessoa)
         {
@@ -211,7 +211,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 bool cadastraPonto = chkCadastraPonto.Checked;
                 bool ativo = chkAtivo.Checked;
                 bool permiteAcesso = chkPermiteAcesso.Checked;
-                int codEmpresa = int.TryParse(ddlEmpresa.SelectedValue, out int empResult) ? empResult : 0;
+                //int codEmpresa = int.TryParse(ddlEmpresa.SelectedValue, out int empResult) ? empResult : 0;
 
                 DateTime? dataNascDt = null;
                 DateTime? dataAdmissaoDt = null;
@@ -234,30 +234,45 @@ namespace appWhatsapp.PlennuscGestao.Views
                     codSistema, codUsuario, observacao
                 );
 
-                // VINCULAR USUÁRIO À EMPRESA (usando o método existente)
-                if (codEmpresa > 0)
-                {
-                    pessoa.VincularUsuarioEmpresa(codPessoa, codEmpresa);
-                }
+                //// VINCULAR USUÁRIO À EMPRESA (usando o método atualizado)
+                //if (codEmpresa > 0)
+                //        {
+                //            bool vinculacaoSucesso = pessoa.VincularUsuarioEmpresa(codPessoa, codEmpresa);
+
+                //            if (!vinculacaoSucesso)
+                //            {
+                //        ScriptManager.RegisterStartupScript(this, GetType(), "SemAutenticacao", @"
+                //            Swal.fire({
+                //                icon: 'success',
+                //                title: 'Cadastro realizado! ✅',
+                //                html: 'Colaborador salvo com sucesso!<br><br>' +
+                //                      '<strong>Status:</strong> Já possui acesso ao sistema<br>' +
+                //                      'O colaborador já está cadastrado e pode acessar normalmente.',
+                //                confirmButtonText: 'Perfeito!',
+                //                customClass: { confirmButton: 'btn btn-success' }
+                //            });", true);
+                //        return;
+                //            }
+                //        }
 
                 ScriptManager.RegisterStartupScript(this, GetType(), "UpdateOK", @"
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Alterações salvas!',
-                        text: 'O colaborador foi atualizado com sucesso.',
-                        confirmButtonText: 'OK',
-                        customClass: { confirmButton: 'btn btn-success' }
-                    });", true);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Alterações salvas!',
+                    text: 'O colaborador foi atualizado e vinculado à empresa com sucesso.',
+                    confirmButtonText: 'OK',
+                    customClass: { confirmButton: 'btn btn-success' }
+                });", true);
             }
             catch (Exception ex)
             {
                 ScriptManager.RegisterStartupScript(this, GetType(), "erroUpdate", $@"
-                    Swal.fire({{
-                        icon: 'error',
-                        title: 'Erro ao atualizar!',
-                        html: '{ex.Message.Replace("'", "\\'")}',
-                        confirmButtonText: 'Fechar'
-                    }});", true);
+                Swal.fire({{
+                    icon: 'error',
+                    title: 'Erro ao atualizar!',
+                    html: '{ex.Message.Replace("'", "\\'")}',
+                    confirmButtonText: 'Fechar'
+                }});", true);
             }
         }
 

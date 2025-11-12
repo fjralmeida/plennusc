@@ -32,20 +32,20 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CarregarPerfilPessoa();
                 CarregarCargo();
                 CarregarDepartamento();
-                CarregarEmpresa();
+                //CarregarEmpresa();
             }
         }
 
-        private void CarregarEmpresa()
-        {
-            PessoaDAO daoEmpresa = new PessoaDAO();
-            DataTable dt = daoEmpresa.TipoEmpresa();
+        //private void CarregarEmpresa()
+        //{
+        //    PessoaDAO daoEmpresa = new PessoaDAO();
+        //    DataTable dt = daoEmpresa.TipoEmpresa();
 
-            ddlEmpresa.DataSource = dt;
-            ddlEmpresa.DataTextField = "NomeFantasia"; // ou "RazaoSocial"
-            ddlEmpresa.DataValueField = "CodEmpresa";
-            ddlEmpresa.DataBind();
-        }
+        //    ddlEmpresa.DataSource = dt;
+        //    ddlEmpresa.DataTextField = "NomeFantasia"; // ou "RazaoSocial"
+        //    ddlEmpresa.DataValueField = "CodEmpresa";
+        //    ddlEmpresa.DataBind();
+        //}
 
         private void CarregarPerfilSessao()
         {
@@ -248,14 +248,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                 bool ativo = chkAtivo.Checked;
                 bool permiteAcesso = chkPermiteAcesso.Checked;
 
-                int codEmpresa = int.TryParse(ddlEmpresa.SelectedValue, out int empResult) ? empResult : 0;
+                //int codEmpresa = int.TryParse(ddlEmpresa.SelectedValue, out int empResult) ? empResult : 0;
 
-                if(codEmpresa == 0)
-                {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "EmpresaObrigatoria",
-              "Swal.fire('Atenção','Selecione uma empresa.','warning');", true);
-                    return;
-                }
+              //  if(codEmpresa == 0)
+              //  {
+              //      ScriptManager.RegisterStartupScript(this, GetType(), "EmpresaObrigatoria",
+              //"Swal.fire('Atenção','Selecione uma empresa.','warning');", true);
+              //      return;
+              //  }
 
                 DateTime? dataNascDt = null;
                 DateTime? dataAdmissaoDt = null;
@@ -276,28 +276,39 @@ namespace appWhatsapp.PlennuscGestao.Views
                     tituloEleitor, zona, secao, ctps, serie, uf, pis, matricula,
                     dataAdmissaoDt, filiacao1, filiacao2,
                     telefone1, telefone2, telefone3,
-                    email, emailAlt, codCargo, codDepartamento, codEmpresa,
+                    email, emailAlt, codCargo, codDepartamento,
                     criaContaAD, cadastraPonto, ativo, permiteAcesso,
                     codSistema, codUsuario, observacao
                 );
 
-                if (novoCodPessoa > 0)
-                {
-                    // AGORA VAI FUNCIONAR - método público no PessoaDAO
-                    pessoa.VincularUsuarioEmpresa(novoCodPessoa, codEmpresa);
-
-                    LimparFormulario();
-                    ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
+                ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
                     Swal.fire({
                         icon: 'success',
                         title: 'Cadastro realizado!',
-                        text: 'O colaborador foi salvo e vinculado à empresa com sucesso.',
+                        text: 'O colaborador foi salvo com sucesso.',
                         confirmButtonText: 'OK',
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }
                     });", true);
-                }
+
+                //if (novoCodPessoa > 0)
+                //{
+                //    // AGORA VAI FUNCIONAR - método público no PessoaDAO
+                //    pessoa.VincularUsuarioEmpresa(novoCodPessoa, codEmpresa);
+
+                //    LimparFormulario();
+                //    ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
+                //    Swal.fire({
+                //        icon: 'success',
+                //        title: 'Cadastro realizado!',
+                //        text: 'O colaborador foi salvo e vinculado à empresa com sucesso.',
+                //        confirmButtonText: 'OK',
+                //        customClass: {
+                //            confirmButton: 'btn btn-success'
+                //        }
+                //    });", true);
+                //}
             }
             catch (Exception ex)
             {

@@ -325,7 +325,7 @@
                 <h5>Cargo e Departamento</h5>
                 <div class="row g-3">
         
-                    <!-- NOVO CAMPO: EMPRESA -->
+                  <%--  <!-- NOVO CAMPO: EMPRESA -->
                     <div class="col-md-12">
                         <label>Empresa *</label>
                         <asp:DropDownList ID="ddlEmpresa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
@@ -334,7 +334,7 @@
                         <asp:RequiredFieldValidator ID="rfvEmpresa" runat="server" ControlToValidate="ddlEmpresa" 
                             InitialValue="" ErrorMessage="Selecione a empresa" CssClass="text-danger" 
                             Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
+                    </div>--%>
 
                     <div class="col-md-12">
                         <label>Perfil Pessoa *</label>

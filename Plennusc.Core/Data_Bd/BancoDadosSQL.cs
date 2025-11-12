@@ -146,6 +146,26 @@ namespace appWhatsapp.Data_Bd
             }
         }
 
+        public int ExecutarPlennusLinhasAfetadas(string sql, Dictionary<string, object> parametros)
+        {
+            ConectarPlennus();
+
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conPlennus))
+                {
+                    foreach (var p in parametros)
+                        cmd.Parameters.AddWithValue(p.Key, p.Value ?? DBNull.Value);
+
+                    return cmd.ExecuteNonQuery(); // ← retorna o número de linhas afetadas
+                }
+            }
+            finally
+            {
+                DesconectarPlennus();
+            }
+        }
+
         // ==== Métodos de Acesso ALIANCA ====
 
         public DataTable LerAlianca(string cmdsql)

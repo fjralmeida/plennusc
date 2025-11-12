@@ -101,6 +101,8 @@
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanyModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsCompany\CompanySelectionModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsCompany\UserCompanyModel.cs" />
     <Compile Include="Models\ModelsGestao\ModelsHome\homeManagementModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\departmentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\SectorTypeDemandModel.cs" />

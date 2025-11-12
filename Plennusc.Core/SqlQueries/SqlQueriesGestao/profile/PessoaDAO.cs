@@ -91,7 +91,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
       string tituloEleitor, string zona, string secao, string ctps, string serie, string uf, string pis, string matricula,
       DateTime? dataAdmissao, string filiacao1, string filiacao2,
       string telefone1, string telefone2, string telefone3,
-      string email, string emailAlt, int codCargo, int codDepartamento, int codEmpresa,
+      string email, string emailAlt, int codCargo, int codDepartamento,
       bool criaContaAD, bool cadastraPonto, bool ativo, bool permiteAcesso,
       int codSistema, int codUsuario, string observacao)
         {
@@ -565,34 +565,69 @@ END CATCH;";
           return db.LerPlennus(query);
         }
 
-        public void VincularUsuarioEmpresa(int codPessoa, int codEmpresa)
+        public bool VincularUsuarioEmpresa(int codPessoa, int codEmpresa)
         {
             try
             {
-                string sql = @"
-            INSERT INTO SistemaEmpresaUsuario 
-            (CodSistemaEmpresa, CodPessoa, CodAutenticacaoAcesso, Conf_LiberaAcesso, Conf_BloqueiaAcesso, DataHoraLiberacao, Informacoes_Log_I)
-            SELECT 
-                se.CodSistemaEmpresa, 
-                @CodPessoa, 
-                NULL,  -- CodAutenticacaoAcesso como NULL inicialmente
-                1, 0, GETDATE(), GETDATE()
-            FROM SistemaEmpresa se
-            WHERE se.CodEmpresa = @CodEmpresa 
-              AND se.Conf_LiberaAcesso = 1";
+                // Primeiro, verifica se existe autenticação para esta pessoa
+                string sqlVerificaAutenticacao = @"
+                    SELECT CodAutenticacaoAcesso 
+                    FROM AutenticacaoAcesso 
+                    WHERE CodPessoa = @CodPessoa 
+                    AND Conf_PermiteAcesso = 1 
+                    AND Conf_Ativo = 1";
 
-                var parametros = new Dictionary<string, object>
+                var parametrosVerifica = new Dictionary<string, object>
                 {
-                    { "@CodPessoa", codPessoa },
-                    { "@CodEmpresa", codEmpresa }
+                    { "@CodPessoa", codPessoa }
                 };
 
                 Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
-                db.ExecutarPlennus(sql, parametros);
+                var resultado = db.LerPlennus(sqlVerificaAutenticacao, parametrosVerifica);
+
+                if (resultado == null || resultado.Rows.Count == 0)
+                {
+                    return false;
+                }
+
+                int codAutenticacaoAcesso = Convert.ToInt32(resultado.Rows[0]["CodAutenticacaoAcesso"]);
+
+                // **CORREÇÃO PRINCIPAL**: INSERT que evita duplicação
+                string sqlInsert = @"
+                    INSERT INTO SistemaEmpresaUsuario 
+                    (CodSistemaEmpresa, CodPessoa, CodAutenticacaoAcesso, Conf_LiberaAcesso, Conf_BloqueiaAcesso, DataHoraLiberacao, Informacoes_Log_I)
+                    SELECT 
+                        se.CodSistemaEmpresa, 
+                        @CodPessoa, 
+                        @CodAutenticacaoAcesso,
+                        1, 0, GETDATE(), GETDATE()
+                    FROM SistemaEmpresa se
+                    WHERE se.CodEmpresa = @CodEmpresa 
+                    AND se.Conf_LiberaAcesso = 1
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM SistemaEmpresaUsuario seu 
+                        WHERE seu.CodSistemaEmpresa = se.CodSistemaEmpresa 
+                        AND seu.CodPessoa = @CodPessoa
+                    )";
+
+                var parametrosInsert = new Dictionary<string, object>
+                {
+                    { "@CodPessoa", codPessoa },
+                    { "@CodEmpresa", codEmpresa },
+                    { "@CodAutenticacaoAcesso", codAutenticacaoAcesso }
+                };
+
+                // Use o novo método que retorna o número de linhas afetadas
+                int registrosInseridos = db.ExecutarPlennusLinhasAfetadas(sqlInsert, parametrosInsert);
+
+                // Se inseriu algum registro, retorna true
+                return registrosInseridos > 0;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Erro ao vincular usuário à empresa: {ex.Message}");
+                return false;
             }
         }
 
