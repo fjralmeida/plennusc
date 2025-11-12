@@ -63,32 +63,39 @@ namespace appWhatsapp
             // ✅ OUTRAS ROTAS DE DEMANDAS
             routes.MapPageRoute(
                 "MyDemandsOpenRoute",
-                "minhas-demandas/abertas",
+                "myDemandsOpen",
                 "~/PlennuscGestao/Views/myDemandsOpen.aspx"
             );
 
             routes.MapPageRoute(
                 "MyDemandsProgressRoute",
-                "minhas-demandas/andamento",
+                "myDemandsProgress",
                 "~/PlennuscGestao/Views/myDemandsProgress.aspx"
             );
 
             routes.MapPageRoute(
                 "MyDemandsWaitingRoute",
-                "minhas-demandas/aguardando",
+                "myDemandsWaiting",
                 "~/PlennuscGestao/Views/myDemandsWaiting.aspx"
             );
 
             routes.MapPageRoute(
                 "MyDemandsRefusedRoute",
-                "minhas-demandas/recusadas",
+                "myDemandsRefused",
                 "~/PlennuscGestao/Views/myDemandsRefused.aspx"
             );
 
             routes.MapPageRoute(
                 "MyDemandsCompletedRoute",
-                "minhas-demandas/concluidas",
+                "myDemandsCompleted",
                 "~/PlennuscGestao/Views/myDemandsCompleted.aspx"
+            );
+
+            // Topicos de empresa
+            routes.MapPageRoute(
+                "RegisterCompanyRoute",
+                "parametrizacao/empresa/cadastrar",
+                "~/PlennuscGestao/Views/companyRegistration.aspx"
             );
 
             var settings = new FriendlyUrlSettings();

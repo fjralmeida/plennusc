@@ -241,12 +241,12 @@
                                         </a>
                                         <div class="collapse ms-3" id="collapseSubMenuMenu">
                                             <ul class="list-unstyled ps-3 submenu">
-                                                <li>
-                                                    <a href="/parametrizacao/empresa/cadastrar" title="Cadastro Empresa" id="linkCadastroEmpresa" runat="server">
-                                                        <i class="bi bi-building-add me-2"></i>
-                                                        <span class="label">Cadastro Empresa</span>
-                                                    </a>
-                                                </li>
+                               <li>
+                                    <a href="/parametrizacao/empresa/cadastrar" title="Cadastro Empresa">
+                                        <i class="bi bi-building-add me-2"></i>
+                                        <span class="label">Cadastro Empresa</span>
+                                    </a>
+                                </li>
                                                 <li>
                                                     <a href="/parametrizacao/menu/empresa-menu" title="Empresa x Menu" id="linkEmpresaMenu" runat="server">
                                                         <i class="bi bi-building-gear me-2"></i>

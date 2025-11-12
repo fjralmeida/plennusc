@@ -183,6 +183,7 @@
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\registerStructureType.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\sendCompanyMessage.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\sendMessageBeneficiary.js" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\Company-Registration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\demand-Gestao.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\detailDemand.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\employee-Department.css" />
@@ -215,6 +216,7 @@
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\companyRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
     <Content Include="PlennuscGestao\Views\demand.aspx" />
     <Content Include="PlennuscGestao\Views\detailDemand.aspx" />
@@ -390,6 +392,13 @@
     </Compile>
     <Compile Include="PlennuscFinance\Views\profileFinance.aspx.designer.cs">
       <DependentUpon>profileFinance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\companyRegistration.aspx.cs">
+      <DependentUpon>companyRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\companyRegistration.aspx.designer.cs">
+      <DependentUpon>companyRegistration.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\csvImportPlanium.aspx.cs">
       <DependentUpon>csvImportPlanium.aspx</DependentUpon>

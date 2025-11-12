@@ -100,6 +100,7 @@
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
+    <Compile Include="Models\ModelsGestao\modelsCompany\CompanyModel.cs" />
     <Compile Include="Models\ModelsGestao\ModelsHome\homeManagementModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\departmentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\SectorTypeDemandModel.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Models\Utils\EstruturaTipos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ServiceGestao\company\CompanyService.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
     <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="Service\ServiceGestao\WhatsappServicePME.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\profileFinance\PessoaDAOFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\settingsFinance\PrivacySettingsFinance.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\company\CompanyDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\Demanda.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\homeManagementQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\department\departmentQueries.cs" />
