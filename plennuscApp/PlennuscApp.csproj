@@ -210,6 +210,8 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\sendCompanyMessage.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageBeneficiary.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\updatePriceTable.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\user-company-management.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\user-company-registration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\view-Demand-Before-Accept.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
@@ -247,6 +249,8 @@
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
     <Content Include="PlennuscGestao\Views\updatePriceTable.aspx" />
+    <Content Include="PlennuscGestao\Views\userCompanyManagement.aspx" />
+    <Content Include="PlennuscGestao\Views\userCompanyRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
     <Content Include="PlennuscMedic\Views\demandMedic.aspx" />
@@ -615,6 +619,20 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\updatePriceTable.aspx.designer.cs">
       <DependentUpon>updatePriceTable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\userCompanyManagement.aspx.cs">
+      <DependentUpon>userCompanyManagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\userCompanyManagement.aspx.designer.cs">
+      <DependentUpon>userCompanyManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\userCompanyRegistration.aspx.cs">
+      <DependentUpon>userCompanyRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\userCompanyRegistration.aspx.designer.cs">
+      <DependentUpon>userCompanyRegistration.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx.cs">
       <DependentUpon>viewDemandBeforeAccept.aspx</DependentUpon>

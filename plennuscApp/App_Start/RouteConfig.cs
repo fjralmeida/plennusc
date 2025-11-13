@@ -10,96 +10,48 @@ namespace appWhatsapp
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            // ✅ ROTAS PARA ESTRUTURAS
-            routes.MapPageRoute(
-                "RegisterStructureTypeRoute",
-                "estruturas/tipos/cadastrar",
-                "~/PlennuscGestao/Views/registerStructureType.aspx"
-            );
+            // ✅ Estruturas
+            routes.MapPageRoute("registerStructureType", "registerStructureType", "~/PlennuscGestao/Views/registerStructureType.aspx");
+            routes.MapPageRoute("listStructureTypes", "listStructureTypes", "~/PlennuscGestao/Views/listStructureTypes.aspx");
+            routes.MapPageRoute("registerStructures", "registerStructures", "~/PlennuscGestao/Views/registerStructures.aspx");
+            routes.MapPageRoute("linkSector", "linkSector", "~/PlennuscGestao/Views/linkSector.aspx");
 
-            routes.MapPageRoute(
-                "ListStructureTypesRoute",
-                "estruturas/tipos/listar",
-                "~/PlennuscGestao/Views/listStructureTypes.aspx"
-            );
+            // ✅ Usuários e Empresas
+            routes.MapPageRoute("userCompanyManagement", "userCompanyManagement", "~/PlennuscGestao/Views/userCompanyManagement.aspx");
+            routes.MapPageRoute( "vincularEmpresasUsuario", "userCompanyRegistration", "~/PlennuscGestao/Views/userCompanyRegistration.aspx");
 
-            routes.MapPageRoute(
-                "RegisterStructuresRoute",
-                "estruturas/cadastrar",
-                "~/PlennuscGestao/Views/registerStructures.aspx"
-            );
+            // ✅ Demandas
+            routes.MapPageRoute("detailDemand", "detailDemand", "~/PlennuscGestao/Views/detailDemand.aspx");
+            routes.MapPageRoute("viewDemandBeforeAccept", "viewDemandBeforeAccept", "~/PlennuscGestao/Views/viewDemandBeforeAccept.aspx");
+            routes.MapPageRoute("demand", "demand", "~/PlennuscGestao/Views/demand.aspx");
+            routes.MapPageRoute("listDemand", "listDemand", "~/PlennuscGestao/Views/listDemand.aspx");
+            routes.MapPageRoute("myDemandsOpen", "myDemandsOpen", "~/PlennuscGestao/Views/myDemandsOpen.aspx");
+            routes.MapPageRoute("myDemandsProgress", "myDemandsProgress", "~/PlennuscGestao/Views/myDemandsProgress.aspx");
+            routes.MapPageRoute("myDemandsWaiting", "myDemandsWaiting", "~/PlennuscGestao/Views/myDemandsWaiting.aspx");
+            routes.MapPageRoute("myDemandsRefused", "myDemandsRefused", "~/PlennuscGestao/Views/myDemandsRefused.aspx");
+            routes.MapPageRoute("myDemandsCompleted", "myDemandsCompleted", "~/PlennuscGestao/Views/myDemandsCompleted.aspx");
 
-            routes.MapPageRoute(
-                "LinkSectorRoute",
-                "estruturas/vincular-setor",
-                "~/PlennuscGestao/Views/linkSector.aspx"
-            );
+            // ✅ Empresa e Parametrização
+            routes.MapPageRoute("companyRegistration", "companyRegistration", "~/PlennuscGestao/Views/companyRegistration.aspx");
 
-            // ✅ ROTAS PARA DEMANDAS (que já tínhamos)
-            routes.MapPageRoute(
-                "DetailDemandRoute",
-                "detailDemand",
-                "~/PlennuscGestao/Views/detailDemand.aspx"
-            );
+            // ✅ Chatbot e Mensagens
+            routes.MapPageRoute("sendMessageBeneficiary", "sendMessageBeneficiary", "~/PlennuscGestao/Views/sendMessageBeneficiary.aspx");
+            routes.MapPageRoute("sendCompanyMessage", "sendCompanyMessage", "~/PlennuscGestao/Views/sendCompanyMessage.aspx");
+            routes.MapPageRoute("FixedMessageSending", "FixedMessageSending", "~/PlennuscGestao/Views/FixedMessageSending.aspx");
 
-            routes.MapPageRoute(
-                "ViewDemandBeforeAcceptRoute",
-                "viewDemandBeforeAccept",
-                "~/PlennuscGestao/Views/viewDemandBeforeAccept.aspx"
-            );
+            // ✅ Tabela de preços
+            routes.MapPageRoute("priceTable", "priceTable", "~/PlennuscGestao/Views/priceTable.aspx");
+            routes.MapPageRoute("updatePriceTable", "updatePriceTable", "~/PlennuscGestao/Views/updatePriceTable.aspx");
 
-            routes.MapPageRoute(
-                "DemandRoute",
-                "demand",
-                "~/PlennuscGestao/Views/demand.aspx"
-            );
+            // ✅ Outros possíveis cadastros ou configurações
+            routes.MapPageRoute("employeeDepartment", "employeeDepartment", "~/PlennuscGestao/Views/employeeDepartment.aspx");
+            routes.MapPageRoute("employeePosition", "employeePosition", "~/PlennuscGestao/Views/employeePosition.aspx");
+            routes.MapPageRoute("employeeManagement", "employeeManagement", "~/PlennuscGestao/Views/employeeManagement.aspx");
+            routes.MapPageRoute("listPlatform", "listPlatform", "~/PlennuscGestao/Views/listPlatform.aspx");
 
-            routes.MapPageRoute(
-                "ListDemandRoute",
-                "listDemand",
-                "~/PlennuscGestao/Views/listDemand.aspx"
-            );
-
-            // ✅ OUTRAS ROTAS DE DEMANDAS
-            routes.MapPageRoute(
-                "MyDemandsOpenRoute",
-                "myDemandsOpen",
-                "~/PlennuscGestao/Views/myDemandsOpen.aspx"
-            );
-
-            routes.MapPageRoute(
-                "MyDemandsProgressRoute",
-                "myDemandsProgress",
-                "~/PlennuscGestao/Views/myDemandsProgress.aspx"
-            );
-
-            routes.MapPageRoute(
-                "MyDemandsWaitingRoute",
-                "myDemandsWaiting",
-                "~/PlennuscGestao/Views/myDemandsWaiting.aspx"
-            );
-
-            routes.MapPageRoute(
-                "MyDemandsRefusedRoute",
-                "myDemandsRefused",
-                "~/PlennuscGestao/Views/myDemandsRefused.aspx"
-            );
-
-            routes.MapPageRoute(
-                "MyDemandsCompletedRoute",
-                "myDemandsCompleted",
-                "~/PlennuscGestao/Views/myDemandsCompleted.aspx"
-            );
-
-            // Topicos de empresa
-            routes.MapPageRoute(
-                "RegisterCompanyRoute",
-                "parametrizacao/empresa/cadastrar",
-                "~/PlennuscGestao/Views/companyRegistration.aspx"
-            );
-
+            // ⚙️ Friendly URLs sem redirecionamento
             var settings = new FriendlyUrlSettings();
-            settings.AutoRedirectMode = RedirectMode.Permanent;
+            settings.AutoRedirectMode = RedirectMode.Off;
             routes.EnableFriendlyUrls(settings);
         }
     }
