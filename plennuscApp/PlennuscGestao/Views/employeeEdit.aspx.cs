@@ -323,12 +323,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             txtLoginEmail.Text = email;
             txtLoginUsuario.Text = sugestao;
 
-            // NOVO: Preencher a empresa
-            int codEmpresa = pessoaDao.ObterEmpresaDoUsuario(codPessoa);
-            string nomeEmpresa = pessoaDao.ObterNomeEmpresa(codEmpresa);
+            //// NOVO: Preencher a empresa
+            //int codEmpresa = pessoaDao.ObterEmpresaDoUsuario(codPessoa);
+            //string nomeEmpresa = pessoaDao.ObterNomeEmpresa(codEmpresa);
 
-            txtLoginEmpresa.Text = nomeEmpresa;
-            hfCodEmpresa.Value = codEmpresa.ToString();
+            //txtLoginEmpresa.Text = nomeEmpresa;
+            //hfCodEmpresa.Value = codEmpresa.ToString();
 
             ddlPerfilUsuario.SelectedValue = "";
             chkLoginAtivo.Checked = true;
@@ -433,7 +433,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             bool ativo = chkLoginAtivo.Checked;
             bool permite = chkLoginPermiteAcesso.Checked;
             string cpf = txtDocCPF.Text.Trim();
-            int codEmpresa = int.TryParse(hfCodEmpresa.Value, out int emp) ? emp : 0;
+            //int codEmpresa = int.TryParse(hfCodEmpresa.Value, out int emp) ? emp : 0;
 
             if (emailAlt == null || emailAlt == "")
             {
@@ -515,12 +515,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                     //int codEmpresa = 0;
                     //int.TryParse(Convert.ToString(Session["CodEmpresa"]), out codEmpresa);
 
-                    authDao.AtualizarAutenticacaoUsuario(codPessoa, novoId, codEmpresa);
+                    //authDao.AtualizarAutenticacaoUsuario(codPessoa, novoId);
 
                     authDao.ConcederAcessoSistemas(
                         codAutenticacaoAcesso: novoId,
                         codPessoa: codPessoa,
-                        codEmpresa: codEmpresa,  // Agora usa a empresa correta
                         codSistemas: sistemasSelecionados
                     );
 

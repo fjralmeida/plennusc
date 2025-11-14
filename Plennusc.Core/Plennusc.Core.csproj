@@ -100,14 +100,20 @@
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
+    <Compile Include="Models\ModelsGestao\modelsCompany\companyMenuManagementSystemModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanyModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanySelectionModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsCompany\EmpresaModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\UserCompanyModel.cs" />
     <Compile Include="Models\ModelsGestao\ModelsHome\homeManagementModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\departmentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\SectorTypeDemandModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\StructureModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\TypeStructureModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsMenu\MenuModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsMenu\MenuNode.cs" />
+    <Compile Include="Models\ModelsGestao\modelsMenu\menusManagementModels.cs" />
+    <Compile Include="Models\ModelsGestao\modelsSistema\SistemaModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\OptionItemStructure.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\structureModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\structureTypeModel.cs" />
@@ -123,6 +129,8 @@
     <Compile Include="Service\ServiceGestao\company\UserCompanyService.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
     <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
+    <Compile Include="Service\ServiceGestao\menu\menusManagementService.cs" />
+    <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />
     <Compile Include="Service\ServiceGestao\vinculaDepartameto\departmentService.cs" />
@@ -141,6 +149,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\estruturaTipo\StructureTypeQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\import\importCVSPlannium.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\ItensPedIntegradoUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\menu\menusManagementQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\OperadoraUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\position\EmpPosition.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\price\TablePrice.cs" />
@@ -148,6 +157,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\SysPlatform\companyMenuManagementSystemQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SysPlatform\listPlatformQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\department\EmpDepartmentMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\import\importCVSPlanniumMedic.cs" />

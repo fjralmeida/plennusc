@@ -451,11 +451,11 @@
                     <asp:TextBox ID="txtLoginSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
                   </div>
 
-                    <div class="cell">
+                   <%-- <div class="cell">
                         <label class="form-label">Empresa</label>
                         <asp:TextBox ID="txtLoginEmpresa" runat="server" CssClass="form-control" ReadOnly="true" />
                         <asp:HiddenField ID="hfCodEmpresa" runat="server" />
-                    </div>
+                    </div>--%>
 
                   <div class="cell">
                     <label class="form-label">E-mail</label>

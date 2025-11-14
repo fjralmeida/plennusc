@@ -213,9 +213,12 @@
                             </a>
                             <div class="collapse ms-3" id="collapseSubMenuMenu">
                                 <ul class="list-unstyled ps-3 submenu">
+                                    <!-- LINK NOVO - SEGUINDO SEU PADRÃO -->
+                                    <li><a href="menusManagement" title="Gerenciar Menus"><i class="bi bi-list-check me-2"></i><span class="label">Gerenciar Menus</span></a></li>
+            
                                     <li><a href="companyRegistration" title="Cadastro Empresa"><i class="bi bi-building-add me-2"></i><span class="label">Cadastro Empresa</span></a></li>
                                     <li><a href="empresaMenu" title="Empresa x Menu"><i class="bi bi-building-gear me-2"></i><span class="label">Empresa x Menu</span></a></li>
-                                    <li><a href="empresaSistema" title="Empresa x Sistema"><i class="bi bi-building-check me-2"></i><span class="label">Empresa x Sistema</span></a></li>
+                                    <li><a href="companyMenuManagementSystem" title="Vincular Menus aos Sistemas"><i class="bi bi-link-45deg me-2"></i><span class="label">Vincular Menus aos Sistemas</span></a></li>
                                 </ul>
                             </div>
                         </li>

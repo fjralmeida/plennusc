@@ -197,6 +197,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\list-Platform.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\list-structure-types.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\listDemand.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\menu\Menus-Management.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsCompleted.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsOpen.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsProgress.css" />
@@ -209,6 +210,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\register-Structures.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendCompanyMessage.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageBeneficiary.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\sistema\Company-Menu-Management-System.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\updatePriceTable.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\user-company-management.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\user-company-registration.css" />
@@ -218,6 +220,7 @@
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx" />
     <Content Include="PlennuscGestao\Views\companyRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
     <Content Include="PlennuscGestao\Views\demand.aspx" />
@@ -231,6 +234,7 @@
     <Content Include="PlennuscGestao\Views\listDemand.aspx" />
     <Content Include="PlennuscGestao\Views\listPlatform.aspx" />
     <Content Include="PlennuscGestao\Views\listStructureTypes.aspx" />
+    <Content Include="PlennuscGestao\Views\menusManagement.aspx" />
     <Content Include="PlennuscGestao\Views\myDemands.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsCompleted.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsOpen.aspx" />
@@ -397,6 +401,13 @@
     <Compile Include="PlennuscFinance\Views\profileFinance.aspx.designer.cs">
       <DependentUpon>profileFinance.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx.cs">
+      <DependentUpon>companyMenuManagementSystem.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx.designer.cs">
+      <DependentUpon>companyMenuManagementSystem.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscGestao\Views\companyRegistration.aspx.cs">
       <DependentUpon>companyRegistration.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -487,6 +498,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\listStructureTypes.aspx.designer.cs">
       <DependentUpon>listStructureTypes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\menusManagement.aspx.cs">
+      <DependentUpon>menusManagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\menusManagement.aspx.designer.cs">
+      <DependentUpon>menusManagement.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\myDemands.aspx.cs">
       <DependentUpon>myDemands.aspx</DependentUpon>

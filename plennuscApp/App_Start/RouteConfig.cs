@@ -49,6 +49,18 @@ namespace appWhatsapp
             routes.MapPageRoute("employeeManagement", "employeeManagement", "~/PlennuscGestao/Views/employeeManagement.aspx");
             routes.MapPageRoute("listPlatform", "listPlatform", "~/PlennuscGestao/Views/listPlatform.aspx");
 
+            routes.MapPageRoute("homeManagement", "gestao/inicio", "~/PlennuscGestao/Views/homeManagement.aspx");
+            routes.MapPageRoute("csvimportPlanium", "gestao/importacao/csv", "~/PlennuscGestao/Views/csvimportPlanium.aspx");
+            routes.MapPageRoute("privacySettings", "gestao/configuracoes/privacidade", "~/PlennuscGestao/Views/privacySettings.aspx");
+            routes.MapPageRoute("profile", "gestao/perfil", "~/PlennuscGestao/Views/profile.aspx");
+            routes.MapPageRoute("structureType", "gestao/estruturas/tipos", "~/PlennuscGestao/Views/structureType.aspx");
+            routes.MapPageRoute("Telabnvo", "gestao/tela-nova", "~/PlennuscGestao/Views/Telabnvo.aspx");
+            routes.MapPageRoute("TempleteMensagem", "gestao/mensagens/templates", "~/PlennuscGestao/Views/TempleteMensagem.aspx");
+
+            // ✅ Gerenciamento de Menus - SEGUINDO SEU PADRÃO
+            routes.MapPageRoute("menusManagement", "menusManagement", "~/PlennuscGestao/Views/menusManagement.aspx");
+            routes.MapPageRoute("companyMenuManagementSystem", "companyMenuManagementSystem", "~/PlennuscGestao/Views/companyMenuManagementSystem.aspx");
+
             // ⚙️ Friendly URLs sem redirecionamento
             var settings = new FriendlyUrlSettings();
             settings.AutoRedirectMode = RedirectMode.Off;

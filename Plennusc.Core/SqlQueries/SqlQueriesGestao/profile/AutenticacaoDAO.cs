@@ -192,88 +192,104 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
         }
 
 
-        public void ConcederAcessoSistemas(int codAutenticacaoAcesso, int codPessoa, int codEmpresa, IEnumerable<int> codSistemas)
+        public void ConcederAcessoSistemas(int codAutenticacaoAcesso, int codPessoa, IEnumerable<int> codSistemas)
         {
-            if (codEmpresa <= 0 || codAutenticacaoAcesso <= 0 || codSistemas == null) return;
+            if (codAutenticacaoAcesso <= 0 || codSistemas == null)
+                return;
 
             foreach (var codSistema in codSistemas)
             {
-                int codSistemaEmpresa = GarantirSistemaEmpresa(codSistema, codEmpresa);
-                if (codSistemaEmpresa > 0)
-                {
-                    GarantirSistemaEmpresaUsuario(codSistemaEmpresa, codPessoa, codAutenticacaoAcesso);
-                }
+                GarantirSistemaLiberado(codSistema);
             }
         }
 
-        /// <summary>
-        /// Garante que exista a linha em SistemaEmpresa e retorna CodSistemaEmpresa.
-        /// </summary>
-        private int GarantirSistemaEmpresa(int codSistema, int codEmpresa)
+        // Apenas garante que o sistema existe em SistemaEmpresa (sem empresa)
+        private void GarantirSistemaLiberado(int codSistema)
         {
             string sql = @"
-        IF NOT EXISTS(SELECT 1 FROM SistemaEmpresa WHERE CodSistema=@CodSistema AND CodEmpresa=@CodEmpresa)
-        BEGIN
-            INSERT INTO SistemaEmpresa (CodSistema, CodEmpresa, Conf_LiberaAcesso, DataHoraLiberacao, Informacoes_log_i)
-            VALUES (@CodSistema, @CodEmpresa, 1, GETDATE(), GETDATE());
-        END;
-
-        SELECT CodSistemaEmpresa
-        FROM SistemaEmpresa
-        WHERE CodSistema=@CodSistema AND CodEmpresa=@CodEmpresa;
-    ";
-
-            var pars = new Dictionary<string, object>
-    {
-        {"@CodSistema", codSistema},
-        {"@CodEmpresa", codEmpresa}
-    };
-
-            var db = new Banco_Dados_SQLServer();
-            var dt = db.LerPlennus(sql, pars);
-            if (dt != null && dt.Rows.Count > 0 && int.TryParse(dt.Rows[0][0].ToString(), out int cse))
-                return cse;
-            return 0;
-        }
-
-        /// <summary>
-        /// Cria/atualiza o vínculo do usuário com o sistema da empresa (SEU),
-        /// liberando o acesso e desbloqueando.
-        /// </summary>
-        private void GarantirSistemaEmpresaUsuario(int codSistemaEmpresa, int codPessoa, int codAutenticacaoAcesso)
-        {
-            string sql = @"
-                IF NOT EXISTS(
-                    SELECT 1 FROM SistemaEmpresaUsuario
-                    WHERE CodSistemaEmpresa=@CSE AND CodAutenticacaoAcesso=@AA
-                )
-                BEGIN
-                    INSERT INTO SistemaEmpresaUsuario
-                        (CodSistemaEmpresa, CodPessoa, CodAutenticacaoAcesso,
-                         Conf_LiberaAcesso, Conf_BloqueiaAcesso, DataHoraLiberacao, Informacoes_log_i)
-                    VALUES
-                        (@CSE, @CodPessoa, @AA, 1, 0, GETDATE(), GETDATE());
-                END
-                ELSE
-                BEGIN
-                    UPDATE SistemaEmpresaUsuario
-                       SET Conf_LiberaAcesso = 1,
-                           Conf_BloqueiaAcesso = 0,
-                           DataHoraLiberacao = GETDATE()
-                     WHERE CodSistemaEmpresa=@CSE AND CodAutenticacaoAcesso=@AA;
-                END
+            IF NOT EXISTS (
+                SELECT 1 FROM SistemaEmpresa WHERE CodSistema = @CodSistema
+            )
+            BEGIN
+                INSERT INTO SistemaEmpresa (CodSistema, Conf_LiberaAcesso, DataHoraLiberacao, Informacoes_log_i)
+                VALUES (@CodSistema, 1, GETDATE(), GETDATE());
+            END;
             ";
 
             var pars = new Dictionary<string, object>
             {
-                {"@CSE", codSistemaEmpresa},
-                {"@CodPessoa", codPessoa},
-                {"@AA", codAutenticacaoAcesso}
+                {"@CodSistema", codSistema}
             };
 
             var db = new Banco_Dados_SQLServer();
             db.ExecutarPlennus(sql, pars);
         }
+
+
+
+        //private int GarantirSistema(int codSistema)
+        //{
+        //    string sql = @"
+        //        IF NOT EXISTS (SELECT 1 FROM Sistema WHERE CodSistema = @CodSistema)
+        //        BEGIN
+        //            INSERT INTO Sistema (CodSistema, Conf_LiberaAcesso, DataHoraLiberacao, Informacoes_log_i)
+        //            VALUES (@CodSistema, 1, GETDATE(), GETDATE());
+        //        END;
+
+        //        SELECT CodSistema FROM Sistema WHERE CodSistema = @CodSistema;
+        //    ";
+
+        //    var pars = new Dictionary<string, object>
+        //    {
+        //        { "@CodSistema", codSistema }
+        //    };
+
+        //    var db = new Banco_Dados_SQLServer();
+        //    var dt = db.LerPlennus(sql, pars);
+
+        //    if (dt != null && dt.Rows.Count > 0 && int.TryParse(dt.Rows[0][0].ToString(), out int cod))
+        //        return cod;
+
+        //    return 0;
+        //}
+
+        //private void GarantirSistemaUsuario(int codSistema, int codPessoa, int codAutenticacaoAcesso)
+        //{
+        //    string sql = @"
+        //        IF NOT EXISTS (
+        //            SELECT 1 FROM SistemaUsuario
+        //            WHERE CodSistema = @CodSistema AND CodAutenticacaoAcesso = @AA
+        //        )
+        //        BEGIN
+        //            INSERT INTO SistemaUsuario (
+        //                CodSistema, CodPessoa, CodAutenticacaoAcesso,
+        //                Conf_LiberaAcesso, Conf_BloqueiaAcesso,
+        //                DataHoraLiberacao, Informacoes_log_i
+        //            )
+        //            VALUES (@CodSistema, @CodPessoa, @AA, 1, 0, GETDATE(), GETDATE());
+        //        END
+        //        ELSE
+        //        BEGIN
+        //            UPDATE SistemaUsuario
+        //            SET Conf_LiberaAcesso = 1,
+        //                Conf_BloqueiaAcesso = 0,
+        //                DataHoraLiberacao = GETDATE()
+        //            WHERE CodSistema = @CodSistema AND CodAutenticacaoAcesso = @AA;
+        //        END;
+        //    ";
+
+        //    var pars = new Dictionary<string, object>
+        //    {
+        //        { "@CodSistema", codSistema },
+        //        { "@CodPessoa", codPessoa },
+        //        { "@AA", codAutenticacaoAcesso }
+        //    };
+
+        //    var db = new Banco_Dados_SQLServer();
+        //    db.ExecutarPlennus(sql, pars);
+        //}
+
+
 
         public void AtualizarAutenticacaoUsuario(int codPessoa, int codAutenticacaoAcesso, int codEmpresa)
         {
