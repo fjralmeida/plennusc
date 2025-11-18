@@ -236,6 +236,12 @@
 <%--                                    <li><a href="systemConfig" title="Configuração do Sistema"><i class="bi bi-gear-wide-connected me-2"></i><span class="label">Configuração do Sistema</span></a></li>
                                     <li><a href="registerSystem" title="Cadastrar Sistema"><i class="bi bi-plus-circle me-2"></i><span class="label">Cadastrar Sistema</span></a></li>--%>
                                     <li><a href="listPlatform" title="Listar Sistemas"><i class="bi bi-list-check me-2"></i><span class="label">Listar Sistemas</span></a></li>
+                                    <li>
+                                        <a href="userSystemMenuManagement" title="Vincular Sistemas e Menus">
+                                            <i class="bi bi-link-45deg me-2"></i>
+                                            <span class="label">Vincular Sistemas e Menus</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>

@@ -118,6 +118,8 @@
     <Compile Include="Models\ModelsGestao\modelsStructure\structureModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\structureTypeModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\subTypeDate.cs" />
+    <Compile Include="Models\ModelsGestao\modelsUser\UsuarioSistemaEmpresaMenu.cs" />
+    <Compile Include="Models\ModelsGestao\modelsUser\VinculoUsuarioRequest.cs" />
     <Compile Include="Models\ModelsGestao\OptionItem.cs" />
     <Compile Include="Models\ModelsGestao\RespostaDto.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />
+    <Compile Include="Service\ServiceGestao\usuario\userSystemMenuManagementService.cs" />
     <Compile Include="Service\ServiceGestao\vinculaDepartameto\departmentService.cs" />
     <Compile Include="Service\ServiceGestao\vinculaDepartameto\linkSectorService.cs" />
     <Compile Include="Service\ServiceGestao\WhatsappService.cs" />
@@ -159,6 +162,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SysPlatform\companyMenuManagementSystemQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SysPlatform\listPlatformQueries.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\userSystemMenuManagementQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\department\EmpDepartmentMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\import\importCVSPlanniumMedic.cs" />
     <Compile Include="SqlQueries\SqlQueriesMedic\interview\MedicalInterview.cs" />

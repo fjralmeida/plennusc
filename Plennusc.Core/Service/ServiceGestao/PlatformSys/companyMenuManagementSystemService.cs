@@ -133,7 +133,12 @@ namespace Plennusc.Core.Service.ServiceGestao.PlatformSys
                     { "@CodMenu", codMenu }
                 };
 
+                // Primeiro exclui os registros dependentes
+                _db.ExecutarPlennusLinhasAfetadas(companyMenuManagementSystemQueries.ExcluirSistemaEmpresaMenuUsuario, parametros);
+
+                // Depois exclui os registros principais
                 int registrosAfetados = _db.ExecutarPlennusLinhasAfetadas(companyMenuManagementSystemQueries.ExcluirSistemaEmpresaMenu, parametros);
+
                 return registrosAfetados > 0;
             }
             catch (Exception ex)
@@ -147,7 +152,13 @@ namespace Plennusc.Core.Service.ServiceGestao.PlatformSys
             try
             {
                 var parametros = new Dictionary<string, object> { { "@CodSistemaEmpresa", codSistemaEmpresa } };
-                int registrosAfetados = _db.ExecutarPlennusLinhasAfetadas(companyMenuManagementSystemQueries.ExcluirTodosMenusSistemaEmpresa, parametros);
+
+                // Primeiro exclui os registros dependentes
+                _db.ExecutarPlennusLinhasAfetadas(companyMenuManagementSystemQueries.ExcluirTodosSistemaEmpresaMenuUsuario, parametros);
+
+                // Depois exclui os registros principais
+                int registrosAfetados = _db.ExecutarPlennusLinhasAfetadas(companyMenuManagementSystemQueries.ExcluirTodosSistemaEmpresaMenu, parametros);
+
                 return registrosAfetados > 0;
             }
             catch (Exception ex)

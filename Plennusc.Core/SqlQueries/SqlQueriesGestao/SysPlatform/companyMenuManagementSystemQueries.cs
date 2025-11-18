@@ -51,12 +51,30 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.SysPlatform
             INSERT INTO SistemaEmpresaMenu (CodSistemaEmpresa, CodMenu, Conf_Habilitado, Conf_Exibir, Informacoes_log_i)
             VALUES (@CodSistemaEmpresa, @CodMenu, 1, 1, GETDATE())";
 
+
+        public static string ExcluirSistemaEmpresaMenuUsuario = @"
+            DELETE FROM SistemaEmpresaMenuUsuario 
+            WHERE CodSistemaEmpresaMenu IN (
+                SELECT CodSistemaEmpresaMenu 
+                FROM SistemaEmpresaMenu 
+                WHERE CodSistemaEmpresa = @CodSistemaEmpresa
+                AND CodMenu = @CodMenu
+            )";
+
         public static string ExcluirSistemaEmpresaMenu = @"
             DELETE FROM SistemaEmpresaMenu
             WHERE CodSistemaEmpresa = @CodSistemaEmpresa
             AND CodMenu = @CodMenu";
 
-        public static string ExcluirTodosMenusSistemaEmpresa = @"
+        public static string ExcluirTodosSistemaEmpresaMenuUsuario = @"
+            DELETE FROM SistemaEmpresaMenuUsuario 
+            WHERE CodSistemaEmpresaMenu IN (
+                SELECT CodSistemaEmpresaMenu 
+                FROM SistemaEmpresaMenu 
+                WHERE CodSistemaEmpresa = @CodSistemaEmpresa
+            )";
+
+        public static string ExcluirTodosSistemaEmpresaMenu = @"
             DELETE FROM SistemaEmpresaMenu
             WHERE CodSistemaEmpresa = @CodSistemaEmpresa";
     }
