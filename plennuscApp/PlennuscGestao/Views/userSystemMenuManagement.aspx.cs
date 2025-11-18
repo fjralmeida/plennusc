@@ -22,7 +22,17 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (!IsPostBack)
             {
+                // Carregamento inicial
                 CarregarUsuarios();
+            }
+            else
+            {
+                // EM TODOS OS POSTBACKS, recrie os controles dinâmicos
+                if (ddlUsuarios.SelectedValue != "")
+                {
+                    int codAutenticacao = Convert.ToInt32(ddlUsuarios.SelectedValue);
+                    CriarMultiplasSecoesMenus(codAutenticacao);
+                }
             }
         }
 
@@ -192,29 +202,29 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         // MÉTODO DE ORDENAÇÃO HIERÁRQUICA COMPLETO
        private List<UsuarioSistemaEmpresaMenu> OrdenarMenusHierarquicamente(List<UsuarioSistemaEmpresaMenu> menus)
-{
-    if (menus == null || !menus.Any())
-        return new List<UsuarioSistemaEmpresaMenu>();
+        {
+            if (menus == null || !menus.Any())
+                return new List<UsuarioSistemaEmpresaMenu>();
 
-    var resultado = new List<UsuarioSistemaEmpresaMenu>();
+            var resultado = new List<UsuarioSistemaEmpresaMenu>();
     
-    // 1. Buscar menus de nível 1 dinamicamente (onde CodMenuPai é NULL ou 0)
-    var menusNivel1 = menus.Where(m => m.CodMenuPai == null || m.CodMenuPai == 0)
-                          .OrderBy(m => m.Conf_Ordem)
-                          .ThenBy(m => m.NomeDisplay)
-                          .ToList();
+            // 1. Buscar menus de nível 1 dinamicamente (onde CodMenuPai é NULL ou 0)
+            var menusNivel1 = menus.Where(m => m.CodMenuPai == null || m.CodMenuPai == 0)
+                                  .OrderBy(m => m.Conf_Ordem)
+                                  .ThenBy(m => m.NomeDisplay)
+                                  .ToList();
 
-    foreach (var menuNivel1 in menusNivel1)
-    {
-        // Adiciona o menu nível 1
-        resultado.Add(menuNivel1);
+            foreach (var menuNivel1 in menusNivel1)
+            {
+                // Adiciona o menu nível 1
+                resultado.Add(menuNivel1);
         
-        // 2. Buscar filhos dinamicamente baseado no CodMenuPai real
-        AdicionarFilhosRecursivamente(menuNivel1.CodMenu, menus, resultado);
-    }
+                // 2. Buscar filhos dinamicamente baseado no CodMenuPai real
+                AdicionarFilhosRecursivamente(menuNivel1.CodMenu, menus, resultado);
+            }
     
-    return resultado;
-}
+            return resultado;
+        }
 
 private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEmpresaMenu> todosMenus, List<UsuarioSistemaEmpresaMenu> resultado)
 {
@@ -246,7 +256,7 @@ private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEm
 
             try
             {
-                // Para cada sistema×empresa na checklist principal
+                // 1. Primeiro, processa apenas os Sistemas×Empresas SELECIONADOS
                 foreach (ListItem sistemaEmpresa in chkSistemaEmpresas.Items)
                 {
                     int codSistemaEmpresa = Convert.ToInt32(sistemaEmpresa.Value);
@@ -259,7 +269,14 @@ private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEm
                         // Vincular os menus específicos para este sistema×empresa
                         VincularMenusUsuario(codSistemaEmpresa, codAutenticacao);
                     }
-                    else
+                }
+
+                // 2. AGORA, processa os NÃO SELECIONADOS para desvincular
+                foreach (ListItem sistemaEmpresa in chkSistemaEmpresas.Items)
+                {
+                    int codSistemaEmpresa = Convert.ToInt32(sistemaEmpresa.Value);
+
+                    if (!sistemaEmpresa.Selected)
                     {
                         // Desvincular usuário do sistema×empresa (e todos seus menus)
                         _service.DesvincularUsuarioSistemaEmpresa(codSistemaEmpresa, codAutenticacao);
@@ -294,8 +311,9 @@ private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEm
                 {
                     if (menu.Selected)
                     {
-                        int codSistemaEmpresaMenu = Convert.ToInt32(menu.Value);
-                        _service.VincularMenuUsuario(codSistemaEmpresa, codAutenticacao, codSistemaEmpresaMenu);
+                        // AQUI ESTÁ O PROBLEMA - Use o código do menu, não do sistema×empresa
+                        int codMenu = Convert.ToInt32(menu.Value);
+                        _service.VincularMenuUsuario(codSistemaEmpresa, codAutenticacao, codMenu);
                     }
                 }
             }

@@ -134,8 +134,6 @@
 /* Checkbox */
 .form-check {
     margin-bottom: 8px;
-    display: flex;
-    align-items: center;
 }
 
 .form-check-input {

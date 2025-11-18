@@ -2,9 +2,33 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../../Content/Css/projects/gestao/structuresCss/usuario/user-System-Menu-Management.css" rel="stylesheet" />
 
-    <script>
-    // Efeito de ripple nos checkboxes
-    document.addEventListener('click', function(e) {
+<script>
+    // Realçar checkboxes quando desmarcados (feedback visual)
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('#<%= chkSistemaEmpresas.ClientID %> input[type="checkbox"]');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const label = this.closest('span');
+                if (!this.checked) {
+                    // Adiciona efeito visual quando desmarca
+                    label.style.background = 'linear-gradient(135deg, #ffeaa7 0%, #ffd166 100%)';
+                    label.style.borderColor = '#e74c3c';
+                    label.style.boxShadow = '0 0 0 2px rgba(231, 76, 60, 0.2)';
+
+                    // Remove o efeito após 2 segundos
+                    setTimeout(() => {
+                        label.style.background = '';
+                        label.style.borderColor = '';
+                        label.style.boxShadow = '';
+                    }, 2000);
+                }
+            });
+        });
+    });
+
+    // Efeito de ripple nos checkboxes (seu código existente)
+    document.addEventListener('click', function (e) {
         if (e.target.closest('.checkbox-item')) {
             const checkboxItem = e.target.closest('.checkbox-item');
             const ripple = document.createElement('span');
@@ -12,7 +36,7 @@
             const size = Math.max(rect.width, rect.height);
             const x = e.clientX - rect.left - size / 2;
             const y = e.clientY - rect.top - size / 2;
-            
+
             ripple.style.cssText = `
                 width: ${size}px;
                 height: ${size}px;
@@ -20,18 +44,18 @@
                 top: ${y}px;
             `;
             ripple.classList.add('ripple');
-            
+
             checkboxItem.appendChild(ripple);
-            
+
             setTimeout(() => {
                 ripple.remove();
             }, 600);
         }
     });
 
-    // Animação ao marcar/desmarcar
+    // Animação ao marcar/desmarcar (seu código existente)
     document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             const item = this.closest('.checkbox-item');
             if (this.checked) {
                 item.classList.add('checked');
@@ -40,7 +64,7 @@
             }
         });
     });
-    </script>
+</script>
 
 </asp:Content>
 
@@ -48,9 +72,25 @@
     <div class="container-fluid">
         <h4>Vincular Usuário a Sistemas e Menus</h4>
         
+        <!-- AVISO FIXO IMPORTANTE -->
+        <div class="aviso-desvinculo">
+            <div class="d-flex align-items-start">
+                <div class="aviso-icon">⚠️</div>
+                <div>
+                    <div class="aviso-titulo">ATENÇÃO: Controle de Acesso</div>
+                    <p class="aviso-texto">
+                        <span class="aviso-destaque">Sistemas NÃO MARCADOS serão DESVINCULADOS automaticamente.</span><br/>
+                        Certifique-se de marcar <strong>TODOS</strong> os sistemas que o usuário deve acessar. 
+                        Ao desmarcar um sistema, todos os menus vinculados serão <strong>PERDIDOS</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- 1. Selecionar Usuário -->
         <div class="row mb-3">
             <div class="col-md-6">
+               <%-- <label class="form-label">Selecionar Usuário:</label>--%>
                 <asp:DropDownList ID="ddlUsuarios" runat="server" CssClass="form-control" AutoPostBack="true"
                     OnSelectedIndexChanged="ddlUsuarios_SelectedIndexChanged">
                 </asp:DropDownList>
@@ -61,6 +101,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <h5>Sistemas × Empresas Disponíveis</h5>
+
                 <div class="checkbox-panel" ID="idCheck" runat="server" visible="false">
                     <div class="checkbox-container">
                         <asp:CheckBoxList ID="chkSistemaEmpresas" runat="server"
@@ -80,7 +121,7 @@
         <div class="row">
             <div class="col-12">
                 <asp:Button ID="btnSalvarVinculos" runat="server" Text="Salvar Vínculos"
-                    CssClass="btn btn-primary" OnClick="btnSalvarVinculos_Click" />
+                    CssClass="btn-primary" OnClick="btnSalvarVinculos_Click" />
             </div>
         </div>
     </div>

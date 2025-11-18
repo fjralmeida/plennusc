@@ -26,6 +26,29 @@
     padding: 20px;
 }
 
+/* DICA - NOVO ESTILO ADICIONADO, SUA DESGRAÇA */
+.dica {
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    border-left: 4px solid #2196f3;
+    background: #e3f2fd;
+    color: #1565c0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+    .dica i.bi-lightbulb {
+        color: #ffc107;
+        font-size: 16px;
+    }
+
+    .dica strong {
+        font-weight: 600;
+    }
+
 h4 {
     color: var(--gray-800);
     font-weight: 600;
@@ -89,6 +112,7 @@ h5 {
     gap: 15px;
 }
 
+/* ESTILOS PARA OS ITEMS DO CHECKBOXLIST */
 .checkbox-item {
     display: flex;
     align-items: center;
@@ -102,82 +126,81 @@ h5 {
     min-width: 250px;
 }
 
-.checkbox-item:hover {
-    background-color: var(--gray-50);
-    border-color: var(--primary);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
+    .checkbox-item:hover {
+        background-color: var(--gray-50);
+        border-color: var(--primary);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
 
-.checkbox-item.checked {
-    background-color: #e8f4fd;
-    border-color: var(--primary);
-    border-left: 4px solid var(--primary);
-}
+    .checkbox-item.checked {
+        background-color: #e8f4fd;
+        border-color: var(--primary);
+        border-left: 4px solid var(--primary);
+    }
 
-/* Checkbox customizado */
-.checkbox-item input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    margin-right: 12px;
-    margin-top: 0;
-    position: relative;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border: 2px solid var(--gray-400);
-    border-radius: 4px;
-    background-color: white;
-    transition: var(--transition);
-    flex-shrink: 0;
-}
+    /* Checkbox customizado */
+    .checkbox-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin-right: 12px;
+        margin-top: 0;
+        position: relative;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border: 2px solid var(--gray-400);
+        border-radius: 4px;
+        background-color: white;
+        transition: var(--transition);
+        flex-shrink: 0;
+    }
 
-.checkbox-item input[type="checkbox"]:checked {
-    background-color: var(--success);
-    border-color: var(--success);
-}
+        .checkbox-item input[type="checkbox"]:checked {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
 
-.checkbox-item input[type="checkbox"]:checked::before {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
+            .checkbox-item input[type="checkbox"]:checked::before {
+                content: "";
+                position: absolute;
+                left: 4px;
+                top: 1px;
+                width: 5px;
+                height: 10px;
+                border: solid white;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
 
-.checkbox-item input[type="checkbox"]:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.3);
-}
+        .checkbox-item input[type="checkbox"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(131, 206, 238, 0.3);
+        }
 
-.checkbox-item:hover input[type="checkbox"] {
-    border-color: var(--primary);
-}
+    .checkbox-item:hover input[type="checkbox"] {
+        border-color: var(--primary);
+    }
 
-/* Label dos checkboxes */
-.checkbox-item label {
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--gray-700);
-    margin: 0;
-    padding: 0;
-    font-size: 14px;
-    word-wrap: break-word;
-    line-height: 1.4;
-    flex: 1;
-}
+    /* Label dos checkboxes */
+    .checkbox-item label {
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--gray-700);
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        word-wrap: break-word;
+        line-height: 1.4;
+        flex: 1;
+    }
 
-.checkbox-item.checked label {
-    color: var(--success);
-    font-weight: 600;
-}
-
+    .checkbox-item.checked label {
+        color: var(--success);
+        font-weight: 600;
+    }
 
 /* ESTILOS PARA CHECKBOXLIST DE MENUS HIERÁRQUICOS */
 .menu-checklist {
@@ -329,6 +352,72 @@ h5 {
         font-size: 18px;
     }
 
+/* AVISO FIXO - IMPORTANTE */
+.aviso-desvinculo {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 2px solid #ffc107;
+    border-radius: var(--border-radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+    position: relative;
+    border-left: 6px solid #ffc107;
+}
+
+    .aviso-desvinculo .aviso-icon {
+        font-size: 24px;
+        margin-right: 12px;
+        color: #856404;
+    }
+
+    .aviso-desvinculo .aviso-titulo {
+        font-weight: 700;
+        color: #856404;
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    .aviso-desvinculo .aviso-texto {
+        color: #856404;
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .aviso-desvinculo .aviso-destaque {
+        font-weight: 700;
+        color: #d35400;
+    }
+
+/* Efeito Ripple */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(131, 206, 238, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Responsividade do aviso */
+@media (max-width: 768px) {
+    .aviso-desvinculo {
+        padding: 14px 16px;
+    }
+
+        .aviso-desvinculo .aviso-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+}
+
 /* RESPONSIVIDADE */
 @media (max-width: 1200px) {
     .checkbox-item {
@@ -369,6 +458,11 @@ h5 {
     .menu-section {
         padding: 15px;
     }
+
+    .dica {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
 }
 
 @media (max-width: 576px) {
@@ -386,6 +480,11 @@ h5 {
 
     .checkbox-panel {
         padding: 15px;
+    }
+
+    .dica {
+        padding: 8px 12px;
+        font-size: 12px;
     }
 }
 

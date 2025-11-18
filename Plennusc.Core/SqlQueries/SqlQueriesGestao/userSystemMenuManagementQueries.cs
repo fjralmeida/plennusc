@@ -83,7 +83,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
             DELETE FROM SistemaEmpresaUsuario 
             WHERE CodSistemaEmpresa = @CodSistemaEmpresa 
             AND CodAutenticacaoAcesso = @CodAutenticacao";
-
         public static string VincularMenuUsuario = @"
             INSERT INTO SistemaEmpresaMenuUsuario 
             (CodSistemaEmpresaUsuario, CodAutenticacaoAcesso, CodSistemaEmpresaMenu, DataHoraLiberacao, Conf_LiberaAcesso)
