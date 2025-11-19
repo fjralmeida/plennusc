@@ -116,8 +116,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="employeeManagement?acao=consultar" title="Consultar Usuário">
-                                <i class="bi bi-search me-2"></i><span class="label">Consultar Usuário</span>
+                            <a href="employeeManagement?acao=consultar" title="Criar Login Usuário">
+                                <i class="bi bi-search me-2"></i><span class="label">Criar Login Usuário</span>
                             </a>
                         </li>
                         <li>
@@ -141,40 +141,7 @@
                 </div>
             </li>
 
-            <!-- Chatbot -->
-            <li class="mb-2">
-                <a class="d-flex justify-content-between align-items-center menu-head"
-                    data-bs-toggle="collapse" href="#menuChatbot"
-                    role="button" aria-expanded="false" aria-controls="menuChatbot" title=" Chatbot">
-                    <span><i class="bi bi-robot me-2"></i><strong class="label">Chatbot</strong></span>
-                    <i class="bi bi-chevron-right toggle-icon"></i>
-                </a>
-                <div class="collapse ms-3" id="menuChatbot">
-                    <ul class="list-unstyled ps-3 submenu">
-                        <li><a href="sendMessageBeneficiary" title="Mensagens para Beneficiários"><i class="bi bi-person-lines-fill me-2"></i><span class="label">Beneficiários</span></a></li>
-                        <li><a href="sendCompanyMessage" title="Empresa"><i class="bi bi-building me-2"></i><span class="label">PME</span></a></li>
-                        <li><a href="FixedMessageSending" title="Mensagem Fixa"><i class="bi bi-pin-angle me-2"></i><span class="label">Msg Fixa Comercial</span></a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- Preços -->
-            <li class="mb-2">
-                <a class="d-flex justify-content-between align-items-center menu-head"
-                    data-bs-toggle="collapse" href="#importPrice"
-                    role="button" aria-expanded="false" aria-controls="importPrice" title="Tabela de Preços">
-                    <span><i class="bi bi-upload me-2"></i><strong class="label">Preços</strong></span>
-                    <i class="bi bi-chevron-right toggle-icon"></i>
-                </a>
-                <div class="collapse ms-3" id="importPrice">
-                    <ul class="list-unstyled ps-3 submenu">
-                        <li><a href="priceTable" title="Nova Tabela (XLS)"><i class="bi bi-file-earmark-spreadsheet me-2"></i><span class="label">Nova Tabela (XLS)</span></a></li>
-                        <li><a href="updatePriceTable" title="Atualizar Valores (XLS)"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Atualizar Valores (XLS)</span></a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- Parametrização -->
+                        <!-- Parametrização -->
             <li class="mb-2" id="liMenuParametrizacao" runat="server">
                 <a class="d-flex justify-content-between align-items-center menu-head"
                     data-bs-toggle="collapse" href="#collapseMenuParametrizacao"
@@ -214,11 +181,11 @@
                             <div class="collapse ms-3" id="collapseSubMenuMenu">
                                 <ul class="list-unstyled ps-3 submenu">
                                     <!-- LINK NOVO - SEGUINDO SEU PADRÃO -->
-                                    <li><a href="menusManagement" title="Gerenciar Menus"><i class="bi bi-list-check me-2"></i><span class="label">Gerenciar Menus</span></a></li>
+                               <%--     <li><a href="menusManagement" title="Gerenciar Menus"><i class="bi bi-list-check me-2"></i><span class="label">Gerenciar Menus</span></a></li>--%>
             
                                     <li><a href="companyRegistration" title="Cadastro Empresa"><i class="bi bi-building-add me-2"></i><span class="label">Cadastro Empresa</span></a></li>
 <%--                                    <li><a href="empresaMenu" title="Empresa x Menu"><i class="bi bi-building-gear me-2"></i><span class="label">Empresa x Menu</span></a></li>--%>
-                                    <li><a href="companyMenuManagementSystem" title="Vincular Menus aos Sistemas"><i class="bi bi-link-45deg me-2"></i><span class="label">Vincular Menus aos Sistemas</span></a></li>
+                                    <li><a href="companyMenuManagementSystem" title="Vincular Menus aos Sistemas"><i class="bi bi-link-45deg me-2"></i><span class="label">Sistemas x Empresa</span></a></li>
                                 </ul>
                             </div>
                         </li>
@@ -239,7 +206,7 @@
                                     <li>
                                         <a href="userSystemMenuManagement" title="Vincular Sistemas e Menus">
                                             <i class="bi bi-link-45deg me-2"></i>
-                                            <span class="label">Vincular Sistemas e Menus</span>
+                                            <span class="label">Sistemas x Menus</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -249,6 +216,41 @@
                     </ul>
                 </div>
             </li>
+
+            <!-- Chatbot -->
+            <li class="mb-2">
+                <a class="d-flex justify-content-between align-items-center menu-head"
+                    data-bs-toggle="collapse" href="#menuChatbot"
+                    role="button" aria-expanded="false" aria-controls="menuChatbot" title=" Chatbot">
+                    <span><i class="bi bi-robot me-2"></i><strong class="label">Chatbot</strong></span>
+                    <i class="bi bi-chevron-right toggle-icon"></i>
+                </a>
+                <div class="collapse ms-3" id="menuChatbot">
+                    <ul class="list-unstyled ps-3 submenu">
+                        <li><a href="sendMessageBeneficiary" title="Mensagens para Beneficiários"><i class="bi bi-person-lines-fill me-2"></i><span class="label">Beneficiários</span></a></li>
+                        <li><a href="sendCompanyMessage" title="Empresa"><i class="bi bi-building me-2"></i><span class="label">PME</span></a></li>
+                        <li><a href="FixedMessageSending" title="Mensagem Fixa"><i class="bi bi-pin-angle me-2"></i><span class="label">Msg Fixa Comercial</span></a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Preços -->
+            <li class="mb-2">
+                <a class="d-flex justify-content-between align-items-center menu-head"
+                    data-bs-toggle="collapse" href="#importPrice"
+                    role="button" aria-expanded="false" aria-controls="importPrice" title="Tabela de Preços">
+                    <span><i class="bi bi-upload me-2"></i><strong class="label">Preços</strong></span>
+                    <i class="bi bi-chevron-right toggle-icon"></i>
+                </a>
+                <div class="collapse ms-3" id="importPrice">
+                    <ul class="list-unstyled ps-3 submenu">
+                        <li><a href="priceTable" title="Nova Tabela (XLS)"><i class="bi bi-file-earmark-spreadsheet me-2"></i><span class="label">Nova Tabela (XLS)</span></a></li>
+                        <li><a href="updatePriceTable" title="Atualizar Valores (XLS)"><i class="bi bi-arrow-repeat me-2"></i><span class="label">Atualizar Valores (XLS)</span></a></li>
+                    </ul>
+                </div>
+            </li>
+
+       
 
             <!-- Demanda -->
             <li class="mb-2">

@@ -18,7 +18,10 @@ namespace appWhatsapp
 
             // ✅ Usuários e Empresas
             routes.MapPageRoute("userCompanyManagement", "userCompanyManagement", "~/PlennuscGestao/Views/userCompanyManagement.aspx");
-            routes.MapPageRoute( "vincularEmpresasUsuario", "userCompanyRegistration", "~/PlennuscGestao/Views/userCompanyRegistration.aspx");
+            routes.MapPageRoute("vincularEmpresasUsuario", "userCompanyRegistration", "~/PlennuscGestao/Views/userCompanyRegistration.aspx");
+
+            // ✅ NOVA ROTA ADICIONADA - Vincular Sistemas e Menus ao Usuário
+            routes.MapPageRoute("userSystemMenuManagement", "userSystemMenuManagement", "~/PlennuscGestao/Views/userSystemMenuManagement.aspx");
 
             // ✅ Demandas
             routes.MapPageRoute("detailDemand", "detailDemand", "~/PlennuscGestao/Views/detailDemand.aspx");
@@ -49,6 +52,10 @@ namespace appWhatsapp
             routes.MapPageRoute("employeeManagement", "employeeManagement", "~/PlennuscGestao/Views/employeeManagement.aspx");
             routes.MapPageRoute("listPlatform", "listPlatform", "~/PlennuscGestao/Views/listPlatform.aspx");
 
+            // ✅ Gerenciamento de Menus - SEGUINDO SEU PADRÃO
+            routes.MapPageRoute("menusManagement", "menusManagement", "~/PlennuscGestao/Views/menusManagement.aspx");
+            routes.MapPageRoute("companyMenuManagementSystem", "companyMenuManagementSystem", "~/PlennuscGestao/Views/companyMenuManagementSystem.aspx");
+
             routes.MapPageRoute("homeManagement", "gestao/inicio", "~/PlennuscGestao/Views/homeManagement.aspx");
             routes.MapPageRoute("csvimportPlanium", "gestao/importacao/csv", "~/PlennuscGestao/Views/csvimportPlanium.aspx");
             routes.MapPageRoute("privacySettings", "gestao/configuracoes/privacidade", "~/PlennuscGestao/Views/privacySettings.aspx");
@@ -56,10 +63,6 @@ namespace appWhatsapp
             routes.MapPageRoute("structureType", "gestao/estruturas/tipos", "~/PlennuscGestao/Views/structureType.aspx");
             routes.MapPageRoute("Telabnvo", "gestao/tela-nova", "~/PlennuscGestao/Views/Telabnvo.aspx");
             routes.MapPageRoute("TempleteMensagem", "gestao/mensagens/templates", "~/PlennuscGestao/Views/TempleteMensagem.aspx");
-
-            // ✅ Gerenciamento de Menus - SEGUINDO SEU PADRÃO
-            routes.MapPageRoute("menusManagement", "menusManagement", "~/PlennuscGestao/Views/menusManagement.aspx");
-            routes.MapPageRoute("companyMenuManagementSystem", "companyMenuManagementSystem", "~/PlennuscGestao/Views/companyMenuManagementSystem.aspx");
 
             // ⚙️ Friendly URLs sem redirecionamento
             var settings = new FriendlyUrlSettings();
