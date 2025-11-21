@@ -152,24 +152,6 @@
                 <div class="collapse ms-3" id="collapseMenuParametrizacao">
                     <ul class="list-unstyled ps-3 submenu">
 
-                        <!-- Estruturas -->
-                        <li class="mb-2">
-                            <a class="d-flex justify-content-between align-items-center submenu-head"
-                                data-bs-toggle="collapse" href="#collapseSubMenuEstruturas"
-                                role="button" aria-expanded="false" aria-controls="collapseSubMenuEstruturas" title="Estruturas do Sistema">
-                                <span><i class="bi bi-diagram-3 me-2"></i><span class="label">Estruturas</span></span>
-                                <i class="bi bi-chevron-right toggle-icon"></i>
-                            </a>
-                            <div class="collapse ms-3" id="collapseSubMenuEstruturas">
-                                <ul class="list-unstyled ps-3 submenu">
-                                    <li><a href="registerStructureType" title="Tipos de Estrutura"><i class="bi bi-tags me-2"></i><span class="label">Tipos de Estrutura</span></a></li>
-                                    <li><a href="listStructureTypes" title="Lista Tipos Estrutura"><i class="bi bi-list-ul me-2"></i><span class="label">Lista de Estrutura</span></a></li>
-                                    <li><a href="registerStructures" title="Cadastrar Estruturas"><i class="bi bi-building-add me-2"></i><span class="label">Cadastrar Estruturas</span></a></li>
-                                    <li><a href="linkSector" title="Vincular Setor"><i class="bi bi-link-45deg me-2"></i><span class="label">Vincular Setor</span></a></li>
-                                </ul>
-                            </div>
-                        </li>
-
                         <!-- Menu -->
                         <li class="mb-2">
                             <a class="d-flex justify-content-between align-items-center submenu-head"
@@ -213,6 +195,23 @@
                             </div>
                         </li>
 
+                           <!-- Estruturas -->
+                       <li class="mb-2">
+                           <a class="d-flex justify-content-between align-items-center submenu-head"
+                               data-bs-toggle="collapse" href="#collapseSubMenuEstruturas"
+                               role="button" aria-expanded="false" aria-controls="collapseSubMenuEstruturas" title="Estruturas do Sistema">
+                               <span><i class="bi bi-diagram-3 me-2"></i><span class="label">Estruturas</span></span>
+                               <i class="bi bi-chevron-right toggle-icon"></i>
+                           </a>
+                           <div class="collapse ms-3" id="collapseSubMenuEstruturas">
+                               <ul class="list-unstyled ps-3 submenu">
+                                   <li><a href="registerStructureType" title="Tipos de Estrutura"><i class="bi bi-tags me-2"></i><span class="label">Tipos de Estrutura</span></a></li>
+                                   <li><a href="listStructureTypes" title="Lista Tipos Estrutura"><i class="bi bi-list-ul me-2"></i><span class="label">Lista de Estrutura</span></a></li>
+                                   <li><a href="registerStructures" title="Cadastrar Estruturas"><i class="bi bi-building-add me-2"></i><span class="label">Cadastrar Estruturas</span></a></li>
+                                   <li><a href="linkSector" title="Vincular Setor"><i class="bi bi-link-45deg me-2"></i><span class="label">Vincular Setor</span></a></li>
+                               </ul>
+                           </div>
+                       </li>
                     </ul>
                 </div>
             </li>
