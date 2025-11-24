@@ -3,117 +3,214 @@ using appWhatsapp.ViewsApp;
 using Plennusc.Core.Service.ServiceGestao;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace appWhatsapp.PlennuscGestao.Views.Masters
 {
-    public partial class Index : BaseMaster
+    public partial class Index : System.Web.UI.MasterPage
     {
-        // Adicione o método HasMenuAccess que está faltando:
-        private bool HasMenuAccess(int codMenu)
-        {
-            // Implemente sua lógica de permissão aqui
-            // Exemplo básico - ajuste conforme sua necessidade:
-            if (Session["PermissoesMenu"] != null)
-            {
-                var permissoes = Session["PermissoesMenu"] as List<int>;
-                return permissoes?.Contains(codMenu) ?? false;
-            }
-            return false;
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // Aplicar filtro de menus baseado nas permissões
-                ApplyMenuFiltering();
-
-                lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
-                lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
-
-                if (Session["CodSistema"] != null)
+                // 1. VERIFICA SE ESTÁ LOGADO
+                if (Session["CodUsuario"] == null && Session["CodUsuario"] == null)
                 {
-                    int codSistema = Convert.ToInt32(Session["CodSistema"]);
-                    CarregarInfoEmpresa(codSistema);
+                    System.Diagnostics.Debug.WriteLine("REDIRECIONANDO PARA LOGIN - NENHUM CodUsuario NA SESSÃO");
+                    Response.Redirect("~/ViewsApp/SignIn.aspx");
+                    return;
                 }
 
-                if (Session["CodPessoa"] == null)
+                // 2. VALIDA ACESSO À PÁGINA ATUAL (DINÂMICO)
+                if (!ValidarAcessoPaginaAtual())
                 {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "erroSessao",
-                        "Swal.fire('Sessão Expirada', 'Por favor, faça login novamente.', 'warning').then(() => { window.location = 'login.aspx'; });",
-                        true);
+                    Response.Redirect("~/ViewsApp/erro.aspx");
+                    return;
                 }
 
-                // VERIFICA SE É GESTOR E CONFIGURA O MENU
-                VerificarPermissoesMenu();
-                VerificarPermissaoEstruturas();
+                // 3. APLICA FILTRO DINÂMICO NOS MENUS
+                ApplyMenuFilteringDinamico();
 
-                int codUsuario = Convert.ToInt32(Session["CodUsuario"]);
-                PessoaDAO pessoaDao = new PessoaDAO();
-                DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
+                // 4. CONFIGURA USUÁRIO
+                ConfigurarUsuario();
 
-                if (pessoa != null)
+                // 5. VERIFICAÇÕES ESPECÍFICAS (gestor, admin)
+                VerificarPermissoesEspecificas();
+            }
+        }
+
+        private bool ValidarAcessoPaginaAtual()
+        {
+            try
+            {
+                if (Session["PermissoesPaginas"] == null)
                 {
-                    var foto = (pessoa["ImagemFoto"] ?? "").ToString().Trim();
-
-                    var defaultAvatar = ResolveUrl("~/public/uploadgestao/images/imgDefultAvatar.jpg");
-                    var fotoUrl = string.IsNullOrWhiteSpace(foto)
-                        ? defaultAvatar
-                        : ResolveUrl("~/public/uploadgestao/images/" + foto);
-
-                    imgAvatarUsuario.ImageUrl = fotoUrl;
-                    imgAvatarUsuario.AlternateText = "Avatar do Usuário";
-                    imgAvatarUsuario.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
-
-                    imgAvatarUsuarioDropdown.ImageUrl = fotoUrl;
-                    imgAvatarUsuarioDropdown.AlternateText = "Avatar do Usuário";
-                    imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+                    // Se não tem permissões carregadas, permite acesso (pode ser primeira vez)
+                    return true;
                 }
-                else
-                {
-                    var defaultAvatar = ResolveUrl("~/public/uploadgestao/images/imgDefultAvatar.jpg");
-                    imgAvatarUsuario.ImageUrl = defaultAvatar;
-                    imgAvatarUsuario.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
 
-                    imgAvatarUsuarioDropdown.ImageUrl = defaultAvatar;
-                    imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+                var permissoesPaginas = Session["PermissoesPaginas"] as System.Collections.Generic.Dictionary<string, bool>;
+                string paginaAtual = ObterNomePaginaAtual();
+
+                // Se não encontrou a página nas permissões, nega acesso
+                if (!permissoesPaginas.ContainsKey(paginaAtual))
+                    return false;
+
+                return permissoesPaginas[paginaAtual];
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ValidarAcessoPaginaAtual: {ex.Message}");
+                return false;
+            }
+        }
+
+        private string ObterNomePaginaAtual()
+        {
+            string url = Request.Url.AbsolutePath;
+            string[] partes = url.Split('/');
+            string pagina = partes[partes.Length - 1];
+
+            // Remove .aspx se existir
+            if (pagina.EndsWith(".aspx"))
+                pagina = pagina.Substring(0, pagina.Length - 5);
+
+            return pagina;
+        }
+
+        private void ApplyMenuFilteringDinamico()
+        {
+            try
+            {
+                if (Session["EstruturaMenus"] == null)
+                    return;
+
+                DataTable dtMenus = Session["EstruturaMenus"] as DataTable;
+
+                // PERCORRE TODOS OS CONTROLES DA PÁGINA E APLICA FILTRO DINÂMICO
+                ApplyFilterRecursive(Page, dtMenus);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ApplyMenuFilteringDinamico: {ex.Message}");
+            }
+        }
+
+        private void ApplyFilterRecursive(Control parent, DataTable dtMenus)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                // SE É UM ITEM DE MENU (LI)
+                if (control is HtmlGenericControl li && li.TagName == "li" && !string.IsNullOrEmpty(li.ID))
+                {
+                    string controlId = li.ID;
+
+                    // PROCURA O MENU NA ESTRUTURA PELO ID DO CONTROLE
+                    DataRow[] menuRows = dtMenus.Select($"NomeObjeto = '{controlId}' OR NomeDisplay LIKE '%{controlId}%'");
+
+                    if (menuRows.Length > 0)
+                    {
+                        bool temAcesso = Convert.ToBoolean(menuRows[0]["TemAcesso"]);
+                        li.Visible = temAcesso;
+                    }
+                    else
+                    {
+                        // SE NÃO ENCONTROU NA ESTRUTURA, TENTA PELO CONTEÚDO DO LINK
+                        ApplyFilterByLinkContent(li, dtMenus);
+                    }
+                }
+
+                // CONTINUA RECURSIVAMENTE
+                if (control.HasControls())
+                {
+                    ApplyFilterRecursive(control, dtMenus);
                 }
             }
         }
 
-        private void ApplyMenuFiltering()
+        private void ApplyFilterByLinkContent(HtmlGenericControl li, DataTable dtMenus)
         {
-            // Pessoas - CodMenu 5
-            var liPessoas = FindControl("liMenuPessoas") as HtmlGenericControl;
-            if (liPessoas != null) liPessoas.Visible = HasMenuAccess(5);
+            // PROCURA LINKS DENTRO DO LI
+            foreach (Control child in li.Controls)
+            {
+                if (child is HtmlAnchor anchor && !string.IsNullOrEmpty(anchor.HRef))
+                {
+                    string href = anchor.HRef.ToLower();
 
-            // Chatbot - CodMenu 11  
-            var liChatbot = FindControl("liMenuChatbot") as HtmlGenericControl;
-            if (liChatbot != null) liChatbot.Visible = HasMenuAccess(11);
+                    foreach (DataRow menuRow in dtMenus.Rows)
+                    {
+                        string nomeObjeto = menuRow["NomeObjeto"]?.ToString().ToLower();
+                        string httpRouter = menuRow["HttpRouter"]?.ToString().ToLower();
 
-            // Preços - CodMenu 15
-            var liPrecos = FindControl("liMenuPrecos") as HtmlGenericControl;
-            if (liPrecos != null) liPrecos.Visible = HasMenuAccess(15);
+                        bool match = (!string.IsNullOrEmpty(nomeObjeto) && href.Contains(nomeObjeto)) ||
+                                    (!string.IsNullOrEmpty(httpRouter) && href.Contains(httpRouter));
 
-            // Parametrização - CodMenu 18
-            if (liMenuParametrizacao != null)
-                liMenuParametrizacao.Visible = HasMenuAccess(18);
+                        if (match)
+                        {
+                            bool temAcesso = Convert.ToBoolean(menuRow["TemAcesso"]);
+                            li.Visible = temAcesso;
+                            return;
+                        }
+                    }
+                }
 
-            // Demanda - CodMenu 26
-            var liDemanda = FindControl("liMenuDemanda") as HtmlGenericControl;
-            if (liDemanda != null) liDemanda.Visible = HasMenuAccess(26);
+                // PROCURA RECURSIVAMENTE EM SUBMENUS
+                if (child is HtmlGenericControl childLi && childLi.HasControls())
+                {
+                    ApplyFilterByLinkContent(childLi, dtMenus);
+                }
+            }
         }
 
-        // ... (mantenha o restante do seu código existente: VerificarPermissoesMenu, ConfigurarMenuAdministrador, etc.)
-        // SEU CÓDIGO EXISTENTE AQUI - NÃO MUDEI
-        private void VerificarPermissoesMenu()
+        private void ConfigurarUsuario()
+        {
+            lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
+            lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Empresa";
+
+            if (Session["CodSistema"] != null)
+            {
+                int codSistema = Convert.ToInt32(Session["CodSistema"]);
+                CarregarInfoEmpresa(codSistema);
+            }
+
+            CarregarAvatarUsuario();
+        }
+
+        private void CarregarAvatarUsuario()
+        {
+            if (Session["CodUsuario"] != null)
+            {
+                int codUsuario = Convert.ToInt32(Session["CodUsuario"]);
+                PessoaDAO pessoaDao = new PessoaDAO();
+                DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
+
+                string defaultAvatar = ResolveUrl("~/public/uploadgestao/images/imgDefultAvatar.jpg");
+                string fotoUrl = defaultAvatar;
+
+                if (pessoa != null)
+                {
+                    var foto = (pessoa["ImagemFoto"] ?? "").ToString().Trim();
+                    if (!string.IsNullOrWhiteSpace(foto))
+                    {
+                        fotoUrl = ResolveUrl("~/public/uploadgestao/images/" + foto);
+                    }
+                }
+
+                imgAvatarUsuario.ImageUrl = fotoUrl;
+                imgAvatarUsuario.AlternateText = "Avatar do Usuário";
+                imgAvatarUsuario.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+
+                imgAvatarUsuarioDropdown.ImageUrl = fotoUrl;
+                imgAvatarUsuarioDropdown.AlternateText = "Avatar do Usuário";
+                imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+            }
+        }
+
+        // MANTENHA SEUS MÉTODOS EXISTENTES AQUI (sem alterações)
+        private void VerificarPermissoesEspecificas()
         {
             if (Session["CodPessoa"] != null && Session["CodDepartamento"] != null)
             {
@@ -134,36 +231,14 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
 
         private void ConfigurarMenuAdministrador(bool eAdministrador)
         {
-            Control menuEstruturas = FindControlRecursive(Page.Master, "liMenuEstruturas");
+            var menuEstruturas = FindControlRecursive(this, "liMenuEstruturas");
             if (menuEstruturas != null) menuEstruturas.Visible = eAdministrador;
         }
 
         private void ConfigurarMenuGestor(bool eGestor)
         {
-            Control menuItem = FindControlRecursive(Page.Master, "menuAguardandoAprovacao");
-            if (menuItem != null)
-            {
-                menuItem.Visible = eGestor;
-            }
-            else
-            {
-                Control menuContainer = FindControlRecursive(Page.Master, "subMenuMinhasDemandas");
-                if (menuContainer != null)
-                {
-                    foreach (Control control in menuContainer.Controls)
-                    {
-                        if (control is HtmlGenericControl li)
-                        {
-                            var link = li.FindControl("linkAguardando") as HtmlAnchor;
-                            if (link != null && link.HRef.Contains("myDemandsWaiting.aspx"))
-                            {
-                                li.Visible = eGestor;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            var linkAguardando = FindControl("linkAguardando") as HtmlGenericControl;
+            if (linkAguardando != null) linkAguardando.Visible = eGestor;
         }
 
         private Control FindControlRecursive(Control root, string id)
@@ -185,38 +260,15 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
 
             if (dtEmpresa.Rows.Count > 0)
             {
-                // imgLogo está comentado no HTML, então removemos a referência
-                // imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
                 lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
-        }
-
-        private void VerificarPermissaoEstruturas()
-        {
-            if (Session["CodPessoa"] != null)
-            {
-                int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
-                var demandaService = new DemandaService("Plennus");
-                bool eAdministrador = demandaService.VerificarSeEAdministrador(codPessoa);
-                Session["EAdministrador"] = eAdministrador;
-                ConfigurarMenuEstruturas(eAdministrador);
-            }
-        }
-
-        private void ConfigurarMenuEstruturas(bool eAdministrador)
-        {
-            Control menuItem = FindControlRecursive(this, "liMenuEstruturas");
-            if (menuItem != null) menuItem.Visible = eAdministrador;
         }
 
         protected void LogoutUsuario(object sender, EventArgs e)
         {
             Session.Clear();
             Session.Abandon();
-            string baseUrl = Request.Url.Host.Contains("localhost")
-                ? "https://localhost:44332"
-                : "http://plennuschomo.vallorbeneficios.com.br";
-            Response.Redirect($"{baseUrl}/ViewsApp/SignIn", true);
+            Response.Redirect("~/ViewsApp/SignIn.aspx", true);
         }
     }
 }

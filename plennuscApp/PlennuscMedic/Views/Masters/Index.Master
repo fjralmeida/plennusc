@@ -1,6 +1,6 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/ViewsApp/BaseMaster.master" 
-    AutoEventWireup="true" CodeBehind="Index.master.cs" 
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" 
     Inherits="appWhatsapp.PlennuscMedic.Views.Masters.Index" %>
+
 
 <!DOCTYPE html>
 <html>

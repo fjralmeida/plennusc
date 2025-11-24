@@ -127,6 +127,8 @@
     <Compile Include="Models\Utils\CriptografiaUtil.cs" />
     <Compile Include="Models\Utils\EstruturaTipos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ServiceGestao\autenticacao\AuthenticationService.cs" />
+    <Compile Include="Service\ServiceGestao\autenticacao\MenuService.cs" />
     <Compile Include="Service\ServiceGestao\company\CompanyService.cs" />
     <Compile Include="Service\ServiceGestao\company\UserCompanyService.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="Service\ServiceGestao\WhatsappServicePME.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\profileFinance\PessoaDAOFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\settingsFinance\PrivacySettingsFinance.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\autenticacao\PermissaoQuery.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\CompanyDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\UserCompanyQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\Demanda.cs" />

@@ -1,6 +1,7 @@
 ﻿using appWhatsapp.Data_Bd;
 using appWhatsapp.SqlQueries;
 using Microsoft.Ajax.Utilities;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao.autenticacao;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -25,8 +26,6 @@ namespace appWhatsapp.Views
 
                 if (dtPerfil.Rows.Count > 0)
                 {
-                    //lblNomeEmpresa.Text = dtPerfil.Rows[0]["Nome"]?.ToString();
-
                     string simbolo = dtPerfil.Rows[0]["Conf_Simbolo"]?.ToString();
                     if (!string.IsNullOrEmpty(simbolo))
                     {
@@ -75,7 +74,7 @@ namespace appWhatsapp.Views
 
             if (dtUser.Rows.Count > 0)
             {
-                var row = dtUser.Rows[0]; // ✅ já é do sistema certo por causa do filtro na SQL
+                var row = dtUser.Rows[0];
 
                 // Verifica se está liberado para uso
                 bool usuarioAtivo = Convert.ToBoolean(row["UsuarioAtivo"]);
@@ -106,6 +105,7 @@ namespace appWhatsapp.Views
                     return;
                 }
 
+                // ✅ SESSÕES DO USUÁRIO
                 Session["CodUsuario"] = row["CodAutenticacaoAcesso"];
                 Session["NomeUsuario"] = row["NomeUsuario"];
                 Session["CodEmpresa"] = row.Field<int>("CodEmpresa");
@@ -116,14 +116,15 @@ namespace appWhatsapp.Views
                 int? codDepto = row.IsNull("CodDepartamento") ? (int?)null : row.Field<int>("CodDepartamento");
                 Session["CodDepartamento"] = codDepto;
 
-                // [ADICIONADO] cargo e flag de gestor
                 int? codCargo = row.IsNull("CodCargo") ? (int?)null : row.Field<int>("CodCargo");
                 Session["CodCargo"] = codCargo;
                 Session["NomeCargo"] = row.IsNull("NomeCargo") ? null : row["NomeCargo"];
 
-                // Conf_TipoGestor: 1 = gestor; 0/null = não gestor
                 int confTipoGestor = row.IsNull("Conf_TipoGestor") ? 0 : Convert.ToInt32(row["Conf_TipoGestor"]);
                 Session["IsGestor"] = (confTipoGestor == 1);
+
+                // ✅ CARREGA PERMISSÕES DINÂMICAS
+                CarregarPermissoesDinamicas();
 
                 // Redireciona para a home correta
                 switch (codSistemaSelecionado)
@@ -150,6 +151,42 @@ namespace appWhatsapp.Views
             {
                 LabelErro.Text = "Usuário ou senha inválidos.";
                 LabelErro.Visible = true;
+            }
+        }
+
+        // ✅ MÉTODO PARA CARREGAR PERMISSÕES DINÂMICAS
+        private void CarregarPermissoesDinamicas()
+        {
+            try
+            {
+                if (Session["CodUsuario"] == null || Session["CodSistema"] == null || Session["CodEmpresa"] == null)
+                    return;
+
+                int codUsuario = Convert.ToInt32(Session["CodUsuario"]);
+                int codSistema = Convert.ToInt32(Session["CodSistema"]);
+                int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
+
+                // Usa o PermissaoQuery diretamente para carregar as permissões
+                var permissaoQuery = new PermissaoQuery();
+
+                // Carrega estrutura completa do menu
+                DataTable dtMenus = permissaoQuery.ObterEstruturaMenuCompleta(codUsuario, codSistema, codEmpresa);
+
+                // Carrega permissões das páginas
+                var permissoesPaginas = permissaoQuery.ObterPermissoesPaginas(codUsuario, codSistema, codEmpresa);
+
+
+                // Armazena na sessão
+                Session["CodUsuario"] = codUsuario;
+                Session["EstruturaMenus"] = dtMenus;
+                Session["PermissoesPaginas"] = permissoesPaginas;
+                Session["PermissoesCarregadas"] = true;
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO ao carregar permissões dinâmicas: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
             }
         }
     }

@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace appWhatsapp.PlennuscMedic.Views.Masters 
 {
-    public partial class Index : BaseMaster
+    public partial class Index : System.Web.UI.MasterPage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
