@@ -353,6 +353,7 @@
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Site.Master" />
+    <Content Include="ViewsApp\Unauthorized.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -829,6 +830,15 @@
     <Compile Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx.designer.cs">
       <DependentUpon>viewDemandBeforeAcceptMedic.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\DatabaseHelper.cs" />
+    <Compile Include="Utils\MenuAuthorization.cs" />
+    <Compile Include="ViewsApp\BaseMaster.Master.cs">
+      <DependentUpon>BaseMaster.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewsApp\BaseMaster.Master.designer.cs">
+      <DependentUpon>BaseMaster.Master</DependentUpon>
+    </Compile>
     <Compile Include="ViewsApp\erro.aspx.cs">
       <DependentUpon>erro.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -882,6 +892,13 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
+    <Compile Include="ViewsApp\Unauthorized.aspx.cs">
+      <DependentUpon>Unauthorized.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewsApp\Unauthorized.aspx.designer.cs">
+      <DependentUpon>Unauthorized.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -906,6 +923,7 @@
     <Content Include="ViewsApp\Index.Master" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
+    <Content Include="ViewsApp\BaseMaster.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,16 +1,15 @@
 ﻿using appWhatsapp.SqlQueries;
+using appWhatsapp.ViewsApp;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace PlennuscFinance.Views.Masters
+namespace appWhatsapp.PlennuscFinance.Views.Masters  
 {
-    public partial class Index : System.Web.UI.MasterPage
+    public partial class Index : BaseMaster
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -25,22 +24,35 @@ namespace PlennuscFinance.Views.Masters
                     CarregarInfoEmpresa(codSistema);
                 }
 
-                int codUsuario = Convert.ToInt32(Session["codUsuario"]);
+                int codUsuario = Convert.ToInt32(Session["CodUsuario"]); // CORRIGIDO: "CodUsuario" em vez de "codUsuario"
                 PessoaDAO pessoaDao = new PessoaDAO();
                 DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
 
                 if (pessoa != null)
                 {
-                    string foto = pessoa["ImagemFoto"]?.ToString().Trim();
+                    var foto = (pessoa["ImagemFoto"] ?? "").ToString().Trim();
 
-                    imgAvatarUsuario.ImageUrl = string.IsNullOrWhiteSpace(foto)
-                     ? ResolveUrl("~/assets/img/team/40x40/usuario.webp")
-                     : ResolveUrl("~/public/uploadgestao/images/" + foto);
-                    imgAvatarUsuarioDropdown.ImageUrl = imgAvatarUsuario.ImageUrl;
+                    var defaultAvatar = ResolveUrl("~/public/uploadfinance/images/imgDefultAvatar.jpg"); // CAMINHO CORRETO
+                    var fotoUrl = string.IsNullOrWhiteSpace(foto)
+                        ? defaultAvatar
+                        : ResolveUrl("~/public/uploadfinance/images/" + foto);
+
+                    imgAvatarUsuario.ImageUrl = fotoUrl;
+                    imgAvatarUsuario.AlternateText = "Avatar do Usuário";
+                    imgAvatarUsuario.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+
+                    imgAvatarUsuarioDropdown.ImageUrl = fotoUrl;
+                    imgAvatarUsuarioDropdown.AlternateText = "Avatar do Usuário";
+                    imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
                 }
                 else
                 {
-                    imgAvatarUsuario.ImageUrl = ResolveUrl("~/assets/img/team/40x40/usuario.webp");
+                    var defaultAvatar = ResolveUrl("~/public/uploadfinance/images/imgDefultAvatar.jpg");
+                    imgAvatarUsuario.ImageUrl = defaultAvatar;
+                    imgAvatarUsuario.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
+
+                    imgAvatarUsuarioDropdown.ImageUrl = defaultAvatar;
+                    imgAvatarUsuarioDropdown.Attributes["onerror"] = $"this.onerror=null;this.src='{defaultAvatar}';";
                 }
             }
         }
@@ -50,7 +62,7 @@ namespace PlennuscFinance.Views.Masters
             ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
             DataTable dtEmpresa = util.ConsultaInfoEmpresa(codSistema);
 
-            if (dtEmpresa.Rows.Count > 0)
+            if (dtEmpresa.Rows.Count > 0 && imgLogo != null)
             {
                 imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + dtEmpresa.Rows[0]["Conf_Logo"].ToString());
                 lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
@@ -61,22 +73,10 @@ namespace PlennuscFinance.Views.Masters
         {
             Session.Clear();
             Session.Abandon();
-
-            string baseUrl;
-
-            if (Request.Url.Host.Contains("localhost"))
-            {
-                // Ambiente local — endereço do PlennuscApp local
-                baseUrl = "https://localhost:44332";
-            }
-            else
-            {
-                // Ambiente de produção — endereço do PlennuscApp no servidor
-                baseUrl = "http://plennuschomo.vallorbeneficios.com.br";
-            }
-
-            string redirectUrl = $"{baseUrl}/ViewsApp/SignIn";
-            Response.Redirect(redirectUrl, true);
+            string baseUrl = Request.Url.Host.Contains("localhost")
+                ? "https://localhost:44332"
+                : "http://plennuschomo.vallorbeneficios.com.br";
+            Response.Redirect($"{baseUrl}/ViewsApp/SignIn", true);
         }
     }
 }

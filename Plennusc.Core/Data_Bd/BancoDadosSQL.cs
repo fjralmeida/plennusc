@@ -5,9 +5,10 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+
 namespace appWhatsapp.Data_Bd
 {
-    class Banco_Dados_SQLServer
+    public class Banco_Dados_SQLServer
     {
         private SqlConnection conAlianca;
         private SqlConnection conPlennus;

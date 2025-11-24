@@ -1,18 +1,17 @@
 ﻿using appWhatsapp.SqlQueries;
+using appWhatsapp.ViewsApp;
 using Plennusc.Core.Service.ServiceGestao;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
-namespace PlunnuscMedic.Views.Masters
+namespace appWhatsapp.PlennuscMedic.Views.Masters 
 {
-    public partial class Index : System.Web.UI.MasterPage
+    public partial class Index : BaseMaster
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -37,8 +36,7 @@ namespace PlunnuscMedic.Views.Masters
                 VerificarPermissaoMenu();
                 VerificarPermissaoEstruturas();
 
-
-                int codUsuario = Convert.ToInt32(Session["codUsuario"]);
+                int codUsuario = Convert.ToInt32(Session["CodUsuario"]); // CORRIGIDO: "CodUsuario" em vez de "codUsuario"
                 PessoaDAO pessoaDao = new PessoaDAO();
                 DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
 
@@ -46,7 +44,7 @@ namespace PlunnuscMedic.Views.Masters
                 {
                     var foto = (pessoa["ImagemFoto"] ?? "").ToString().Trim();
 
-                    var defaultAvatar = ResolveUrl("~/public/uploadmedic/images/imgDefultAvatar.jpg"); // <-- seu ícone padrão
+                    var defaultAvatar = ResolveUrl("~/public/uploadmedic/images/imgDefultAvatar.jpg");
                     var fotoUrl = string.IsNullOrWhiteSpace(foto)
                         ? defaultAvatar
                         : ResolveUrl("~/public/uploadmedic/images/" + foto);
@@ -78,20 +76,16 @@ namespace PlunnuscMedic.Views.Masters
                 int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
                 int codSetor = Convert.ToInt32(Session["CodDepartamento"]);
 
-                var demandaService = new DemandaService("Plennus"); // ou sua connection string
+                var demandaService = new DemandaService("Plennus");
                 bool eGestor = demandaService.VerificarSeEGestor(codPessoa, codSetor);
 
-                // Armazena na sessão para usar em outras páginas se necessário
                 Session["EGestor"] = eGestor;
-
-                // Configura a visibilidade do menu no front-end
                 ConfigurarMenuGestor(eGestor);
             }
         }
 
         private void ConfigurarMenuGestor(bool eGestor)
         {
-            // Encontra o controle específico do menu "Aguardando Aprovação"
             Control menuItem = FindControlRecursive(Page.Master, "menuAguardandoAprovacao");
 
             if (menuItem != null)
@@ -100,7 +94,6 @@ namespace PlunnuscMedic.Views.Masters
             }
             else
             {
-                // Se não encontrar pelo ID, tenta encontrar pela URL
                 Control menuContainer = FindControlRecursive(Page.Master, "subMenuMinhasDemandas");
                 if (menuContainer != null)
                 {
@@ -163,7 +156,6 @@ namespace PlunnuscMedic.Views.Masters
 
         private void ConfigurarMenuEstruturas(bool eAdministrador)
         {
-            // Encontra o controle específico do menu "Estruturas"
             Control menuItem = FindControlRecursive(this, "liMenuEstruturas");
 
             if (menuItem != null)
@@ -176,22 +168,10 @@ namespace PlunnuscMedic.Views.Masters
         {
             Session.Clear();
             Session.Abandon();
-
-            string baseUrl;
-
-            if (Request.Url.Host.Contains("localhost"))
-            {
-                // Ambiente local — endereço do PlennuscApp local
-                baseUrl = "https://localhost:44332";
-            }
-            else
-            {
-                // Ambiente de produção — endereço do PlennuscApp no servidor
-                baseUrl = "http://plennuschomo.vallorbeneficios.com.br";
-            }
-
-            string redirectUrl = $"{baseUrl}/ViewsApp/SignIn";
-            Response.Redirect(redirectUrl, true);
+            string baseUrl = Request.Url.Host.Contains("localhost")
+                ? "https://localhost:44332"
+                : "http://plennuschomo.vallorbeneficios.com.br";
+            Response.Redirect($"{baseUrl}/ViewsApp/SignIn", true);
         }
     }
 }
