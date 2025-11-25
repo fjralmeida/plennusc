@@ -84,11 +84,25 @@ namespace appWhatsapp.PlennuscGestao.Views
             var sistemaEmpresas = _service.ObterSistemaEmpresas(codAutenticacao);
             chkSistemaEmpresas.Items.Clear();
 
+            // ✅ CORREÇÃO: REMOVER DUPLICATAS
+            var sistemasUnicos = new Dictionary<string, ListItem>();
+
             foreach (var se in sistemaEmpresas)
             {
-                var listItem = new ListItem(se.SistemaEmpresaDisplay, se.CodSistemaEmpresa.ToString());
-                listItem.Selected = se.JaVinculado;
-                chkSistemaEmpresas.Items.Add(listItem);
+                string chaveUnica = $"{se.CodSistemaEmpresa}-{se.SistemaEmpresaDisplay}";
+
+                if (!sistemasUnicos.ContainsKey(chaveUnica))
+                {
+                    var listItem = new ListItem(se.SistemaEmpresaDisplay, se.CodSistemaEmpresa.ToString());
+                    listItem.Selected = se.JaVinculado;
+                    sistemasUnicos.Add(chaveUnica, listItem);
+                }
+            }
+
+            // ✅ ADICIONA APENAS OS ÚNICOS
+            foreach (var item in sistemasUnicos.Values)
+            {
+                chkSistemaEmpresas.Items.Add(item);
             }
         }
 

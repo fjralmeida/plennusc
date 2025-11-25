@@ -3,6 +3,7 @@ using appWhatsapp.ViewsApp;
 using Plennusc.Core.Service.ServiceGestao;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -14,48 +15,275 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // 1. VERIFICA SE ESTÁ LOGADO (SEM ISPOSTBACK)
+            if (Session["CodUsuario"] == null)
+            {
+                Response.Redirect("~/ViewsApp/SignIn.aspx");
+                return;
+            }
+
+            // 2. VALIDA ACESSO À PÁGINA ATUAL (SEM ISPOSTBACK)
+            if (!ValidarAcessoPaginaAtual())
+            {
+                Response.Redirect("~/ViewsApp/erro.aspx");
+                return;
+            }
+
+            // 3. ✅ GERA MENU DINÂMICO DO BANCO (SEM ISPOSTBACK)
+            GerarMenuDinamico();
+
+            // 5. CONFIGURA USUÁRIO (SÓ NA PRIMEIRA VEZ)
             if (!IsPostBack)
             {
-                // 1. VERIFICA SE ESTÁ LOGADO
-                if (Session["CodUsuario"] == null && Session["CodUsuario"] == null)
-                {
-                    System.Diagnostics.Debug.WriteLine("REDIRECIONANDO PARA LOGIN - NENHUM CodUsuario NA SESSÃO");
-                    Response.Redirect("~/ViewsApp/SignIn.aspx");
-                    return;
-                }
-
-                // 2. VALIDA ACESSO À PÁGINA ATUAL (DINÂMICO)
-                if (!ValidarAcessoPaginaAtual())
-                {
-                    Response.Redirect("~/ViewsApp/erro.aspx");
-                    return;
-                }
-
-                // 3. APLICA FILTRO DINÂMICO NOS MENUS
-                ApplyMenuFilteringDinamico();
-
-                // 4. CONFIGURA USUÁRIO
                 ConfigurarUsuario();
-
-                // 5. VERIFICAÇÕES ESPECÍFICAS (gestor, admin)
                 VerificarPermissoesEspecificas();
             }
         }
 
+        // ✅ MÉTODO PRINCIPAL - GERA MENU COMPLETO DO BANCO
+        private void GerarMenuDinamico()
+        {
+            try
+            {
+                if (Session["EstruturaMenus"] == null)
+                    return;
+
+                DataTable dtMenus = Session["EstruturaMenus"] as DataTable;
+                phMenuDinamico.Controls.Clear();
+
+                // ✅ CRIA CONTAINER PRINCIPAL
+                var ulPrincipal = new HtmlGenericControl("ul");
+                ulPrincipal.Attributes["class"] = "list-unstyled";
+
+                // ✅ FILTRA MENUS DE NÍVEL 1 (EXCLUINDO HOME, PROFILE E PRIVACY)
+                var menusNivel1 = dtMenus.Select("(CodMenuPai IS NULL OR CodMenuPai = 0) AND TemAcesso = 1 AND NomeObjeto NOT IN ('homeManagement', 'profile', 'privacySettings')", "Conf_Ordem ASC");
+
+                foreach (DataRow menu in menusNivel1)
+                {
+                    // ✅ CRIA CADA MENU PRINCIPAL
+                    var liMenu = CriarItemMenu(menu, dtMenus);
+                    ulPrincipal.Controls.Add(liMenu);
+                }
+
+                phMenuDinamico.Controls.Add(ulPrincipal);
+            }
+            catch (Exception ex)
+            {
+                // Log silencioso
+            }
+        }
+
+        // ✅ CRIA UM ITEM DE MENU (RECURSIVO PARA SUBMENUS) - CORRIGIDO
+        private HtmlGenericControl CriarItemMenu(DataRow menu, DataTable todosMenus)
+        {
+            int codMenu = Convert.ToInt32(menu["CodMenu"]);
+            string nomeDisplay = menu["NomeDisplay"].ToString();
+            string nomeObjeto = menu["NomeObjeto"].ToString();
+            string httpRouter = menu["HttpRouter"]?.ToString();
+            bool temAcesso = Convert.ToBoolean(menu["TemAcesso"]);
+
+            // ✅ SÓ CRIA SE TEM ACESSO
+            if (!temAcesso)
+                return new HtmlGenericControl("div"); // Retorna div vazia
+
+            // ✅ EXCLUI PÁGINAS QUE NÃO DEVEM APARECER NA BARRA LATERAL
+            var paginasOcultas = new List<string>
+            {
+                "employeeedit",
+                "viewdemandbeforeaccept",
+                "detaildemand",
+                "usercompanyregistration"
+            };
+
+            if (paginasOcultas.Contains(nomeObjeto.ToLower()))
+                return new HtmlGenericControl("div"); // Retorna div vazia
+
+            // ✅ CRIA O LI
+            var li = new HtmlGenericControl("li");
+            li.Attributes["class"] = "mb-2";
+            li.ID = $"liMenu_{codMenu}";
+
+            // ✅ VERIFICA SE TEM SUBMENUS
+            var subMenus = todosMenus.Select($"CodMenuPai = {codMenu} AND TemAcesso = 1", "Conf_Ordem ASC");
+            bool temSubMenus = subMenus.Length > 0;
+
+            if (temSubMenus)
+            {
+                // ✅ MENU COM SUBMENUS (COLLAPSE)
+                li.Controls.Add(CriarMenuComSubmenus(menu, subMenus, todosMenus));
+            }
+            else
+            {
+                // ✅ MENU SIMPLES (LINK DIRETO)
+                li.Controls.Add(CriarMenuSimples(menu));
+            }
+
+            return li;
+        }
+
+        // ✅ CRIA MENU COM SUBMENUS (COLLAPSE BOOTSTRAP) - CORRIGIDO
+        private HtmlGenericControl CriarMenuComSubmenus(DataRow menu, DataRow[] subMenus, DataTable todosMenus)
+        {
+            int codMenu = Convert.ToInt32(menu["CodMenu"]);
+            string nomeDisplay = menu["NomeDisplay"].ToString();
+            string icone = ObterIcone(menu);
+
+            var container = new HtmlGenericControl("div");
+
+            // ✅ LINK TOGGLE (MENU PRINCIPAL)
+            var linkToggle = new HtmlGenericControl("a");
+            linkToggle.Attributes["class"] = "d-flex justify-content-between align-items-center menu-head";
+            linkToggle.Attributes["data-bs-toggle"] = "collapse";
+            linkToggle.Attributes["href"] = $"#subMenu_{codMenu}";
+            linkToggle.Attributes["role"] = "button";
+            linkToggle.Attributes["aria-expanded"] = "false";
+            linkToggle.Attributes["aria-controls"] = $"subMenu_{codMenu}";
+            linkToggle.Attributes["title"] = menu["CaptionObjeto"]?.ToString() ?? nomeDisplay;
+
+            // ✅ ÍCONE E TEXTO
+            var span = new HtmlGenericControl("span");
+            var icon = new HtmlGenericControl("i");
+            icon.Attributes["class"] = icone;
+            span.Controls.Add(icon);
+            span.Controls.Add(new LiteralControl { Text = $"<strong class='label'>{nomeDisplay}</strong>" });
+
+            // ✅ ÍCONE TOGGLE
+            var toggleIcon = new HtmlGenericControl("i");
+            toggleIcon.Attributes["class"] = "bi bi-chevron-right toggle-icon";
+
+            linkToggle.Controls.Add(span);
+            linkToggle.Controls.Add(toggleIcon);
+
+            // ✅ CONTAINER SUBMENUS (COLLAPSE)
+            var collapseDiv = new HtmlGenericControl("div");
+            collapseDiv.ID = $"subMenu_{codMenu}";
+            collapseDiv.Attributes["class"] = "collapse ms-3";
+
+            var ulSubmenus = new HtmlGenericControl("ul");
+            ulSubmenus.Attributes["class"] = "list-unstyled ps-3 submenu";
+
+            // ✅ ADICIONA SUBMENUS (FILTRANDO OS QUE NÃO DEVEM APARECER)
+            var paginasOcultas = new List<string>
+            {
+                "employeeedit",
+                "viewdemandbeforeaccept",
+                "detaildemand",
+                "usercompanyregistration"
+            };
+
+            foreach (DataRow subMenu in subMenus)
+            {
+                string nomeObjetoSub = subMenu["NomeObjeto"].ToString().ToLower();
+
+                // ✅ SÓ ADICIONA SE NÃO ESTÁ NA LISTA DE OCULTAS
+                if (!paginasOcultas.Contains(nomeObjetoSub))
+                {
+                    var liSubMenu = CriarItemMenu(subMenu, todosMenus);
+                    ulSubmenus.Controls.Add(liSubMenu);
+                }
+            }
+
+            collapseDiv.Controls.Add(ulSubmenus);
+            container.Controls.Add(linkToggle);
+            container.Controls.Add(collapseDiv);
+
+            return container;
+        }
+
+        // ✅ CRIA MENU SIMPLES (LINK DIRETO)
+        private HtmlGenericControl CriarMenuSimples(DataRow menu)
+        {
+            string nomeDisplay = menu["NomeDisplay"].ToString();
+            string nomeObjeto = menu["NomeObjeto"].ToString();
+            string httpRouter = menu["HttpRouter"]?.ToString();
+            string icone = ObterIcone(menu);
+
+            var link = new HtmlGenericControl("a");
+
+            // ✅ PADRÃO CORRETO: Usa ResolveUrl para garantir o caminho absoluto
+            if (!string.IsNullOrEmpty(httpRouter))
+            {
+                link.Attributes["href"] = httpRouter;
+            }
+            else
+            {
+                // ✅ CORREÇÃO: Usa ResolveUrl para criar URL absoluta
+                link.Attributes["href"] = ResolveUrl($"~/{nomeObjeto}");
+            }
+
+            link.Attributes["title"] = menu["CaptionObjeto"]?.ToString() ?? nomeDisplay;
+
+            // ✅ ÍCONE E TEXTO
+            var icon = new HtmlGenericControl("i");
+            icon.Attributes["class"] = icone;
+            link.Controls.Add(icon);
+            link.Controls.Add(new LiteralControl { Text = $"<span class='label'>{nomeDisplay}</span>" });
+
+            return link;
+        }
+        // ✅ DEFINE ÍCONE BASEADO NO TIPO DE MENU
+        private string ObterIcone(DataRow menu)
+        {
+            string nomeObjeto = menu["NomeObjeto"].ToString().ToLower();
+            string nomeDisplay = menu["NomeDisplay"].ToString().ToLower();
+
+            if (nomeObjeto.Contains("home") || nomeDisplay.Contains("inicio"))
+                return "bi bi-house me-2";
+
+            if (nomeObjeto.Contains("pessoa") || nomeDisplay.Contains("usuário") || nomeDisplay.Contains("usuario"))
+                return "bi bi-person me-2";
+
+            if (nomeObjeto.Contains("empresa") || nomeDisplay.Contains("empresa"))
+                return "bi bi-building me-2";
+
+            if (nomeObjeto.Contains("departamento") || nomeDisplay.Contains("departamento"))
+                return "bi bi-diagram-3 me-2";
+
+            if (nomeObjeto.Contains("cargo") || nomeDisplay.Contains("cargo"))
+                return "bi bi-briefcase me-2";
+
+            if (nomeObjeto.Contains("parametrizacao") || nomeDisplay.Contains("parametrização"))
+                return "bi bi-gear me-2";
+
+            if (nomeObjeto.Contains("sistema") || nomeDisplay.Contains("sistema"))
+                return "bi bi-window-stack me-2";
+
+            if (nomeObjeto.Contains("estrutura") || nomeDisplay.Contains("estrutura"))
+                return "bi bi-diagram-3 me-2";
+
+            if (nomeObjeto.Contains("chatbot") || nomeDisplay.Contains("chatbot"))
+                return "bi bi-robot me-2";
+
+            if (nomeObjeto.Contains("mensagem") || nomeDisplay.Contains("mensagem"))
+                return "bi bi-chat-dots me-2";
+
+            if (nomeObjeto.Contains("preco") || nomeDisplay.Contains("preço") || nomeDisplay.Contains("precos"))
+                return "bi bi-currency-dollar me-2";
+
+            if (nomeObjeto.Contains("demanda") || nomeDisplay.Contains("demanda"))
+                return "bi bi-envelope me-2";
+
+            if (nomeObjeto.Contains("profile") || nomeDisplay.Contains("perfil"))
+                return "bi bi-person me-2";
+
+            if (nomeObjeto.Contains("privacy") || nomeDisplay.Contains("privacidade"))
+                return "bi bi-shield-lock me-2";
+
+            // ✅ ÍCONE PADRÃO
+            return "bi bi-circle me-2";
+        }
+
+        // ✅ MÉTODOS EXISTENTES (MANTIDOS)
         private bool ValidarAcessoPaginaAtual()
         {
             try
             {
                 if (Session["PermissoesPaginas"] == null)
-                {
-                    // Se não tem permissões carregadas, permite acesso (pode ser primeira vez)
                     return true;
-                }
 
                 var permissoesPaginas = Session["PermissoesPaginas"] as System.Collections.Generic.Dictionary<string, bool>;
                 string paginaAtual = ObterNomePaginaAtual();
 
-                // Se não encontrou a página nas permissões, nega acesso
                 if (!permissoesPaginas.ContainsKey(paginaAtual))
                     return false;
 
@@ -63,7 +291,6 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Erro ValidarAcessoPaginaAtual: {ex.Message}");
                 return false;
             }
         }
@@ -74,95 +301,10 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             string[] partes = url.Split('/');
             string pagina = partes[partes.Length - 1];
 
-            // Remove .aspx se existir
             if (pagina.EndsWith(".aspx"))
                 pagina = pagina.Substring(0, pagina.Length - 5);
 
             return pagina;
-        }
-
-        private void ApplyMenuFilteringDinamico()
-        {
-            try
-            {
-                if (Session["EstruturaMenus"] == null)
-                    return;
-
-                DataTable dtMenus = Session["EstruturaMenus"] as DataTable;
-
-                // PERCORRE TODOS OS CONTROLES DA PÁGINA E APLICA FILTRO DINÂMICO
-                ApplyFilterRecursive(Page, dtMenus);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Erro ApplyMenuFilteringDinamico: {ex.Message}");
-            }
-        }
-
-        private void ApplyFilterRecursive(Control parent, DataTable dtMenus)
-        {
-            foreach (Control control in parent.Controls)
-            {
-                // SE É UM ITEM DE MENU (LI)
-                if (control is HtmlGenericControl li && li.TagName == "li" && !string.IsNullOrEmpty(li.ID))
-                {
-                    string controlId = li.ID;
-
-                    // PROCURA O MENU NA ESTRUTURA PELO ID DO CONTROLE
-                    DataRow[] menuRows = dtMenus.Select($"NomeObjeto = '{controlId}' OR NomeDisplay LIKE '%{controlId}%'");
-
-                    if (menuRows.Length > 0)
-                    {
-                        bool temAcesso = Convert.ToBoolean(menuRows[0]["TemAcesso"]);
-                        li.Visible = temAcesso;
-                    }
-                    else
-                    {
-                        // SE NÃO ENCONTROU NA ESTRUTURA, TENTA PELO CONTEÚDO DO LINK
-                        ApplyFilterByLinkContent(li, dtMenus);
-                    }
-                }
-
-                // CONTINUA RECURSIVAMENTE
-                if (control.HasControls())
-                {
-                    ApplyFilterRecursive(control, dtMenus);
-                }
-            }
-        }
-
-        private void ApplyFilterByLinkContent(HtmlGenericControl li, DataTable dtMenus)
-        {
-            // PROCURA LINKS DENTRO DO LI
-            foreach (Control child in li.Controls)
-            {
-                if (child is HtmlAnchor anchor && !string.IsNullOrEmpty(anchor.HRef))
-                {
-                    string href = anchor.HRef.ToLower();
-
-                    foreach (DataRow menuRow in dtMenus.Rows)
-                    {
-                        string nomeObjeto = menuRow["NomeObjeto"]?.ToString().ToLower();
-                        string httpRouter = menuRow["HttpRouter"]?.ToString().ToLower();
-
-                        bool match = (!string.IsNullOrEmpty(nomeObjeto) && href.Contains(nomeObjeto)) ||
-                                    (!string.IsNullOrEmpty(httpRouter) && href.Contains(httpRouter));
-
-                        if (match)
-                        {
-                            bool temAcesso = Convert.ToBoolean(menuRow["TemAcesso"]);
-                            li.Visible = temAcesso;
-                            return;
-                        }
-                    }
-                }
-
-                // PROCURA RECURSIVAMENTE EM SUBMENUS
-                if (child is HtmlGenericControl childLi && childLi.HasControls())
-                {
-                    ApplyFilterByLinkContent(childLi, dtMenus);
-                }
-            }
         }
 
         private void ConfigurarUsuario()
@@ -209,7 +351,6 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             }
         }
 
-        // MANTENHA SEUS MÉTODOS EXISTENTES AQUI (sem alterações)
         private void VerificarPermissoesEspecificas()
         {
             if (Session["CodPessoa"] != null && Session["CodDepartamento"] != null)
