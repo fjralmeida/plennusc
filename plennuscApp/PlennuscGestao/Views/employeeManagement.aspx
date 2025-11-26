@@ -491,7 +491,7 @@
                                 <ItemStyle Width="90px" HorizontalAlign="Center" />
                                 <ItemTemplate>
                                     <asp:PlaceHolder ID="phEditar" runat="server">
-                                        <a class="btn-editar" href='<%# "employeeEdit.aspx?id=" + Eval("CodPessoa") %>'>
+                                       <a class="btn-editar" href='<%# "employeeEdit?id=" + Eval("CodPessoa") %>'>
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                     </asp:PlaceHolder>

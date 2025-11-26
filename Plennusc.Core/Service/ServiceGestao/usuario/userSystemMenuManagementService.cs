@@ -136,7 +136,7 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
             }
         }
 
-        public bool VincularMenuUsuario(int codSistemaEmpresa, int codAutenticacao, int codSistemaEmpresaMenu)
+        public bool VincularMenuUsuario(int codSistemaEmpresa, int codAutenticacao, int codMenu)
         {
             try
             {
@@ -144,9 +144,10 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
                 {
                     { "@CodSistemaEmpresa", codSistemaEmpresa },
                     { "@CodAutenticacao", codAutenticacao },
-                    { "@CodSistemaEmpresaMenu", codSistemaEmpresaMenu }
+                    { "@CodMenu", codMenu }
                 };
 
+                // ✅ USA A QUERY DO ARQUIVO SEPARADO, DESGRAÇA!
                 int registrosAfetados = _db.ExecutarPlennusLinhasAfetadas(
                     userSystemMenuManagementQueries.VincularMenuUsuario, parametros);
 

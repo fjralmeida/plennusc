@@ -44,8 +44,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Session["Vinculacao_CodPessoa"] = args[0];
                 Session["Vinculacao_CodAutenticacao"] = args[1];
 
-                // Redireciona via rota amigável, sem parâmetros na URL
-                string url = GetRouteUrl("vincularEmpresasUsuario", null);
+                // ✅ CORREÇÃO: Usar a rota existente "userCompanyRegistration"
+                string url = GetRouteUrl("userCompanyRegistration", null);
                 Response.Redirect(url, false);
             }
         }

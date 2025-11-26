@@ -61,6 +61,9 @@ namespace appWhatsapp
             routes.MapPageRoute("profile", "profile", "~/PlennuscGestao/Views/profile.aspx");
             routes.MapPageRoute("homeManagement", "homeManagement", "~/PlennuscGestao/Views/homeManagement.aspx");
 
+            // ✅ Adicionar esta rota - Vincular Empresas Usuário
+            routes.MapPageRoute("vincularEmpresasUsuario", "vincularEmpresasUsuario", "~/PlennuscGestao/Views/userCompanyRegistration.aspx");
+
             // ✅ Rota padrão
             routes.MapPageRoute("default", "", "~/PlennuscGestao/Views/homeManagement.aspx");
 

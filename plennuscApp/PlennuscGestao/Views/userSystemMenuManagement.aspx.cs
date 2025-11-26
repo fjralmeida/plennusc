@@ -240,23 +240,23 @@ namespace appWhatsapp.PlennuscGestao.Views
             return resultado;
         }
 
-private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEmpresaMenu> todosMenus, List<UsuarioSistemaEmpresaMenu> resultado)
-{
-    // Buscar filhos deste menu pai específico
-    var filhos = todosMenus.Where(m => m.CodMenuPai == codMenuPai)
-                          .OrderBy(m => m.Conf_Ordem)
-                          .ThenBy(m => m.NomeDisplay)
-                          .ToList();
+        private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEmpresaMenu> todosMenus, List<UsuarioSistemaEmpresaMenu> resultado)
+        {
+            // Buscar filhos deste menu pai específico
+            var filhos = todosMenus.Where(m => m.CodMenuPai == codMenuPai)
+                                  .OrderBy(m => m.Conf_Ordem)
+                                  .ThenBy(m => m.NomeDisplay)
+                                  .ToList();
 
-    foreach (var filho in filhos)
-    {
-        // Adiciona o filho à lista resultado
-        resultado.Add(filho);
+            foreach (var filho in filhos)
+            {
+                // Adiciona o filho à lista resultado
+                resultado.Add(filho);
         
-        // Buscar netos recursivamente (nível +1)
-        AdicionarFilhosRecursivamente(filho.CodMenu, todosMenus, resultado);
-    }
-}
+                // Buscar netos recursivamente (nível +1)
+                AdicionarFilhosRecursivamente(filho.CodMenu, todosMenus, resultado);
+            }
+        }
 
         protected void btnSalvarVinculos_Click(object sender, EventArgs e)
         {
@@ -312,20 +312,18 @@ private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEm
 
         private void VincularMenusUsuario(int codSistemaEmpresa, int codAutenticacao)
         {
-            // Encontra o CheckBoxList específico para este Sistema×Empresa
             var chkMenus = pnlMultiplosMenus.FindControl($"chkMenus_{codSistemaEmpresa}") as CheckBoxList;
 
             if (chkMenus != null)
             {
-                // Primeiro remove todos os vínculos de menu para este usuário neste sistema×empresa
+                // PRIMEIRO DESVINCULA TUDO
                 _service.DesvincularTodosMenusUsuario(codSistemaEmpresa, codAutenticacao);
 
-                // Depois adiciona os selecionados
+                // DEPOIS VINCULA OS SELECIONADOS
                 foreach (ListItem menu in chkMenus.Items)
                 {
                     if (menu.Selected)
                     {
-                        // AQUI ESTÁ O PROBLEMA - Use o código do menu, não do sistema×empresa
                         int codMenu = Convert.ToInt32(menu.Value);
                         _service.VincularMenuUsuario(codSistemaEmpresa, codAutenticacao, codMenu);
                     }
