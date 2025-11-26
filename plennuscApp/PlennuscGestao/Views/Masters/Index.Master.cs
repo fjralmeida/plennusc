@@ -23,7 +23,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             }
 
             // 2. VALIDA ACESSO À PÁGINA ATUAL (SEM ISPOSTBACK)
-            if (!ValidarAcessoPaginaAtual())
+                if (!ValidarAcessoPaginaAtual())
             {
                 Response.Redirect("~/ViewsApp/erro.aspx");
                 return;
