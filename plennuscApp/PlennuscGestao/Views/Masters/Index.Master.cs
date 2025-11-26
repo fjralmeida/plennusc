@@ -121,7 +121,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             return li;
         }
 
-        // ✅ CRIA MENU COM SUBMENUS (COLLAPSE BOOTSTRAP) - CORRIGIDO
+        // ✅ CRIA MENU COM SUBMENUS (COLLAPSE BOOTSTRAP) 
         private HtmlGenericControl CriarMenuComSubmenus(DataRow menu, DataRow[] subMenus, DataTable todosMenus)
         {
             int codMenu = Convert.ToInt32(menu["CodMenu"]);
@@ -190,6 +190,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             return container;
         }
 
+
         // ✅ CRIA MENU SIMPLES (LINK DIRETO)
         private HtmlGenericControl CriarMenuSimples(DataRow menu)
         {
@@ -212,56 +213,142 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             }
 
             link.Attributes["title"] = menu["CaptionObjeto"]?.ToString() ?? nomeDisplay;
+            link.Attributes["class"] = "d-flex align-items-center"; // ✅ ADICIONA FLEX PARA ALINHAR ÍCONE E TEXTO
 
-            // ✅ ÍCONE E TEXTO
+            // ✅ ÍCONE E TEXTO - CORRIGIDO
             var icon = new HtmlGenericControl("i");
             icon.Attributes["class"] = icone;
             link.Controls.Add(icon);
-            link.Controls.Add(new LiteralControl { Text = $"<span class='label'>{nomeDisplay}</span>" });
+
+            var span = new HtmlGenericControl("span");
+            span.Attributes["class"] = "label";
+            span.InnerText = nomeDisplay;
+            link.Controls.Add(span);
 
             return link;
         }
-        // ✅ DEFINE ÍCONE BASEADO NO TIPO DE MENU
+
+        // ✅ DEFINE ÍCONE BASEADO NO TIPO DE MENU - CORRIGIDO SEM REPETIÇÕES
         private string ObterIcone(DataRow menu)
         {
             string nomeObjeto = menu["NomeObjeto"].ToString().ToLower();
             string nomeDisplay = menu["NomeDisplay"].ToString().ToLower();
+            string captionObjeto = menu["CaptionObjeto"]?.ToString().ToLower() ?? "";
 
-            if (nomeObjeto.Contains("home") || nomeDisplay.Contains("inicio"))
-                return "bi bi-house me-2";
+            // ✅ MENU (dentro de parametrização) - PRIMEIRO PARA EVITAR CONFLITOS
+            if (nomeObjeto.Contains("menumenu") || (nomeDisplay.Contains("menu") && captionObjeto.Contains("menu")))
+                return "bi bi-menu-button me-2";
 
-            if (nomeObjeto.Contains("pessoa") || nomeDisplay.Contains("usuário") || nomeDisplay.Contains("usuario"))
-                return "bi bi-person me-2";
+            if (nomeDisplay.Contains("cadastro empresa") || nomeObjeto.Contains("companyregistration"))
+                return "bi bi-building-add me-2";
 
-            if (nomeObjeto.Contains("empresa") || nomeDisplay.Contains("empresa"))
-                return "bi bi-building me-2";
+            if (nomeDisplay.Contains("sistemas x empresa"))
+                return "bi bi-link-45deg me-2";
 
-            if (nomeObjeto.Contains("departamento") || nomeDisplay.Contains("departamento"))
-                return "bi bi-diagram-3 me-2";
-
-            if (nomeObjeto.Contains("cargo") || nomeDisplay.Contains("cargo"))
-                return "bi bi-briefcase me-2";
-
-            if (nomeObjeto.Contains("parametrizacao") || nomeDisplay.Contains("parametrização"))
-                return "bi bi-gear me-2";
-
-            if (nomeObjeto.Contains("sistema") || nomeDisplay.Contains("sistema"))
+            // ✅ PARAMETRIZAÇÃO - SISTEMAS
+            if (nomeObjeto.Contains("menusistemas"))
                 return "bi bi-window-stack me-2";
 
-            if (nomeObjeto.Contains("estrutura") || nomeDisplay.Contains("estrutura"))
-                return "bi bi-diagram-3 me-2";
+            if (nomeDisplay.Contains("listar sistema"))
+                return "bi bi-list-check me-2";
 
-            if (nomeObjeto.Contains("chatbot") || nomeDisplay.Contains("chatbot"))
-                return "bi bi-robot me-2";
+            if (nomeDisplay.Contains("sistema x menu"))
+                return "bi bi-link-45deg me-2";
 
-            if (nomeObjeto.Contains("mensagem") || nomeDisplay.Contains("mensagem"))
-                return "bi bi-chat-dots me-2";
-
-            if (nomeObjeto.Contains("preco") || nomeDisplay.Contains("preço") || nomeDisplay.Contains("precos"))
+            // ✅ PREÇOS
+            if (nomeObjeto.Contains("menuprecos") || nomeDisplay.Contains("preço") || nomeDisplay.Contains("precos"))
                 return "bi bi-currency-dollar me-2";
 
-            if (nomeObjeto.Contains("demanda") || nomeDisplay.Contains("demanda"))
+            if (nomeDisplay.Contains("nova tabela"))
+                return "bi bi-file-earmark-spreadsheet me-2";
+
+            if (nomeDisplay.Contains("atualizar valor"))
+                return "bi bi-arrow-repeat me-2";
+
+            // ✅ DEMANDA
+            if (nomeObjeto.Contains("menudemandas"))
                 return "bi bi-envelope me-2";
+
+            if (nomeDisplay.Contains("criar demanda"))
+                return "bi bi-plus-circle me-2";
+
+            if (nomeDisplay.Contains("listar demanda"))
+                return "bi bi-list-ul me-2";
+
+            if (nomeDisplay.Contains("minhas demanda"))
+                return "bi bi-inboxes me-2";
+
+            // ✅ MINHAS DEMANDAS - SUBITENS
+            if (nomeDisplay.Contains("em aberto"))
+                return "bi bi-folder2-open me-2";
+
+            if (nomeDisplay.Contains("em andamento"))
+                return "bi bi-hourglass-split me-2";
+
+            if (nomeDisplay.Contains("aguardando"))
+                return "bi bi-clock-history me-2";
+
+            if (nomeDisplay.Contains("recusada"))
+                return "bi bi-x-circle me-2";
+
+            if (nomeDisplay.Contains("concluída"))
+                return "bi bi-check-circle me-2";
+
+            // ✅ PESSOAS
+            if (nomeObjeto.Contains("menupessoas") || nomeDisplay.Contains("pessoas"))
+                return "bi bi-person-badge me-2";
+
+            if (nomeDisplay.Contains("incluir usuário") || nomeDisplay.Contains("incluir usuario"))
+                return "bi bi-person-plus me-2";
+
+            if (nomeDisplay.Contains("consultar usuário") || nomeDisplay.Contains("consultar usuario"))
+                return "bi bi-search me-2";
+
+            if (nomeDisplay.Contains("vincular empresa") || nomeObjeto.Contains("usercompanymanagement"))
+                return "bi bi-building-check me-2";
+
+            if (nomeDisplay.Contains("departamento") || nomeObjeto.Contains("employeedepartment"))
+                return "bi bi-diagram-3 me-2";
+
+            if (nomeDisplay.Contains("cargo") || nomeObjeto.Contains("employeeposition"))
+                return "bi bi-briefcase me-2";
+
+            // ✅ PARAMETRIZAÇÃO (menu principal)
+            if (nomeObjeto.Contains("menuparametrizacao") || nomeDisplay.Contains("parametrização"))
+                return "bi bi-gear me-2";
+
+            // ✅ ESTRUTURAS
+            if (nomeObjeto.Contains("menuestruturas") || nomeDisplay.Contains("estruturas"))
+                return "bi bi-diagram-3 me-2";
+
+            if (nomeDisplay.Contains("tipos de estrutura") || nomeObjeto.Contains("registerstructuretype"))
+                return "bi bi-tags me-2";
+
+            if (nomeDisplay.Contains("lista de estrutura") || nomeObjeto.Contains("liststructuretypes"))
+                return "bi bi-list-ul me-2";
+
+            if (nomeDisplay.Contains("cadastrar estrutura") || nomeObjeto.Contains("registerstructures"))
+                return "bi bi-building-add me-2";
+
+            if (nomeDisplay.Contains("vincular setor") || nomeObjeto.Contains("linksector"))
+                return "bi bi-shuffle me-2";
+
+            // ✅ CHATBOT
+            if (nomeObjeto.Contains("menuchatbot") || nomeDisplay.Contains("chatbot"))
+                return "bi bi-robot me-2";
+
+            if (nomeDisplay.Contains("beneficiário") || nomeObjeto.Contains("sendmessagebeneficiary"))
+                return "bi bi-person-lines-fill me-2";
+
+            if (nomeDisplay.Contains("pme") || nomeObjeto.Contains("sendcompanymessage"))
+                return "bi bi-building me-2";
+
+            if (nomeDisplay.Contains("msg fixa") || nomeObjeto.Contains("fixedmessagesending"))
+                return "bi bi-pin-angle me-2";
+
+            // ✅ OUTROS
+            if (nomeObjeto.Contains("home") || nomeDisplay.Contains("inicio"))
+                return "bi bi-house me-2";
 
             if (nomeObjeto.Contains("profile") || nomeDisplay.Contains("perfil"))
                 return "bi bi-person me-2";
