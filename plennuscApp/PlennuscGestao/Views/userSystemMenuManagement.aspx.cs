@@ -186,7 +186,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             foreach (var menu in menusOrdenados)
             {
                 var prefix = new string('─', (menu.Conf_Nivel - 1) * 2);
-                var listItem = new ListItem($"{prefix} {menu.NomeDisplay}", menu.CodSistemaEmpresaMenu.ToString());
+                var listItem = new ListItem($"{prefix} {menu.NomeDisplay}", menu.CodMenu.ToString()); // ✅ MUDOU AQUI!
                 listItem.Selected = menu.MenuJaVinculado;
 
                 listItem.Attributes["class"] = $"menu-item level-{menu.Conf_Nivel}";

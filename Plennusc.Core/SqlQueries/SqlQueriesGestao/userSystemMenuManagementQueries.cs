@@ -84,30 +84,17 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
             WHERE CodSistemaEmpresa = @CodSistemaEmpresa 
             AND CodAutenticacaoAcesso = @CodAutenticacao";
         public static string VincularMenuUsuario = @"
-            -- ✅ VERIFICA SE JÁ EXISTE ANTES DE INSERIR
-            IF NOT EXISTS (
-                SELECT 1 
-                FROM SistemaEmpresaMenuUsuario semu
-                INNER JOIN SistemaEmpresaMenu sem ON semu.CodSistemaEmpresaMenu = sem.CodSistemaEmpresaMenu
-                WHERE sem.CodSistemaEmpresa = @CodSistemaEmpresa 
-                AND sem.CodMenu = @CodMenu
-                AND semu.CodAutenticacaoAcesso = @CodAutenticacao
-            )
-            BEGIN
-                INSERT INTO SistemaEmpresaMenuUsuario 
-                (CodSistemaEmpresaUsuario, CodAutenticacaoAcesso, CodSistemaEmpresaMenu, DataHoraLiberacao, Conf_LiberaAcesso)
-                SELECT 
-                    seu.CodSistemaEmpresaUsuario,
-                    @CodAutenticacao,
-                    sem.CodSistemaEmpresaMenu,
-                    GETDATE(),
-                    1
-                FROM SistemaEmpresaUsuario seu
-                INNER JOIN SistemaEmpresaMenu sem ON seu.CodSistemaEmpresa = sem.CodSistemaEmpresa
-                WHERE seu.CodSistemaEmpresa = @CodSistemaEmpresa
-                AND seu.CodAutenticacaoAcesso = @CodAutenticacao
-                AND sem.CodMenu = @CodMenu
-            END";
+            INSERT INTO SistemaEmpresaMenuUsuario 
+            (CodSistemaEmpresaUsuario, CodAutenticacaoAcesso, CodSistemaEmpresaMenu, DataHoraLiberacao, Conf_LiberaAcesso)
+            SELECT 
+                seu.CodSistemaEmpresaUsuario,
+                @CodAutenticacao,
+                @CodSistemaEmpresaMenu,  -- ✅ AGORA USA O PARÂMETRO DIRETO!
+                GETDATE(),
+                1
+            FROM SistemaEmpresaUsuario seu
+            WHERE seu.CodSistemaEmpresa = @CodSistemaEmpresa
+            AND seu.CodAutenticacaoAcesso = @CodAutenticacao";
 
         public static string DesvincularTodosMenusUsuario = @"
             DELETE FROM SistemaEmpresaMenuUsuario 

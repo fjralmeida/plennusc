@@ -140,16 +140,26 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
         {
             try
             {
+                // PRIMEIRO OBTÉM O CodSistemaEmpresaMenu CORRETO
+                int? codSistemaEmpresaMenu = ObterCodSistemaEmpresaMenu(codSistemaEmpresa, codMenu);
+
+                if (!codSistemaEmpresaMenu.HasValue)
+                {
+                    System.Diagnostics.Debug.WriteLine($"ERRO: Não encontrou CodSistemaEmpresaMenu para CodSistemaEmpresa={codSistemaEmpresa}, CodMenu={codMenu}");
+                    return false;
+                }
+
                 var parametros = new Dictionary<string, object>
                 {
                     { "@CodSistemaEmpresa", codSistemaEmpresa },
                     { "@CodAutenticacao", codAutenticacao },
-                    { "@CodMenu", codMenu }
+                    { "@CodSistemaEmpresaMenu", codSistemaEmpresaMenu.Value } // ✅ AGORA CORRETO!
                 };
 
-                // ✅ USA A QUERY DO ARQUIVO SEPARADO, DESGRAÇA!
                 int registrosAfetados = _db.ExecutarPlennusLinhasAfetadas(
                     userSystemMenuManagementQueries.VincularMenuUsuario, parametros);
+
+                System.Diagnostics.Debug.WriteLine($"VincularMenuUsuario: CodSistemaEmpresa={codSistemaEmpresa}, CodAutenticacao={codAutenticacao}, CodMenu={codMenu}, CodSistemaEmpresaMenu={codSistemaEmpresaMenu.Value}, LinhasAfetadas={registrosAfetados}");
 
                 return registrosAfetados > 0;
             }
@@ -157,6 +167,34 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
             {
                 System.Diagnostics.Debug.WriteLine($"Erro ao vincular menu ao usuário: {ex.Message}");
                 return false;
+            }
+        }
+
+        // ADICIONA ESSE MÉTODO NO SERVICE, SEU DESGRAÇADO!
+        public int? ObterCodSistemaEmpresaMenu(int codSistemaEmpresa, int codMenu)
+        {
+            try
+            {
+                var parametros = new Dictionary<string, object>
+        {
+            { "@CodSistemaEmpresa", codSistemaEmpresa },
+            { "@CodMenu", codMenu }
+        };
+
+                string query = "SELECT CodSistemaEmpresaMenu FROM SistemaEmpresaMenu WHERE CodSistemaEmpresa = @CodSistemaEmpresa AND CodMenu = @CodMenu";
+
+                // USA O MÉTODO QUE EXISTE, SEU ANIMAL!
+                var resultado = _db.ExecutarPlennusScalar(query, parametros);
+
+                if (resultado != null && resultado != DBNull.Value)
+                    return Convert.ToInt32(resultado);
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao obter CodSistemaEmpresaMenu: {ex.Message}");
+                return null;
             }
         }
 
