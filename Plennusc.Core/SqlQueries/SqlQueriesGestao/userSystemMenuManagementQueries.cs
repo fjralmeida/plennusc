@@ -34,25 +34,25 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
             ORDER BY s.NomeDisplay, e.NomeFantasia";
 
         public static string ObterMenusPorSistemaEmpresa = @"
-        SELECT 
-            sem.CodSistemaEmpresaMenu,
-            m.CodMenu,
-            m.NomeDisplay,
-            m.Conf_Nivel,
-            m.Conf_Ordem,
-            m.CodMenuPai,  -- DEVE vir preenchido corretamente do JOIN
-            CASE WHEN semu.CodSistemaEmpresaMenuUsuario IS NOT NULL THEN 1 ELSE 0 END as MenuJaVinculado
-        FROM SistemaEmpresaMenu sem
-        INNER JOIN Menu m ON sem.CodMenu = m.CodMenu
-        LEFT JOIN SistemaEmpresaMenuUsuario semu ON sem.CodSistemaEmpresaMenu = semu.CodSistemaEmpresaMenu
-            AND semu.CodAutenticacaoAcesso = @CodAutenticacao
-        WHERE sem.CodSistemaEmpresa = @CodSistemaEmpresa
-        AND sem.Conf_Habilitado = 1
-        AND m.Conf_Habilitado = 1
-        ORDER BY 
-            m.CodMenuPai,
-            m.Conf_Ordem,
-            m.NomeDisplay";
+            SELECT DISTINCT
+                sem.CodSistemaEmpresaMenu,
+                m.CodMenu,
+                m.NomeDisplay,
+                m.Conf_Nivel,
+                m.Conf_Ordem,
+                m.CodMenuPai,
+                CASE WHEN semu.CodSistemaEmpresaMenuUsuario IS NOT NULL THEN 1 ELSE 0 END as MenuJaVinculado
+            FROM SistemaEmpresaMenu sem
+            INNER JOIN Menu m ON sem.CodMenu = m.CodMenu
+            LEFT JOIN SistemaEmpresaMenuUsuario semu ON sem.CodSistemaEmpresaMenu = semu.CodSistemaEmpresaMenu
+                AND semu.CodAutenticacaoAcesso = @CodAutenticacao
+            WHERE sem.CodSistemaEmpresa = @CodSistemaEmpresa
+            AND sem.Conf_Habilitado = 1
+            AND m.Conf_Habilitado = 1
+            ORDER BY 
+                m.CodMenuPai,
+                m.Conf_Ordem,
+                m.NomeDisplay";
 
         public static string VincularUsuarioSistemaEmpresa = @"
             IF NOT EXISTS (SELECT 1 FROM SistemaEmpresaUsuario 
@@ -89,7 +89,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
             SELECT 
                 seu.CodSistemaEmpresaUsuario,
                 @CodAutenticacao,
-                @CodSistemaEmpresaMenu,  -- ✅ AGORA USA O PARÂMETRO DIRETO!
+                @CodSistemaEmpresaMenu,
                 GETDATE(),
                 1
             FROM SistemaEmpresaUsuario seu

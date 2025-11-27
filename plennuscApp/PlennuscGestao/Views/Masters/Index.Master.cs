@@ -242,7 +242,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeDisplay.Contains("cadastro empresa") || nomeObjeto.Contains("companyregistration"))
                 return "bi bi-building-add me-2";
 
-            if (nomeDisplay.Contains("sistemas x empresa"))
+            if (nomeDisplay.Contains("Menu × Sistema"))
                 return "bi bi-link-45deg me-2";
 
             // ✅ PARAMETRIZAÇÃO - SISTEMAS
@@ -252,7 +252,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeDisplay.Contains("listar sistema"))
                 return "bi bi-list-check me-2";
 
-            if (nomeDisplay.Contains("sistema x menu"))
+            if (nomeDisplay.Contains("sistemas × empresa"))
                 return "bi bi-link-45deg me-2";
 
             // ✅ PREÇOS

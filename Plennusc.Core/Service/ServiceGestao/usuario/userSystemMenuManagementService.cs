@@ -176,10 +176,10 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
             try
             {
                 var parametros = new Dictionary<string, object>
-        {
-            { "@CodSistemaEmpresa", codSistemaEmpresa },
-            { "@CodMenu", codMenu }
-        };
+                {
+                    { "@CodSistemaEmpresa", codSistemaEmpresa },
+                    { "@CodMenu", codMenu }
+                };
 
                 string query = "SELECT CodSistemaEmpresaMenu FROM SistemaEmpresaMenu WHERE CodSistemaEmpresa = @CodSistemaEmpresa AND CodMenu = @CodMenu";
 

@@ -70,7 +70,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-fluid">
-        <h4>Vincular Usuário a Sistemas e Menus</h4>
+        <h4>Vincular  Sistemas a Usuário e Menus</h4>
         
         <!-- AVISO FIXO IMPORTANTE -->
         <div class="aviso-desvinculo">
