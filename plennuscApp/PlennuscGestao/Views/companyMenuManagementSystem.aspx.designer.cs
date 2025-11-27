@@ -51,22 +51,13 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Literal litInfoSistema;
 
         /// <summary>
-        /// Controle chkSelectAll.
+        /// Controle modulesContainer.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkSelectAll;
-
-        /// <summary>
-        /// Controle chkMenus.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBoxList chkMenus;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl modulesContainer;
 
         /// <summary>
         /// Controle btnSalvar.

@@ -3,6 +3,7 @@ using Plennusc.Core.Service.ServiceGestao.PlatformSys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -27,6 +28,15 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CarregarEmpresas();
                 pnlMenus.Visible = false;
             }
+            else
+            {
+                // RECRIA OS CONTROLES NO POSTBACK
+                if (ddlSistema.SelectedValue != "")
+                {
+                    int codSistemaEmpresa = Convert.ToInt32(ddlSistema.SelectedValue);
+                    CarregarMenusAgrupados(codSistemaEmpresa);
+                }
+            }
         }
 
         private void CarregarEmpresas()
@@ -42,7 +52,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             catch (Exception ex)
             {
-                MostrarMensagem($"Erro ao carregar empresas: {ex.Message}", false);
+                MostrarMensagemErro($"Erro ao carregar empresas: {ex.Message}");
             }
         }
 
@@ -74,7 +84,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             catch (Exception ex)
             {
-                MostrarMensagem($"Erro ao carregar sistemas: {ex.Message}", false);
+                MostrarMensagemErro($"Erro ao carregar sistemas: {ex.Message}"          );
             }
         }
 
@@ -83,7 +93,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (ddlSistema.SelectedValue != "")
             {
                 int codSistemaEmpresa = Convert.ToInt32(ddlSistema.SelectedValue);
-                CarregarMenusHierarquicos(codSistemaEmpresa);
+                CarregarMenusAgrupados(codSistemaEmpresa);
                 pnlMenus.Visible = true;
 
                 var empresaNome = ddlEmpresa.SelectedItem.Text;
@@ -96,24 +106,24 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        private void CarregarMenusHierarquicos(int codSistemaEmpresa)
+        private void CarregarMenusAgrupados(int codSistemaEmpresa)
         {
             try
             {
-                var menus = _service.ListarMenusParaVincular(codSistemaEmpresa);
-                chkMenus.Items.Clear();
+                var todosMenus = _service.ListarMenusParaVincular(codSistemaEmpresa);
+                modulesContainer.Controls.Clear();
 
-                // Ordem fixa dos pais que você pediu
+                // Ordem fixa dos módulos principais
                 var ordemDesejada = new[] { "Pessoas", "Chatbot", "Preços", "Parametrização", "Demanda" };
 
-                // pegar apenas os menus raiz (pais) — considere CodMenuPai NULL ou 0 como raiz
-                var menusPais = menus
+                // Pegar apenas os menus raiz (pais) - nível 1
+                var menusPais = todosMenus
                     .Where(m => m.CodMenuPai == null || m.CodMenuPai == 0)
                     .ToList();
 
                 var orderedParents = new List<MenuModel>();
 
-                // adiciona na ordem desejada quando encontrar correspondência por NomeDisplay (case-insensitive)
+                // Ordenar conforme a ordem desejada
                 foreach (var nome in ordemDesejada)
                 {
                     var encontrado = menusPais.FirstOrDefault(m =>
@@ -125,89 +135,120 @@ namespace appWhatsapp.PlennuscGestao.Views
                     }
                 }
 
-                // adiciona os que sobraram (ordenados por Conf_Ordem)
+                // Adicionar os que sobraram
                 orderedParents.AddRange(menusPais.OrderBy(m => m.Conf_Ordem));
 
-                // adiciona cada pai e seus filhos recursivamente (todos abertos)
-                foreach (var menuPai in orderedParents)
+                // Criar módulos dinamicamente
+                foreach (var moduloPai in orderedParents)
                 {
-                    AdicionarMenuItem(menuPai, 0, menuPai.Vinculado);
-                    AdicionarFilhosRecursivamente(menus, menuPai.CodMenu, 1);
+                    CriarModulo(moduloPai, todosMenus);
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensagem($"Erro ao carregar menus: {ex.Message}", false);
+                MostrarMensagemErro($"Erro ao carregar menus: {ex.Message}");
             }
         }
 
-        private void AdicionarFilhosRecursivamente(List<MenuModel> todosMenus, int codMenuPai, int nivelAtual)
+        private void CriarModulo(MenuModel moduloPai, List<MenuModel> todosMenus)
         {
-            // buscar filhos diretos ordenados
-            var filhos = todosMenus
-                .Where(m => m.CodMenuPai == codMenuPai)
+            // Criar o container do módulo
+            var moduleCard = new Panel();
+            moduleCard.Attributes["class"] = "module-card";
+
+            // Cabeçalho do módulo - AGORA COM CHECKBOX
+            var moduleHeader = new Panel();
+            moduleHeader.Attributes["class"] = "module-header";
+
+            // CHECKBOX do módulo principal
+            var chkModulo = new CheckBox
+            {
+                ID = $"chkModulo_{moduloPai.CodMenu}",
+                Text = $"📁 {moduloPai.NomeDisplay ?? moduloPai.NomeMenu}",
+                Checked = moduloPai.Vinculado,
+                CssClass = "module-main-checkbox"
+            };
+            moduleHeader.Controls.Add(chkModulo);
+
+            moduleCard.Controls.Add(moduleHeader);
+
+            // Corpo do módulo com os checkboxes dos filhos
+            var moduleBody = new Panel();
+            moduleBody.Attributes["class"] = "module-body";
+
+            // Buscar filhos diretos deste módulo pai
+            var filhosDiretos = todosMenus
+                .Where(m => m.CodMenuPai == moduloPai.CodMenu)
                 .OrderBy(m => m.Conf_Ordem)
                 .ToList();
 
-            foreach (var filho in filhos)
+            foreach (var menuFilho in filhosDiretos)
             {
-                AdicionarMenuItem(filho, nivelAtual, filho.Vinculado);
-                // recursão para netos
-                AdicionarFilhosRecursivamente(todosMenus, filho.CodMenu, nivelAtual + 1);
+                AdicionarMenuItem(moduleBody, menuFilho, false);
+
+                // Buscar netos (nível 3)
+                var netos = todosMenus
+                    .Where(m => m.CodMenuPai == menuFilho.CodMenu)
+                    .OrderBy(m => m.Conf_Ordem)
+                    .ToList();
+
+                foreach (var neto in netos)
+                {
+                    AdicionarMenuItem(moduleBody, neto, true);
+                }
             }
+
+            moduleCard.Controls.Add(moduleBody);
+            modulesContainer.Controls.Add(moduleCard);
         }
 
-        private void AdicionarMenuItem(MenuModel menu, int nivel, bool vinculado)
+        private void AdicionarMenuItem(Panel container, MenuModel menu, bool isChild)
         {
-            string textoLimpo = menu.NomeDisplay;
+            var menuItemContainer = new Panel();
+            menuItemContainer.Attributes["class"] = isChild ? "menu-item-container menu-child" : "menu-item-container";
 
-            ListItem item = new ListItem();
-            item.Value = menu.CodMenu.ToString();
-            item.Selected = vinculado;
-            item.Attributes["data-level"] = nivel.ToString();
-
-            if (nivel == 0)
+            var checkbox = new CheckBox
             {
-                // PAI – clicável
-                item.Text = $"<span class='menu-parent' data-id='{menu.CodMenu}'>📁 {textoLimpo}</span>";
-                item.Attributes["class"] = "menu-parent-row";
-            }
-            else
-            {
-                // FILHO – inicia escondido
-                item.Text = $"<span style='margin-left:{nivel * 20}px' class='menu-child'>{textoLimpo}</span>";
-                item.Attributes["class"] = $"menu-child-row child-of-{menu.CodMenuPai}";
-                item.Attributes["style"] = "display:none;";
-            }
+                ID = $"chkMenu_{menu.CodMenu}",
+                Text = menu.NomeDisplay ?? menu.NomeMenu,
+                Checked = menu.Vinculado,
+                CssClass = "menu-checkbox"
+            };
 
-            chkMenus.Items.Add(item);
+            menuItemContainer.Controls.Add(checkbox);
+            container.Controls.Add(menuItemContainer);
         }
 
-        private string GetIconByLevel(int nivel)
-        {
-            switch (nivel)
-            {
-                case 0: return "bi bi-folder";
-                case 1: return "bi bi-folder2";
-                case 2: return "bi bi-file-earmark";
-                case 3: return "bi bi-file-earmark";
-                default: return "bi bi-folder";
-            }
-        }
+        //protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    SetAllCheckboxes(chkSelectAll.Checked);
+        //}
 
-        protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
-        {
-            foreach (ListItem item in chkMenus.Items)
-            {
-                item.Selected = chkSelectAll.Checked;
-            }
-        }
+        //private void SetAllCheckboxes(bool isChecked)
+        //{
+        //    SetCheckboxesRecursive(modulesContainer, isChecked);
+        //}
+
+        //private void SetCheckboxesRecursive(Control parent, bool isChecked)
+        //{
+        //    foreach (Control control in parent.Controls)
+        //    {
+        //        if (control is CheckBox checkbox)
+        //        {
+        //            checkbox.Checked = isChecked;
+        //        }
+        //        else
+        //        {
+        //            SetCheckboxesRecursive(control, isChecked);
+        //        }
+        //    }
+        //}
 
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
-            if (ddlSistema.SelectedValue == "")
+            if (string.IsNullOrEmpty(ddlSistema.SelectedValue))
             {
-                MostrarMensagem("Selecione um sistema e empresa para continuar.", false);
+                MostrarMensagemErro("Selecione um sistema e empresa para continuar.");
                 return;
             }
 
@@ -215,41 +256,89 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             try
             {
+                // 1. LER CHECKBOXES DO FORM
+                List<int> menusSelecionados = ColetarMenusDoForm();
+                menusSelecionados = menusSelecionados.Distinct().ToList();
+
+                if (!menusSelecionados.Contains(37))
+                    menusSelecionados.Add(37);
+
                 _service.DesvincularTodosMenusSistemaEmpresa(codSistemaEmpresa);
 
-                int count = 0;
-                foreach (ListItem item in chkMenus.Items)
+                foreach (int codMenu in menusSelecionados)
                 {
-                    if (item.Selected)
-                    {
-                        int codMenu = Convert.ToInt32(item.Value);
-                        _service.VincularMenuSistemaEmpresa(codSistemaEmpresa, codMenu);
-                        count++;
-                    }
+                    _service.VincularMenuSistemaEmpresa(codSistemaEmpresa, codMenu);
                 }
 
-                MostrarMensagem($"{count} menus vinculados com sucesso ao sistema!", true);
-                CarregarMenusHierarquicos(codSistemaEmpresa);
+                MostrarMensagemSucesso("Menus salvos com sucesso!");
+
+                // 4. RECARREGAR INTERFACE
+                CarregarMenusAgrupados(codSistemaEmpresa);
             }
             catch (Exception ex)
             {
-                MostrarMensagem($"Erro ao salvar vínculos: {ex.Message}", false);
+                MostrarMensagemErro($"Erro ao salvar vínculos: {ex.Message}");
             }
         }
 
+
+
+        // MÉTODO QUE FUNCIONA - LÊ DIRETO DO REQUEST.FORM
+        private List<int> ColetarMenusDoForm()
+        {
+            var menusSelecionados = new List<int>();
+            var regex = new Regex(@"chk(?:Menu|Modulo)_(\d+)", RegexOptions.IgnoreCase);
+
+            foreach (string key in Request.Form.AllKeys)
+            {
+                if (string.IsNullOrEmpty(key)) continue;
+
+                var m = regex.Match(key);
+                if (!m.Success) continue;
+
+                // valor do checkbox (quando marcado costuma ser "on" ou "true")
+                var val = Request.Form[key];
+                if (string.IsNullOrEmpty(val)) continue;
+
+                if (val.Equals("on", StringComparison.OrdinalIgnoreCase) ||
+                    val.Equals("true", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (int.TryParse(m.Groups[1].Value, out int codMenu))
+                        menusSelecionados.Add(codMenu);
+                }
+            }
+
+            return menusSelecionados;
+        }
         protected void btnLimpar_Click(object sender, EventArgs e)
         {
-            foreach (ListItem item in chkMenus.Items)
-            {
-                item.Selected = false;
-            }
-            chkSelectAll.Checked = false;
+            //chkSelectAll.Checked = false;
         }
 
-        private void MostrarMensagem(string mensagem, bool sucesso)
+
+        private void MostrarMensagemSucesso(string mensagem)
         {
-            string script = $@"alert('{mensagem.Replace("'", "\\'")}');";
-            ScriptManager.RegisterStartupScript(this, GetType(), "showMessage", script, true);
+            string script = $@"
+                Swal.fire({{
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    confirmButtonText: 'OK',
+                    customClass: {{ confirmButton: 'btn btn-success' }}
+                }});";
+            ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso", script, true);
+        }
+
+        private void MostrarMensagemErro(string mensagem)
+        {
+            string script = $@"
+                Swal.fire({{
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: '{mensagem.Replace("'", "\\'")}',
+                    confirmButtonText: 'Fechar'
+                }});";
+            ScriptManager.RegisterStartupScript(this, GetType(), "Erro", script, true);
         }
     }
 }
