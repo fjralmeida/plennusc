@@ -94,7 +94,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             var dao = new PessoaDAO();
             var dt = dao.ObterPessoaCompleta(codPessoa);
 
-            if(dt == null || dt.Rows.Count == 0)
+            if (dt == null || dt.Rows.Count == 0)
             {
                 Response.Redirect("employeeManagement.aspx");
                 return;
@@ -112,7 +112,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 txtDataNasc.Text = Convert.ToDateTime(r["DataNasc"]).ToString("yyyy-MM-dd");
 
             // DOCUMENTOS
-            txtDocCPF.Text = r["DocCPF"]?.ToString();   // se quiser com máscara, aplique no JS
+            txtDocCPF.Text = r["DocCPF"]?.ToString();
             txtDocRG.Text = r["DocRG"]?.ToString();
 
             // ELEITOR
@@ -129,8 +129,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (r["DataAdmissao"] != DBNull.Value)
                 txtDataAdmissao.Text = Convert.ToDateTime(r["DataAdmissao"]).ToString("yyyy-MM-dd");
-            // if (r["DataDemissao"] != DBNull.Value)
-            //     txtDataDemissao.Text = Convert.ToDateTime(r["DataDemissao"]).ToString("yyyy-MM-dd");
 
             // FILIAÇÃO
             txtFiliacao1.Text = r["NomeFiliacao1"]?.ToString();
@@ -143,11 +141,14 @@ namespace appWhatsapp.PlennuscGestao.Views
             txtEmail.Text = r["Email"]?.ToString();
             txtEmailAlt.Text = r["EmailAlt"]?.ToString();
 
-            // CARGO/DEPTO (combos já carregados)
+            // CARGO/DEPTO
             if (r["CodCargo"] != DBNull.Value)
                 ddlCargo.SelectedValue = r["CodCargo"].ToString();
             if (r["CodDepartamento"] != DBNull.Value)
                 ddlDepartamento.SelectedValue = r["CodDepartamento"].ToString();
+
+            // 🔥 PERFIL PESSOA — SEM IF, SEM CONDIÇÃO, SÓ SETA ESSA PORRA 🔥
+            ddlPerfilPessoa.SelectedValue = r["CodEstr_TipoPessoa"].ToString();
 
             // CONFIG
             chkCriaContaAD.Checked = ToBool(r["Conf_CriaContaAD"]);
@@ -158,6 +159,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             // OBS
             txtObservacao.Text = r["Observacao"]?.ToString();
         }
+
 
         private bool ToBool(object o)
         {

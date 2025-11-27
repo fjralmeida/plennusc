@@ -497,6 +497,7 @@ END CATCH;";
                     p.Apelido,
                     p.Sexo,
                     p.DataNasc,
+                    p.CodEstr_TipoPessoa, 
                     p.DocRG,
                     p.DocCPF,
                     p.TituloEleitor,
