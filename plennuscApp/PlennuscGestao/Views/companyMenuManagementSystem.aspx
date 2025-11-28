@@ -68,8 +68,8 @@
                 <div class="card-footer">
                     <asp:Button ID="btnSalvar" runat="server" Text="Salvar Vínculos" CssClass="btn btn-primary" 
                         OnClick="btnSalvar_Click" />
-                    <asp:Button ID="btnLimpar" runat="server" Text="Limpar Seleção" CssClass="btn btn-secondary" 
-                        OnClick="btnLimpar_Click" />
+                 <%--   <asp:Button ID="btnLimpar" runat="server" Text="Limpar Seleção" CssClass="btn btn-secondary" 
+                        OnClick="btnLimpar_Click" />--%>
                 </div>
             </div>
         </asp:Panel>

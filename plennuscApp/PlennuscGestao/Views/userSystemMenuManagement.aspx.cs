@@ -14,7 +14,7 @@ namespace appWhatsapp.PlennuscGestao.Views
     public partial class userSystemMenuManagement : System.Web.UI.Page
     {
         private userSystemMenuManagementService _service;
-        private List<int> _sistemasEmpresasSelecionados = new List<int>(); // ADICIONAR ESTA LINHA
+        private List<int> _sistemasEmpresasSelecionados = new List<int>();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,12 +22,10 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (!IsPostBack)
             {
-                // Carregamento inicial
                 CarregarUsuarios();
             }
             else
             {
-                // EM TODOS OS POSTBACKS, recrie os controles dinâmicos
                 if (ddlUsuarios.SelectedValue != "")
                 {
                     int codAutenticacao = Convert.ToInt32(ddlUsuarios.SelectedValue);
@@ -58,10 +56,9 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (ddlUsuarios.SelectedValue == "")
             {
                 chkSistemaEmpresas.Items.Clear();
-                pnlMultiplosMenus.Visible = false; // MUDAR para pnlMultiplosMenus
+                pnlMultiplosMenus.Visible = false;
                 idCheck.Visible = true;
-                //btnSalvarVinculos.Visible = true;
-
+                btnSalvarVinculos.Enabled = false; // SÓ ISSO
                 return;
             }
 
@@ -69,14 +66,39 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 int codAutenticacao = Convert.ToInt32(ddlUsuarios.SelectedValue);
                 CarregarSistemaEmpresas(codAutenticacao);
-                pnlMultiplosMenus.Visible = false; // MUDAR para pnlMultiplosMenus
+
+                // NOVO: Carregar menus automaticamente para sistemas já vinculados
+                CarregarMenusAutomaticamente(codAutenticacao);
+
+                pnlMultiplosMenus.Visible = true;
                 idCheck.Visible = true;
-                //btnSalvarVinculos.Visible = true;
+
+                // HABILITA SE HOUVER MENUS
+                btnSalvarVinculos.Enabled = _sistemasEmpresasSelecionados.Count > 0;
             }
             catch (Exception ex)
             {
                 MostrarMensagemErro($"Erro ao carregar sistemas: {ex.Message}");
             }
+        }
+        // NOVO MÉTODO: Carregar menus automaticamente para sistemas já vinculados
+        private void CarregarMenusAutomaticamente(int codAutenticacao)
+        {
+            pnlMultiplosMenus.Controls.Clear();
+            _sistemasEmpresasSelecionados.Clear();
+
+            // Verifica quais sistemas×empresas já estão vinculados ao usuário
+            foreach (ListItem item in chkSistemaEmpresas.Items)
+            {
+                if (item.Selected) // Se já está vinculado
+                {
+                    int codSistemaEmpresa = Convert.ToInt32(item.Value);
+                    _sistemasEmpresasSelecionados.Add(codSistemaEmpresa);
+                    CriarSecaoMenu(codSistemaEmpresa, item.Text, codAutenticacao);
+                }
+            }
+
+            pnlMultiplosMenus.Visible = _sistemasEmpresasSelecionados.Count > 0;
         }
 
         private void CarregarSistemaEmpresas(int codAutenticacao)
@@ -84,7 +106,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             var sistemaEmpresas = _service.ObterSistemaEmpresas(codAutenticacao);
             chkSistemaEmpresas.Items.Clear();
 
-            // ✅ CORREÇÃO: REMOVER DUPLICATAS
             var sistemasUnicos = new Dictionary<string, ListItem>();
 
             foreach (var se in sistemaEmpresas)
@@ -94,16 +115,18 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (!sistemasUnicos.ContainsKey(chaveUnica))
                 {
                     var listItem = new ListItem(se.SistemaEmpresaDisplay, se.CodSistemaEmpresa.ToString());
-                    listItem.Selected = se.JaVinculado;
+                    listItem.Selected = se.JaVinculado; // Isso já está correto
                     sistemasUnicos.Add(chaveUnica, listItem);
                 }
             }
 
-            // ✅ ADICIONA APENAS OS ÚNICOS
             foreach (var item in sistemasUnicos.Values)
             {
                 chkSistemaEmpresas.Items.Add(item);
             }
+
+            // Garantir que o evento SelectedIndexChanged seja disparado para atualizar a tela
+            chkSistemaEmpresas.AutoPostBack = true;
         }
 
         protected void chkSistemaEmpresas_SelectedIndexChanged(object sender, EventArgs e)
@@ -118,6 +141,9 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 int codAutenticacao = Convert.ToInt32(ddlUsuarios.SelectedValue);
                 CriarMultiplasSecoesMenus(codAutenticacao);
+
+                // HABILITA/DESABILITA BASEADO NOS MENUS
+                btnSalvarVinculos.Enabled = _sistemasEmpresasSelecionados.Count > 0;
             }
             catch (Exception ex)
             {
@@ -127,19 +153,15 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void CriarMultiplasSecoesMenus(int codAutenticacao)
         {
-            // Limpa o container anterior
             pnlMultiplosMenus.Controls.Clear();
             _sistemasEmpresasSelecionados.Clear();
 
-            // Para cada Sistema×Empresa selecionado
             foreach (ListItem item in chkSistemaEmpresas.Items)
             {
                 if (item.Selected)
                 {
                     int codSistemaEmpresa = Convert.ToInt32(item.Value);
                     _sistemasEmpresasSelecionados.Add(codSistemaEmpresa);
-
-                    // Cria uma seção para este Sistema×Empresa
                     CriarSecaoMenu(codSistemaEmpresa, item.Text, codAutenticacao);
                 }
             }
@@ -149,12 +171,10 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void CriarSecaoMenu(int codSistemaEmpresa, string displaySistemaEmpresa, int codAutenticacao)
         {
-            // Cria o container da seção
             var containerSecao = new Panel();
             containerSecao.CssClass = "row mb-4 menu-section";
             containerSecao.ID = $"secMenu_{codSistemaEmpresa}";
 
-            // Cria o título da seção
             var tituloSecao = new Label();
             tituloSecao.Text = $"Menus para: {displaySistemaEmpresa}";
             tituloSecao.CssClass = "h5 section-title";
@@ -163,98 +183,102 @@ namespace appWhatsapp.PlennuscGestao.Views
             divTitulo.CssClass = "col-12";
             divTitulo.Controls.Add(tituloSecao);
 
-            // Cria o container dos checkboxes
-            var divCheckboxes = new Panel();
-            divCheckboxes.CssClass = "col-12";
-
-            var divScroll = new Panel();
-            divScroll.Style.Add("max-height", "400px");
-            divScroll.Style.Add("overflow-y", "auto");
-            divScroll.CssClass = "menu-checklist";
-
-            // Cria o CheckBoxList para os menus
-            var chkMenus = new CheckBoxList();
-            chkMenus.ID = $"chkMenus_{codSistemaEmpresa}";
-            chkMenus.CssClass = "form-check";
+            var divModulos = new Panel();
+            divModulos.CssClass = "col-12 modulos-container";
 
             var menus = _service.ObterMenusPorSistemaEmpresa(codSistemaEmpresa, codAutenticacao);
+            var modulos = OrganizarMenusPorModulos(menus);
 
-            // ORDENAR OS MENUS HIERARQUICAMENTE
-            var menusOrdenados = OrdenarMenusHierarquicamente(menus);
-
-            // Adiciona os itens com hierarquia visual
-            foreach (var menu in menusOrdenados)
+            foreach (var modulo in modulos)
             {
-                var prefix = new string('─', (menu.Conf_Nivel - 1) * 2);
-                var listItem = new ListItem($"{prefix} {menu.NomeDisplay}", menu.CodMenu.ToString()); // ✅ MUDOU AQUI!
-                listItem.Selected = menu.MenuJaVinculado;
+                var cardModulo = new Panel();
+                cardModulo.CssClass = "modulo-card";
 
-                listItem.Attributes["class"] = $"menu-item level-{menu.Conf_Nivel}";
-                chkMenus.Items.Add(listItem);
+                // Body do módulo
+                var bodyModulo = new Panel();
+                bodyModulo.CssClass = "modulo-body";
+
+                // Adiciona TODOS os menus do módulo (incluindo o principal)
+                foreach (var menuItem in modulo.Value)
+                {
+                    var itemMenu = CriarItemMenu(menuItem, codSistemaEmpresa);
+                    bodyModulo.Controls.Add(itemMenu);
+                }
+
+                cardModulo.Controls.Add(bodyModulo);
+                divModulos.Controls.Add(cardModulo);
             }
-
-            // Monta a hierarquia
-            divScroll.Controls.Add(chkMenus);
-            divCheckboxes.Controls.Add(divScroll);
 
             containerSecao.Controls.Add(divTitulo);
-            containerSecao.Controls.Add(divCheckboxes);
-
-            // Adiciona uma linha separadora (exceto para o primeiro)
-            if (pnlMultiplosMenus.Controls.Count > 0)
-            {
-                var separador = new Panel();
-                separador.CssClass = "col-12";
-                separador.Style.Add("border-top", "2px solid #e8eaed");
-                separador.Style.Add("margin-top", "20px");
-                separador.Style.Add("padding-top", "20px");
-                pnlMultiplosMenus.Controls.Add(separador);
-            }
-
+            containerSecao.Controls.Add(divModulos);
             pnlMultiplosMenus.Controls.Add(containerSecao);
         }
 
-        // MÉTODO DE ORDENAÇÃO HIERÁRQUICA COMPLETO
-       private List<UsuarioSistemaEmpresaMenu> OrdenarMenusHierarquicamente(List<UsuarioSistemaEmpresaMenu> menus)
+        private Panel CriarItemMenu(UsuarioSistemaEmpresaMenu menu, int codSistemaEmpresa)
         {
-            if (menus == null || !menus.Any())
-                return new List<UsuarioSistemaEmpresaMenu>();
+            var panelItem = new Panel();
 
-            var resultado = new List<UsuarioSistemaEmpresaMenu>();
-    
-            // 1. Buscar menus de nível 1 dinamicamente (onde CodMenuPai é NULL ou 0)
-            var menusNivel1 = menus.Where(m => m.CodMenuPai == null || m.CodMenuPai == 0)
-                                  .OrderBy(m => m.Conf_Ordem)
-                                  .ThenBy(m => m.NomeDisplay)
-                                  .ToList();
-
-            foreach (var menuNivel1 in menusNivel1)
+            // DEFINE CSS CLASS BASEADO NO NÍVEL
+            switch (menu.Conf_Nivel)
             {
-                // Adiciona o menu nível 1
-                resultado.Add(menuNivel1);
-        
-                // 2. Buscar filhos dinamicamente baseado no CodMenuPai real
-                AdicionarFilhosRecursivamente(menuNivel1.CodMenu, menus, resultado);
+                case 1:
+                    panelItem.CssClass = "menu-item-nivel1";
+                    break;
+                case 2:
+                    panelItem.CssClass = "menu-item-nivel2";
+                    break;
+                case 3:
+                    panelItem.CssClass = "menu-item-nivel3";
+                    break;
+                default:
+                    panelItem.CssClass = "menu-item";
+                    break;
             }
-    
-            return resultado;
+
+            var checkbox = new CheckBox();
+            checkbox.ID = $"chkMenu_{menu.CodMenu}_{codSistemaEmpresa}";
+            checkbox.Text = menu.NomeDisplay;
+            checkbox.Checked = menu.MenuJaVinculado;
+            checkbox.CssClass = "menu-checkbox";
+
+            panelItem.Controls.Add(checkbox);
+            return panelItem;
         }
 
-        private void AdicionarFilhosRecursivamente(int codMenuPai, List<UsuarioSistemaEmpresaMenu> todosMenus, List<UsuarioSistemaEmpresaMenu> resultado)
+        private Dictionary<string, List<UsuarioSistemaEmpresaMenu>> OrganizarMenusPorModulos(List<UsuarioSistemaEmpresaMenu> menus)
         {
-            // Buscar filhos deste menu pai específico
+            var modulos = new Dictionary<string, List<UsuarioSistemaEmpresaMenu>>();
+
+            var menusNivel1 = menus.Where(m => m.Conf_Nivel == 1).OrderBy(m => m.Conf_Ordem).ToList();
+
+            foreach (var modulo in menusNivel1)
+            {
+                string nomeModulo = modulo.NomeDisplay;
+                var listaModulo = new List<UsuarioSistemaEmpresaMenu>();
+
+                // ADICIONA O PRÓPRIO MÓDULO (NÍVEL 1) À LISTA
+                listaModulo.Add(modulo);
+
+                // ADICIONA OS SUBMENUS RECURSIVAMENTE
+                AdicionarDescendentesRecursivamente(modulo.CodMenu, menus, listaModulo);
+
+                modulos[nomeModulo] = listaModulo;
+            }
+
+            return modulos;
+        }
+
+
+        private void AdicionarDescendentesRecursivamente(int codMenuPai, List<UsuarioSistemaEmpresaMenu> todosMenus, List<UsuarioSistemaEmpresaMenu> resultado)
+        {
             var filhos = todosMenus.Where(m => m.CodMenuPai == codMenuPai)
                                   .OrderBy(m => m.Conf_Ordem)
-                                  .ThenBy(m => m.NomeDisplay)
                                   .ToList();
 
             foreach (var filho in filhos)
             {
-                // Adiciona o filho à lista resultado
                 resultado.Add(filho);
-        
-                // Buscar netos recursivamente (nível +1)
-                AdicionarFilhosRecursivamente(filho.CodMenu, todosMenus, resultado);
+                AdicionarDescendentesRecursivamente(filho.CodMenu, todosMenus, resultado);
             }
         }
 
@@ -270,29 +294,25 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             try
             {
-                // 1. Primeiro, processa apenas os Sistemas×Empresas SELECIONADOS
+                // 1. Processa Sistemas×Empresas SELECIONADOS
                 foreach (ListItem sistemaEmpresa in chkSistemaEmpresas.Items)
                 {
                     int codSistemaEmpresa = Convert.ToInt32(sistemaEmpresa.Value);
 
                     if (sistemaEmpresa.Selected)
                     {
-                        // Vincular usuário ao sistema×empresa
                         _service.VincularUsuarioSistemaEmpresa(codSistemaEmpresa, codAutenticacao);
-
-                        // Vincular os menus específicos para este sistema×empresa
                         VincularMenusUsuario(codSistemaEmpresa, codAutenticacao);
                     }
                 }
 
-                // 2. AGORA, processa os NÃO SELECIONADOS para desvincular
+                // 2. Processa Sistemas×Empresas NÃO SELECIONADOS
                 foreach (ListItem sistemaEmpresa in chkSistemaEmpresas.Items)
                 {
                     int codSistemaEmpresa = Convert.ToInt32(sistemaEmpresa.Value);
 
                     if (!sistemaEmpresa.Selected)
                     {
-                        // Desvincular usuário do sistema×empresa (e todos seus menus)
                         _service.DesvincularUsuarioSistemaEmpresa(codSistemaEmpresa, codAutenticacao);
                     }
                 }
@@ -312,23 +332,44 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void VincularMenusUsuario(int codSistemaEmpresa, int codAutenticacao)
         {
-            var chkMenus = pnlMultiplosMenus.FindControl($"chkMenus_{codSistemaEmpresa}") as CheckBoxList;
+            _service.DesvincularTodosMenusUsuario(codSistemaEmpresa, codAutenticacao);
 
-            if (chkMenus != null)
+            var containerSecao = pnlMultiplosMenus.FindControl($"secMenu_{codSistemaEmpresa}");
+            if (containerSecao != null)
             {
-                // PRIMEIRO DESVINCULA TUDO
-                _service.DesvincularTodosMenusUsuario(codSistemaEmpresa, codAutenticacao);
+                var checkboxes = BuscarCheckboxesRecursivamente(containerSecao);
 
-                // DEPOIS VINCULA OS SELECIONADOS
-                foreach (ListItem menu in chkMenus.Items)
+                foreach (CheckBox checkbox in checkboxes)
                 {
-                    if (menu.Selected)
+                    if (checkbox.Checked)
                     {
-                        int codMenu = Convert.ToInt32(menu.Value);
-                        _service.VincularMenuUsuario(codSistemaEmpresa, codAutenticacao, codMenu);
+                        string[] partes = checkbox.ID.Split('_');
+                        if (partes.Length >= 2 && int.TryParse(partes[1], out int codMenu))
+                        {
+                            _service.VincularMenuUsuario(codSistemaEmpresa, codAutenticacao, codMenu);
+                        }
                     }
                 }
             }
+        }
+
+        private List<CheckBox> BuscarCheckboxesRecursivamente(Control container)
+        {
+            var checkboxes = new List<CheckBox>();
+
+            foreach (Control control in container.Controls)
+            {
+                if (control is CheckBox checkbox)
+                {
+                    checkboxes.Add(checkbox);
+                }
+                else
+                {
+                    checkboxes.AddRange(BuscarCheckboxesRecursivamente(control));
+                }
+            }
+
+            return checkboxes;
         }
 
         private void MostrarMensagemSucesso(string mensagem)
@@ -355,11 +396,5 @@ namespace appWhatsapp.PlennuscGestao.Views
                 }});";
             ScriptManager.RegisterStartupScript(this, GetType(), "Erro", script, true);
         }
-
-        // REMOVER ESTE MÉTODO DUPLICADO QUE ESTÁ CAUSANDO ERROS:
-        // private void CarregarMenusSistemaEmpresa(int codSistemaEmpresa, int codAutenticacao)
-        // {
-        //     // Este método foi substituído pelo CriarSecaoMenu
-        // }
     }
 }

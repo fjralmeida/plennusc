@@ -76,15 +76,14 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
 
             foreach (DataRow row in resultado.Rows)
             {
-                // VERIFIQUE OS NOMES DAS COLUNAS NO DATAROW
                 menus.Add(new UsuarioSistemaEmpresaMenu
                 {
                     CodSistemaEmpresaMenu = Convert.ToInt32(row["CodSistemaEmpresaMenu"]),
                     CodMenu = Convert.ToInt32(row["CodMenu"]),
                     NomeDisplay = row["NomeDisplay"].ToString(),
                     Conf_Nivel = Convert.ToInt32(row["Conf_Nivel"]),
-                    Conf_Ordem = Convert.ToInt32(row["Conf_Ordem"]), 
-                    CodMenuPai = row["CodMenuPai"] == DBNull.Value ? 0 : Convert.ToInt32(row["CodMenuPai"]), 
+                    Conf_Ordem = Convert.ToInt32(row["Conf_Ordem"]),
+                    CodMenuPai = row["CodMenuPai"] == DBNull.Value ? 0 : Convert.ToInt32(row["CodMenuPai"]),
                     MenuJaVinculado = Convert.ToInt32(row["MenuJaVinculado"]) == 1
                 });
             }
@@ -140,7 +139,6 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
         {
             try
             {
-                // PRIMEIRO OBTÉM O CodSistemaEmpresaMenu CORRETO
                 int? codSistemaEmpresaMenu = ObterCodSistemaEmpresaMenu(codSistemaEmpresa, codMenu);
 
                 if (!codSistemaEmpresaMenu.HasValue)
@@ -153,13 +151,11 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
                 {
                     { "@CodSistemaEmpresa", codSistemaEmpresa },
                     { "@CodAutenticacao", codAutenticacao },
-                    { "@CodSistemaEmpresaMenu", codSistemaEmpresaMenu.Value } // ✅ AGORA CORRETO!
+                    { "@CodSistemaEmpresaMenu", codSistemaEmpresaMenu.Value }
                 };
 
                 int registrosAfetados = _db.ExecutarPlennusLinhasAfetadas(
                     userSystemMenuManagementQueries.VincularMenuUsuario, parametros);
-
-                System.Diagnostics.Debug.WriteLine($"VincularMenuUsuario: CodSistemaEmpresa={codSistemaEmpresa}, CodAutenticacao={codAutenticacao}, CodMenu={codMenu}, CodSistemaEmpresaMenu={codSistemaEmpresaMenu.Value}, LinhasAfetadas={registrosAfetados}");
 
                 return registrosAfetados > 0;
             }
@@ -170,7 +166,6 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
             }
         }
 
-        // ADICIONA ESSE MÉTODO NO SERVICE, SEU DESGRAÇADO!
         public int? ObterCodSistemaEmpresaMenu(int codSistemaEmpresa, int codMenu)
         {
             try
@@ -183,7 +178,6 @@ namespace Plennusc.Core.Service.ServiceGestao.usuario
 
                 string query = "SELECT CodSistemaEmpresaMenu FROM SistemaEmpresaMenu WHERE CodSistemaEmpresa = @CodSistemaEmpresa AND CodMenu = @CodMenu";
 
-                // USA O MÉTODO QUE EXISTE, SEU ANIMAL!
                 var resultado = _db.ExecutarPlennusScalar(query, parametros);
 
                 if (resultado != null && resultado != DBNull.Value)

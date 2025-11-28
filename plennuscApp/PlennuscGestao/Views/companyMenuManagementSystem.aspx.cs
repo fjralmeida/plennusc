@@ -310,10 +310,10 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             return menusSelecionados;
         }
-        protected void btnLimpar_Click(object sender, EventArgs e)
-        {
-            //chkSelectAll.Checked = false;
-        }
+        //protected void btnLimpar_Click(object sender, EventArgs e)
+        //{
+        //    //chkSelectAll.Checked = false;
+        //}
 
 
         private void MostrarMensagemSucesso(string mensagem)

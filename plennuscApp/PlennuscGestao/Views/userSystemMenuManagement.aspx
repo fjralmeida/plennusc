@@ -3,65 +3,61 @@
     <link href="../../Content/Css/projects/gestao/structuresCss/usuario/user-System-Menu-Management.css" rel="stylesheet" />
 
 <script>
-    // Realçar checkboxes quando desmarcados (feedback visual)
+    // Estilização dinâmica para CheckBoxList do ASP.NET
     document.addEventListener('DOMContentLoaded', function () {
-        const checkboxes = document.querySelectorAll('#<%= chkSistemaEmpresas.ClientID %> input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
 
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                const label = this.closest('span');
-                if (!this.checked) {
-                    // Adiciona efeito visual quando desmarca
-                    label.style.background = 'linear-gradient(135deg, #ffeaa7 0%, #ffd166 100%)';
-                    label.style.borderColor = '#e74c3c';
-                    label.style.boxShadow = '0 0 0 2px rgba(231, 76, 60, 0.2)';
+            const td = checkbox.closest('td');
+            if (!td) return;
 
-                    // Remove o efeito após 2 segundos
+            // Estado inicial
+            if (checkbox.checked) {
+                td.classList.add('checked');
+            }
+
+            // Evento de change
+            checkbox.addEventListener('change', function () {
+                if (this.checked) {
+                    td.classList.add('checked');
+                } else {
+                    td.classList.remove('checked');
+
+                    // Efeito visual quando desmarca
+                    td.style.background = 'linear-gradient(135deg, #ffeaa7 0%, #ffd166 100%)';
+                    td.style.borderColor = '#e74c3c';
+                    td.style.boxShadow = '0 0 0 2px rgba(231, 76, 60, 0.2)';
+
                     setTimeout(() => {
-                        label.style.background = '';
-                        label.style.borderColor = '';
-                        label.style.boxShadow = '';
+                        td.style.background = '';
+                        td.style.borderColor = '';
+                        td.style.boxShadow = '';
                     }, 2000);
                 }
             });
-        });
-    });
 
-    // Efeito de ripple nos checkboxes (seu código existente)
-    document.addEventListener('click', function (e) {
-        if (e.target.closest('.checkbox-item')) {
-            const checkboxItem = e.target.closest('.checkbox-item');
-            const ripple = document.createElement('span');
-            const rect = checkboxItem.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
+            // Efeito de ripple
+            td.addEventListener('click', function (e) {
+                const ripple = document.createElement('span');
+                const rect = td.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
 
-            ripple.style.cssText = `
-                width: ${size}px;
-                height: ${size}px;
-                left: ${x}px;
-                top: ${y}px;
-            `;
-            ripple.classList.add('ripple');
+                ripple.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                `;
+                ripple.classList.add('ripple');
 
-            checkboxItem.appendChild(ripple);
+                td.appendChild(ripple);
 
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        }
-    });
-
-    // Animação ao marcar/desmarcar (seu código existente)
-    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            const item = this.closest('.checkbox-item');
-            if (this.checked) {
-                item.classList.add('checked');
-            } else {
-                item.classList.remove('checked');
-            }
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
         });
     });
 </script>
@@ -120,8 +116,9 @@
         <!-- Botão Salvar -->
         <div class="row">
             <div class="col-12">
-                <asp:Button ID="btnSalvarVinculos" runat="server" Text="Salvar Vínculos"
-                    CssClass="btn-primary" OnClick="btnSalvarVinculos_Click" />
+                <asp:Button ID="btnSalvarVinculos" runat="server" Text="Salvar Vínculos" 
+                CssClass="btn btn-primary" OnClick="btnSalvarVinculos_Click" 
+                Enabled="false" />
             </div>
         </div>
     </div>

@@ -72,17 +72,16 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
             END";
 
         public static string DesvincularUsuarioSistemaEmpresa = @"
-            DELETE FROM SistemaEmpresaMenuUsuario 
-            WHERE CodSistemaEmpresaMenu IN (
-                SELECT sem.CodSistemaEmpresaMenu 
-                FROM SistemaEmpresaMenu sem
-                WHERE sem.CodSistemaEmpresa = @CodSistemaEmpresa
-            )
-            AND CodAutenticacaoAcesso = @CodAutenticacao;
+            DELETE semu 
+            FROM SistemaEmpresaMenuUsuario semu
+            INNER JOIN SistemaEmpresaMenu sem ON semu.CodSistemaEmpresaMenu = sem.CodSistemaEmpresaMenu
+            WHERE sem.CodSistemaEmpresa = @CodSistemaEmpresa 
+            AND semu.CodAutenticacaoAcesso = @CodAutenticacao;
 
             DELETE FROM SistemaEmpresaUsuario 
             WHERE CodSistemaEmpresa = @CodSistemaEmpresa 
-            AND CodAutenticacaoAcesso = @CodAutenticacao";
+            AND CodAutenticacaoAcesso = @CodAutenticacao;";
+
         public static string VincularMenuUsuario = @"
             INSERT INTO SistemaEmpresaMenuUsuario 
             (CodSistemaEmpresaUsuario, CodAutenticacaoAcesso, CodSistemaEmpresaMenu, DataHoraLiberacao, Conf_LiberaAcesso)

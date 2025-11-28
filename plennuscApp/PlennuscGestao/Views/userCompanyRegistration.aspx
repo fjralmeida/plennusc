@@ -6,7 +6,7 @@
     /* USER COMPANY REGISTRATION - CSS CORRETO */
     :root {
         --primary: #83ceee;
-        --primary-hover: #0d62c9;
+        --primary-hover: #69aecb;
         --success: #4cb07a;
         --success-hover: #3b8b65;
         --danger: #e74c3c;
@@ -301,7 +301,7 @@
                 </div>
                 Vincular Empresas ao Usuário
             </h2>
-            <a href="userCompanyManagement.aspx" class="btn btn-primary">
+            <a href="userCompanyManagement" class="btn btn-primary">
                 <i class="bi bi-arrow-left"></i>Voltar
             </a>
         </div>
