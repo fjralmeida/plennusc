@@ -533,6 +533,252 @@ input[type="checkbox"] {
     margin-top: 16px;
 }
 
+
+/* ===========================================
+   WIZARD SIMPLES PARA CADASTRO
+   =========================================== */
+
+.wizard-container {
+    position: relative;
+    min-height: 300px;
+}
+
+.wizard-step {
+    display: none;
+    animation: fadeInWizard 0.4s ease;
+}
+
+    .wizard-step.active {
+        display: block;
+    }
+
+@keyframes fadeInWizard {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Indicador de etapas */
+.wizard-steps {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0 40px;
+    position: relative;
+    padding: 0 20px;
+}
+
+    .wizard-steps::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 50px;
+        right: 50px;
+        height: 3px;
+        background: #e0e0e0;
+        z-index: 1;
+    }
+
+.wizard-step-indicator {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.wizard-step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: #777;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-weight: 600;
+    font-size: 14px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.wizard-step-indicator.active .wizard-step-number {
+    background: #4CB07A;
+    color: white;
+    border-color: #4CB07A;
+    transform: scale(1.1);
+}
+
+.wizard-step-indicator.completed .wizard-step-number {
+    background: #83ceee;
+    color: white;
+    border-color: #83ceee;
+}
+
+.wizard-step-label {
+    font-size: 12px;
+    color: #777;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.wizard-step-indicator.active .wizard-step-label {
+    color: #4CB07A;
+    font-weight: 600;
+}
+
+/* BOTÕES DE NAVEGAÇÃO - PADRÃO DO SEU PROJETO */
+.wizard-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+    .wizard-navigation .btn {
+        min-width: 120px;
+        padding: 10px 24px;
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none !important;
+        display: inline-block;
+    }
+
+    /* Botão "Anterior" (estilo secundário) */
+    .wizard-navigation .btn-prev {
+        background: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+        .wizard-navigation .btn-prev:hover:not(:disabled) {
+            background: #e9ecef;
+            border-color: #ccc;
+            transform: translateY(-1px);
+        }
+
+        .wizard-navigation .btn-prev:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8f9fa;
+            color: #999;
+        }
+
+    /* Botão "Próximo" (estilo azul claro do seu projeto) */
+    .wizard-navigation .btn-next {
+        background: #83ceee;
+        color: white;
+        border: 1px solid #83ceee;
+        box-shadow: 0 3px 8px rgba(131, 206, 238, 0.25);
+    }
+
+        .wizard-navigation .btn-next:hover {
+            background: #67b7da;
+            border-color: #67b7da;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(131, 206, 238, 0.3);
+        }
+
+    /* Botão "Salvar" (estilo verde do seu projeto) */
+    .wizard-navigation .btn-save {
+        background: #4CB07A;
+        color: white;
+        border: 1px solid #4CB07A;
+        box-shadow: 0 3px 8px rgba(76, 176, 122, 0.25);
+    }
+
+        .wizard-navigation .btn-save:hover {
+            background: #3A9E68;
+            border-color: #3A9E68;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(76, 176, 122, 0.3);
+        }
+
+    /* Botão "Finalizar" (estilo especial para penúltima etapa) */
+    .wizard-navigation .btn-finalize {
+        background: #4CB07A;
+        color: white;
+        border: 1px solid #4CB07A;
+        box-shadow: 0 3px 8px rgba(76, 176, 122, 0.25);
+    }
+
+        .wizard-navigation .btn-finalize:hover {
+            background: #3A9E68;
+            border-color: #3A9E68;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(76, 176, 122, 0.3);
+        }
+
+/* Contador de etapa */
+.wizard-step-counter {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+    .wizard-step-counter span {
+        color: #4CB07A;
+        font-weight: 600;
+    }
+
+/* Aviso da última etapa */
+.wizard-final-alert {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .wizard-steps {
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .wizard-step-indicator {
+        flex: 0 0 calc(25% - 10px);
+        min-width: 70px;
+    }
+
+    .wizard-steps::before {
+        display: none;
+    }
+
+    .wizard-step-label {
+        font-size: 11px;
+    }
+
+    .wizard-navigation {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+        .wizard-navigation .btn {
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+        }
+}
+
 /* Responsivo */
 @media (max-width: 992px) {
     .filters-block {

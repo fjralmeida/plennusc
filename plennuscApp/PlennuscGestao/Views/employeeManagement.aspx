@@ -158,27 +158,341 @@
         })();
     </script>
 
+<!-- ============================================
+     JAVASCRIPT DO WIZARD DE CADASTRO
+     ============================================ -->
+<script type="text/javascript">
+    (function() {
+        'use strict';
+        
+        // Configurações do wizard
+        var wizard = {
+            currentStep: 1,
+            totalSteps: 8,
+            isInitialized: false,
+            
+            // Elementos
+            elements: {
+                panel: null,
+                steps: null,
+                indicators: null,
+                prevBtn: null,
+                nextBtn: null,
+                saveBtn: null,
+                stepCounter: null
+            },
+            
+            // Inicializar
+            init: function() {
+                if (this.isInitialized) return;
+                
+                // Encontrar elementos
+                this.elements.panel = document.getElementById('<%= PanelCadastro.ClientID %>');
+                if (!this.elements.panel || this.elements.panel.offsetParent === null) return;
+                
+                this.elements.steps = this.elements.panel.querySelectorAll('.wizard-step');
+                this.elements.indicators = this.elements.panel.querySelectorAll('.wizard-step-indicator');
+                this.elements.prevBtn = this.elements.panel.querySelector('#wizardPrevBtn');
+                this.elements.nextBtn = this.elements.panel.querySelector('#wizardNextBtn');
+                this.elements.saveBtn = this.elements.panel.querySelector('#<%= btnSalvarUsuario.ClientID %>');
+                this.elements.stepCounter = this.elements.panel.querySelector('#currentStepNumber');
+                
+                // Configurar eventos
+                this.setupEvents();
+                
+                // Atualizar UI inicial
+                this.updateUI();
+                
+                this.isInitialized = true;
+            },
+            
+            // Configurar eventos
+            setupEvents: function() {
+                var self = this;
+                
+                // Botões de navegação
+                if (this.elements.prevBtn) {
+                    this.elements.prevBtn.addEventListener('click', function() {
+                        self.prevStep();
+                    });
+                }
+                
+                if (this.elements.nextBtn) {
+                    this.elements.nextBtn.addEventListener('click', function() {
+                        self.nextStep();
+                    });
+                }
+                
+                // Clicar nos indicadores para voltar
+                if (this.elements.indicators) {
+                    this.elements.indicators.forEach(function(indicator) {
+                        indicator.addEventListener('click', function() {
+                            var step = parseInt(this.getAttribute('data-step'));
+                            if (step < self.currentStep) {
+                                self.goToStep(step);
+                            }
+                        });
+                    });
+                }
+                
+                // Tecla Enter avança (exceto em textareas)
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                        if (self.elements.nextBtn && self.elements.nextBtn.offsetParent !== null) {
+                            e.preventDefault();
+                            self.nextStep();
+                        }
+                    }
+                });
+            },
+            
+            // Ir para passo anterior
+            prevStep: function() {
+                if (this.currentStep > 1) {
+                    this.goToStep(this.currentStep - 1);
+                }
+            },
+            
+            // Ir para próximo passo
+            nextStep: function() {
+                if (this.currentStep < this.totalSteps) {
+                    this.goToStep(this.currentStep + 1);
+                }
+            },
+            
+            // Ir para um passo específico
+            goToStep: function(step) {
+                if (step < 1 || step > this.totalSteps) return;
+                
+                // Esconder passo atual
+                var currentStepEl = this.elements.steps[this.currentStep - 1];
+                if (currentStepEl) {
+                    currentStepEl.classList.remove('active');
+                }
+                
+                var currentIndicator = this.elements.indicators[this.currentStep - 1];
+                if (currentIndicator) {
+                    currentIndicator.classList.remove('active');
+                }
+                
+                // Atualizar passos anteriores como completos
+                for (var i = 0; i < step - 1; i++) {
+                    if (this.elements.indicators[i]) {
+                        this.elements.indicators[i].classList.add('completed');
+                        this.elements.indicators[i].classList.remove('active');
+                    }
+                }
+                
+                // Atualizar passo atual
+                this.currentStep = step;
+                
+                // Mostrar novo passo
+                var newStepEl = this.elements.steps[step - 1];
+                if (newStepEl) {
+                    newStepEl.classList.add('active');
+                }
+                
+                var newIndicator = this.elements.indicators[step - 1];
+                if (newIndicator) {
+                    newIndicator.classList.add('active');
+                    newIndicator.classList.remove('completed');
+                }
+                
+                // Limpar completos dos passos à frente
+                for (var i = step; i < this.totalSteps; i++) {
+                    if (this.elements.indicators[i]) {
+                        this.elements.indicators[i].classList.remove('completed');
+                    }
+                }
+                
+                // Atualizar UI
+                this.updateUI();
+                
+                // Scroll suave para o topo
+                setTimeout(function() {
+                    wizard.elements.panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+                
+                // Reaplicar máscaras se necessário
+                setTimeout(function() {
+                    if (window.aplicarMascaras) {
+                        window.aplicarMascaras();
+                    }
+                }, 50);
+            },
+            
+            // Atualizar interface
+           updateUI: function() {
+                // Botão Anterior
+                if (this.elements.prevBtn) {
+                    this.elements.prevBtn.disabled = (this.currentStep === 1);
+                }
+    
+                // Botão Próximo vs Salvar
+                if (this.elements.nextBtn && this.elements.saveBtn) {
+                    if (this.currentStep === this.totalSteps) {
+                        // Última etapa: mostrar botão Salvar
+                        this.elements.nextBtn.style.display = 'none';
+                        this.elements.saveBtn.style.display = 'inline-block';
+                    } else {
+                        // Etapas normais: mostrar botão Próximo
+                        this.elements.nextBtn.style.display = 'inline-block';
+                        this.elements.saveBtn.style.display = 'none';
+            
+                        // Mudar estilo do botão Próximo se for penúltima etapa
+                        if (this.currentStep === this.totalSteps - 1) {
+                            this.elements.nextBtn.innerHTML = 'Finalizar <i class="fas fa-check ms-2"></i>';
+                            this.elements.nextBtn.className = 'btn btn-finalize';
+                        } else {
+                            this.elements.nextBtn.innerHTML = 'Próximo <i class="fas fa-arrow-right ms-2"></i>';
+                            this.elements.nextBtn.className = 'btn btn-next';
+                        }
+                    }
+                }
+    
+                // Atualizar contador
+                if (this.elements.stepCounter) {
+                    this.elements.stepCounter.textContent = this.currentStep;
+                }
+            }
+        };
+        
+        // Inicializar quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o painel está visível
+            var panel = document.getElementById('<%= PanelCadastro.ClientID %>');
+            if (panel && panel.offsetParent !== null) {
+                setTimeout(function() {
+                    wizard.init();
+                }, 100);
+            }
+        });
+        
+        // Observar postbacks do ASP.NET
+        if (typeof(Sys) !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function() {
+                setTimeout(function() {
+                    // Resetar wizard
+                    wizard.isInitialized = false;
+                    
+                    // Verificar se o painel está visível
+                    var panel = document.getElementById('<%= PanelCadastro.ClientID %>');
+                    if (panel && panel.offsetParent !== null) {
+                        wizard.init();
+                    }
+                }, 300);
+            });
+        }
+        
+        // Função pública para resetar o wizard (se necessário)
+        window.resetCadastroWizard = function() {
+            wizard.currentStep = 1;
+            wizard.isInitialized = false;
+            
+            // Resetar visual
+            var panel = document.getElementById('<%= PanelCadastro.ClientID %>');
+            if (panel) {
+                var steps = panel.querySelectorAll('.wizard-step');
+                var indicators = panel.querySelectorAll('.wizard-step-indicator');
+                
+                steps.forEach(function(step) {
+                    step.classList.remove('active');
+                });
+                
+                indicators.forEach(function(indicator) {
+                    indicator.classList.remove('active', 'completed');
+                });
+                
+                // Ativar primeira etapa
+                if (steps[0]) steps[0].classList.add('active');
+                if (indicators[0]) indicators[0].classList.add('active');
+                
+                // Re-inicializar
+                setTimeout(function() {
+                    wizard.init();
+                }, 50);
+            }
+        };
+        
+        // Função para ir para uma etapa específica (pública)
+        window.goToCadastroStep = function(stepNumber) {
+            if (stepNumber >= 1 && stepNumber <= wizard.totalSteps) {
+                wizard.goToStep(stepNumber);
+            }
+        };
+        
+    })();
+</script>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container py-4">
 
-        <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="false">
-            <h4 class="titulo-cadastro">Cadastro de Novo Colaborador</h4>
-
-            <!-- DADOS PESSOAIS -->
+<asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="false">
+    <h4 class="titulo-cadastro">Cadastro de Novo Colaborador</h4>
+    
+    <!-- INDICADOR DE ETAPAS -->
+    <div class="wizard-steps">
+        <div class="wizard-step-indicator active" data-step="1">
+            <div class="wizard-step-number">1</div>
+            <div class="wizard-step-label">Dados Pessoais</div>
+        </div>
+        <div class="wizard-step-indicator" data-step="2">
+            <div class="wizard-step-number">2</div>
+            <div class="wizard-step-label">Documentos</div>
+        </div>
+        <div class="wizard-step-indicator" data-step="3">
+            <div class="wizard-step-number">3</div>
+            <div class="wizard-step-label">Eleitorais</div>
+        </div>
+        <div class="wizard-step-indicator" data-step="4">
+            <div class="wizard-step-number">4</div>
+            <div class="wizard-step-label">Trabalhistas</div>
+        </div>
+        <div class="wizard-step-indicator" data-step="5">
+            <div class="wizard-step-number">5</div>
+            <div class="wizard-step-label">Filiação</div>
+        </div>
+        <div class="wizard-step-indicator" data-step="6">
+            <div class="wizard-step-number">6</div>
+            <div class="wizard-step-label">Contato</div>
+        </div>
+        <div class="wizard-step-indicator" data-step="7">
+            <div class="wizard-step-number">7</div>
+            <div class="wizard-step-label">Cargo/Depto</div>
+        </div>
+        <div class="wizard-step-indicator" data-step="8">
+            <div class="wizard-step-number">8</div>
+            <div class="wizard-step-label">Finalizar</div>
+        </div>
+    </div>
+    
+    <div class="wizard-step-counter">
+        Etapa <span id="currentStepNumber">1</span> de <span>8</span>
+    </div>
+    
+    <!-- CONTAINER DOS PASSOS -->
+    <div class="wizard-container">
+        
+        <!-- PASSO 1: DADOS PESSOAIS -->
+        <div class="wizard-step active" data-step="1">
             <div class="section-block bg-white-section">
                 <h5>Dados Pessoais</h5>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label>Nome *</label>
                         <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvNome" runat="server" ControlToValidate="txtNome" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvNome" runat="server" ControlToValidate="txtNome" 
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-6">
                         <label>Sobrenome *</label>
                         <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvSobrenome" runat="server" ControlToValidate="txtSobrenome" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvSobrenome" runat="server" ControlToValidate="txtSobrenome" 
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-4">
                         <label>Apelido</label>
@@ -191,36 +505,47 @@
                             <asp:ListItem Value="M">Masculino</asp:ListItem>
                             <asp:ListItem Value="F">Feminino</asp:ListItem>
                         </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" 
+                            InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                            Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-4">
                         <label>Data de Nascimento *</label>
                         <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" TextMode="Date" />
-                        <asp:RequiredFieldValidator ID="rfvDataNasc" runat="server" ControlToValidate="txtDataNasc" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvDataNasc" runat="server" ControlToValidate="txtDataNasc" 
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
                 </div>
             </div>
-
-            <!-- DOCUMENTOS -->
+        </div>
+        
+        <!-- PASSO 2: DOCUMENTOS -->
+        <div class="wizard-step" data-step="2">
             <div class="section-block bg-gray-section">
                 <h5>Documentos</h5>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label>CPF *<asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="11" placeHolder="Insira apenas números" />
-                        </label>
-
+                        <label>CPF *</label>
+                        <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="11" 
+                            placeholder="Insira apenas números" />
+                        <asp:RequiredFieldValidator ID="rfvRG" runat="server" ControlToValidate="txtDocRG" 
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-6">
-                        <label>
-                            RG *
+                        <label>RG *</label>
                         <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
-                            <asp:RequiredFieldValidator ID="rfvRG" runat="server" ControlToValidate="txtDocRG" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                        </label>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtDocRG" 
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
                 </div>
             </div>
-
-            <!-- DADOS ELEITORAIS -->
+        </div>
+        
+        <!-- PASSO 3: DADOS ELEITORAIS -->
+        <div class="wizard-step" data-step="3">
             <div class="section-block bg-white-section">
                 <h5>Dados Eleitorais</h5>
                 <div class="row g-3">
@@ -238,8 +563,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- DADOS TRABALHISTAS -->
+        </div>
+        
+        <!-- PASSO 4: DADOS TRABALHISTAS -->
+        <div class="wizard-step" data-step="4">
             <div class="section-block bg-gray-section">
                 <h5>Dados Trabalhistas</h5>
                 <div class="row g-3">
@@ -266,16 +593,16 @@
                     <div class="col-md-6">
                         <label>Admissão *</label>
                         <asp:TextBox ID="txtDataAdmissao" runat="server" CssClass="form-control" TextMode="Date" />
-                        <asp:RequiredFieldValidator ID="rfvAdmissao" runat="server" ControlToValidate="txtDataAdmissao" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvAdmissao" runat="server" ControlToValidate="txtDataAdmissao" 
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
-                    <%--  <div class="col-md-6"  id="linhaDemissao" runat="server">
-                        <label>Demissão</label>
-                        <asp:TextBox ID="txtDataDemissao" runat="server" CssClass="form-control" TextMode="Date" />
-                    </div>--%>
                 </div>
             </div>
-
-            <!-- FILIAÇÃO -->
+        </div>
+        
+        <!-- PASSO 5: FILIAÇÃO -->
+        <div class="wizard-step" data-step="5">
             <div class="section-block bg-white-section">
                 <h5>Filiação</h5>
                 <div class="row g-3">
@@ -289,8 +616,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- CONTATO -->
+        </div>
+        
+        <!-- PASSO 6: CONTATO -->
+        <div class="wizard-step" data-step="6">
             <div class="section-block bg-gray-section">
                 <h5>Contato</h5>
                 <div class="row g-3">
@@ -298,7 +627,8 @@
                         <label>Telefone 1 *</label>
                         <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" MaxLength="15" />
                         <asp:RequiredFieldValidator ID="rfvTel1" runat="server" ControlToValidate="txtTelefone1"
-                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-4">
                         <label>Telefone 2</label>
@@ -311,7 +641,9 @@
                     <div class="col-md-6">
                         <label>Email *</label>
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email" />
-                        <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                        <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" 
+                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                            ValidationGroup="Cadastro" />
                     </div>
                     <div class="col-md-6">
                         <label>Email Alternativo</label>
@@ -319,23 +651,13 @@
                     </div>
                 </div>
             </div>
-
-           <!-- CARGO E DEPARTAMENTO -->
+        </div>
+        
+        <!-- PASSO 7: CARGO E DEPARTAMENTO -->
+        <div class="wizard-step" data-step="7">
             <div class="section-block bg-white-section">
                 <h5>Cargo e Departamento</h5>
                 <div class="row g-3">
-        
-                  <%--  <!-- NOVO CAMPO: EMPRESA -->
-                    <div class="col-md-12">
-                        <label>Empresa *</label>
-                        <asp:DropDownList ID="ddlEmpresa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
-                            <asp:ListItem Text="Selecione a empresa" Value="" />
-                        </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvEmpresa" runat="server" ControlToValidate="ddlEmpresa" 
-                            InitialValue="" ErrorMessage="Selecione a empresa" CssClass="text-danger" 
-                            Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>--%>
-
                     <div class="col-md-12">
                         <label>Perfil Pessoa *</label>
                         <asp:DropDownList ID="ddlPerfilPessoa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
@@ -344,7 +666,6 @@
                             InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
                             Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
-
                     <div class="col-md-6">
                         <label>Cargo *</label>
                         <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-control">
@@ -354,7 +675,6 @@
                             InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
                             Display="Dynamic" ValidationGroup="Cadastro" />
                     </div>
-        
                     <div class="col-md-6">
                         <label>Departamento *</label>
                         <asp:DropDownList ID="ddlDepartamento" runat="server" CssClass="form-control">
@@ -365,8 +685,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- CONFIGURAÇÕES -->
+        </div>
+        
+        <!-- PASSO 8: CONFIGURAÇÕES E OBSERVAÇÕES -->
+        <div class="wizard-step" data-step="8">
             <div class="section-block bg-gray-section">
                 <h5>Configurações</h5>
                 <div class="row px-2">
@@ -396,24 +718,40 @@
                     </div>
                 </div>
             </div>
-
-            <!-- OBSERVAÇÕES -->
-            <div class="section-block bg-white-section">
+            
+            <div class="section-block bg-white-section mt-4">
                 <h5>Observações</h5>
                 <asp:TextBox ID="txtObservacao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
             </div>
-
-            <!-- SALVAR -->
-            <div class="text-center mt-3">
+            
+            <div class="wizard-final-alert">
+                <i class="fas fa-info-circle me-2 text-primary"></i>
+                <strong>Pronto para finalizar!</strong> Revise todas as informações preenchidas antes de salvar.
+            </div>
+        </div>
+        
+    </div>
+    
+   <!-- BOTÕES DE NAVEGAÇÃO -->
+        <div class="wizard-navigation">
+            <button type="button" class="btn btn-prev" id="wizardPrevBtn" disabled>
+                <i class="fas fa-arrow-left me-2"></i> Anterior
+            </button>
+    
+            <div class="nav-buttons-right">
+                <button type="button" class="btn btn-next" id="wizardNextBtn">
+                    Próximo <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+        
                 <asp:Button ID="btnSalvarUsuario" runat="server" Text="Salvar Usuário"
-                    CssClass="btn btn-success"
+                    CssClass="btn btn-save"
                     ValidationGroup="Cadastro"
                     OnClick="btnSalvarUsuario_Click"
+                    style="display: none;"
                     OnClientClick="if (!Page_ClientValidate('Cadastro')) { showToastErroObrigatorio(); rolarParaPrimeiroCampoInvalido('Cadastro'); return false; }" />
-
-
             </div>
-        </asp:Panel>
+        </div>
+</asp:Panel>
 
         <asp:Panel ID="PanelConsulta" runat="server" CssClass="form-panel mt-4" Visible="false">
             <!-- Título principal -->

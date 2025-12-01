@@ -58,7 +58,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 chkSistemaEmpresas.Items.Clear();
                 pnlMultiplosMenus.Visible = false;
                 idCheck.Visible = true;
-                btnSalvarVinculos.Enabled = false; // SÓ ISSO
+                btnSalvarVinculos.Enabled = false;
                 return;
             }
 
@@ -67,7 +67,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 int codAutenticacao = Convert.ToInt32(ddlUsuarios.SelectedValue);
                 CarregarSistemaEmpresas(codAutenticacao);
 
-                // NOVO: Carregar menus automaticamente para sistemas já vinculados
+                //Carregar menus automaticamente para sistemas já vinculados
                 CarregarMenusAutomaticamente(codAutenticacao);
 
                 pnlMultiplosMenus.Visible = true;
@@ -90,7 +90,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             // Verifica quais sistemas×empresas já estão vinculados ao usuário
             foreach (ListItem item in chkSistemaEmpresas.Items)
             {
-                if (item.Selected) // Se já está vinculado
+                if (item.Selected) 
                 {
                     int codSistemaEmpresa = Convert.ToInt32(item.Value);
                     _sistemasEmpresasSelecionados.Add(codSistemaEmpresa);
@@ -115,7 +115,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (!sistemasUnicos.ContainsKey(chaveUnica))
                 {
                     var listItem = new ListItem(se.SistemaEmpresaDisplay, se.CodSistemaEmpresa.ToString());
-                    listItem.Selected = se.JaVinculado; // Isso já está correto
+                    listItem.Selected = se.JaVinculado;
                     sistemasUnicos.Add(chaveUnica, listItem);
                 }
             }

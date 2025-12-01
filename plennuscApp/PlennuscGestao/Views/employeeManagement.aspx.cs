@@ -185,9 +185,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             PanelCadastro.Visible = false;
 
         }
-
-       
-
         protected void btnSalvarUsuario_Click(object sender, EventArgs e)
         {
             try
