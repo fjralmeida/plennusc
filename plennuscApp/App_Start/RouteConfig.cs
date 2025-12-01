@@ -64,8 +64,13 @@ namespace appWhatsapp
             // ✅ Adicionar esta rota - Vincular Empresas Usuário
             routes.MapPageRoute("vincularEmpresasUsuario", "vincularEmpresasUsuario", "~/PlennuscGestao/Views/userCompanyRegistration.aspx");
 
-            // ✅ Rota padrão
-            routes.MapPageRoute("default", "", "~/PlennuscGestao/Views/homeManagement.aspx");
+            // ✅ ADICIONAR APENAS AS 3 ROTAS DO FINANCE:
+            routes.MapPageRoute("homeFinance", "homeFinance", "~/PlennuscFinance/Views/homeFinance.aspx");
+            routes.MapPageRoute("profileFinance", "profileFinance", "~/PlennuscFinance/Views/profileFinance.aspx");
+            routes.MapPageRoute("privacySettingsFinance", "privacySettingsFinance", "~/PlennuscFinance/Views/privacySettingsFinance.aspx");
+
+            //// ✅ Rota padrão (mantém a do Gestão)
+            //routes.MapPageRoute("default", "", "~/PlennuscGestao/Views/homeManagement.aspx");
 
             // ⚙️ Friendly URLs sem redirecionamento
             var settings = new FriendlyUrlSettings();

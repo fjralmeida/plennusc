@@ -183,6 +183,8 @@
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\registerStructureType.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\sendCompanyMessage.js" />
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\sendMessageBeneficiary.js" />
+    <Content Include="Content\Css\projects\finance\structuresCss\financeHome\home-Finance.css" />
+    <Content Include="Content\Css\projects\finance\structuresCss\financeMaster\master-Finance.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\Company-Registration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\demand-Gestao.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\detailDemand.css" />
@@ -904,7 +906,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\Css\js\projects\financeJs\structuresJs\" />
     <Folder Include="Content\Css\js\projects\medicJs\structuresJs\" />
-    <Folder Include="Content\Css\projects\finance\structuresCss\" />
     <Folder Include="Content\Css\projects\medic\structuresCss\" />
     <Folder Include="Data_Bd\" />
   </ItemGroup>

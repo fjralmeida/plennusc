@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs" 
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Index.master.cs"
     Inherits="appWhatsapp.PlennuscGestao.Views.Masters.Index" %>
 
 <!DOCTYPE html>
@@ -42,84 +42,84 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div class="container-fluid p-0">
-        <!-- Top Bar -->
- <div class="d-flex justify-content-between align-items-center topbar">
-     <div class="d-flex align-items-center gap-2" style="cursor: pointer;"
-         onclick="limparMenuESeguir('<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>')">
-         <%--   <asp:Image ID="imgLogo" runat="server" Style="height:45px;width:auto;" />--%>
-         <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
-     </div>
+        <div class="container-fluid p-0">
+            <!-- Top Bar -->
+            <div class="d-flex justify-content-between align-items-center topbar">
+                <div class="d-flex align-items-center gap-2" style="cursor: pointer;"
+                    onclick="limparMenuESeguir('<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>')">
+                    <%--   <asp:Image ID="imgLogo" runat="server" Style="height:45px;width:auto;" />--%>
+                    <asp:Label ID="lblNomeSistema" runat="server" CssClass="nome-sistema"></asp:Label>
+                </div>
 
-     <div class="flex-grow-1 px-4">
-         <div class="input-group shadow-sm" style="max-width: 400px; margin: 0 auto;">
-             <span class="input-group-text bg-white border-end-0">
-                 <i class="bi bi-search"></i>
-             </span>
-             <asp:TextBox ID="txtBusca" runat="server" TextMode="SingleLine" ClientIDMode="Static"
-                 CssClass="form-control border-start-0" placeholder="Buscar..." />
-         </div>
-     </div>
+                <div class="flex-grow-1 px-4">
+                    <div class="input-group shadow-sm" style="max-width: 400px; margin: 0 auto;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <asp:TextBox ID="txtBusca" runat="server" TextMode="SingleLine" ClientIDMode="Static"
+                            CssClass="form-control border-start-0" placeholder="Buscar..." />
+                    </div>
+                </div>
 
-     <div class="user-menu">
-         <asp:Image ID="imgAvatarUsuario" runat="server" CssClass="user-avatar"
-             AlternateText="Avatar do Usuário" onclick="toggleUserMenu()" />
-         <div id="userDropdown" class="user-dropdown p-3 shadow" style="display: none; min-width: 280px; position: absolute; right: 0; background: #fff; border: 1px solid #ddd; border-radius: 5px; z-index: 999;">
-             <li class="text-center mb-2" style="list-style: none;">
-                 <asp:Image ID="imgAvatarUsuarioDropdown" runat="server" CssClass="user-dropdown-avatar" />
-                 <div class="fw-semibold mt-2">
-                     <asp:Label ID="lblUsuario" runat="server" />
-                 </div>
-             </li>
-             <hr class="dropdown-divider" />
-           <li style="list-style: none;">
-                <a class="dropdown-item" href="<%= ResolveUrl("~/profile") %>">
-                    <i class="bi bi-person me-2"></i>Perfil
-                </a>
-            </li>
-             <%--  <li style="list-style: none;"><a class="dropdown-item" href="#"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>--%>
-             <%-- <li style="list-style: none;"><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Posts & Atividade</a></li>--%>
-          <li style="list-style: none;">
-                <a class="dropdown-item" href="<%= ResolveUrl("~/privacySettings") %>">
-                    <i class="bi bi-gear me-2"></i>Configurações & Privacidade
-                </a>
-            </li>
-             <%--  <li style="list-style: none;"><a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>Central de Ajuda</a></li>--%>
-             <li class="text-center mt-2" style="list-style: none;">
-                 <asp:LinkButton ID="btnLogout" runat="server" CssClass="btn btn-outline-danger w-100" OnClick="LogoutUsuario">
+                <div class="user-menu">
+                    <asp:Image ID="imgAvatarUsuario" runat="server" CssClass="user-avatar"
+                        AlternateText="Avatar do Usuário" onclick="toggleUserMenu()" />
+                    <div id="userDropdown" class="user-dropdown p-3 shadow" style="display: none; min-width: 280px; position: absolute; right: 0; background: #fff; border: 1px solid #ddd; border-radius: 5px; z-index: 999;">
+                        <li class="text-center mb-2" style="list-style: none;">
+                            <asp:Image ID="imgAvatarUsuarioDropdown" runat="server" CssClass="user-dropdown-avatar" />
+                            <div class="fw-semibold mt-2">
+                                <asp:Label ID="lblUsuario" runat="server" />
+                            </div>
+                        </li>
+                        <hr class="dropdown-divider" />
+                        <li style="list-style: none;">
+                            <a class="dropdown-item" href="<%= ResolveUrl("~/profile") %>">
+                                <i class="bi bi-person me-2"></i>Perfil
+                            </a>
+                        </li>
+                        <%--  <li style="list-style: none;"><a class="dropdown-item" href="#"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>--%>
+                        <%-- <li style="list-style: none;"><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Posts & Atividade</a></li>--%>
+                        <li style="list-style: none;">
+                            <a class="dropdown-item" href="<%= ResolveUrl("~/privacySettings") %>">
+                                <i class="bi bi-gear me-2"></i>Configurações & Privacidade
+                            </a>
+                        </li>
+                        <%--  <li style="list-style: none;"><a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>Central de Ajuda</a></li>--%>
+                        <li class="text-center mt-2" style="list-style: none;">
+                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="btn btn-outline-danger w-100" OnClick="LogoutUsuario">
    <i class="bi bi-box-arrow-right me-1"></i> Sair
-                 </asp:LinkButton>
-             </li>
-         </div>
-     </div>
- </div>
+                            </asp:LinkButton>
+                        </li>
+                    </div>
+                </div>
+            </div>
 
 
-<!-- LAYOUT: adicionado id="layout" para controlar colapso -->
-<div id="layout" class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-        <!-- botão hamburguer -->
-        <div class="sidebar-top">
-            <span class="sb-title">Navegação</span>
-            <button id="btnSidebar" type="button" class="sb-toggle" aria-label="Alternar menu">
-                <i class="bi bi-list"></i>
-            </button>
+            <!-- LAYOUT: adicionado id="layout" para controlar colapso -->
+            <div id="layout" class="d-flex" style="height: calc(100vh - 70px); overflow: hidden;">
+                <!-- Sidebar -->
+                <nav class="sidebar">
+                    <!-- botão hamburguer -->
+                    <div class="sidebar-top">
+                        <span class="sb-title">Navegação</span>
+                        <button id="btnSidebar" type="button" class="sb-toggle" aria-label="Alternar menu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                    </div>
+
+                    <!-- ✅ MENU DINÂMICO - AGORA DENTRO DA UL CORRETA -->
+                    <ul class="list-unstyled">
+                        <asp:PlaceHolder ID="phMenuDinamico" runat="server" />
+                    </ul>
+                </nav>
+
+                <!-- Main Content -->
+                <div class="flex-grow-1 p-4 overflow-auto">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+                </div>
+            </div>
         </div>
-
-        <!-- ✅ MENU DINÂMICO - AGORA DENTRO DA UL CORRETA -->
-        <ul class="list-unstyled">
-            <asp:PlaceHolder ID="phMenuDinamico" runat="server" />
-        </ul>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="flex-grow-1 p-4 overflow-auto">
-        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
-    </div>
-</div>
-    </div>
-</form>
+    </form>
 
     <!-- Bootstrap JS (carrega só se ainda não estiver disponível; evita dupla carga com a página filha) -->
     <script>
@@ -134,34 +134,34 @@
     </script>
 
     <!-- Fix para links relativos: transforma hrefs "page.aspx" em absolutos -->
-<script>
-    (function () {
-        // pasta base onde estão os .aspx reais
-        const BASE = '/PlennuscGestao/Views/';
+    <script>
+        (function () {
+            // pasta base onde estão os .aspx reais
+            const BASE = '/PlennuscGestao/Views/';
 
-        // pega todos os anchors do menu (ou do documento se preferir)
-        document.querySelectorAll('nav.sidebar a[href]').forEach(a => {
-            try {
-                const h = a.getAttribute('href').trim();
+            // pega todos os anchors do menu (ou do documento se preferir)
+            document.querySelectorAll('nav.sidebar a[href]').forEach(a => {
+                try {
+                    const h = a.getAttribute('href').trim();
 
-                // ignora âncoras, rotas já absolutas, urls externas, hashes, mailto, tel
-                if (!h || h.startsWith('#') || h.startsWith('mailto:') || h.startsWith('tel:') ||
-                    h.startsWith('http://') || h.startsWith('https://') || h.startsWith('/'))
-                    return;
+                    // ignora âncoras, rotas já absolutas, urls externas, hashes, mailto, tel
+                    if (!h || h.startsWith('#') || h.startsWith('mailto:') || h.startsWith('tel:') ||
+                        h.startsWith('http://') || h.startsWith('https://') || h.startsWith('/'))
+                        return;
 
-                // se já for rota amigável sem extensão (ex: 'demand' ou 'listDemand'), opcional: mapear para rota ou ignorar
-                // aqui tratamos .aspx e arquivos relativos como priceTable.aspx -> /PlennuscGestao/Views/priceTable.aspx
-                if (h.toLowerCase().endsWith('.aspx')) {
-                    a.href = BASE + h.replace(/^\.\.\/|^\.\//, ''); // elimina ../ se tiver
-                } else {
-                    // se for rota amigável curta (ex: 'demand'), você pode preferir mapear para /demand (mantemos como está)
-                    // se quiser forçar para Views, descomente a linha abaixo:
-                    // a.href = BASE + h + '.aspx';
-                }
-            } catch (e) { /* silencioso */ }
-        });
-    })();
-</script>
+                    // se já for rota amigável sem extensão (ex: 'demand' ou 'listDemand'), opcional: mapear para rota ou ignorar
+                    // aqui tratamos .aspx e arquivos relativos como priceTable.aspx -> /PlennuscGestao/Views/priceTable.aspx
+                    if (h.toLowerCase().endsWith('.aspx')) {
+                        a.href = BASE + h.replace(/^\.\.\/|^\.\//, ''); // elimina ../ se tiver
+                    } else {
+                        // se for rota amigável curta (ex: 'demand'), você pode preferir mapear para /demand (mantemos como está)
+                        // se quiser forçar para Views, descomente a linha abaixo:
+                        // a.href = BASE + h + '.aspx';
+                    }
+                } catch (e) { /* silencioso */ }
+            });
+        })();
+    </script>
 
 
     <script>
