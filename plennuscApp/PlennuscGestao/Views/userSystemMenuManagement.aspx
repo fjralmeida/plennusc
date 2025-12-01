@@ -85,9 +85,39 @@
 
         <!-- 1. Selecionar Usuário -->
         <div class="row mb-3">
+            <!-- COLUNA ESQUERDA: Filtro -->
             <div class="col-md-6">
-               <%-- <label class="form-label">Selecionar Usuário:</label>--%>
-                <asp:DropDownList ID="ddlUsuarios" runat="server" CssClass="form-control" AutoPostBack="true"
+                <label class="form-label">Filtrar Usuário:</label>
+        
+                <div class="input-group">
+                    <asp:TextBox ID="txtFiltroUsuario" runat="server" 
+                        CssClass="form-control" 
+                        placeholder="Digite parte do nome para filtrar..."
+                        AutoPostBack="false" />
+            
+                    <asp:Button ID="btnFiltrar" runat="server" 
+                        Text="Filtrar" 
+                        CssClass="btn btn-outline-secondary"
+                        OnClick="btnFiltrar_Click" />
+            
+                    <asp:Button ID="btnLimparFiltro" runat="server" 
+                        Text="Limpar" 
+                        CssClass="btn btn-outline-secondary"
+                        OnClick="btnLimparFiltro_Click" />
+                </div>
+        
+                <small class="text-muted">
+                    <asp:Literal ID="litInfoUsuarios" runat="server" Text="Mostrando todos os usuários" />
+                </small>
+            </div>
+    
+            <!-- COLUNA DIREITA: Dropdown -->
+            <div class="col-md-6 ddl-container">
+                <label class="form-label">Sistemas × Empresas Disponíveis</label>
+        
+                <asp:DropDownList ID="ddlUsuarios" runat="server" 
+                    CssClass="form-control" 
+                    AutoPostBack="true"
                     OnSelectedIndexChanged="ddlUsuarios_SelectedIndexChanged">
                 </asp:DropDownList>
             </div>
@@ -113,12 +143,11 @@
             <!-- Esta Panel será preenchida dinamicamente com várias seções -->
         </asp:Panel>
         
-        <!-- Botão Salvar -->
-        <div class="row">
-            <div class="col-12">
+      <div class="row">
+            <div class="col-12" style="display: flex; justify-content: end;">
                 <asp:Button ID="btnSalvarVinculos" runat="server" Text="Salvar Vínculos" 
-                CssClass="btn btn-primary" OnClick="btnSalvarVinculos_Click" 
-                Enabled="false" />
+                    CssClass="btn btn-primary" OnClick="btnSalvarVinculos_Click" 
+                    Enabled="false" />
             </div>
         </div>
     </div>

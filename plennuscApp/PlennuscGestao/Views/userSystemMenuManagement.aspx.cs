@@ -22,28 +22,66 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (!IsPostBack)
             {
+                // Carrega todos os usuários inicialmente
                 CarregarUsuarios();
             }
             else
             {
-                if (ddlUsuarios.SelectedValue != "")
+                // Só executa a lógica se houver um usuário selecionado E NÃO for o item "Selecione"
+                if (ddlUsuarios.SelectedValue != "" && ddlUsuarios.SelectedIndex > 0)
                 {
                     int codAutenticacao = Convert.ToInt32(ddlUsuarios.SelectedValue);
                     CriarMultiplasSecoesMenus(codAutenticacao);
                 }
             }
+
+            // Mantém o texto do filtro após postback
+            if (!string.IsNullOrEmpty(FiltroAtual))
+            {
+                txtFiltroUsuario.Text = FiltroAtual;
+            }
+        }
+        private string FiltroAtual
+        {
+            get { return ViewState["FiltroUsuario"] as string ?? ""; }
+            set { ViewState["FiltroUsuario"] = value; }
         }
 
-        private void CarregarUsuarios()
+        // Modifique o método CarregarUsuarios para aceitar filtro
+        private void CarregarUsuarios(string filtro = "")
         {
             try
             {
                 var usuarios = _service.ObterUsuarios();
+
+                // Aplica filtro APENAS pelo NomeCompleto
+                if (!string.IsNullOrWhiteSpace(filtro))
+                {
+                    usuarios = usuarios
+                        .Where(u => u.NomeCompleto.IndexOf(filtro, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .ToList();
+                }
+
+                // Limpa seleção atual ANTES de recarregar
+                ddlUsuarios.SelectedIndex = -1;
+                ddlUsuarios.ClearSelection();
+
                 ddlUsuarios.DataSource = usuarios;
                 ddlUsuarios.DataTextField = "NomeCompleto";
                 ddlUsuarios.DataValueField = "CodAutenticacaoAcesso";
                 ddlUsuarios.DataBind();
+
+                // SEMPRE adiciona o item de seleção no início
                 ddlUsuarios.Items.Insert(0, new ListItem("Selecione um usuário", ""));
+
+                // Garante que NENHUM item está selecionado inicialmente
+                ddlUsuarios.SelectedIndex = 0;
+
+                // Atualiza informação
+                litInfoUsuarios.Text = usuarios.Count == 0
+                    ? $"Nenhum usuário encontrado com '{filtro}'"
+                    : $"Mostrando {usuarios.Count} usuário(s)" +
+                      (string.IsNullOrEmpty(filtro) ? "" : $" filtrados por '{filtro}'");
             }
             catch (Exception ex)
             {
@@ -53,7 +91,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void ddlUsuarios_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlUsuarios.SelectedValue == "")
+            if (ddlUsuarios.SelectedIndex == 0 || ddlUsuarios.SelectedValue == "")
             {
                 chkSistemaEmpresas.Items.Clear();
                 pnlMultiplosMenus.Visible = false;
@@ -81,6 +119,45 @@ namespace appWhatsapp.PlennuscGestao.Views
                 MostrarMensagemErro($"Erro ao carregar sistemas: {ex.Message}");
             }
         }
+
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            string filtro = txtFiltroUsuario.Text.Trim();
+            FiltroAtual = filtro;
+
+            // Limpa seleção antes de filtrar
+            ddlUsuarios.SelectedIndex = -1;
+            ddlUsuarios.ClearSelection();
+
+            // Recarrega usuários com filtro
+            CarregarUsuarios(filtro);
+
+            // Limpa os painéis (pois não tem seleção após filtrar)
+            chkSistemaEmpresas.Items.Clear();
+            pnlMultiplosMenus.Visible = false;
+            idCheck.Visible = true;
+            btnSalvarVinculos.Enabled = false;
+        }
+
+        protected void btnLimparFiltro_Click(object sender, EventArgs e)
+        {
+            txtFiltroUsuario.Text = "";
+            FiltroAtual = "";
+
+            // LIMPA a seleção antes de recarregar
+            ddlUsuarios.ClearSelection();
+            ddlUsuarios.SelectedValue = "";
+
+            // Recarrega todos os usuários
+            CarregarUsuarios();
+
+            // NÃO chama o evento de seleção, pois limpou
+            chkSistemaEmpresas.Items.Clear();
+            pnlMultiplosMenus.Visible = false;
+            idCheck.Visible = false;
+            btnSalvarVinculos.Enabled = false;
+        }
+
         // NOVO MÉTODO: Carregar menus automaticamente para sistemas já vinculados
         private void CarregarMenusAutomaticamente(int codAutenticacao)
         {
