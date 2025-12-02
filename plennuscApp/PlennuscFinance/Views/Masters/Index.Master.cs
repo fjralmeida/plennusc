@@ -55,7 +55,7 @@ namespace appWhatsapp.PlennuscFinance.Views.Masters
                 ulPrincipal.Attributes["class"] = "list-unstyled";
 
                 // ✅ FILTRA MENUS DE NÍVEL 1 (EXCLUINDO HOME, PROFILE E PRIVACY DO FINANCE)
-                var menusNivel1 = dtMenus.Select("(CodMenuPai IS NULL OR CodMenuPai = 0) AND TemAcesso = 1 AND NomeObjeto NOT IN ('homeFinance', 'profileFinance', 'privacySettingsFinance')", "Conf_Ordem ASC");
+                var menusNivel1 = dtMenus.Select("(CodMenuPai IS NULL OR CodMenuPai = 0) AND TemAcesso = 1 AND NomeObjeto NOT IN ('homeFinance', 'profileFinance', 'privacySettingsFinance','homeManagement')", "Conf_Ordem ASC");
 
                 foreach (DataRow menu in menusNivel1)
                 {

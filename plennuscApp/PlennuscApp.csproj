@@ -218,6 +218,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\user-company-registration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\usuario\user-System-Menu-Management.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\view-Demand-Before-Accept.css" />
+    <Content Include="Content\Css\projects\medic\structuresCss\MedicMaster\masterMedic.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
@@ -906,7 +907,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\Css\js\projects\financeJs\structuresJs\" />
     <Folder Include="Content\Css\js\projects\medicJs\structuresJs\" />
-    <Folder Include="Content\Css\projects\medic\structuresCss\" />
     <Folder Include="Data_Bd\" />
   </ItemGroup>
   <ItemGroup>

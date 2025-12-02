@@ -1,0 +1,867 @@
+﻿* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    overflow: hidden;
+    background-color: #f5f7fb;
+}
+
+.nome-sistema {
+    font-weight: 600;
+    background: linear-gradient(to right, #4CB07A, #83CEEE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    cursor: pointer;
+    width: 257px;
+    background-color: #ffffff;
+    border-right: 1px solid #e3e6ef;
+    padding: 1.0rem 0.5rem;
+    height: 100%;
+    font-size: 13.5px;
+    overflow-y: auto;
+    flex-shrink: 0; /* Impede que a sidebar encolha */
+}
+
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #3b3f5c;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: background-color 0.2s, color 0.2s;
+        font-weight: 500;
+        /* >>> PREVINE QUEBRA <<< */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .sidebar a:hover {
+            background-color: #f1f5ff;
+            color: #1d4ed8;
+        }
+
+        .sidebar a.active {
+            background-color: #e0edff;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+    .sidebar .collapse a {
+        font-size: 13px;
+        padding-left: 16px;
+        font-weight: 400;
+    }
+
+    .sidebar .bi {
+        font-size: 15px;
+        color: #9ca3af;
+        flex-shrink: 0; /* Ícone nunca encolhe */
+    }
+
+    .sidebar span {
+        padding-left: 6px; /* Espaço entre ícone e texto */
+    }
+
+.topbar {
+    height: 70px;
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 24px;
+}
+
+.highlight {
+    color: #000; /* Texto escuro */
+    font-weight: 600;
+    padding: 1px 3px;
+    border-radius: 3px;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #83CEEE !important;
+    color: #000 !important;
+}
+
+.dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: #f8d7da !important;
+    color: #842029 !important;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+.section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    padding: 0 16px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+}
+
+/* 🌟 USER DROPDOWN MODERNO */
+.user-dropdown {
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    min-width: 280px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    transform-origin: top right;
+}
+
+.dropdown-menu.show {
+    display: block;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.user-dropdown-avatar {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #4CB07A;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+}
+
+.user-dropdown .form-control-sm {
+    font-size: 13px;
+    border-radius: 8px;
+}
+
+.user-dropdown .dropdown-item {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .user-dropdown .dropdown-item i {
+        font-size: 16px;
+        color: #4CB07A;
+        margin-right: 8px;
+    }
+
+    .user-dropdown .dropdown-item:hover {
+        background-color: #f0fdf4;
+        color: #1e3a34;
+    }
+
+.user-dropdown .btn-outline-danger {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    margin-top: 6px;
+    width: 100%;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.user-dropdown-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+    .dropdown-item:hover {
+        background: #f1f1f1;
+    }
+
+/* seta gira suave baseado no aria-expanded do cabeçalho */
+.toggle-icon {
+    transition: transform .18s ease;
+    transform-origin: 50% 50%;
+    transform: rotate(0deg); /* fechado = seta para a direita */
+    will-change: transform;
+}
+
+/* aberto = seta apontando para baixo (90°), sem voltar “pelo outro lado” */
+a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+}
+
+/* topo da sidebar como na imagem 2 */
+.sidebar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    margin: 0 8px 12px;
+    background: #f7f9fc;
+    border-radius: 12px;
+}
+
+.sb-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #334155;
+}
+
+/* botão “pill” só com o ícone */
+.sb-toggle {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    outline: 0;
+    border-radius: 10px;
+    background: #f1f5f9;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    transition: background .15s ease;
+}
+
+    .sb-toggle i {
+        font-size: 18px;
+        color: #6b7280;
+    }
+
+    .sb-toggle:hover {
+        background: #eef2ff;
+    }
+
+/* quando a barra estiver colapsada, esconda o texto e compacte o topo */
+#layout.sb-collapsed .sb-title {
+    display: none;
+}
+
+#layout.sb-collapsed .sidebar-top {
+    background: #ffffff;
+    padding: 6px;
+    margin: 0 8px 10px;
+    justify-content: flex-end;
+}
+
+#layout {
+    --sb-w: 250px;
+    --sb-w-collapsed: 64px;
+}
+
+    /* fechada = compacta */
+    #layout.sb-collapsed .sidebar {
+        width: var(--sb-w-collapsed);
+    }
+
+        /* quando fechada, não deixa submenus ocuparem espaço (evita “buraco”) */
+        #layout.sb-collapsed .sidebar .submenu,
+        #layout.sb-collapsed .sidebar .collapse {
+            display: none !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* ícone centralizado e texto oculto quando fechada */
+        #layout.sb-collapsed .sidebar a {
+            justify-content: center !important;
+            gap: 0 !important;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        #layout.sb-collapsed .sidebar .label {
+            display: none !important;
+        }
+
+        #layout.sb-collapsed .sidebar .toggle-icon {
+            display: none !important;
+        }
+
+        #layout.sb-collapsed .sidebar .bi {
+            margin-right: 0 !important;
+        }
+
+        /* ===== EXPANSÃO NO HOVER (ou “forçada” via classe) ===== */
+        #layout.sb-collapsed .sidebar:hover,
+        #layout.sb-collapsed .sidebar.sb-forceopen {
+            width: var(--sb-w);
+            box-shadow: 0 8px 24px rgba(0,0,0,.08);
+            z-index: 1000;
+        }
+
+            /* quando expandida (hover/forçada), volta a mostrar rótulos/chevrons */
+            #layout.sb-collapsed .sidebar:hover .label,
+            #layout.sb-collapsed .sidebar.sb-forceopen .label,
+            #layout.sb-collapsed .sidebar:hover .toggle-icon,
+            #layout.sb-collapsed .sidebar.sb-forceopen .toggle-icon {
+                display: inline-flex !important;
+                white-space: nowrap;
+            }
+
+            /* permite que os submenus ABERTOS apareçam durante o hover/força
+           (sem abrir todos automaticamente) */
+            #layout.sb-collapsed .sidebar:hover .collapse.show,
+            #layout.sb-collapsed .sidebar.sb-forceopen .collapse.show {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+/* links: texto à esquerda, chevron à direita quando aberta */
+.sidebar a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+}
+
+.sidebar .toggle-icon {
+    margin-left: auto;
+}
+
+.sidebar .label {
+    white-space: nowrap;
+}
+
+.sidebar .submenu {
+    display: block !important;
+}
+
+    .sidebar .submenu > li {
+        display: block;
+    }
+
+    /* deixa a linha toda “clicável” com área confortável */
+    .sidebar a.menu-head,
+    .sidebar .submenu a {
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+
+        .sidebar a.menu-head:hover,
+        .sidebar .submenu a:hover {
+            background: #f4f7fb;
+        }
+
+.sidebar a, .sidebar button {
+    cursor: pointer;
+}
+
+/* transição suave de largura/sombra para dar fluidez */
+.sidebar {
+    transition: width .18s ease, box-shadow .18s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar {
+        transition: none;
+    }
+}
+
+/* botão do topo: quando fechado, fica só o ícone; quando aberto, mostra o texto */
+.sidebar-top .sb-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+    .sidebar-top .sb-toggle .btn-label {
+        font-weight: 600;
+        color: #334155;
+    }
+
+#layout.sb-collapsed .sidebar-top {
+    justify-content: center !important;
+}
+
+    #layout.sb-collapsed .sidebar-top .sb-toggle {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        gap: 0;
+        justify-content: center;
+    }
+
+        #layout.sb-collapsed .sidebar-top .sb-toggle .btn-label {
+            display: none;
+        }
+
+        #layout.sb-collapsed .sidebar-top .sb-toggle .bi-list {
+            margin: 0;
+        }
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    overflow: hidden;
+    background-color: #f5f7fb;
+}
+
+.nome-sistema {
+    font-weight: 600;
+    background: linear-gradient(to right, #4CB07A, #83CEEE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    cursor: pointer;
+    width: 257px;
+    background-color: #ffffff;
+    border-right: 1px solid #e3e6ef;
+    padding: 1.0rem 0.5rem;
+    height: 100%;
+    font-size: 13.5px;
+    overflow-y: auto;
+    flex-shrink: 0; /* Impede que a sidebar encolha */
+}
+
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #3b3f5c;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: background-color 0.2s, color 0.2s;
+        font-weight: 500;
+        /* >>> PREVINE QUEBRA <<< */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .sidebar a:hover {
+            background-color: #f1f5ff;
+            color: #1d4ed8;
+        }
+
+        .sidebar a.active {
+            background-color: #e0edff;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+    .sidebar .collapse a {
+        font-size: 13px;
+        padding-left: 16px;
+        font-weight: 400;
+    }
+
+    .sidebar .bi {
+        font-size: 15px;
+        color: #9ca3af;
+        flex-shrink: 0; /* Ícone nunca encolhe */
+    }
+
+    .sidebar span {
+        padding-left: 6px; /* Espaço entre ícone e texto */
+    }
+
+.topbar {
+    height: 70px;
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 24px;
+}
+
+.highlight {
+    color: #000; /* Texto escuro */
+    font-weight: 600;
+    padding: 1px 3px;
+    border-radius: 3px;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #83CEEE !important;
+    color: #000 !important;
+}
+
+.dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: #f8d7da !important;
+    color: #842029 !important;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+.section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    padding: 0 16px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+}
+
+/* 🌟 USER DROPDOWN MODERNO */
+.user-dropdown {
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    min-width: 280px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    transform-origin: top right;
+}
+
+.dropdown-menu.show {
+    display: block;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.user-dropdown-avatar {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #4CB07A;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+}
+
+.user-dropdown .form-control-sm {
+    font-size: 13px;
+    border-radius: 8px;
+}
+
+.user-dropdown .dropdown-item {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .user-dropdown .dropdown-item i {
+        font-size: 16px;
+        color: #4CB07A;
+        margin-right: 8px;
+    }
+
+    .user-dropdown .dropdown-item:hover {
+        background-color: #f0fdf4;
+        color: #1e3a34;
+    }
+
+.user-dropdown .btn-outline-danger {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    margin-top: 6px;
+    width: 100%;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.user-dropdown-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+    .dropdown-item:hover {
+        background: #f1f1f1;
+    }
+
+/* seta gira suave baseado no aria-expanded do cabeçalho */
+.toggle-icon {
+    transition: transform .18s ease;
+    transform-origin: 50% 50%;
+    transform: rotate(0deg); /* fechado = seta para a direita */
+    will-change: transform;
+}
+
+/* aberto = seta apontando para baixo (90°), sem voltar “pelo outro lado” */
+a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+}
+
+/* topo da sidebar como na imagem 2 */
+.sidebar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    margin: 0 8px 12px;
+    background: #f7f9fc;
+    border-radius: 12px;
+}
+
+.sb-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #334155;
+}
+
+/* botão “pill” só com o ícone */
+.sb-toggle {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    outline: 0;
+    border-radius: 10px;
+    background: #f1f5f9;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    transition: background .15s ease;
+}
+
+    .sb-toggle i {
+        font-size: 18px;
+        color: #6b7280;
+    }
+
+    .sb-toggle:hover {
+        background: #eef2ff;
+    }
+
+/* quando a barra estiver colapsada, esconda o texto e compacte o topo */
+#layout.sb-collapsed .sb-title {
+    display: none;
+}
+
+#layout.sb-collapsed .sidebar-top {
+    background: #ffffff;
+    padding: 6px;
+    margin: 0 8px 10px;
+    justify-content: flex-end;
+}
+
+#layout {
+    --sb-w: 250px;
+    --sb-w-collapsed: 64px;
+}
+
+    /* fechada = compacta */
+    #layout.sb-collapsed .sidebar {
+        width: var(--sb-w-collapsed);
+    }
+
+        /* quando fechada, não deixa submenus ocuparem espaço (evita “buraco”) */
+        #layout.sb-collapsed .sidebar .submenu,
+        #layout.sb-collapsed .sidebar .collapse {
+            display: none !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* ícone centralizado e texto oculto quando fechada */
+        #layout.sb-collapsed .sidebar a {
+            justify-content: center !important;
+            gap: 0 !important;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        #layout.sb-collapsed .sidebar .label {
+            display: none !important;
+        }
+
+        #layout.sb-collapsed .sidebar .toggle-icon {
+            display: none !important;
+        }
+
+        #layout.sb-collapsed .sidebar .bi {
+            margin-right: 0 !important;
+        }
+
+        /* ===== EXPANSÃO NO HOVER (ou “forçada” via classe) ===== */
+        #layout.sb-collapsed .sidebar:hover,
+        #layout.sb-collapsed .sidebar.sb-forceopen {
+            width: var(--sb-w);
+            box-shadow: 0 8px 24px rgba(0,0,0,.08);
+            z-index: 1000;
+        }
+
+            /* quando expandida (hover/forçada), volta a mostrar rótulos/chevrons */
+            #layout.sb-collapsed .sidebar:hover .label,
+            #layout.sb-collapsed .sidebar.sb-forceopen .label,
+            #layout.sb-collapsed .sidebar:hover .toggle-icon,
+            #layout.sb-collapsed .sidebar.sb-forceopen .toggle-icon {
+                display: inline-flex !important;
+                white-space: nowrap;
+            }
+
+            /* permite que os submenus ABERTOS apareçam durante o hover/força
+           (sem abrir todos automaticamente) */
+            #layout.sb-collapsed .sidebar:hover .collapse.show,
+            #layout.sb-collapsed .sidebar.sb-forceopen .collapse.show {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+/* links: texto à esquerda, chevron à direita quando aberta */
+.sidebar a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+}
+
+.sidebar .toggle-icon {
+    margin-left: auto;
+}
+
+.sidebar .label {
+    white-space: nowrap;
+}
+
+.sidebar .submenu {
+    display: block !important;
+}
+
+    .sidebar .submenu > li {
+        display: block;
+    }
+
+    /* deixa a linha toda “clicável” com área confortável */
+    .sidebar a.menu-head,
+    .sidebar .submenu a {
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+
+        .sidebar a.menu-head:hover,
+        .sidebar .submenu a:hover {
+            background: #f4f7fb;
+        }
+
+.sidebar a, .sidebar button {
+    cursor: pointer;
+}
+
+/* transição suave de largura/sombra para dar fluidez */
+.sidebar {
+    transition: width .18s ease, box-shadow .18s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar {
+        transition: none;
+    }
+}
+
+/* botão do topo: quando fechado, fica só o ícone; quando aberto, mostra o texto */
+.sidebar-top .sb-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+    .sidebar-top .sb-toggle .btn-label {
+        font-weight: 600;
+        color: #334155;
+    }
+
+#layout.sb-collapsed .sidebar-top {
+    justify-content: center !important;
+}
+
+    #layout.sb-collapsed .sidebar-top .sb-toggle {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        gap: 0;
+        justify-content: center;
+    }
+
+        #layout.sb-collapsed .sidebar-top .sb-toggle .btn-label {
+            display: none;
+        }
+
+        #layout.sb-collapsed .sidebar-top .sb-toggle .bi-list {
+            margin: 0;
+        }

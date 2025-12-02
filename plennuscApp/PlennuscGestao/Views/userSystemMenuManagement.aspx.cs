@@ -80,7 +80,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 // Atualiza informação
                 litInfoUsuarios.Text = usuarios.Count == 0
                     ? $"Nenhum usuário encontrado com '{filtro}'"
-                    : $"Mostrando {usuarios.Count} usuário(s)" +
+                    : $"{usuarios.Count} usuários disponíveis" +
                       (string.IsNullOrEmpty(filtro) ? "" : $" filtrados por '{filtro}'");
             }
             catch (Exception ex)

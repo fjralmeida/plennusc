@@ -113,13 +113,37 @@
     }
 
 /* ===== CHECKBOXLIST DE SISTEMAS (3 POR LINHA) ===== */
-.checkbox-container table {
-    width: 100%;
-    border-collapse: collapse;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+.checkbox-container td {
+    position: relative;
+    overflow: hidden; /* evita expandir */
 }
+
+.checkbox-container td {
+    position: relative;
+    overflow: hidden; /* evita expandir */
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(0, 123, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.checked {
+    background-color: #d1f7c4 !important;
+    transition: 0.3s;
+}
+
 
 .checkbox-container tr {
     display: contents;

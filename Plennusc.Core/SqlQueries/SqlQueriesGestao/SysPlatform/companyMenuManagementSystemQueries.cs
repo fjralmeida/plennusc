@@ -28,23 +28,38 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.SysPlatform
             ORDER BY s.NomeDisplay";
 
         public static string ListarMenusParaVincular = @"
-    SELECT 
-        m.CodMenu,
-        m.NomeMenu,
-        m.NomeDisplay,
-        m.Conf_Nivel,
-        m.Conf_Ordem,
-        m.CodMenuPai,
-        CASE WHEN sem.CodSistemaEmpresaMenu IS NOT NULL THEN 1 ELSE 0 END as Vinculado
-    FROM Menu m
-    LEFT JOIN SistemaEmpresaMenu sem ON sem.CodMenu = m.CodMenu 
-        AND sem.CodSistemaEmpresa = @CodSistemaEmpresa
-    WHERE m.Conf_Habilitado = 1
-    AND m.CodMenu NOT IN (1, 2, 3, 4)
-    ORDER BY 
-        COALESCE(m.CodMenuPai, m.CodMenu),
-        m.Conf_Ordem
-";
+           SELECT 
+            m.CodMenu,
+            m.NomeMenu,
+            m.NomeDisplay,
+            m.NomeObjeto,
+            m.Conf_Nivel,
+            m.Conf_Ordem,
+            m.CodMenuPai,
+            CASE WHEN sem.CodSistemaEmpresaMenu IS NOT NULL THEN 1 ELSE 0 END as Vinculado
+        FROM Menu m
+        -- Junta com os menus já vinculados a algum SistemaEmpresa
+        INNER JOIN (
+            -- DISTINCT para evitar duplicatas se um menu estiver em múltiplas empresas do mesmo sistema
+            SELECT DISTINCT 
+                se.CodSistema,
+                sem.CodMenu
+            FROM SistemaEmpresaMenu sem
+            INNER JOIN SistemaEmpresa se ON se.CodSistemaEmpresa = sem.CodSistemaEmpresa
+            WHERE sem.Conf_Habilitado = 1
+        ) sistema_menus ON m.CodMenu = sistema_menus.CodMenu
+        -- Filtra apenas para o sistema atual
+        INNER JOIN SistemaEmpresa se ON se.CodSistemaEmpresa = @CodSistemaEmpresa
+            AND sistema_menus.CodSistema = se.CodSistema
+        -- Left join para verificar se já está vinculado à empresa específica
+        LEFT JOIN SistemaEmpresaMenu sem ON sem.CodMenu = m.CodMenu 
+            AND sem.CodSistemaEmpresa = @CodSistemaEmpresa
+        WHERE m.Conf_Habilitado = 1
+        AND m.CodMenu NOT IN (1, 2, 3, 4) -- Remove os duplicados/antigos
+        ORDER BY 
+            COALESCE(m.CodMenuPai, m.CodMenu),
+            m.Conf_Ordem
+        ";
 
 
         public static string InserirSistemaEmpresaMenu = @"

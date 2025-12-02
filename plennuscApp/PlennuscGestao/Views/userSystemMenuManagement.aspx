@@ -1,5 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="userSystemMenuManagement.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.userSystemMenuManagement" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <title>Gerenciamento de Menu</title>
+
     <link href="../../Content/Css/projects/gestao/structuresCss/usuario/user-System-Menu-Management.css" rel="stylesheet" />
 
 <script>
@@ -104,11 +106,7 @@
                         Text="Limpar" 
                         CssClass="btn btn-outline-secondary"
                         OnClick="btnLimparFiltro_Click" />
-                </div>
-        
-                <small class="text-muted">
-                    <asp:Literal ID="litInfoUsuarios" runat="server" Text="Mostrando todos os usuários" />
-                </small>
+                </div>  
             </div>
     
             <!-- COLUNA DIREITA: Dropdown -->
@@ -120,6 +118,10 @@
                     AutoPostBack="true"
                     OnSelectedIndexChanged="ddlUsuarios_SelectedIndexChanged">
                 </asp:DropDownList>
+
+                  <small class="text-muted">
+                     <asp:Literal ID="litInfoUsuarios" runat="server" Text="Mostrando todos os usuários" />
+                 </small>
             </div>
         </div>
 
