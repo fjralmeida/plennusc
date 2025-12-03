@@ -12,6 +12,7 @@ namespace appWhatsapp
         {
             // ✅ PADRÃO: Rotas curtas (sem "PlennuscGestao/Views/")
 
+            #region ROUTE GESTAO
             // ✅ Estruturas
             routes.MapPageRoute("registerStructureType", "registerStructureType", "~/PlennuscGestao/Views/registerStructureType.aspx");
             routes.MapPageRoute("listStructureTypes", "listStructureTypes", "~/PlennuscGestao/Views/listStructureTypes.aspx");
@@ -63,11 +64,22 @@ namespace appWhatsapp
 
             // ✅ Adicionar esta rota - Vincular Empresas Usuário
             routes.MapPageRoute("vincularEmpresasUsuario", "vincularEmpresasUsuario", "~/PlennuscGestao/Views/userCompanyRegistration.aspx");
+            #endregion
 
+
+            #region ROUTE FINANCE
             // ✅ ADICIONAR APENAS AS 3 ROTAS DO FINANCE:
             routes.MapPageRoute("homeFinance", "homeFinance", "~/PlennuscFinance/Views/homeFinance.aspx");
             routes.MapPageRoute("profileFinance", "profileFinance", "~/PlennuscFinance/Views/profileFinance.aspx");
             routes.MapPageRoute("privacySettingsFinance", "privacySettingsFinance", "~/PlennuscFinance/Views/privacySettingsFinance.aspx");
+            #endregion
+
+            #region ROUTE MEDIC
+            // ✅ ROTAS DO MEDIC
+            routes.MapPageRoute("homeDoctor", "homeDoctor", "~/PlennuscMedic/Views/homeDoctor.aspx");
+            routes.MapPageRoute("profileMedic", "profileMedic", "~/PlennuscMedic/Views/profileMedic.aspx");
+            routes.MapPageRoute("privacySettingsMedic", "privacySettingsMedic", "~/PlennuscMedic/Views/privacySettingsMedic.aspx");
+            #endregion
 
             //// ✅ Rota padrão (mantém a do Gestão)
             //routes.MapPageRoute("default", "", "~/PlennuscGestao/Views/homeManagement.aspx");
