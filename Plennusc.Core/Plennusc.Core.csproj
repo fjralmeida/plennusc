@@ -44,6 +44,7 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Spatial, Version=5.8.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -105,6 +106,9 @@
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanySelectionModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\EmpresaModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\UserCompanyModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsDepartment\DepartmentCreateDto.cs" />
+    <Compile Include="Models\ModelsGestao\modelsDepartment\DepartmentDto.cs" />
+    <Compile Include="Models\ModelsGestao\modelsDepartment\ResultadoOperacao.cs" />
     <Compile Include="Models\ModelsGestao\ModelsHome\homeManagementModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\departmentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\SectorTypeDemandModel.cs" />
@@ -132,6 +136,7 @@
     <Compile Include="Service\ServiceGestao\company\CompanyService.cs" />
     <Compile Include="Service\ServiceGestao\company\UserCompanyService.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
+    <Compile Include="Service\ServiceGestao\department\createDepartmentService.cs" />
     <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
     <Compile Include="Service\ServiceGestao\menu\menusManagementService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
