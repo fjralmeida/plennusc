@@ -185,6 +185,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.department
         }
 
         // MÉTODO ADICIONAL: Excluir departamento
+        // Em EmpDepartment.cs - verifique se este método existe:
         public bool DeleteDepartment(int departmentId)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))

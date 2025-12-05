@@ -143,6 +143,61 @@ namespace Plennusc.Core.Service.ServiceGestao.department
         }
 
         /// <summary>
+        /// Exclui um departamento pelo ID
+        /// </summary>
+        /// <param name="departmentId">ID do departamento a excluir</param>
+        /// <returns>Resultado da operação</returns>
+        public DepartmentResult DeleteDepartment(int departmentId)
+        {
+            try
+            {
+                // Primeiro verificar se o departamento existe
+                var department = GetDepartmentById(departmentId);
+                if (department == null)
+                {
+                    return new DepartmentResult
+                    {
+                        Success = false,
+                        Message = "Departamento não encontrado.",
+                        DepartmentId = departmentId
+                    };
+                }
+
+                // Chamar a query para excluir o departamento
+                bool deleted = _departmentQueries.DeleteDepartment(departmentId);
+
+                if (deleted)
+                {
+                    return new DepartmentResult
+                    {
+                        Success = true,
+                        Message = "Departamento excluído com sucesso!",
+                        DepartmentId = departmentId
+                    };
+                }
+                else
+                {
+                    return new DepartmentResult
+                    {
+                        Success = false,
+                        Message = "Não foi possível excluir o departamento.",
+                        DepartmentId = departmentId
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Logar o erro
+                return new DepartmentResult
+                {
+                    Success = false,
+                    Message = $"Erro interno ao excluir departamento: {ex.Message}",
+                    DepartmentId = departmentId
+                };
+            }
+        }
+
+        /// <summary>
         /// Valida formato de email
         /// </summary>
         private bool IsValidEmail(string email)

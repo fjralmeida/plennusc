@@ -15,7 +15,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-      <div class="container">
+    <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="titulo-pagina">
                 <i class="bi bi-diagram-3 me-2"></i>
@@ -32,8 +32,7 @@
                 runat="server"
                 AutoGenerateColumns="false"
                 GridLines="None"
-                CssClass="custom-grid align-middle"
-                OnRowDataBound="gvDepartments_RowDataBound">
+                CssClass="custom-grid align-middle">
 
                 <Columns>
                     <asp:BoundField DataField="CodDepartamento" HeaderText="Código" 
@@ -49,20 +48,20 @@
                     <asp:BoundField DataField="Informacoes_Log_I" HeaderText="Criado em" 
                         ItemStyle-CssClass="col-data" HeaderStyle-CssClass="col-data" 
                         DataFormatString="{0:dd/MM/yyyy HH:mm}" />
-                    <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="col-acoes">
-                        <ItemTemplate>
-                            <button type="button" class="btn btn-sm btn-outline-primary btn-editar me-2" 
-                                data-id='<%# Eval("CodDepartamento") %>'
-                                onclick='editarDepartamento(<%# Eval("CodDepartamento") %>)'>
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <asp:Button ID="btnExcluir" runat="server" Text="Excluir" 
-                                CssClass="btn btn-sm btn-outline-danger" 
-                                CommandArgument='<%# Eval("CodDepartamento") %>'
-                                OnClick="btnExcluir_Click"
-                                OnClientClick="return confirmarExclusao();" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                  <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="col-acoes">
+                    <ItemTemplate>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-editar me-2" 
+                            data-id='<%# Eval("CodDepartamento") %>'
+                            onclick='editarDepartamento(<%# Eval("CodDepartamento") %>)'>
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <asp:Button ID="btnExcluir" runat="server" Text="Excluir" 
+                            CssClass="btn btn-sm btn-outline-danger btn-excluir-departamento" 
+                            CommandArgument='<%# Eval("CodDepartamento") %>'
+                            OnClick="btnExcluir_Click"
+                            OnClientClick="return false;" />
+                    </ItemTemplate>
+                </asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>
@@ -83,117 +82,112 @@
                         <div class="col-md-12 mb-3">
                             <label for="txtNomeDepartamento" class="form-label">Nome do Departamento *</label>
                             <asp:TextBox ID="txtNomeDepartamento" runat="server" CssClass="form-control" 
-                                MaxLength="100" placeholder="Ex: Recursos Humanos" required="required"></asp:TextBox>
-                            <div class="invalid-feedback" id="nomeError">Por favor, insira o nome do departamento.</div>
+                                MaxLength="100" placeholder="Ex: Recursos Humanos"></asp:TextBox>
                         </div>
-                        
                         <div class="col-md-6 mb-3">
                             <label for="txtRamal" class="form-label">Ramal</label>
                             <asp:TextBox ID="txtRamal" runat="server" CssClass="form-control" 
                                 MaxLength="10" placeholder="Ex: 9120"></asp:TextBox>
                         </div>
-                        
                         <div class="col-md-6 mb-3">
                             <label for="txtTelefone" class="form-label">Telefone</label>
                             <asp:TextBox ID="txtTelefone" runat="server" CssClass="form-control" 
                                 MaxLength="20" placeholder="Ex: 3133119120"></asp:TextBox>
                         </div>
-                        
                         <div class="col-md-12 mb-3">
                             <label for="txtEmail" class="form-label">E-mail Geral</label>
                             <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" 
                                 TextMode="Email" MaxLength="100" placeholder="Ex: departamento@empresa.com.br"></asp:TextBox>
-                            <div class="invalid-feedback" id="emailError">Por favor, insira um e-mail válido.</div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <asp:Button ID="btnSalvarDepartamento" runat="server" 
-                        Text="Salvar Departamento" CssClass="btn btn-primary"
-                        OnClick="btnSalvarDepartamento_Click" 
-                        OnClientClick="return validarFormulario();" />
+                            Text="Salvar Departamento" CssClass="btn btn-primary"
+                            OnClick="btnSalvarDepartamento_Click" 
+                            OnClientClick="return validarFormulario();" />
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <script>
-        // Validação do formulário
-        function validarFormulario() {
-            var nome = document.getElementById('<%= txtNomeDepartamento.ClientID %>').value;
-            var email = document.getElementById('<%= txtEmail.ClientID %>').value;
-            var isValid = true;
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Validação do formulário - FUNCIONA
+    function validarFormulario() {
+        var nome = document.getElementById('<%= txtNomeDepartamento.ClientID %>');
+        var email = document.getElementById('<%= txtEmail.ClientID %>');
 
-            // Limpar erros anteriores
-            document.getElementById('nomeError').style.display = 'none';
-            document.getElementById('emailError').style.display = 'none';
-            document.getElementById('<%= txtNomeDepartamento.ClientID %>').classList.remove('is-invalid');
-            document.getElementById('<%= txtEmail.ClientID %>').classList.remove('is-invalid');
+        // Resetar validação
+        if (nome) nome.classList.remove('is-invalid');
+        if (email) email.classList.remove('is-invalid');
 
-            // Validar nome
-            if (nome.trim() === '') {
-                document.getElementById('nomeError').style.display = 'block';
-                document.getElementById('<%= txtNomeDepartamento.ClientID %>').classList.add('is-invalid');
-                isValid = false;
-            }
-
-            // Validar email se preenchido
-            if (email.trim() !== '' && !isValidEmail(email)) {
-                document.getElementById('emailError').style.display = 'block';
-                document.getElementById('<%= txtEmail.ClientID %>').classList.add('is-invalid');
-                isValid = false;
-            }
-
-            if (!isValid) {
-                // Mostrar mensagem de erro usando SweetAlert
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Validação',
-                    text: 'Por favor, corrija os campos destacados.',
-                    confirmButtonText: 'OK'
-                });
-            }
-
-            return isValid;
-        }
-
-        function isValidEmail(email) {
-            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
-        // Confirmação de exclusão
-        function confirmarExclusao() {
-            return Swal.fire({
-                title: 'Tem certeza?',
-                text: "Esta ação não poderá ser desfeita!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sim, excluir!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                return result.isConfirmed;
-            });
-        }
-
-        // Função para editar departamento (exemplo)
-        function editarDepartamento(id) {
-            // Aqui você pode implementar a lógica de edição
-            // Pode abrir um modal de edição ou redirecionar
+        // Validar nome
+        if (!nome || !nome.value.trim()) {
+            if (nome) nome.classList.add('is-invalid');
             Swal.fire({
-                title: 'Editar Departamento',
-                text: 'Funcionalidade de edição será implementada em breve.',
-                icon: 'info',
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Nome do departamento é obrigatório',
                 confirmButtonText: 'OK'
+            }).then(() => {
+                if (nome) nome.focus();
             });
+            return false;
         }
-    </script>
+
+        // Validar email se preenchido
+        if (email && email.value.trim() !== '' && !isValidEmail(email.value)) {
+            email.classList.add('is-invalid');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Por favor, insira um e-mail válido',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                email.focus();
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    function isValidEmail(email) {
+        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    // Botões de exclusão
+    document.addEventListener('DOMContentLoaded', function () {
+        // Botões de excluir
+        var botoesExcluir = document.querySelectorAll('.btn-excluir-departamento');
+
+        botoesExcluir.forEach(function (botao) {
+            botao.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Esta ação não poderá ser desfeita!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sim, excluir!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Disparar o postback
+                        __doPostBack(botao.name, '');
+                    }
+                });
+
+                return false;
+            });
+        });
+    });
+</script>
 </asp:Content>
