@@ -106,8 +106,10 @@
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanySelectionModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\EmpresaModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\UserCompanyModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsDepartment\CreateDepartmentDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsDepartment\DepartmentCreateDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsDepartment\DepartmentDto.cs" />
+    <Compile Include="Models\ModelsGestao\modelsDepartment\DepartmentResult.cs" />
     <Compile Include="Models\ModelsGestao\modelsDepartment\ResultadoOperacao.cs" />
     <Compile Include="Models\ModelsGestao\ModelsHome\homeManagementModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsLinkSector\departmentModel.cs" />

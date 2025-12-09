@@ -1,4 +1,5 @@
-﻿using Plennusc.Core.Service.ServiceGestao.department;
+﻿using Plennusc.Core.Models.ModelsGestao.modelsDepartment;
+using Plennusc.Core.Service.ServiceGestao.department;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.department;
 using System;
 using System.Collections.Generic;
@@ -25,19 +26,42 @@ namespace appWhatsapp.PlennuscGestao.Views
             try
             {
                 var service = new CreateDepartmentService();
-                var resultado = service.CreateDepartment(
-                    txtNomeDepartamento.Text.Trim(),
-                    txtRamal.Text.Trim(),
-                    txtEmail.Text.Trim(),
-                    txtTelefone.Text.Trim()
-                );
+                DepartmentResult resultado;
+
+                // Verificar se o botão salvar tem CommandArgument (modo edição)
+                if (!string.IsNullOrEmpty(btnSalvarDepartamento.CommandArgument))
+                {
+                    // Modo edição
+                    int departmentId = Convert.ToInt32(btnSalvarDepartamento.CommandArgument);
+
+                    resultado = service.UpdateDepartment(
+                        departmentId,
+                        txtNomeDepartamento.Text.Trim(),
+                        txtRamal.Text.Trim(),
+                        txtEmail.Text.Trim(),
+                        txtTelefone.Text.Trim()
+                    );
+
+                    // Limpar o CommandArgument após editar
+                    btnSalvarDepartamento.CommandArgument = string.Empty;
+                }
+                else
+                {
+                    // Modo criação
+                    resultado = service.CreateDepartment(
+                        txtNomeDepartamento.Text.Trim(),
+                        txtRamal.Text.Trim(),
+                        txtEmail.Text.Trim(),
+                        txtTelefone.Text.Trim()
+                    );
+                }
 
                 if (resultado.Success)
                 {
                     LimparCampos();
                     CarregarDepartamentos();
 
-                    // SÓ ISSO - Chamar uma função que fecha o modal E mostra a mensagem
+                    // Fechar modal e mostrar mensagem
                     MostrarMensagemComFecharModal(resultado.Message, "success");
                 }
                 else
@@ -84,6 +108,44 @@ namespace appWhatsapp.PlennuscGestao.Views
             catch (Exception ex)
             {
                 MostrarMensagem($"Erro: {ex.Message}", "error");
+            }
+        }
+
+        protected void btnEditar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Button btn = (Button)sender;
+                int departmentId = Convert.ToInt32(btn.CommandArgument);
+
+                var service = new CreateDepartmentService();
+                var departamento = service.GetDepartmentById(departmentId);
+
+                if (departamento != null)
+                {
+                    // Preencher os campos do modal
+                    txtNomeDepartamento.Text = departamento["Nome"].ToString();
+                    txtRamal.Text = departamento["NumRamal"] != null ? departamento["NumRamal"].ToString() : "";
+                    txtTelefone.Text = departamento["Telefone"] != null ? departamento["Telefone"].ToString() : "";
+                    txtEmail.Text = departamento["EmailGeral"] != null ? departamento["EmailGeral"].ToString() : "";
+
+                    // Colocar o ID no CommandArgument do botão salvar
+                    btnSalvarDepartamento.CommandArgument = departmentId.ToString();
+
+                    // Abrir o modal via JavaScript
+                    string script = @"
+                        $('#modalNovoDepartamentoLabel').html('<i class=""fas fa-edit me-2""></i>Editar Departamento');
+                        $('#btnSalvarDepartamento').text('Atualizar Departamento');
+                        var modal = new bootstrap.Modal(document.getElementById('modalNovoDepartamento'));
+                        modal.show();
+                    ";
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "AbrirModalEdicao", script, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem($"Erro ao carregar departamento: {ex.Message}", "error");
             }
         }
 
@@ -171,18 +233,15 @@ namespace appWhatsapp.PlennuscGestao.Views
             ScriptManager.RegisterStartupScript(this, GetType(), "Mensagem_" + Guid.NewGuid(), script, true);
         }
 
-        // NOVA FUNÇÃO - Fecha modal E mostra mensagem
         private void MostrarMensagemComFecharModal(string mensagem, string tipo = "success")
         {
             string script = $@"
-                // Fecha o modal
                 var modalElement = document.getElementById('modalNovoDepartamento');
                 var modal = bootstrap.Modal.getInstance(modalElement);
                 if (modal) {{
                     modal.hide();
                 }}
                 
-                // Mostra a mensagem APÓS fechar o modal
                 setTimeout(function() {{
                     const Toast = Swal.mixin({{
                         toast: true,
@@ -200,7 +259,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                         icon: '{tipo}',
                         title: '{mensagem.Replace("'", "\\'")}'
                     }});
-                }}, 300); // Pequeno delay para garantir que o modal fechou
+                }}, 300);
             ";
 
             ScriptManager.RegisterStartupScript(this, GetType(), "MensagemModal_" + Guid.NewGuid(), script, true);

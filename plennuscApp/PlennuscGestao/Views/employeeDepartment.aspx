@@ -1,17 +1,14 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="employeeDepartment.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.employeeDepartment" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-
-        <title>Departamento de Funcionários</title>
+    <title>Departamento de Funcionários</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    
     <link href="../../Content/Css/projects/gestao/structuresCss/employee-Department.css" rel="stylesheet" />
-
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -33,7 +30,6 @@
                 AutoGenerateColumns="false"
                 GridLines="None"
                 CssClass="custom-grid align-middle">
-
                 <Columns>
                     <asp:BoundField DataField="CodDepartamento" HeaderText="Código" 
                         ItemStyle-CssClass="col-codigo" HeaderStyle-CssClass="col-codigo" />
@@ -48,20 +44,19 @@
                     <asp:BoundField DataField="Informacoes_Log_I" HeaderText="Criado em" 
                         ItemStyle-CssClass="col-data" HeaderStyle-CssClass="col-data" 
                         DataFormatString="{0:dd/MM/yyyy HH:mm}" />
-                  <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="col-acoes">
-                    <ItemTemplate>
-                        <button type="button" class="btn btn-sm btn-outline-primary btn-editar me-2" 
-                            data-id='<%# Eval("CodDepartamento") %>'
-                            onclick='editarDepartamento(<%# Eval("CodDepartamento") %>)'>
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <asp:Button ID="btnExcluir" runat="server" Text="Excluir" 
-                            CssClass="btn btn-sm btn-outline-danger btn-excluir-departamento" 
-                            CommandArgument='<%# Eval("CodDepartamento") %>'
-                            OnClick="btnExcluir_Click"
-                            OnClientClick="return false;" />
-                    </ItemTemplate>
-                </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="col-acoes">
+                        <ItemTemplate>
+                            <asp:Button ID="btnEditar" runat="server" Text="Editar" 
+                                CssClass="btn btn-sm btn-outline-primary btn-editar me-2" 
+                                CommandArgument='<%# Eval("CodDepartamento") %>'
+                                OnClick="btnEditar_Click" />
+                            <asp:Button ID="btnExcluir" runat="server" Text="Excluir" 
+                                CssClass="btn btn-sm btn-outline-danger btn-excluir-departamento" 
+                                CommandArgument='<%# Eval("CodDepartamento") %>'
+                                OnClick="btnExcluir_Click"
+                                OnClientClick="return confirm('Tem certeza que deseja excluir este departamento?');" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>
@@ -112,82 +107,52 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    // Validação do formulário - FUNCIONA
-    function validarFormulario() {
-        var nome = document.getElementById('<%= txtNomeDepartamento.ClientID %>');
-        var email = document.getElementById('<%= txtEmail.ClientID %>');
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Validação do formulário
+        function validarFormulario() {
+            var nome = document.getElementById('<%= txtNomeDepartamento.ClientID %>');
+            var email = document.getElementById('<%= txtEmail.ClientID %>');
 
-        // Resetar validação
-        if (nome) nome.classList.remove('is-invalid');
-        if (email) email.classList.remove('is-invalid');
+            if (nome) nome.classList.remove('is-invalid');
+            if (email) email.classList.remove('is-invalid');
 
-        // Validar nome
-        if (!nome || !nome.value.trim()) {
-            if (nome) nome.classList.add('is-invalid');
-            Swal.fire({
-                icon: 'warning',
-                title: 'Atenção',
-                text: 'Nome do departamento é obrigatório',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                if (nome) nome.focus();
-            });
-            return false;
-        }
-
-        // Validar email se preenchido
-        if (email && email.value.trim() !== '' && !isValidEmail(email.value)) {
-            email.classList.add('is-invalid');
-            Swal.fire({
-                icon: 'warning',
-                title: 'Atenção',
-                text: 'Por favor, insira um e-mail válido',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                email.focus();
-            });
-            return false;
-        }
-
-        return true;
-    }
-
-    function isValidEmail(email) {
-        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    }
-
-    // Botões de exclusão
-    document.addEventListener('DOMContentLoaded', function () {
-        // Botões de excluir
-        var botoesExcluir = document.querySelectorAll('.btn-excluir-departamento');
-
-        botoesExcluir.forEach(function (botao) {
-            botao.addEventListener('click', function (e) {
-                e.preventDefault();
-
+            if (!nome || !nome.value.trim()) {
+                if (nome) nome.classList.add('is-invalid');
                 Swal.fire({
-                    title: 'Tem certeza?',
-                    text: "Esta ação não poderá ser desfeita!",
                     icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sim, excluir!',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Disparar o postback
-                        __doPostBack(botao.name, '');
-                    }
+                    title: 'Atenção',
+                    text: 'Nome do departamento é obrigatório',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    if (nome) nome.focus();
                 });
-
                 return false;
-            });
-        });
-    });
-</script>
+            }
+
+            if (email && email.value.trim() !== '' && !isValidEmail(email.value)) {
+                email.classList.add('is-invalid');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atenção',
+                    text: 'Por favor, insira um e-mail válido',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    email.focus();
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        function isValidEmail(email) {
+            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+    </script>
 </asp:Content>

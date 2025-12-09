@@ -1,7 +1,9 @@
-﻿using Plennusc.Core.SqlQueries.SqlQueriesGestao.department;
+﻿using Plennusc.Core.Models.ModelsGestao.modelsDepartment;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao.department;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -227,27 +229,78 @@ namespace Plennusc.Core.Service.ServiceGestao.department
             // Valida se tem entre 10 e 11 dígitos (com DDD)
             return cleanPhone.Length >= 10 && cleanPhone.Length <= 11;
         }
-    }
 
-    /// <summary>
-    /// Classe para representar o resultado da operação de criação de departamento
-    /// </summary>
-    public class DepartmentResult
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; }
-        public int DepartmentId { get; set; }
-        public DataRow DepartmentData { get; set; }
-    }
+        public DepartmentResult UpdateDepartment(int departmentId, string nome, string numRamal = null, string emailGeral = null, string telefone = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(nome))
+                {
+                    return new DepartmentResult
+                    {
+                        Success = false,
+                        Message = "O nome do departamento é obrigatório.",
+                        DepartmentId = departmentId
+                    };
+                }
 
-    /// <summary>
-    /// DTO para criação de departamento
-    /// </summary>
-    public class CreateDepartmentDto
-    {
-        public string Nome { get; set; }
-        public string NumRamal { get; set; }
-        public string EmailGeral { get; set; }
-        public string Telefone { get; set; }
+                var existingDepartment = GetDepartmentById(departmentId);
+                if (existingDepartment == null)
+                {
+                    return new DepartmentResult
+                    {
+                        Success = false,
+                        Message = "Departamento não encontrado.",
+                        DepartmentId = departmentId
+                    };
+                }
+
+                if (!string.IsNullOrWhiteSpace(emailGeral))
+                {
+                    if (!IsValidEmail(emailGeral))
+                    {
+                        return new DepartmentResult
+                        {
+                            Success = false,
+                            Message = "O e-mail fornecido não é válido.",
+                            DepartmentId = departmentId
+                        };
+                    }
+                }
+
+                bool updated = _departmentQueries.UpdateDepartment(departmentId, nome.Trim(),
+                    !string.IsNullOrWhiteSpace(numRamal) ? numRamal.Trim() : null,
+                    !string.IsNullOrWhiteSpace(emailGeral) ? emailGeral.Trim() : null,
+                    !string.IsNullOrWhiteSpace(telefone) ? telefone.Trim() : null);
+
+                if (updated)
+                {
+                    return new DepartmentResult
+                    {
+                        Success = true,
+                        Message = "Departamento atualizado com sucesso!",
+                        DepartmentId = departmentId
+                    };
+                }
+                else
+                {
+                    return new DepartmentResult
+                    {
+                        Success = false,
+                        Message = "Não foi possível atualizar o departamento. Tente novamente.",
+                        DepartmentId = departmentId
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new DepartmentResult
+                {
+                    Success = false,
+                    Message = $"Erro interno ao atualizar departamento: {ex.Message}",
+                    DepartmentId = departmentId
+                };
+            }
+        }
     }
 }
