@@ -277,7 +277,9 @@ namespace PlennuscApp.PlennuscGestao.Views
                     //string valor = ((Label)row.FindControl("lblValor"))?.Text?.Trim();
                     string registro = ((Label)row.FindControl("lblRegistro"))?.Text?.Trim();
 
-                    string pdfUrl = $"https://portaldocliente.vallorbeneficios.com.br/ServidorAl2/boletos/boleto_itau_Vallor.php?numeroRegistro={registro}";
+                    //string pdfUrl = $"https://portaldocliente.vallorbeneficios.com.br/ServidorAl2/boletos/boleto_itau_Vallor.php?numeroRegistro={registro}";
+
+                    string pdfUrl = registro;
 
                     lista.Add(new DadosMensagem
                     {

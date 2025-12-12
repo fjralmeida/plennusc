@@ -115,7 +115,8 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                Button btn = (Button)sender;
+                // Use LinkButton ao invés de Button
+                LinkButton btn = (LinkButton)sender;
                 int departmentId = Convert.ToInt32(btn.CommandArgument);
 
                 var service = new CreateDepartmentService();
@@ -134,11 +135,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     // Abrir o modal via JavaScript
                     string script = @"
-                        $('#modalNovoDepartamentoLabel').html('<i class=""fas fa-edit me-2""></i>Editar Departamento');
-                        $('#btnSalvarDepartamento').text('Atualizar Departamento');
-                        var modal = new bootstrap.Modal(document.getElementById('modalNovoDepartamento'));
-                        modal.show();
-                    ";
+                $('#modalNovoDepartamentoLabel').html('<i class=""fas fa-edit me-2""></i>Editar Departamento');
+                $('#btnSalvarDepartamento').text('Atualizar Departamento');
+                var modal = new bootstrap.Modal(document.getElementById('modalNovoDepartamento'));
+                modal.show();
+            ";
 
                     ScriptManager.RegisterStartupScript(this, GetType(), "AbrirModalEdicao", script, true);
                 }

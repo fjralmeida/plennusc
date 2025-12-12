@@ -94,10 +94,10 @@ namespace appWhatsapp.Service
         {
             var util = new ItensPedIntegradoUtil();
 
-            if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
-            {
-                return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
-            }
+            //if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
+            //{
+            //    return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
+            //}
 
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
@@ -113,10 +113,10 @@ namespace appWhatsapp.Service
                 {
                     var jsonBody = $@"
                     {{
-                      ""media_hsm_configuration_id"": ""6a8f51e9-90ce-4e3a-aa24-fae141a21b44"",
+                      ""media_hsm_configuration_id"": ""9e0bb6b4-939c-4e0f-861f-c01c0819d215"",
                       ""hsm_type"": ""media_hsm"",
-                      ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
-                      ""system"": ""whatsapp"",
+                      ""campaign_id"": ""e76061ad-be13-4d72-9974-ca092fb5a5a4"",
+                      ""system"": ""whatsapp_enterprise"",
                       ""contacts"": [ 
                         {{ 
                           ""phone_number"": ""{telefone}"",

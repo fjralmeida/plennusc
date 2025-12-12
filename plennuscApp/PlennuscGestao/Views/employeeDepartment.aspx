@@ -44,19 +44,22 @@
                     <asp:BoundField DataField="Informacoes_Log_I" HeaderText="Criado em" 
                         ItemStyle-CssClass="col-data" HeaderStyle-CssClass="col-data" 
                         DataFormatString="{0:dd/MM/yyyy HH:mm}" />
-                    <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="col-acoes">
-                        <ItemTemplate>
-                            <asp:Button ID="btnEditar" runat="server" Text="Editar" 
-                                CssClass="btn btn-sm btn-outline-primary btn-editar me-2" 
-                                CommandArgument='<%# Eval("CodDepartamento") %>'
-                                OnClick="btnEditar_Click" />
-                            <asp:Button ID="btnExcluir" runat="server" Text="Excluir" 
-                                CssClass="btn btn-sm btn-outline-danger btn-excluir-departamento" 
-                                CommandArgument='<%# Eval("CodDepartamento") %>'
-                                OnClick="btnExcluir_Click"
-                                OnClientClick="return confirm('Tem certeza que deseja excluir este departamento?');" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+            <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="col-acoes">
+    <ItemTemplate>
+        <asp:LinkButton ID="btnEditar" runat="server"
+            CssClass="btn btn-sm btn-outline-primary btn-editar me-2"
+            CommandArgument='<%# Eval("CodDepartamento") %>'
+            OnClick="btnEditar_Click"
+            ToolTip="Editar">
+            <i class="fas fa-edit"></i>
+        </asp:LinkButton>
+        <asp:Button ID="btnExcluir" runat="server" Text="Excluir" 
+            CssClass="btn btn-sm btn-outline-danger btn-excluir-departamento" 
+            CommandArgument='<%# Eval("CodDepartamento") %>'
+            OnClick="btnExcluir_Click"
+            OnClientClick="return confirm('Tem certeza que deseja excluir este departamento?');" />
+    </ItemTemplate>
+</asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>
