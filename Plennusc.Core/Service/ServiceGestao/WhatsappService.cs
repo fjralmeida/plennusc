@@ -113,7 +113,7 @@ namespace appWhatsapp.Service
                 {
                     var jsonBody = $@"
                     {{
-                      ""media_hsm_configuration_id"": ""9e0bb6b4-939c-4e0f-861f-c01c0819d215"",
+                      ""media_hsm_configuration_id"": ""ff150b76-9a8b-4616-baaa-9787fb3a7315"",
                       ""hsm_type"": ""media_hsm"",
                       ""campaign_id"": ""e76061ad-be13-4d72-9974-ca092fb5a5a4"",
                       ""system"": ""whatsapp_enterprise"",
@@ -124,7 +124,9 @@ namespace appWhatsapp.Service
                           ""field_2"": ""{field2}"",
                           ""field_3"": ""{field3}"",
                           ""field_4"": ""{field4}"",
-                          ""field_5"":  ""{pdfUrl}""
+                          ""field_5"":  ""{pdfUrl}"",
+                          ""field_6"":  ""{pdfUrl}""
+
                         }}
                       ]
                     }}";

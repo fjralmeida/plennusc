@@ -233,7 +233,7 @@ namespace PlennuscApp.PlennuscGestao.Views
 
                     string codigoAssociado = Convert.ToString(lblCodigo?.Text)?.Trim();
 
-                    string telefone = "553173069983";
+                    string telefone = "553175402922";
                     //string telefone = FormatTelefone(telefoneBruto);
 
                     if (string.IsNullOrEmpty(telefone))
