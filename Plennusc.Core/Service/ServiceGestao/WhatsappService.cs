@@ -378,17 +378,18 @@ namespace appWhatsapp.Service
                 {
                     var jsonBody = $@"
                     {{
-                      ""media_hsm_configuration_id"": ""019896de-1b32-4f22-ad48-40f12dbb64ca"",
+                      ""media_hsm_configuration_id"": ""9e0bb6b4-939c-4e0f-861f-c01c0819d215"",
                       ""hsm_type"": ""media_hsm"",
-                      ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
-                      ""system"": ""whatsapp"",
+                      ""campaign_id"": ""e76061ad-be13-4d72-9974-ca092fb5a5a4"",
+                      ""system"":  ""whatsapp_enterprise"",
                       ""contacts"": [ 
                         {{ 
                           ""phone_number"": ""{telefone}"",
                           ""field_1"": ""{field1}"",
                           ""field_2"": ""{field2}"",
                           ""field_3"": ""{field3}"",
-                          ""field_4"": ""{field4}""
+                          ""field_4"": ""{field4}"",
+                          ""field_5"": ""{field4}""
                         }}
                       ]
                     }}";
