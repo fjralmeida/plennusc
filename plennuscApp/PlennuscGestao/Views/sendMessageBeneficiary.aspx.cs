@@ -203,6 +203,18 @@ namespace PlennuscApp.PlennuscGestao.Views
                         );
                         break;
 
+                    case "aVencer":
+                        resultado = await api.ConexaoApiAVencer(
+                            telefones,
+                            dados.Field8, // pdfUrl
+                            //dados.Field8,// notaFiscal
+                            dados.Field1, // nome
+                            dados.Field3, // plano
+                            dados.Field4, // vencimento
+                            dados.Field7  // valor
+                        );
+                        break;
+
                     default:
                         resultado = "Template não selecionado corretamente.";
                         break;
@@ -233,7 +245,7 @@ namespace PlennuscApp.PlennuscGestao.Views
 
                     string codigoAssociado = Convert.ToString(lblCodigo?.Text)?.Trim();
 
-                    string telefone = "553175402922";
+                    string telefone = "553173069983";
                     //string telefone = FormatTelefone(telefoneBruto);
 
                     if (string.IsNullOrEmpty(telefone))
@@ -263,6 +275,10 @@ namespace PlennuscApp.PlennuscGestao.Views
                     {
                         vencimento = txtDataNovaOpcao.Text;
                     }
+                    else if (hfTemplateEscolhido.Value == "aVencer")
+                    {
+                        vencimento = txtDataVencer.Text; // Data de vencimento
+                    }
 
                     string vencimentoMes = vencimento;
 
@@ -274,7 +290,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                         nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1); // Primeira letra maiúscula, opcional
                     }
 
-                    //string valor = ((Label)row.FindControl("lblValor"))?.Text?.Trim();
+                    string valor = ((Label)row.FindControl("lblValor"))?.Text?.Trim();
                     string registro = ((Label)row.FindControl("lblRegistro"))?.Text?.Trim();
 
                     //string pdfUrl = $"https://portaldocliente.vallorbeneficios.com.br/ServidorAl2/boletos/boleto_itau_Vallor.php?numeroRegistro={registro}";
@@ -292,7 +308,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                         //Field2 = operadora,
                         //Field5 = nome,
                         //Field6 = vencimento,
-                        //Field7 = valor.Replace("R$", "").Trim().Replace(",", "."),
+                        Field7 = valor.Replace("R$", "").Trim().Replace(",", "."),
                         Field8 = pdfUrl
                     });
                 }

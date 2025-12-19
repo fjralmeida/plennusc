@@ -247,7 +247,36 @@
                         Atenciosamente.
                     </p>
                 </div>
+                <!-- TEMPLATE: PAGAMENTO A VENCER -->
+ <div class="template-opcao" onclick="selecionarTemplate('aVencer')">
+     <h4>[PAGAMENTO A VENCER]</h4>
+     <p>
+         Olá, {{1}}.<br>
+         <br>
+         Esperamos que esteja bem.<br>
+         <br>
+         Informamos que o boleto e nota fiscal referente ao pagamento do seu plano de saúde já está disponível.<br>
+         <br>
+         Para sua comodidade, confira as informações do seu plano:
+     </p>
 
+     <div class="mb-2">
+         <!-- MUDEI O ID PARA txtDataVencer -->
+         <asp:TextBox ID="txtDataVencer" runat="server" TextMode="Date"
+             CssClass="form-control campo-data"
+             ClientIDMode="Static"
+             onclick="event.stopPropagation();"></asp:TextBox>
+         <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+     </div>
+
+     <p>
+         PLANO: {{2}}<br>
+         VENCIMENTO: {{3}}<br>
+         VALOR: {{4}}<br>
+         <br>
+         Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
+     </p>
+ </div>
             </div>
         </div>
     </div>
