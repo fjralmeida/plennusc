@@ -158,63 +158,67 @@
 
             <div class="modal-body">
 
-                <!-- SUSPENSÃO -->
-                <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
-                    <h4>Suspensão</h4>
-                    <p>
-                        EVITE MAIS ACÚMULO DE JUROS E MULTA<br>
-                        <br>
-                        Prezado(a) beneficiário(a) ****<br>
-                        Segue abaixo o boleto para pagamento referente ao vencimento MAIO do seu plano de saúde UNIMED BH.<br>
-                        Prazo para efetuar o pagamento e evitar o cancelamento COM PROBABILIDADE DE REATIVAÇÃO do seu plano é:
-                    </p>
+                <!-- APENAS BOLETO -->
+               <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
+    <h4>[PAGAMENTO A VENCER]</h4>
+    <p>
+        Olá, {{1}}.<br>
+        <br>
+        Esperamos que esteja bem.<br>
+        <br>
+        Informamos que o boleto referente ao pagamento do seu plano de saúde já está disponível.<br>
+        <br>
+        Para sua comodidade, confira as informações do seu plano:
+    </p>
 
-                    <!-- input de data; o onclick impede de selecionar o card enquanto escolhe a data -->
-                    <div class="mb-2">
-                        <asp:TextBox ID="txtDataSuspensao" runat="server" TextMode="Date"
-                            CssClass="form-control campo-data"
-                            ClientIDMode="Static"
-                            onclick="event.stopPropagation();"></asp:TextBox>
-                        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
-                    </div>
+    <div class="mb-2">
+        <!-- MUDEI O ID PARA txtDataVencer -->
+        <asp:TextBox ID="txtDataSuspensao" runat="server" TextMode="Date"
+            CssClass="form-control campo-data"
+            ClientIDMode="Static"
+            onclick="event.stopPropagation();"></asp:TextBox>
+        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+    </div>
 
-                    <p>
-                        Gentileza conferir os dados do boleto antes de realizar o pagamento.<br>
-                        <br>
-                        Dúvidas, seguimos à disposição.<br>
-                        Departamento de cobrança da Vallor Benefícios.
-                    </p>
-                </div>
+    <p>
+        PLANO: {{2}}<br>
+        VENCIMENTO: {{3}}<br>
+        VALOR: {{4}}<br>
+        <br>
+        Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
+    </p>
+</div>
 
-                <!-- DEFINITIVO -->
-                <div class="template-opcao" onclick="selecionarTemplate('Definitivo')">
-                    <h4>Definitivo</h4>
-                    <p>
-                        EVITE MAIS ACÚMULO DE JUROS E MULTA<br>
-                        <br>
-                        Prezado(a) beneficiário(a) *****<br>
-                        Segue abaixo o boleto para pagamento referente ao vencimento ABRIL do seu plano de saúde VOCE TOTAL.<br>
-                        Prazo para efetuar o pagamento e evitar o cancelamento DEFINITIVO do seu plano é:
-                    </p>
+                <!-- APENAS NOTA FISCAL -->
+                              <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
+    <h4>[PAGAMENTO A VENCER]</h4>
+    <p>
+        Olá, {{1}}.<br>
+        <br>
+        Esperamos que esteja bem.<br>
+        <br>
+        Informamos que a NOTA FISCAL referente ao pagamento do seu plano de saúde já está disponível.<br>
+        <br>
+        Para sua comodidade, confira as informações do seu plano:
+    </p>
 
-                    <div class="mb-2">
-                        <asp:TextBox ID="txtDataDefinitivo" runat="server" TextMode="Date"
-                            CssClass="form-control campo-data"
-                            ClientIDMode="Static"
-                            onclick="event.stopPropagation();"></asp:TextBox>
-                        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
-                    </div>
+    <div class="mb-2">
+        <!-- MUDEI O ID PARA txtDataVencer -->
+        <asp:TextBox ID="txtDataDefinitivo" runat="server" TextMode="Date"
+            CssClass="form-control campo-data"
+            ClientIDMode="Static"
+            onclick="event.stopPropagation();"></asp:TextBox>
+        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+    </div>
 
-                    <p>
-                        O não pagamento poderá acarretar a inclusão do seu nome nos órgãos de proteção ao crédito SPC/SERASA.<br>
-                        Após o pagamento, gentileza enviar o comprovante.<br>
-                        <br>
-                        Gentileza conferir os dados do boleto antes de realizar o pagamento.<br>
-                        <br>
-                        Dúvidas, seguimos à disposição.<br>
-                        Departamento de cobrança da Vallor Benefícios.
-                    </p>
-                </div>
+    <p>
+        PLANO: {{2}}<br>
+        VENCIMENTO: {{3}}<br>
+        VALOR: {{4}}<br>
+        <br>
+        Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
+    </p>
+</div>
 
                 <!-- DOIS BOLETOS -->
                 <div class="template-opcao" onclick="selecionarTemplate('DoisBoletos')">

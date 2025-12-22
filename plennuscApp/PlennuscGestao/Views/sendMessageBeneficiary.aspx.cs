@@ -1,6 +1,7 @@
 ﻿using appWhatsapp.Models;
 using appWhatsapp.Service;
 using appWhatsapp.SqlQueries;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -164,11 +165,11 @@ namespace PlennuscApp.PlennuscGestao.Views
                     case "Suspensao":
                         resultado = await api.ConexaoApiSuspensao(
                             telefones,
-                            dados.Field8,
-                            dados.Field1,
-                            dados.Field2,
-                            dados.Field3,
-                            dados.Field4,
+                            dados.Field8, // pdfUrl (boleto)
+                            dados.Field1, // nome
+                            dados.Field3, // plano
+                            dados.Field4, // vencimento formatado (dd/MM/yyyy)
+                            $"R$ {dados.Field7}", // valor formatado
                             escolhaTemplate,
                             dados.CodigoAssociado,
                             codAutenticacao
@@ -206,12 +207,12 @@ namespace PlennuscApp.PlennuscGestao.Views
                     case "aVencer":
                         resultado = await api.ConexaoApiAVencer(
                             telefones,
-                            dados.Field8, // pdfUrl
-                            //dados.Field8,// notaFiscal
+                            dados.Field8, // pdfUrl (boleto)
+                            dados.NotaFiscalUrl, // notaFiscalUrl
                             dados.Field1, // nome
                             dados.Field3, // plano
-                            dados.Field4, // vencimento
-                            dados.Field7  // valor
+                            dados.Field4, // vencimento formatado (dd/MM/yyyy)
+                            $"R$ {dados.Field7}" // valor formatado
                         );
                         break;
 
@@ -235,6 +236,7 @@ namespace PlennuscApp.PlennuscGestao.Views
         protected List<DadosMensagem> ObterLinhasSelecionadas()
         {
             var lista = new List<DadosMensagem>();
+            var notaFiscalUtil = new NotaFiscalUtil(); // Corrigido o nome da variável
 
             foreach (GridViewRow row in GridAssociados.Rows)
             {
@@ -242,7 +244,6 @@ namespace PlennuscApp.PlennuscGestao.Views
                 if (chk != null && chk.Checked)
                 {
                     var lblCodigo = row.FindControl("lblCodigo") as Label;
-
                     string codigoAssociado = Convert.ToString(lblCodigo?.Text)?.Trim();
 
                     string telefone = "553173069983";
@@ -259,7 +260,25 @@ namespace PlennuscApp.PlennuscGestao.Views
 
                     string nome = ((Label)row.FindControl("lblNome"))?.Text?.Trim();
                     string plano = ((Label)row.FindControl("lblPlano"))?.Text?.Trim();
-                    string operadora = ((Label)row.FindControl("lblOperadora"))?.Text?.Trim();
+
+                    // OBTÉM O REGISTRO ANTES DE USAR
+                    string registro = ((Label)row.FindControl("lblRegistro"))?.Text?.Trim();
+                    string valor = ((Label)row.FindControl("lblValor"))?.Text?.Trim();
+
+                    int numeroRegistro;
+                    bool registroValido = int.TryParse(registro, out numeroRegistro);
+
+                    //string pdfUrl = $"https://portaldocliente.vallorbeneficios.com.br/ServidorAl2/boletos/boleto_itau_Vallor.php?numeroRegistro={registro}";
+
+                    string pdfUrl = registro;
+                    string notaFiscalUrl = null;
+
+                    // Busca URL da nota fiscal apenas se o registro for válido
+                    if (registroValido)
+                    {
+                        // AGORA USANDO O MÉTODO CORRETO
+                        notaFiscalUrl = notaFiscalUtil.BuscarUrlNotaFiscal(numeroRegistro);
+                    }
 
                     string vencimento = "";
 
@@ -271,45 +290,43 @@ namespace PlennuscApp.PlennuscGestao.Views
                     {
                         vencimento = txtDataDefinitivo.Text;
                     }
-                    else if (hfTemplateEscolhido.Value == "DoisBoletos") 
+                    else if (hfTemplateEscolhido.Value == "DoisBoletos")
                     {
                         vencimento = txtDataNovaOpcao.Text;
                     }
                     else if (hfTemplateEscolhido.Value == "aVencer")
                     {
-                        vencimento = txtDataVencer.Text; // Data de vencimento
+                        vencimento = txtDataVencer.Text;
                     }
 
-                    string vencimentoMes = vencimento;
-
-                    string nomeMes = ""; // Declara fora pra poder usar depois
-
-                    if (DateTime.TryParse(vencimentoMes, out DateTime dataVenc))
+                    string nomeMes = "";
+                    if (DateTime.TryParse(vencimento, out DateTime dataVenc))
                     {
                         nomeMes = dataVenc.ToString("MMMM", new System.Globalization.CultureInfo("pt-BR"));
-                        nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1); // Primeira letra maiúscula, opcional
+                        nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1);
                     }
 
-                    string valor = ((Label)row.FindControl("lblValor"))?.Text?.Trim();
-                    string registro = ((Label)row.FindControl("lblRegistro"))?.Text?.Trim();
+                    // Formata data para dd/MM/yyyy
+                    string dataFormatada = "";
+                    if (DateTime.TryParse(vencimento, out DateTime dataFormat))
+                    {
+                        dataFormatada = dataFormat.ToString("dd/MM/yyyy");
+                    }
 
-                    //string pdfUrl = $"https://portaldocliente.vallorbeneficios.com.br/ServidorAl2/boletos/boleto_itau_Vallor.php?numeroRegistro={registro}";
-
-                    string pdfUrl = registro;
+                    // Formata valor para R$ X.XXX,XX
+                    string valorFormatado = "R$ " + valor.Replace("R$", "").Trim();
 
                     lista.Add(new DadosMensagem
                     {
                         CodigoAssociado = codigoAssociado,
-                        Telefone = telefone, // Já vem formatado com 5531...
+                        Telefone = telefone,
                         Field1 = nome,
                         Field2 = nomeMes,
                         Field3 = plano,
-                        Field4 = vencimento,
-                        //Field2 = operadora,
-                        //Field5 = nome,
-                        //Field6 = vencimento,
+                        Field4 = dataFormatada,
                         Field7 = valor.Replace("R$", "").Trim().Replace(",", "."),
-                        Field8 = pdfUrl
+                        Field8 = pdfUrl,
+                        NotaFiscalUrl = notaFiscalUrl
                     });
                 }
             }

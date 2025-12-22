@@ -113,9 +113,9 @@ namespace appWhatsapp.Service
                 {
                     var jsonBody = $@"
                     {{
-                      ""media_hsm_configuration_id"": ""ff150b76-9a8b-4616-baaa-9787fb3a7315"",
+                      ""media_hsm_configuration_id"": ""1c0fa96f-0173-4d5c-84d8-693242fda363"",
                       ""hsm_type"": ""media_hsm"",
-                      ""campaign_id"": ""e76061ad-be13-4d72-9974-ca092fb5a5a4"",
+                      ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
                       ""system"": ""whatsapp_enterprise"",
                       ""contacts"": [ 
                         {{ 
@@ -124,9 +124,7 @@ namespace appWhatsapp.Service
                           ""field_2"": ""{field2}"",
                           ""field_3"": ""{field3}"",
                           ""field_4"": ""{field4}"",
-                          ""field_5"":  ""{pdfUrl}"",
-                          ""field_6"":  ""{pdfUrl}""
-
+                          ""field_5"":  ""{pdfUrl}""
                         }}
                       ]
                     }}";
@@ -428,9 +426,8 @@ namespace appWhatsapp.Service
             return resultadoFinal.ToString();
         }
 
-        public async Task<string> ConexaoApiAVencer(List<string> telefones, string pdfUrl,
-                                            string field1, string field2, string field3,
-                                            string field4)
+        public async Task<string> ConexaoApiAVencer(List<string> telefones, string pdfUrl, string notaFiscalUrl,
+                                             string field1, string field2, string field3, string field4)
         {
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
@@ -442,23 +439,28 @@ namespace appWhatsapp.Service
                 client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
 
+		
                 foreach (var telefone in telefones)
                 {
+                    // Se não tiver nota fiscal, envia string vazia
+                    string notaFiscalField = string.IsNullOrEmpty(notaFiscalUrl) ? "" : notaFiscalUrl;
+
                     var jsonBody = $@"
                     {{
-                        ""media_hsm_configuration_id"": ""5e3acf1e-2912-423b-9a33-b6afe9706cf8"",
+                        ""media_hsm_configuration_id"": ""fc2efc30-9e63-4e17-901c-d472d7b0fb8e"",
                         ""hsm_type"": ""media_hsm"",
-                        ""campaign_id"": ""e76061ad-be13-4d72-9974-ca092fb5a5a4"",
+                        ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
                         ""system"": ""whatsapp_enterprise"",
                         ""contacts"": [ 
                             {{ 
                                 ""phone_number"": ""{telefone}"",
-                                ""field_1"": ""{field1}"",    // Nome
-                                ""field_2"": ""{field2}"",    // Plano
-                                ""field_3"": ""{field3}"",    // Vencimento
-                                ""field_4"": ""{field4}"",    // Valor
-                                ""field_8"": ""{pdfUrl}"",
-                                ""field_8"": ""{pdfUrl}""
+                                ""field_1"": ""{field1}"",
+                                ""field_2"": ""{field2}"",
+                                ""field_3"": ""{field3}"",
+                                ""field_4"": ""{field4}"",
+                                ""field_5"": ""{pdfUrl}"",   // URL do boleto
+                                ""field_6"": ""{notaFiscalField}"" // URL da nota fiscal
+                               
                             }}
                         ]
                     }}";
@@ -496,7 +498,6 @@ namespace appWhatsapp.Service
 
             return resultadoFinal.ToString();
         }
-
         private async Task<string> ConsultarStatusEnvioAsync(string id, string telefone, string apiKey)
         {
             await Task.Delay(10000);

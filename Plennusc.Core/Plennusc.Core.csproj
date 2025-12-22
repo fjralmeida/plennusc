@@ -163,6 +163,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\import\importCVSPlannium.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\ItensPedIntegradoUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\menu\menusManagementQueries.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\NotaFiscalUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\OperadoraUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\position\EmpPosition.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\price\TablePrice.cs" />
