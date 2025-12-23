@@ -40,7 +40,7 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             }
         }
 
-        // ✅ MÉTODO PRINCIPAL - GERA MENU COMPLETO DO BANCO (IGUAL AO GESTÃO)
+        // ✅ MÉTODO PRINCIPAL - GERA MENU COMPLETO DO BANCO
         private void GerarMenuDinamico()
         {
             try
@@ -55,14 +55,17 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
                 var ulPrincipal = new HtmlGenericControl("ul");
                 ulPrincipal.Attributes["class"] = "list-unstyled";
 
-                // ✅ FILTRA MENUS DE NÍVEL 1 (EXCLUINDO HOME, PROFILE E PRIVACY DO FINANCE)
-                var menusNivel1 = dtMenus.Select("(CodMenuPai IS NULL OR CodMenuPai = 0) AND TemAcesso = 1 AND NomeObjeto NOT IN ('homeDoctor', 'profileMedic', 'privacySettingsMedic','homeManagement')", "Conf_Ordem ASC");
+                // ✅ FILTRA MENUS DE NÍVEL 1 (EXCLUINDO PÁGINAS QUE NÃO DEVEM APARECER)
+                var menusNivel1 = dtMenus.Select("(CodMenuPai IS NULL OR CodMenuPai = 0) AND TemAcesso = 1", "Conf_Ordem ASC");
 
                 foreach (DataRow menu in menusNivel1)
                 {
-                    // ✅ CRIA CADA MENU PRINCIPAL
+                    // ✅ CRIA CADA MENU PRINCIPAL (EXCLUINDO PÁGINAS OCULTAS)
                     var liMenu = CriarItemMenu(menu, dtMenus);
-                    ulPrincipal.Controls.Add(liMenu);
+                    if (liMenu.HasControls() || liMenu.InnerText != "") // Verifica se o menu não está vazio
+                    {
+                        ulPrincipal.Controls.Add(liMenu);
+                    }
                 }
 
                 phMenuDinamico.Controls.Add(ulPrincipal);
@@ -74,7 +77,7 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             }
         }
 
-        // ✅ CRIA UM ITEM DE MENU (RECURSIVO PARA SUBMENUS) - MESMA LÓGICA DO GESTÃO
+        // ✅ CRIA UM ITEM DE MENU (RECURSIVO PARA SUBMENUS)
         private HtmlGenericControl CriarItemMenu(DataRow menu, DataTable todosMenus)
         {
             int codMenu = Convert.ToInt32(menu["CodMenu"]);
@@ -87,14 +90,26 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             if (!temAcesso)
                 return new HtmlGenericControl("div"); // Retorna div vazia
 
-            // ✅ EXCLUI PÁGINAS QUE NÃO DEVEM APARECER NA BARRA LATERAL
-
+            // ✅ LISTA DE PÁGINAS QUE NÃO DEVEM APARECER NA BARRA LATERAL
             var paginasOcultas = new List<string>
             {
-                // Exemplo: "employeeedit", "detaildemand", etc.
-                // Adicione aqui as páginas do Finance que não devem aparecer no menu
+                // ✅ PÁGINAS PRINCIPAIS QUE SÃO ACESSADAS POR LINKS
+                "homedoctor",           // Dashboard Medic (acessado por logo)
+                "homemanagement",       // Home Management (do sistema Gestão)
+                "profilemedic",         // Perfil (acessado pelo dropdown)
+                "privacysettingsmedic", // Configurações (acessado pelo dropdown)
+                
+                // ✅ PÁGINAS DE DEMANDA QUE SÃO ACESSADAS POR LINKS INTERNOS
+                "viewdemandbeforeacceptmedic", // Visualizar Demanda (chamada de listDemand)
+                "detaildemandmedic",           // Detalhes Demanda (chamada de myDemands)
+                
+                // ✅ PÁGINAS DE GESTÃO QUE SÃO ACESSADAS POR LINKS INTERNOS
+                "employeeedit",                // Editar Usuário (chamada de employeeManagement)
+                "demand",                      // Criar Demanda (não existe no Medic, mas mantém padrão)
+                "detaildemand"                 // Detalhes Demanda (não existe no Medic, mas mantém padrão)
             };
 
+            // ✅ EXCLUI PÁGINAS QUE NÃO DEVEM APARECER
             if (paginasOcultas.Contains(nomeObjeto.ToLower()))
                 return new HtmlGenericControl("div"); // Retorna div vazia
 
@@ -121,7 +136,7 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             return li;
         }
 
-        // ✅ CRIA MENU COM SUBMENUS (COLLAPSE BOOTSTRAP) - MESMA LÓGICA
+        // ✅ CRIA MENU COM SUBMENUS (COLLAPSE BOOTSTRAP)
         private HtmlGenericControl CriarMenuComSubmenus(DataRow menu, DataRow[] subMenus, DataTable todosMenus)
         {
             int codMenu = Convert.ToInt32(menu["CodMenu"]);
@@ -162,10 +177,17 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             var ulSubmenus = new HtmlGenericControl("ul");
             ulSubmenus.Attributes["class"] = "list-unstyled ps-3 submenu";
 
-            // ✅ ADICIONA SUBMENUS (FILTRANDO OS QUE NÃO DEVEM APARECER)
+            // ✅ LISTA DE PÁGINAS QUE NÃO DEVEM APARECER COMO SUBMENUS
             var paginasOcultas = new List<string>
             {
-                // Adicione as páginas do Finance que não devem aparecer no menu
+                // ✅ PÁGINAS QUE SÃO ACESSADAS APENAS POR LINKS INTERNOS
+                "viewdemandbeforeacceptmedic",
+                "detaildemandmedic",
+                "employeeedit",
+                "homedoctor",
+                "homemanagement",
+                "profilemedic",
+                "privacysettingsmedic"
             };
 
             foreach (DataRow subMenu in subMenus)
@@ -176,18 +198,31 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
                 if (!paginasOcultas.Contains(nomeObjetoSub))
                 {
                     var liSubMenu = CriarItemMenu(subMenu, todosMenus);
-                    ulSubmenus.Controls.Add(liSubMenu);
+                    // Verifica se o submenu não está vazio
+                    if (liSubMenu.HasControls() || liSubMenu.InnerText != "")
+                    {
+                        ulSubmenus.Controls.Add(liSubMenu);
+                    }
                 }
             }
 
-            collapseDiv.Controls.Add(ulSubmenus);
-            container.Controls.Add(linkToggle);
-            container.Controls.Add(collapseDiv);
+            // ✅ SE NÃO HOUVER SUBMENUS VÁLIDOS, NÃO ADICIONA O CONTAINER DE SUBMENUS
+            if (ulSubmenus.Controls.Count > 0)
+            {
+                collapseDiv.Controls.Add(ulSubmenus);
+                container.Controls.Add(linkToggle);
+                container.Controls.Add(collapseDiv);
+            }
+            else
+            {
+                // ✅ SE NÃO TEM SUBMENUS VÁLIDOS, CONVERTE EM MENU SIMPLES
+                container.Controls.Add(CriarMenuSimples(menu));
+            }
 
             return container;
         }
 
-        // ✅ CRIA MENU SIMPLES (LINK DIRETO) - MESMA LÓGICA
+        // ✅ CRIA MENU SIMPLES (LINK DIRETO)
         private HtmlGenericControl CriarMenuSimples(DataRow menu)
         {
             string nomeDisplay = menu["NomeDisplay"].ToString();
@@ -224,21 +259,64 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             return link;
         }
 
-        // ✅ DEFINE ÍCONE BASEADO NO TIPO DE MENU - ESPECÍFICO PARA FINANCE
+        // ✅ DEFINE ÍCONE BASEADO NO TIPO DE MENU - ESPECÍFICO PARA MEDIC
         private string ObterIconeMedic(DataRow menu)
         {
             string nomeObjeto = menu["NomeObjeto"].ToString().ToLower();
             string nomeDisplay = menu["NomeDisplay"].ToString().ToLower();
             string captionObjeto = menu["CaptionObjeto"]?.ToString().ToLower() ?? "";
 
-            //PARA COLOCAR ICONES NA BARRA LATERAL
+            // ✅ MENUS DE NÍVEL 1
+            if (nomeObjeto == "menudemandasmedic")
+                return "bi bi-clipboard-check me-2"; // Ícone para Gestão de Demandas Medic
 
+            if (nomeObjeto == "menuentrevista")
+                return "bi bi-chat-left-dots me-2"; // Ícone para Entrevista
+
+            // ✅ GESTÃO DE DEMANDAS MEDIC - NÍVEL 2
+            if (nomeObjeto == "demandmedic")
+                return "bi bi-plus-circle me-2"; // Criar Demanda Medic
+
+            if (nomeObjeto == "listdemandmedic")
+                return "bi bi-list-ul me-2"; // Listar Demandas Medic
+
+            if (nomeObjeto == "menuminhasdemandasmedic")
+                return "bi bi-person-lines-fill me-2"; // Minhas Demandas Medic
+
+            if (nomeObjeto == "viewdemandbeforeacceptmedic")
+                return "bi bi-eye me-2"; // Visualizar Demanda Medic
+
+            if (nomeObjeto == "detaildemandmedic")
+                return "bi bi-info-circle me-2"; // Detalhes Demanda Medic
+
+            // ✅ ENTREVISTA - NÍVEL 2
+            if (nomeObjeto == "interviewla")
+                return "bi bi-robot me-2"; // Entrevista IA
+
+            if (nomeObjeto == "medicalinterview")
+                return "bi bi-heart-pulse me-2"; // Consulta Médica
+
+            // ✅ MINHAS DEMANDAS MEDIC - NÍVEL 3
+            if (nomeObjeto == "mydemandsopenmedic")
+                return "bi bi-clock me-2"; // Em Aberto Medic
+
+            if (nomeObjeto == "mydemandsprogressmedic")
+                return "bi bi-arrow-right-circle me-2"; // Em Andamento Medic
+
+            if (nomeObjeto == "mydemandswaitingmedic")
+                return "bi bi-hourglass-split me-2"; // Aguardando Medic
+
+            if (nomeObjeto == "mydemandsrefusedmedic")
+                return "bi bi-x-circle me-2"; // Recusadas Medic
+
+            if (nomeObjeto == "mydemandscompletedmedic")
+                return "bi bi-check-circle me-2"; // Concluídas Medic
 
             // ✅ ÍCONE PADRÃO
             return "bi bi-circle me-2";
         }
 
-        // ✅ VALIDA ACESSO À PÁGINA ATUAL (MESMA LÓGICA DO GESTÃO)
+        // ✅ VALIDA ACESSO À PÁGINA ATUAL
         private bool ValidarAcessoPaginaAtual()
         {
             try
@@ -272,11 +350,11 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             return pagina;
         }
 
-        // ✅ CONFIGURA USUÁRIO - ADAPTADO PARA FINANCE
+        // ✅ CONFIGURA USUÁRIO - ADAPTADO PARA MEDIC
         private void ConfigurarUsuario()
         {
             lblUsuario.Text = Session["NomeUsuario"]?.ToString() ?? "Usuário";
-            lblNomeSistema.Text = Session["NomeEmpresa"]?.ToString() ?? "Medic";
+            lblNomeSistema.Text = Session["NomeSistema"]?.ToString() ?? "Medic";
 
             if (Session["CodSistema"] != null)
             {
@@ -293,11 +371,11 @@ namespace appWhatsapp.PlennuscMedic.Views.Masters
             {
                 int codUsuario = Convert.ToInt32(Session["CodUsuario"]);
 
-                // ✅ USA A MESMA PESSOA DAO DO GESTÃO (assumindo que é compartilhado)
+                // ✅ USA A MESMA PESSOA DAO DO GESTÃO
                 PessoaDAO pessoaDao = new PessoaDAO();
                 DataRow pessoa = pessoaDao.ObterPessoaPorUsuario(codUsuario);
 
-                // ✅ CAMINHO ESPECÍFICO DO FINANCE
+                // ✅ CAMINHO ESPECÍFICO DO MEDIC
                 string defaultAvatar = ResolveUrl("~/public/uploadmedic/images/imgDefultAvatar.jpg");
                 string fotoUrl = defaultAvatar;
 

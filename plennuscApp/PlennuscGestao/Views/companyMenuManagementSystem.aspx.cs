@@ -256,23 +256,30 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             try
             {
-                // 1. LER CHECKBOXES DO FORM
+                // 1. Obter informações do sistema selecionado
+                var sistemaInfo = _service.ObterSistemaEmpresa(codSistemaEmpresa);
+
+                // 2. Ler checkboxes do form
                 List<int> menusSelecionados = ColetarMenusDoForm();
                 menusSelecionados = menusSelecionados.Distinct().ToList();
 
-                if (!menusSelecionados.Contains(37))
-                    menusSelecionados.Add(37);
+                // 3. NÃO ADICIONE DASHBOARD AUTOMATICAMENTE - deixa o usuário decidir!
+                // O dashboard (37, 59, 62) já aparece na lista e o usuário pode marcar/desmarcar
 
                 _service.DesvincularTodosMenusSistemaEmpresa(codSistemaEmpresa);
 
-                foreach (int codMenu in menusSelecionados)
+                // 4. Só vincular se houver menus selecionados
+                if (menusSelecionados.Any())
                 {
-                    _service.VincularMenuSistemaEmpresa(codSistemaEmpresa, codMenu);
+                    foreach (int codMenu in menusSelecionados)
+                    {
+                        _service.VincularMenuSistemaEmpresa(codSistemaEmpresa, codMenu);
+                    }
                 }
 
                 MostrarMensagemSucesso("Menus salvos com sucesso!");
 
-                // 4. RECARREGAR INTERFACE
+                // 5. Recarregar a interface
                 CarregarMenusAgrupados(codSistemaEmpresa);
             }
             catch (Exception ex)
@@ -280,7 +287,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 MostrarMensagemErro($"Erro ao salvar vínculos: {ex.Message}");
             }
         }
-
 
 
         // MÉTODO QUE FUNCIONA - LÊ DIRETO DO REQUEST.FORM

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace appWhatsapp.PlennuscMedic.Views
 {
-    public partial class interviewIa : System.Web.UI.Page
+    public partial class interviewla : System.Web.UI.Page  
     {
         protected void Page_Load(object sender, EventArgs e)
         {

@@ -11,7 +11,7 @@ namespace appWhatsapp.PlennuscMedic.Views
 {
 
 
-    public partial class interviewIa
+    public partial class interviewla
     {
     }
 }

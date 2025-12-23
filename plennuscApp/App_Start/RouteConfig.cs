@@ -75,14 +75,28 @@ namespace appWhatsapp
             #endregion
 
             #region ROUTE MEDIC
-            // ✅ ROTAS DO MEDIC
+            // ✅ ROTAS PRINCIPAIS DO MEDIC
             routes.MapPageRoute("homeDoctor", "homeDoctor", "~/PlennuscMedic/Views/homeDoctor.aspx");
             routes.MapPageRoute("profileMedic", "profileMedic", "~/PlennuscMedic/Views/profileMedic.aspx");
             routes.MapPageRoute("privacySettingsMedic", "privacySettingsMedic", "~/PlennuscMedic/Views/privacySettingsMedic.aspx");
-            #endregion
 
-            //// ✅ Rota padrão (mantém a do Gestão)
-            //routes.MapPageRoute("default", "", "~/PlennuscGestao/Views/homeManagement.aspx");
+            // ✅ DEMANDAS MEDIC
+            routes.MapPageRoute("demandMedic", "demandMedic", "~/PlennuscMedic/Views/demandMedic.aspx");
+            routes.MapPageRoute("listDemandMedic", "listDemandMedic", "~/PlennuscMedic/Views/listDemandMedic.aspx");
+            routes.MapPageRoute("viewDemandBeforeAcceptMedic", "viewDemandBeforeAcceptMedic", "~/PlennuscMedic/Views/viewDemandBeforeAcceptMedic.aspx");
+            routes.MapPageRoute("detailDemandMedic", "detailDemandMedic", "~/PlennuscMedic/Views/detailDemandMedic.aspx");
+
+            // ✅ MINHAS DEMANDAS MEDIC
+            routes.MapPageRoute("myDemandsOpenMedic", "myDemandsOpenMedic", "~/PlennuscMedic/Views/myDemandsOpenMedic.aspx");
+            routes.MapPageRoute("myDemandsProgressMedic", "myDemandsProgressMedic", "~/PlennuscMedic/Views/myDemandsProgressMedic.aspx");
+            routes.MapPageRoute("myDemandsWaitingMedic", "myDemandsWaitingMedic", "~/PlennuscMedic/Views/myDemandsWaitingMedic.aspx");
+            routes.MapPageRoute("myDemandsRefusedMedic", "myDemandsRefusedMedic", "~/PlennuscMedic/Views/myDemandsRefusedMedic.aspx");
+            routes.MapPageRoute("myDemandsCompletedMedic", "myDemandsCompletedMedic", "~/PlennuscMedic/Views/myDemandsCompletedMedic.aspx");
+
+            // ✅ ENTREVISTA MEDIC
+            routes.MapPageRoute("interviewla", "interviewla", "~/PlennuscMedic/Views/interviewIa.aspx");
+            routes.MapPageRoute("medicalInterview", "medicalInterview", "~/PlennuscMedic/Views/medicalInterview.aspx");
+            #endregion
 
             // ⚙️ Friendly URLs sem redirecionamento
             var settings = new FriendlyUrlSettings();

@@ -73,6 +73,36 @@ namespace Plennusc.Core.Service.ServiceGestao.PlatformSys
             return sistemas;
         }
 
+        public SistemaModel ObterSistemaEmpresa(int codSistemaEmpresa)
+        {
+            try
+            {
+                var parametros = new Dictionary<string, object> { { "@CodSistemaEmpresa", codSistemaEmpresa } };
+                var resultado = _db.LerPlennus(@"
+            SELECT se.CodSistemaEmpresa, se.CodSistema, s.NomeDisplay 
+            FROM SistemaEmpresa se
+            INNER JOIN Sistema s ON s.CodSistema = se.CodSistema
+            WHERE se.CodSistemaEmpresa = @CodSistemaEmpresa",
+                    parametros);
+
+                if (resultado.Rows.Count > 0)
+                {
+                    var row = resultado.Rows[0];
+                    return new SistemaModel
+                    {
+                        CodSistemaEmpresa = Convert.ToInt32(row["CodSistemaEmpresa"]),
+                        CodSistema = Convert.ToInt32(row["CodSistema"]),
+                        NomeDisplay = row["NomeDisplay"].ToString()
+                    };
+                }
+                throw new Exception("SistemaEmpresa não encontrado");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao obter sistema: {ex.Message}", ex);
+            }
+        }
+
         public List<MenuModel> ListarMenusParaVincular(int codSistemaEmpresa)
         {
             var menus = new List<MenuModel>();
