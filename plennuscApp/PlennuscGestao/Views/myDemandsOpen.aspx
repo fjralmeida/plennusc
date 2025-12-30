@@ -11,31 +11,82 @@
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
 <div class="container-main">
-        <!-- Header -->
-        <div class="page-header">
-            <h1 class="page-title">
-                <span class="title-icon"> 
-                    <i class="bi bi-folder2-open"></i>
-                </span>
-                Minhas Demandas em Aberto
-            </h1>
-            <p class="text-muted">Acompanhe as demandas que você aceitou e estão em aberto</p>
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <span class="title-icon"> 
+                <i class="bi bi-folder2-open"></i>
+            </span>
+            Minhas Demandas em Aberto
+        </h1>
+        <p class="text-muted">Acompanhe as demandas que você aceitou e estão em aberto</p>
+    </div>
+
+    <!-- Filtros - EXATAMENTE IGUAL AO EXEMPLO -->
+    <div class="filters-card">
+        <h3 class="filters-title">
+            <i class="bi bi-funnel"></i>
+            Filtros
+        </h3>
+        <div class="filter-section">
+           <%-- <!-- Dropdown de Visualização - EXATAMENTE IGUAL -->
+            <div class="filter-item">
+                <label class="form-label">Visualização</label>
+                <asp:DropDownList ID="ddlVisibilidade" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlVisibilidade_Changed">
+                    <asp:ListItem Value="S" Text="Meu Setor" Selected="True" />
+                    <asp:ListItem Value="M" Text="Minhas Demandas" />
+                </asp:DropDownList>
+            </div>--%>
+
+<%--            <!-- Status - EXATAMENTE IGUAL -->
+            <div class="filter-item">
+                <label class="form-label">Status</label>
+                <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select"></asp:DropDownList>
+            </div>--%>
+
+            <!-- Categoria - EXATAMENTE IGUAL -->
+          <%--  <div class="filter-item">
+                <label class="form-label">Categoria</label>
+                <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select"
+                    AutoPostBack="true" OnSelectedIndexChanged="ddlCategoria_SelectedIndexChanged">
+                </asp:DropDownList>
+            </div>--%>
+
+            <!-- Prioridade - EXATAMENTE IGUAL -->
+            <div class="filter-item">
+                <label class="form-label">Prioridade</label>
+                <asp:DropDownList ID="ddlPrioridade" runat="server" CssClass="form-select"></asp:DropDownList>
+            </div>
+
+            <!-- Solicitante - EXATAMENTE IGUAL -->
+            <div class="filter-item">
+                <label class="form-label">Solicitante</label>
+                <asp:TextBox ID="txtSolicitante" runat="server" CssClass="form-control" placeholder="Nome do solicitante"></asp:TextBox>
+            </div>
+
+            <!-- Container especial para o botão alinhado - EXATAMENTE IGUAL -->
+            <div class="btn-filter-container">
+                <asp:Button ID="btnFiltrar" runat="server" CssClass="btn-filter"
+                    Text="Aplicar Filtros" OnClick="btnFiltrar_Click" />
+            </div>
         </div>
+    </div>
 
-        <!-- Resultados -->
-        <div class="results-info">
-            <asp:Label ID="lblResultados" runat="server"></asp:Label>
-        </div>
+    <!-- Resultados -->
+    <div class="results-info">
+        <asp:Label ID="lblResultados" runat="server"></asp:Label>
+    </div>
 
-        <div class="grid-container">
-                       <asp:GridView ID="gvDemandasAberto" runat="server" CssClass="custom-grid"
-     AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-     OnPageIndexChanging="gvDemandasAberto_PageIndexChanging"
-     OnRowCommand="gvDemandasAberto_RowCommand"
-     OnRowDataBound="gvDemandasAberto_RowDataBound"
-     EmptyDataText="Nenhuma demanda em aberto encontrada.">
-
+    <!-- Grid - SEU CÓDIGO ORIGINAL -->
+    <div class="grid-container">
+        <asp:GridView ID="gvDemandasAberto" runat="server" CssClass="custom-grid"
+            AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
+            OnPageIndexChanging="gvDemandasAberto_PageIndexChanging"
+            OnRowCommand="gvDemandasAberto_RowCommand"
+            OnRowDataBound="gvDemandasAberto_RowDataBound"
+            EmptyDataText="Nenhuma demanda em aberto encontrada.">
                 <Columns>
                     <asp:BoundField DataField="CodDemanda" HeaderText="ID"
                         ItemStyle-CssClass="text-center col-id" HeaderStyle-CssClass="text-center" />

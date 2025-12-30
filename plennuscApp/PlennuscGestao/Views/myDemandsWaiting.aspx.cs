@@ -1,4 +1,5 @@
-﻿using Plennusc.Core.Service.ServiceGestao;
+﻿using Plennusc.Core.Models.ModelsGestao;
+using Plennusc.Core.Service.ServiceGestao;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +24,31 @@ namespace appWhatsapp.PlennuscGestao.Views
                     return;
                 }
 
+                CarregarFiltros();
                 BindGrid();
             }
+        }
+
+        private void CarregarFiltros()
+        {
+            try
+            {
+                // Carrega prioridades
+                ddlPrioridade.DataSource = _svc.GetPrioridadesDemanda();
+                ddlPrioridade.DataValueField = "Value";
+                ddlPrioridade.DataTextField = "Text";
+                ddlPrioridade.DataBind();
+                ddlPrioridade.Items.Insert(0, new ListItem("Todas", ""));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar filtros: {ex.Message}");
+            }
+        }
+
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            BindGrid();
         }
 
         private void BindGrid()
@@ -33,24 +57,73 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 var demandas = _svc.GetDemandasAguardandoAprovacaoPorGestor(CodPessoaAtual);
 
+                if (demandas == null)
+                {
+                    gvDemandasAguardando.DataSource = new List<DemandaInfo>();
+                    gvDemandasAguardando.DataBind();
+                    lblResultados.Text = "Nenhuma demanda aguardando aprovação encontrada.";
+                    return;
+                }
 
+                // Aplica filtros
+                var demandasFiltradas = AplicarFiltrosEmMemoria(demandas);
 
-                gvDemandasAguardando.DataSource = demandas;
+                // Debug
+                System.Diagnostics.Debug.WriteLine($"Demandas aguardando aprovação encontradas: {demandasFiltradas.Count}");
+                foreach (var d in demandasFiltradas.Take(5))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda}: {d.Titulo}");
+                }
+
+                gvDemandasAguardando.DataSource = demandasFiltradas;
                 gvDemandasAguardando.DataBind();
-                lblResultados.Text = $"Total de demandas aguardando aprovação: {demandas?.Count ?? 0}";
+                lblResultados.Text = $"Total de demandas aguardando aprovação: {demandasFiltradas.Count}";
 
-                if (demandas == null || demandas.Count == 0)
+                if (demandasFiltradas.Count == 0)
                 {
                     lblResultados.Text += " - Nenhuma demanda encontrada para sua aprovação.";
                 }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Erro no BindGrid: {ex.Message}");
                 MostrarMensagem("Erro ao carregar demandas: " + ex.Message, "error");
-                System.Diagnostics.Debug.WriteLine($"ERRO: {ex.Message}");
             }
         }
 
+        private List<DemandaInfo> AplicarFiltrosEmMemoria(List<DemandaInfo> demandas)
+        {
+            if (demandas == null) return new List<DemandaInfo>();
+
+            var filtradas = demandas.AsEnumerable();
+
+            // Filtro por Prioridade
+            if (!string.IsNullOrEmpty(ddlPrioridade.SelectedValue) &&
+                ddlPrioridade.SelectedValue != "" &&
+                int.TryParse(ddlPrioridade.SelectedValue, out int prioridadeId))
+            {
+                var prioridadeSelecionada = ddlPrioridade.SelectedItem.Text;
+                System.Diagnostics.Debug.WriteLine($"Filtrando por prioridade: {prioridadeSelecionada}");
+                filtradas = filtradas.Where(d =>
+                    !string.IsNullOrEmpty(d.Prioridade) &&
+                    d.Prioridade.Equals(prioridadeSelecionada, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Filtro por Solicitante
+            if (!string.IsNullOrWhiteSpace(txtSolicitante.Text))
+            {
+                System.Diagnostics.Debug.WriteLine($"Filtrando por solicitante: {txtSolicitante.Text}");
+                filtradas = filtradas.Where(d =>
+                    !string.IsNullOrEmpty(d.Solicitante) &&
+                    d.Solicitante.IndexOf(txtSolicitante.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            var resultado = filtradas.ToList();
+            System.Diagnostics.Debug.WriteLine($"Demandas após filtro: {resultado.Count}");
+            return resultado;
+        }
+
+        // MANTENHA TODOS OS MÉTODOS EXISTENTES SEM ALTERAÇÕES
         protected void gvDemandasAguardando_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvDemandasAguardando.PageIndex = e.NewPageIndex;
@@ -62,6 +135,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 // Configurações específicas se necessário
+                // Seu código atual aqui
             }
         }
 
@@ -97,7 +171,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        // Métodos auxiliares para classes CSS
+        // Métodos auxiliares para classes CSS - MANTIDOS
         protected string GetClassePrioridade(object prioridade)
         {
             if (prioridade == null || prioridade == DBNull.Value)

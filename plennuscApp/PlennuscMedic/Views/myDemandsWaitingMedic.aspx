@@ -402,24 +402,51 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<div class="container-main">
+       <!-- Header -->
+       <div class="page-header">
+           <h1 class="page-title">
+               <span class="title-icon"> 
+                   <i class="bi bi-clock-history"></i>
+               </span>
+               Demandas Aguardando Minha Aprovação
+           </h1>
+           <p class="text-muted">Aprove ou visualize as demandas que estão aguardando sua análise</p>
+       </div>
 
-    <div class="container-main">
-        <!-- Header -->
-        <div class="page-header">
-            <h1 class="page-title">
-                <span class="title-icon"> 
-                    <i class="bi bi-clock-history"></i>
-                </span>
-                Demandas Aguardando Minha Aprovação
-            </h1>
-            <p class="text-muted">Aprove ou visualize as demandas que estão aguardando sua análise</p>
-        </div>
+       <!-- Filtros - NOVOS FILTROS -->
+       <div class="filters-card">
+           <h3 class="filters-title">
+               <i class="bi bi-funnel"></i>
+               Filtros
+           </h3>
+           <div class="filter-section">
+               <!-- Prioridade -->
+               <div class="filter-item">
+                   <label class="form-label">Prioridade</label>
+                   <asp:DropDownList ID="ddlPrioridade" runat="server" CssClass="form-select">
+                   </asp:DropDownList>
+               </div>
 
-        <!-- Resultados -->
-        <div class="results-info">
-            <asp:Label ID="lblResultados" runat="server"></asp:Label>
-        </div>
+               <!-- Solicitante -->
+               <div class="filter-item">
+                   <label class="form-label">Solicitante</label>
+                   <asp:TextBox ID="txtSolicitante" runat="server" CssClass="form-control" 
+                       placeholder="Nome do solicitante"></asp:TextBox>
+               </div>
 
+               <!-- Botão Aplicar Filtros -->
+               <div class="btn-filter-container">
+                   <asp:Button ID="btnFiltrar" runat="server" CssClass="btn-filter"
+                       Text="Aplicar Filtros" OnClick="btnFiltrar_Click" />
+               </div>
+           </div>
+       </div>
+
+       <!-- Resultados -->
+       <div class="results-info">
+           <asp:Label ID="lblResultados" runat="server"></asp:Label>
+       </div>
         <div class="grid-container">
             <asp:GridView ID="gvDemandasAguardando" runat="server" CssClass="custom-grid"
                 AutoGenerateColumns="False" AllowPaging="True" PageSize="10"

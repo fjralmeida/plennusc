@@ -1,4 +1,5 @@
 ﻿
+using Plennusc.Core.Models.ModelsGestao;
 using Plennusc.Core.Service.ServiceGestao;
 using System;
 using System.Collections.Generic;
@@ -24,40 +25,126 @@ namespace appWhatsapp.PlennuscGestao.Views
                     return;
                 }
 
+                CarregarFiltros();
                 BindGrid();
             }
+        }
+
+        private void CarregarFiltros()
+        {
+            try
+            {
+                //// Carrega categorias
+                //ddlCategoria.DataSource = _svc.GetCategoriasDemanda();
+                //ddlCategoria.DataValueField = "Value";
+                //ddlCategoria.DataTextField = "Text";
+                //ddlCategoria.DataBind();
+                //ddlCategoria.Items.Insert(0, new ListItem("Todas", ""));
+
+                // Carrega prioridades
+                ddlPrioridade.DataSource = _svc.GetPrioridadesDemanda();
+                ddlPrioridade.DataValueField = "Value";
+                ddlPrioridade.DataTextField = "Text";
+                ddlPrioridade.DataBind();
+                ddlPrioridade.Items.Insert(0, new ListItem("Todas", ""));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar filtros: {ex.Message}");
+            }
+        }
+
+        protected void ddlCategoria_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindGrid();
+        }
+
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            BindGrid();
         }
 
         private void BindGrid()
         {
             try
             {
+                // Obtém todas as demandas em aberto da pessoa
                 var demandas = _svc.GetDemandasEmAbertoPorPessoa(CodPessoaAtual);
 
-
-                if (demandas != null && demandas.Count > 0)
+                if (demandas == null)
                 {
-                    foreach (var d in demandas)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda}: Status={d.Status}, Executor={d.CodPessoaExecucao}, Titulo={d.Titulo}");
-                    }
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("NENHUMA demanda retornada pela consulta!");
+                    gvDemandasAberto.DataSource = new List<DemandaInfo>();
+                    gvDemandasAberto.DataBind();
+                    lblResultados.Text = "Nenhuma demanda em aberto encontrada.";
+                    return;
                 }
 
-                gvDemandasAberto.DataSource = demandas;
+                // Aplica filtros
+                var demandasFiltradas = AplicarFiltrosEmMemoria(demandas);
+
+                // Debug
+                System.Diagnostics.Debug.WriteLine($"Demandas encontradas: {demandasFiltradas.Count}");
+                foreach (var d in demandasFiltradas.Take(5))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Demanda {d.CodDemanda}: {d.Titulo}");
+                }
+
+                gvDemandasAberto.DataSource = demandasFiltradas;
                 gvDemandasAberto.DataBind();
-                lblResultados.Text = $"Total de demandas: {demandas?.Count ?? 0}";
+                lblResultados.Text = $"Total de demandas: {demandasFiltradas.Count}";
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Erro no BindGrid: {ex.Message}");
                 MostrarMensagem("Erro ao carregar demandas: " + ex.Message, "error");
             }
         }
 
+        private List<DemandaInfo> AplicarFiltrosEmMemoria(List<DemandaInfo> demandas)
+        {
+            if (demandas == null) return new List<DemandaInfo>();
 
+            var filtradas = demandas.AsEnumerable();
+
+            //// Filtro por Categoria
+            //if (!string.IsNullOrEmpty(ddlCategoria.SelectedValue) &&
+            //    ddlCategoria.SelectedValue != "" &&
+            //    int.TryParse(ddlCategoria.SelectedValue, out int categoriaId))
+            //{
+            //    var categoriaSelecionada = ddlCategoria.SelectedItem.Text;
+            //    System.Diagnostics.Debug.WriteLine($"Filtrando por categoria: {categoriaSelecionada}");
+            //    filtradas = filtradas.Where(d =>
+            //        !string.IsNullOrEmpty(d.Categoria) &&
+            //        d.Categoria.Equals(categoriaSelecionada, StringComparison.OrdinalIgnoreCase));
+            //}
+
+            // Filtro por Prioridade
+            if (!string.IsNullOrEmpty(ddlPrioridade.SelectedValue) &&
+                ddlPrioridade.SelectedValue != "" &&
+                int.TryParse(ddlPrioridade.SelectedValue, out int prioridadeId))
+            {
+                var prioridadeSelecionada = ddlPrioridade.SelectedItem.Text;
+                System.Diagnostics.Debug.WriteLine($"Filtrando por prioridade: {prioridadeSelecionada}");
+                filtradas = filtradas.Where(d =>
+                    !string.IsNullOrEmpty(d.Prioridade) &&
+                    d.Prioridade.Equals(prioridadeSelecionada, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Filtro por Solicitante
+            if (!string.IsNullOrWhiteSpace(txtSolicitante.Text))
+            {
+                System.Diagnostics.Debug.WriteLine($"Filtrando por solicitante: {txtSolicitante.Text}");
+                filtradas = filtradas.Where(d =>
+                    !string.IsNullOrEmpty(d.Solicitante) &&
+                    d.Solicitante.IndexOf(txtSolicitante.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            var resultado = filtradas.ToList();
+            System.Diagnostics.Debug.WriteLine($"Demandas após filtro: {resultado.Count}");
+            return resultado;
+        }
+
+        // MANTENHA TODOS OS MÉTODOS ORIGINAIS ABAIXO (SEM ALTERAÇÕES)
         protected void gvDemandasAberto_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvDemandasAberto.PageIndex = e.NewPageIndex;
@@ -71,19 +158,17 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Label lblAceiteInfo = (Label)e.Row.FindControl("lblAceiteInfo");
                 LinkButton btnAceitar = (LinkButton)e.Row.FindControl("btnAceitar");
 
-                // Obter o DTO
                 var dto = e.Row.DataItem as dynamic;
 
-                // Configurar a visibilidade
                 if (dto.CodPessoaExecucao != null && dto.CodPessoaExecucao > 0)
                 {
-                    lblAceiteInfo.Visible = true;
-                    btnAceitar.Visible = false;
+                    if (lblAceiteInfo != null) lblAceiteInfo.Visible = true;
+                    if (btnAceitar != null) btnAceitar.Visible = false;
                 }
                 else
                 {
-                    lblAceiteInfo.Visible = false;
-                    btnAceitar.Visible = true;
+                    if (lblAceiteInfo != null) lblAceiteInfo.Visible = false;
+                    if (btnAceitar != null) btnAceitar.Visible = true;
                 }
             }
         }
@@ -108,13 +193,8 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             else if (e.CommandName == "Ver")
             {
-                // ✅ CORREÇÃO AQUI - USA SESSION EM VEZ DE QUERYSTRING
                 int codDemanda = Convert.ToInt32(e.CommandArgument);
-
-                // SALVA O ID NA SESSION
                 Session["CurrentDemandId"] = codDemanda;
-
-                // REDIRECIONA PARA URL LIMPA
                 Response.Redirect("~/detailDemand");
             }
         }
