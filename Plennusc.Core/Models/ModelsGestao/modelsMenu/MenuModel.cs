@@ -15,5 +15,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsMenu
         public int Conf_Ordem { get; set; }
         public int? CodMenuPai { get; set; } 
         public bool Vinculado { get; set; }
+        public string NomeObjeto { get; set; } 
+        public string HttpRouter { get; set; } 
     }
 }

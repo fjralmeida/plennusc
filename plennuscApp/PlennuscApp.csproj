@@ -200,6 +200,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\list-structure-types.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\listDemand.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\menu\Menus-Management.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\menu\Munu-System-Assignment.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsCompleted.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsOpen.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsProgress.css" />
@@ -239,6 +240,7 @@
     <Content Include="PlennuscGestao\Views\listPlatform.aspx" />
     <Content Include="PlennuscGestao\Views\listStructureTypes.aspx" />
     <Content Include="PlennuscGestao\Views\menusManagement.aspx" />
+    <Content Include="PlennuscGestao\Views\MenuSystemAssignment.aspx" />
     <Content Include="PlennuscGestao\Views\myDemands.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsCompleted.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsOpen.aspx" />
@@ -511,6 +513,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\menusManagement.aspx.designer.cs">
       <DependentUpon>menusManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\MenuSystemAssignment.aspx.cs">
+      <DependentUpon>MenuSystemAssignment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\MenuSystemAssignment.aspx.designer.cs">
+      <DependentUpon>MenuSystemAssignment.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\myDemands.aspx.cs">
       <DependentUpon>myDemands.aspx</DependentUpon>

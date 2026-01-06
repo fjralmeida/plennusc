@@ -134,6 +134,54 @@ namespace Plennusc.Core.Service.ServiceGestao.PlatformSys
             return menus;
         }
 
+        // Em companyMenuManagementSystemService.cs
+        public List<MenuModel> ListarTodosMenusParaConfiguracao()
+        {
+            var menus = new List<MenuModel>();
+
+            try
+            {
+                var query = @"
+                    SELECT 
+                        m.CodMenu,
+                        m.NomeMenu,
+                        m.NomeDisplay,
+                        m.NomeObjeto,
+                        m.Conf_Nivel,
+                        m.Conf_Ordem,
+                        m.CodMenuPai,
+                        m.Conf_Habilitado
+                    FROM Menu m
+                    WHERE m.Conf_Habilitado = 1
+                    AND m.CodMenu NOT IN (1, 2, 3, 4)
+                    ORDER BY 
+                        COALESCE(m.CodMenuPai, m.CodMenu),
+                        m.Conf_Ordem";
+
+                var resultado = _db.LerPlennus(query);
+
+                foreach (DataRow row in resultado.Rows)
+                {
+                    menus.Add(new MenuModel
+                    {
+                        CodMenu = Convert.ToInt32(row["CodMenu"]),
+                        NomeMenu = row["NomeMenu"].ToString(),
+                        NomeDisplay = row["NomeDisplay"].ToString(),
+                        NomeObjeto = row["NomeObjeto"].ToString(),
+                        CodMenuPai = row["CodMenuPai"] == DBNull.Value ? (int?)null : Convert.ToInt32(row["CodMenuPai"]),
+                        Conf_Nivel = Convert.ToInt32(row["Conf_Nivel"]),
+                        Conf_Ordem = Convert.ToInt32(row["Conf_Ordem"])
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao listar menus para configuração: {ex.Message}", ex);
+            }
+
+            return menus;
+        }
+
         public bool VincularMenuSistemaEmpresa(int codSistemaEmpresa, int codMenu)
         {
             try

@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Data_Bd\BancoDadosSQL.cs" />
+    <Compile Include="Mappers\MappersGestao\helpers\MenuSistemaConfig.cs" />
     <Compile Include="Mappers\MappersGestao\InsertionIntoTheMapperPriceTable.cs" />
     <Compile Include="Mappers\MappersGestao\ReaderExtensions.cs" />
     <Compile Include="Mappers\MappersGestao\TablePriceMapper.cs" />
