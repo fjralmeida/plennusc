@@ -108,12 +108,12 @@
             gap: 8px;
         }
 
-        .filter-section {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 12px;
-            align-items: end;
-        }
+.filter-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    align-items: end;
+}
 
         .filter-item {
             display: flex;

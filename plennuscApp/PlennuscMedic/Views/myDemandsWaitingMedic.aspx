@@ -69,6 +69,94 @@
         justify-content: center;
     }
 
+            /* Filtros */
+        .filters-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            padding: 20px;
+        }
+
+        .filters-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+.filter-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    align-items: end;
+}
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+            white-space: nowrap;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: var(--transition);
+            background: white;
+            height: 40px;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        .btn-filter-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+        }
+
+        .btn-filter {
+            background: var(--success);
+            border: none;
+            color: white;
+            font-weight: 500;
+            padding: 10px 16px;
+            border-radius: 4px;
+            transition: var(--transition);
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 28px;
+        }
+
+        .btn-filter:hover {
+            background: var(--success-hover);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+
     /* Resultados */
     .results-info {
         font-size: 14px;

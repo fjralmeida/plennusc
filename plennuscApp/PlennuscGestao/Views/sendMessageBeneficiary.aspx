@@ -160,67 +160,67 @@
 
                 <!-- APENAS BOLETO -->
                <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
-    <h4>[PAGAMENTO A VENCER]</h4>
-    <p>
-        Olá, {{1}}.<br>
-        <br>
-        Esperamos que esteja bem.<br>
-        <br>
-        Informamos que o boleto referente ao pagamento do seu plano de saúde já está disponível.<br>
-        <br>
-        Para sua comodidade, confira as informações do seu plano:
-    </p>
+                    <h4>[BOLETO]</h4>
+                    <p>
+                        Olá, {{1}}.<br>
+                        <br>
+                        Esperamos que esteja bem.<br>
+                        <br>
+                        Informamos que o boleto referente ao pagamento do seu plano de saúde já está disponível.<br>
+                        <br>
+                        Para sua comodidade, confira as informações do seu plano:
+                    </p>
 
-    <div class="mb-2">
-        <!-- MUDEI O ID PARA txtDataVencer -->
-        <asp:TextBox ID="txtDataSuspensao" runat="server" TextMode="Date"
-            CssClass="form-control campo-data"
-            ClientIDMode="Static"
-            onclick="event.stopPropagation();"></asp:TextBox>
-        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
-    </div>
+                    <div class="mb-2">
+                        <!-- MUDEI O ID PARA txtDataVencer -->
+                        <asp:TextBox ID="txtDataSuspensao" runat="server" TextMode="Date"
+                            CssClass="form-control campo-data"
+                            ClientIDMode="Static"
+                            onclick="event.stopPropagation();"></asp:TextBox>
+                        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+                    </div>
 
-    <p>
-        PLANO: {{2}}<br>
-        VENCIMENTO: {{3}}<br>
-        VALOR: {{4}}<br>
-        <br>
-        Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
-    </p>
-</div>
+                    <p>
+                        PLANO: {{2}}<br>
+                        VENCIMENTO: {{3}}<br>
+                        VALOR: {{4}}<br>
+                        <br>
+                        Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
+                    </p>
+                </div>
 
-                <!-- APENAS NOTA FISCAL -->
-                              <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
-    <h4>[PAGAMENTO A VENCER]</h4>
-    <p>
-        Olá, {{1}}.<br>
-        <br>
-        Esperamos que esteja bem.<br>
-        <br>
-        Informamos que a NOTA FISCAL referente ao pagamento do seu plano de saúde já está disponível.<br>
-        <br>
-        Para sua comodidade, confira as informações do seu plano:
-    </p>
+                    <!-- APENAS NOTA FISCAL -->
+                 <div class="template-opcao" onclick="selecionarTemplate('Definitivo')">
+                    <h4>[NOTA FISCAL]</h4>
+                    <p>
+                        Olá, {{1}}.<br>
+                        <br>
+                        Esperamos que esteja bem.<br>
+                        <br>
+                        Informamos que a NOTA FISCAL referente ao pagamento do seu plano de saúde já está disponível.<br>
+                        <br>
+                        Para sua comodidade, confira as informações do seu plano:
+                    </p>
 
-    <div class="mb-2">
-        <!-- MUDEI O ID PARA txtDataVencer -->
-        <asp:TextBox ID="txtDataDefinitivo" runat="server" TextMode="Date"
-            CssClass="form-control campo-data"
-            ClientIDMode="Static"
-            onclick="event.stopPropagation();"></asp:TextBox>
-        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
-    </div>
+                    <div class="mb-2">
+                        <!-- MUDEI O ID PARA txtDataVencer -->
+                        <asp:TextBox ID="txtDataDefinitivo" runat="server" TextMode="Date"
+                            CssClass="form-control campo-data"
+                            ClientIDMode="Static"
+                            onclick="event.stopPropagation();"></asp:TextBox>
+                        <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+                    </div>
 
-    <p>
-        PLANO: {{2}}<br>
-        VENCIMENTO: {{3}}<br>
-        VALOR: {{4}}<br>
-        <br>
-        Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
-    </p>
-</div>
-
-                <!-- DOIS BOLETOS -->
+                    <p>
+                        PLANO: {{2}}<br>
+                        VENCIMENTO: {{3}}<br>
+                        VALOR: {{4}}<br>
+                        <br>
+                        Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
+                    </p>
+                </div>
+ 
+             <%--   <!-- DOIS BOLETOS -->
                 <div class="template-opcao" onclick="selecionarTemplate('DoisBoletos')">
                     <h4>Dois Boletos</h4>
                     <p>
@@ -250,37 +250,38 @@
                         <br>
                         Atenciosamente.
                     </p>
-                </div>
+                </div>--%>
+
                 <!-- TEMPLATE: PAGAMENTO A VENCER -->
- <div class="template-opcao" onclick="selecionarTemplate('aVencer')">
-     <h4>[PAGAMENTO A VENCER]</h4>
-     <p>
-         Olá, {{1}}.<br>
-         <br>
-         Esperamos que esteja bem.<br>
-         <br>
-         Informamos que o boleto e nota fiscal referente ao pagamento do seu plano de saúde já está disponível.<br>
-         <br>
-         Para sua comodidade, confira as informações do seu plano:
-     </p>
+                 <div class="template-opcao" onclick="selecionarTemplate('aVencer')">
+                     <h4>[BOLETO E NOTA FISCAL]</h4>
+                     <p>
+                         Olá, {{1}}.<br>
+                         <br>
+                         Esperamos que esteja bem.<br>
+                         <br>
+                         Informamos que o boleto e nota fiscal referente ao pagamento do seu plano de saúde já está disponível.<br>
+                         <br>
+                         Para sua comodidade, confira as informações do seu plano:
+                     </p>
 
-     <div class="mb-2">
-         <!-- MUDEI O ID PARA txtDataVencer -->
-         <asp:TextBox ID="txtDataVencer" runat="server" TextMode="Date"
-             CssClass="form-control campo-data"
-             ClientIDMode="Static"
-             onclick="event.stopPropagation();"></asp:TextBox>
-         <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
-     </div>
+                     <div class="mb-2">
+                         <!-- MUDEI O ID PARA txtDataVencer -->
+                         <asp:TextBox ID="txtDataVencer" runat="server" TextMode="Date"
+                             CssClass="form-control campo-data"
+                             ClientIDMode="Static"
+                             onclick="event.stopPropagation();"></asp:TextBox>
+                         <div class="invalid-feedback">Informe a data antes de escolher o template.</div>
+                     </div>
 
-     <p>
-         PLANO: {{2}}<br>
-         VENCIMENTO: {{3}}<br>
-         VALOR: {{4}}<br>
-         <br>
-         Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
-     </p>
- </div>
+                     <p>
+                         PLANO: {{2}}<br>
+                         VENCIMENTO: {{3}}<br>
+                         VALOR: {{4}}<br>
+                         <br>
+                         Em caso de dúvidas ou necessidade de apoio, nossa equipe permanece à disposição.
+                     </p>
+                 </div>
             </div>
         </div>
     </div>
@@ -350,6 +351,8 @@
                         <asp:ListItem Text="100" Value="100" />
                         <asp:ListItem Text="200" Value="200" />
                         <asp:ListItem Text="300" Value="300" />
+                          <asp:ListItem Text="500" Value="500" />
+                          <asp:ListItem Text="1000" Value="1000" />
                     </asp:DropDownList>
                 </div>
 

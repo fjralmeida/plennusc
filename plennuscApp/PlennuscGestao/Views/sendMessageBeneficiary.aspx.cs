@@ -177,32 +177,19 @@ namespace PlennuscApp.PlennuscGestao.Views
                         break;
 
                     case "Definitivo":
-                        resultado = await api.ConexaoApiDefinitivo(
+                        resultado = await api.ConexaoApiNotaFiscal(
                             telefones,
-                            dados.Field8,
+                            dados.NotaFiscalUrl,
                             dados.Field1,
-                            dados.Field2,
                             dados.Field3,
                             dados.Field4,
-                           escolhaTemplate,
-                           dados.CodigoAssociado,
-                           codAutenticacao
+                            $"R$ {dados.Field7}",
+                            escolhaTemplate,
+                            dados.CodigoAssociado,
+                            codAutenticacao
                         );
                         break;
 
-                    case "DoisBoletos":
-                        resultado = await api.ConexaoApiDoisBoletos(
-                            telefones,
-                            dados.Field1, // substitua se tiver um campo específico
-                            dados.Field1,
-                            dados.Field2,
-                            dados.Field3,
-                            dados.Field4,
-                            dados.Field5,
-                            dados.Field6,
-                            dados.Field7
-                        );
-                        break;
 
                     case "aVencer":
                         resultado = await api.ConexaoApiAVencer(
@@ -215,6 +202,21 @@ namespace PlennuscApp.PlennuscGestao.Views
                             $"R$ {dados.Field7}" // valor formatado
                         );
                         break;
+
+                    //case "DoisBoletos":
+                    //    resultado = await api.ConexaoApiDoisBoletos(
+                    //        telefones,
+                    //        dados.Field1, // substitua se tiver um campo específico
+                    //        dados.Field1,
+                    //        dados.Field2,
+                    //        dados.Field3,
+                    //        dados.Field4,
+                    //        dados.Field5,
+                    //        dados.Field6,
+                    //        dados.Field7
+                    //    );
+                    //    break;
+
 
                     default:
                         resultado = "Template não selecionado corretamente.";
@@ -290,10 +292,10 @@ namespace PlennuscApp.PlennuscGestao.Views
                     {
                         vencimento = txtDataDefinitivo.Text;
                     }
-                    else if (hfTemplateEscolhido.Value == "DoisBoletos")
-                    {
-                        vencimento = txtDataNovaOpcao.Text;
-                    }
+                    //else if (hfTemplateEscolhido.Value == "DoisBoletos")
+                    //{
+                    //    vencimento = txtDataNovaOpcao.Text;
+                    //}
                     else if (hfTemplateEscolhido.Value == "aVencer")
                     {
                         vencimento = txtDataVencer.Text;

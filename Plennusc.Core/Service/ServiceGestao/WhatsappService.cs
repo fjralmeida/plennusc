@@ -183,20 +183,19 @@ namespace appWhatsapp.Service
         }
 
 
-        public async Task<string> ConexaoApiDefinitivo(List<string> telefones, string pdfUrl,
-                                                    string field1, string field2, string field3,
-                                                    string field4, string mensagemFinal, string codigoAssociado, int codAutenticacao)
+        public async Task<string> ConexaoApiNotaFiscal(
+                   List<string> telefones,
+                   string notafiscal,
+                   string field1,
+                   string field2,
+                   string field3,
+                   string field4,
+                   string mensagemFinal,
+                   string codigoAssociado,
+                   int codAutenticacao
+               )
         {
             var util = new ItensPedIntegradoUtil();
-
-            #region RESOLVER PROBLEMA PARA ENVIADOS NAS ULTIMAS 24 HORAS
-            //if (util.EnviadosUltimas24H(codigoAssociado, mensagemFinal))
-            //{
-            //    return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
-            //}
-            #endregion
-
-
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
             var resultadoFinal = new StringBuilder();
@@ -209,22 +208,22 @@ namespace appWhatsapp.Service
 
                 foreach (var telefone in telefones)
                 {
-                    var jsonBody = $@"
+                    string jsonBody = $@"
                     {{
-                      ""media_hsm_configuration_id"": ""f9acd546-1d81-4b51-b12f-765625600c8b"",
-                      ""hsm_type"": ""media_hsm"",
-                      ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
-                      ""system"": ""whatsapp"",
-                      ""contacts"": [ 
-                        {{ 
-                          ""phone_number"": ""{telefone}"",
-                          ""field_1"": ""{field1}"",
-                          ""field_2"": ""{field2}"",
-                          ""field_3"": ""{field3}"",
-                          ""field_4"": ""{field4}"",
-                          ""field_5"":  ""{pdfUrl}""
-                        }}
-                      ]
+                        ""media_hsm_configuration_id"": ""5fbfce1c-a0cb-4233-9257-5adf76973b7c"",
+                        ""hsm_type"": ""media_hsm"",
+                        ""campaign_id"": ""81815174-dd16-4468-9a70-37996dc48f8c"",
+                        ""system"": ""whatsapp_enterprise"",    
+                        ""contacts"": [ 
+                            {{ 
+                                ""phone_number"": ""{telefone}"",
+                                ""field_1"": ""{field1}"",
+                                ""field_2"": ""{field2}"",
+                                ""field_3"": ""{field3}"",
+                                ""field_4"": ""{field4}"",
+                                ""field_5"": ""{notafiscal}""
+                            }}
+                        ]
                     }}";
 
                     var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -234,9 +233,6 @@ namespace appWhatsapp.Service
                         var response = await client.PostAsync(apiUrl, content);
                         var responseBody = await response.Content.ReadAsStringAsync();
 
-                        //resultadoFinal.AppendLine($"✅ {telefone}: {response.StatusCode} - {responseBody}");
-
-                        // Tenta extrair o ID do envio
                         var json = JObject.Parse(responseBody);
                         var id = json["id"]?.ToString();
 
@@ -244,13 +240,12 @@ namespace appWhatsapp.Service
                         {
                             var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
 
-                          // ✅ Grava no banco a mensagem enviada
                             int codEnvio = util.GravarEnvioMensagem(
                                 telefoneDestino: telefone,
-                               codAssociado: codigoAssociado,
+                                codAssociado: codigoAssociado,
                                 mensagemFinal: mensagemFinal,
                                 codEmpresa: 400,
-                                 codUsuarioEnvio: codAutenticacao
+                                codUsuarioEnvio: codAutenticacao
                             );
 
                             util.GravarRetornoMensagem(
@@ -280,78 +275,78 @@ namespace appWhatsapp.Service
             return resultadoFinal.ToString();
         }
 
-        public async Task<string> ConexaoApiDoisBoletos(List<string> telefones, string pdfUrl,
-                                                   string field1, string field2, string field3,
-                                                   string field4, string field5, string field6, string field7)
-        {
-            var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
-            var resultadoFinal = new StringBuilder();
+        //public async Task<string> ConexaoApiDoisBoletos(List<string> telefones, string pdfUrl,
+        //                                           string field1, string field2, string field3,
+        //                                           string field4, string field5, string field6, string field7)
+        //{
+        //    var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
+        //    var apiKey = "280e3e7ea39279d70108384cabf81df7";
+        //    var resultadoFinal = new StringBuilder();
 
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
+        //    using (var client = new HttpClient())
+        //    {
+        //        client.DefaultRequestHeaders.Clear();
+        //        client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
+        //        client.DefaultRequestHeaders.Add("Accept", "application/json");
 
-                foreach (var telefone in telefones)
-                {
-                    var jsonBody = $@"
-                    {{
-                      ""media_hsm_configuration_id"": ""2daf52d0-a086-43b5-8033-72dd51dd4ea8"",
-                      ""hsm_type"": ""media_hsm"",
-                      ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
-                      ""system"": ""whatsapp"",
-                      ""contacts"": [ 
-                        {{ 
-                          ""phone_number"": ""{telefone}"",
-                          ""field_1"": ""{field1}"",
-                          ""field_2"": ""{field2}"",
-                          ""field_3"": ""{field3}"",
-                          ""field_4"": ""{field4}"",
-                          ""field_5"": ""{field5}"",
-                          ""field_6"": ""{field6}"",
-                          ""field_7"":  ""{field7}"",
-                          ""field_8"":  ""{pdfUrl}""
-                        }}
-                      ]
-                    }}";
+        //        foreach (var telefone in telefones)
+        //        {
+        //            var jsonBody = $@"
+        //            {{
+        //              ""media_hsm_configuration_id"": ""2daf52d0-a086-43b5-8033-72dd51dd4ea8"",
+        //              ""hsm_type"": ""media_hsm"",
+        //              ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
+        //              ""system"": ""whatsapp"",
+        //              ""contacts"": [ 
+        //                {{ 
+        //                  ""phone_number"": ""{telefone}"",
+        //                  ""field_1"": ""{field1}"",
+        //                  ""field_2"": ""{field2}"",
+        //                  ""field_3"": ""{field3}"",
+        //                  ""field_4"": ""{field4}"",
+        //                  ""field_5"": ""{field5}"",
+        //                  ""field_6"": ""{field6}"",
+        //                  ""field_7"":  ""{field7}"",
+        //                  ""field_8"":  ""{pdfUrl}""
+        //                }}
+        //              ]
+        //            }}";
 
-                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+        //            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-                    try
-                    {
-                        var response = await client.PostAsync(apiUrl, content);
-                        var responseBody = await response.Content.ReadAsStringAsync();
+        //            try
+        //            {
+        //                var response = await client.PostAsync(apiUrl, content);
+        //                var responseBody = await response.Content.ReadAsStringAsync();
 
-                        //resultadoFinal.AppendLine($"✅ {telefone}: {response.StatusCode} - {responseBody}");
+        //                //resultadoFinal.AppendLine($"✅ {telefone}: {response.StatusCode} - {responseBody}");
 
-                        // Tenta extrair o ID do envio
-                        var json = JObject.Parse(responseBody);
-                        var id = json["id"]?.ToString();
+        //                // Tenta extrair o ID do envio
+        //                var json = JObject.Parse(responseBody);
+        //                var id = json["id"]?.ToString();
 
-                        if (!string.IsNullOrEmpty(id))
-                        {
-                            // Faz o GET para verificar status da mensagem enviada
-                            var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
-                            resultadoFinal.AppendLine(statusResponse);
-                        }
-                        else
-                        {
-                            resultadoFinal.AppendLine($"⚠️ {telefone}: ID não encontrado na resposta.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        resultadoFinal.AppendLine($"❌ {telefone}: Erro - {ex.Message}");
-                    }
+        //                if (!string.IsNullOrEmpty(id))
+        //                {
+        //                    // Faz o GET para verificar status da mensagem enviada
+        //                    var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+        //                    resultadoFinal.AppendLine(statusResponse);
+        //                }
+        //                else
+        //                {
+        //                    resultadoFinal.AppendLine($"⚠️ {telefone}: ID não encontrado na resposta.");
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                resultadoFinal.AppendLine($"❌ {telefone}: Erro - {ex.Message}");
+        //            }
 
-                    await Task.Delay(5000);
-                }
-            }
+        //            await Task.Delay(5000);
+        //        }
+        //    }
 
-            return resultadoFinal.ToString();
-        }
+        //    return resultadoFinal.ToString();
+        //}
 
 
         public async Task<string> ConexaoApifixo(List<string> telefones,

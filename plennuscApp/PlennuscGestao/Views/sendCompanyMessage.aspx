@@ -314,6 +314,8 @@
                         <asp:ListItem Text="100" Value="100" />
                         <asp:ListItem Text="200" Value="200" />
                         <asp:ListItem Text="300" Value="300" />
+                        <asp:ListItem Text="500" Value="500" />
+                        <asp:ListItem Text="1000" Value="1000" />
                     </asp:DropDownList>
                 </div>
 
