@@ -29,42 +29,36 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.SysPlatform
 
         // MODIFIQUE a query ListarMenusParaVincular para:
         public static string ListarMenusParaVincular = @"
-SELECT 
-    m.CodMenu,
-    m.NomeMenu,
-    m.NomeDisplay,
-    m.NomeObjeto,
-    m.Conf_Nivel,
-    m.Conf_Ordem,
-    m.CodMenuPai,
-    CASE WHEN sem.CodSistemaEmpresaMenu IS NOT NULL THEN 1 ELSE 0 END as Vinculado
-FROM Menu m
-INNER JOIN SistemaEmpresa se ON se.CodSistemaEmpresa = @CodSistemaEmpresa
-LEFT JOIN SistemaEmpresaMenu sem ON sem.CodMenu = m.CodMenu 
-    AND sem.CodSistemaEmpresa = @CodSistemaEmpresa
-WHERE m.Conf_Habilitado = 1
-AND m.CodMenu NOT IN (1, 2, 3, 4)
--- Filtro por sistema usando lógica de inferência
-AND (
-    -- Sistema 1 (Gestão)
-    (se.CodSistema = 1 AND (
-        m.NomeObjeto NOT LIKE '%Medic%' AND 
-        m.NomeObjeto NOT LIKE '%Finance%' AND
-        m.NomeObjeto NOT LIKE '%la' -- Exclui interviewla
-    ))
-    OR
-    -- Sistema 2 (Finance)
-    (se.CodSistema = 2 AND m.NomeObjeto LIKE '%Finance%')
-    OR
-    -- Sistema 3 (Medic)
-    (se.CodSistema = 3 AND (
-        m.NomeObjeto LIKE '%Medic%' OR 
-        m.NomeObjeto LIKE '%la' -- Inclui interviewla
-    ))
-)
-ORDER BY 
-    COALESCE(m.CodMenuPai, m.CodMenu),
-    m.Conf_Ordem";
+            WITH MenusConfigurados AS (
+                -- Pega os menus que já estão configurados para este sistema na empresa 1 (configuração global)
+                SELECT DISTINCT sem.CodMenu
+                FROM SistemaEmpresaMenu sem
+                INNER JOIN SistemaEmpresa se ON sem.CodSistemaEmpresa = se.CodSistemaEmpresa
+                WHERE se.CodEmpresa = 1
+                AND se.CodSistema = (SELECT CodSistema FROM SistemaEmpresa WHERE CodSistemaEmpresa = @CodSistemaEmpresa)
+            )
+            SELECT 
+                m.CodMenu,
+                m.NomeMenu,
+                m.NomeDisplay,
+                m.NomeObjeto,
+                m.Conf_Nivel,
+                m.Conf_Ordem,
+                m.CodMenuPai,
+                CASE 
+                    WHEN sem.CodSistemaEmpresaMenu IS NOT NULL THEN 1 
+                    ELSE 0 
+                END as Vinculado
+            FROM Menu m
+            -- Só mostra menus que estão configurados para este sistema (na empresa 1)
+            INNER JOIN MenusConfigurados mc ON m.CodMenu = mc.CodMenu
+            -- Verifica se já está vinculado à empresa específica
+            LEFT JOIN SistemaEmpresaMenu sem ON sem.CodMenu = m.CodMenu 
+                AND sem.CodSistemaEmpresa = @CodSistemaEmpresa
+            WHERE m.Conf_Habilitado = 1
+            ORDER BY 
+                COALESCE(m.CodMenuPai, m.CodMenu),
+                m.Conf_Ordem";
 
         //public static string ListarMenusParaVincular = @"
         //   SELECT 

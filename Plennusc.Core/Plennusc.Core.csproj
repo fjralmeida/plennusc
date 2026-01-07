@@ -142,6 +142,7 @@
     <Compile Include="Service\ServiceGestao\department\createDepartmentService.cs" />
     <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
     <Compile Include="Service\ServiceGestao\menu\menusManagementService.cs" />
+    <Compile Include="Service\ServiceGestao\menu\MenuSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />

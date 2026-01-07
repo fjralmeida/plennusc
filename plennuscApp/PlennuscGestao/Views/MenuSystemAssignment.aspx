@@ -13,7 +13,7 @@
                 </div>
                 Configurar Sistema dos Menus
             </h2>
-            <p class="page-subtitle">Defina a qual sistema cada menu pertence antes de vincular às empresas</p>
+            <p class="page-subtitle">Marque TODOS os sistemas onde cada menu deve estar disponível (configuração global)</p>
         </div>
 
         <!-- Filtros -->
@@ -25,23 +25,29 @@
                 </h3>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="form-label">Sistema</label>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="form-label">Status</label>
                         <asp:DropDownList ID="ddlFiltroSistema" runat="server" CssClass="form-control" AutoPostBack="true"
                             OnSelectedIndexChanged="ddlFiltroSistema_SelectedIndexChanged">
-                            <asp:ListItem Text="Todos os sistemas" Value="0" />
+                            <asp:ListItem Text="Todos" Value="0" />
+                            <asp:ListItem Text="Apenas não vinculados" Value="-1" />
                             <asp:ListItem Text="Gestão" Value="1" />
                             <asp:ListItem Text="Finance" Value="2" />
                             <asp:ListItem Text="Medic" Value="3" />
-                            <asp:ListItem Text="Não definidos" Value="-1" />
                         </asp:DropDownList>
                     </div>
-                    <div class="col-md-4">
+                  <div class="filter-group">
                         <label class="form-label">Buscar menu</label>
-                        <asp:TextBox ID="txtBuscarMenu" runat="server" CssClass="form-control" 
-                            placeholder="Nome do menu..." AutoPostBack="true"
-                            OnTextChanged="txtBuscarMenu_TextChanged"></asp:TextBox>
+                        <div class="search-container">
+                            <asp:TextBox ID="txtBuscarMenu" runat="server" CssClass="form-control" 
+                                placeholder="Digite nome ou objeto do menu..." AutoPostBack="true"
+                                OnTextChanged="txtBuscarMenu_TextChanged"></asp:TextBox>
+                            <!-- Remove o ícone duplicado e mantenha apenas este -->
+                            <span class="search-icon">
+                                <i class="bi bi-search"></i>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,69 +55,93 @@
 
         <!-- Grid de Menus -->
         <div class="main-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title">
-                    <i class="bi bi-list-check"></i>
-                    Menus Disponíveis
-                    <small class="text-muted ms-2">
-                        (<asp:Literal ID="litTotalMenus" runat="server" />)
-                    </small>
-                </h3>
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">
+                        <i class="bi bi-list-check"></i>
+                        Menus Disponíveis
+                        <small class="text-muted ms-2">
+                            (<asp:Literal ID="litTotalMenus" runat="server" /> menus)
+                        </small>
+                    </h3>
+                    <p class="text-muted mb-0">Marque as caixas para definir em quais sistemas cada menu estará disponível</p>
+                </div>
                 <asp:Button ID="btnSalvarTodos" runat="server" Text="Salvar Todas as Configurações" 
-                    CssClass="btn btn-primary" OnClick="btnSalvarTodos_Click" />
+                    CssClass="btn btn-salvar-todos" OnClick="btnSalvarTodos_Click" />
             </div>
-            <div class="card-body p-0">
+            
+            <div class="card-body">
+                <!-- Cabeçalho da Grid -->
+                <div class="grid-header">
+                    <div class="row">
+                        <div class="text-center">Código</div>
+                        <div>Nome do Menu</div>
+                        <div>Objeto</div>
+                        <div class="text-center">Gestão</div>
+                        <div class="text-center">Finance</div>
+                        <div class="text-center">Medic</div>
+                        <div class="text-center">Ouvidoria</div>
+                        <div class="text-center">Ações</div>
+                    </div>
+                </div>
+
+                <!-- Grid de Menus -->
                 <asp:Repeater ID="rptMenus" runat="server" OnItemDataBound="rptMenus_ItemDataBound">
-                    <HeaderTemplate>
-                        <div class="menu-grid">
-                            <div class="menu-item-row" style="background-color: #f8f9fa; font-weight: 500;">
-                                <div class="row">
-                                    <div class="col-1"><strong>Código</strong></div>
-                                    <div class="col-4"><strong>Nome do Menu</strong></div>
-                                    <div class="col-3"><strong>Objeto</strong></div>
-                                    <div class="col-2"><strong>Sistema Atual</strong></div>
-                                    <div class="col-2"><strong>Sistema Novo</strong></div>
-                                </div>
-                            </div>
-                    </HeaderTemplate>
                     <ItemTemplate>
                         <div class="menu-item-row">
-                            <div class="row align-items-center">
-                                <div class="col-1">
+                            <div class="row">
+                                <div class="text-center">
                                     <span class="menu-codigo"><%# Eval("CodMenu") %></span>
                                 </div>
-                                <div class="col-4">
+                                <div>
                                     <div class="menu-nome"><%# Eval("NomeDisplay") %></div>
                                     <div class="menu-objeto"><%# Eval("NomeObjeto") %></div>
                                 </div>
-                                <div class="col-3">
+                                <div>
                                     <div class="menu-objeto"><%# Eval("NomeObjeto") %></div>
                                 </div>
-                                <div class="col-2">
-                                    <asp:Literal ID="litSistemaAtual" runat="server" />
+                                <div class="system-checkbox-container">
+                                    <asp:CheckBox ID="cbGestao" runat="server" CssClass="system-checkbox" data-system="1" />
                                 </div>
-                                <div class="col-2">
-                                    <asp:DropDownList ID="ddlSistemaNovo" runat="server" CssClass="form-control form-control-sm">
-                                        <asp:ListItem Text="-- Não definido --" Value="0" />
-                                        <asp:ListItem Text="Gestão" Value="1" />
-                                        <asp:ListItem Text="Finance" Value="2" />
-                                        <asp:ListItem Text="Medic" Value="3" />
-                                    </asp:DropDownList>
+                                <div class="system-checkbox-container">
+                                    <asp:CheckBox ID="cbFinance" runat="server" CssClass="system-checkbox" data-system="2" />
+                                </div>
+                                <div class="system-checkbox-container">
+                                    <asp:CheckBox ID="cbMedic" runat="server" CssClass="system-checkbox" data-system="3" />
+                                </div>
+                                <div class="system-checkbox-container">
+                                    <asp:CheckBox ID="cbOuvidoria" runat="server" CssClass="system-checkbox" data-system="4" />
+                                </div>
+                                <div class="action-buttons">
+                                    <asp:Button ID="btnSalvarMenu" runat="server" Text="Salvar" CssClass="btn btn-primary btn-sm" 
+                                        CommandArgument='<%# Eval("CodMenu") %>' OnClick="btnSalvarMenu_Click" />
                                     <asp:HiddenField ID="hfCodMenu" runat="server" Value='<%# Eval("CodMenu") %>' />
                                 </div>
                             </div>
                         </div>
                     </ItemTemplate>
-                    <FooterTemplate>
-                        </div>
-                    </FooterTemplate>
                 </asp:Repeater>
-                
-                <asp:Panel ID="pnlNenhumResultado" runat="server" Visible="false" CssClass="text-center py-5">
-                    <i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>
-                    <h5 class="mt-3">Nenhum menu encontrado</h5>
+
+                <!-- Sem resultados -->
+                <asp:Panel ID="pnlNenhumResultado" runat="server" Visible="false" CssClass="no-results">
+                    <div class="no-results-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h5>Nenhum menu encontrado</h5>
                     <p class="text-muted">Tente ajustar os filtros de busca</p>
                 </asp:Panel>
+            </div>
+        </div>
+
+        <!-- Aviso informativo -->
+        <div class="aviso-info">
+            <div class="aviso-content">
+                
+                <div>
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Nota:</strong> Esta configuração é global. Os menus configurados aqui estarão disponíveis para todas as empresas.
+                    Após configurar aqui, você poderá selecionar quais menus serão ativados para cada empresa específica.
+                </div>
             </div>
         </div>
     </div>

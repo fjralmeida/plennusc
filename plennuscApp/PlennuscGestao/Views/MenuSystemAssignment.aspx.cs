@@ -1,8 +1,10 @@
 ﻿using Plennusc.Core.Mappers.MappersGestao.helpers;
 using Plennusc.Core.Models.ModelsGestao.modelsMenu;
+using Plennusc.Core.Service.ServiceGestao.menu;
 using Plennusc.Core.Service.ServiceGestao.PlatformSys;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -12,14 +14,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 {
     public partial class MenuSystemAssignment : System.Web.UI.Page
     {
-        private companyMenuManagementSystemService _service;
-        private MenuSistemaConfig _config;
-        private List<MenuModel> _todosMenus;
+        private MenuSystemService _service;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            _service = new companyMenuManagementSystemService();
-            _config = new MenuSistemaConfig();
+            _service = new MenuSystemService();
 
             if (Session["CodUsuario"] == null)
             {
@@ -29,21 +28,44 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (!IsPostBack)
             {
-                CarregarTodosMenus();
                 AplicarFiltros();
             }
         }
 
-        private void CarregarTodosMenus()
+        private void AplicarFiltros()
         {
             try
             {
-                _todosMenus = _service.ListarTodosMenusParaConfiguracao();
-                ViewState["TodosMenus"] = _todosMenus;
+                var todosMenus = _service.ListarTodosMenusParaConfiguracao();
+                if (todosMenus == null) return;
+
+                int filtroSistema = Convert.ToInt32(ddlFiltroSistema.SelectedValue);
+                if (filtroSistema == -1) // Não definidos
+                {
+                    todosMenus = todosMenus.Where(m => !_service.EstaVinculadoEmAlgumSistema(m.CodMenu)).ToList();
+                }
+                else if (filtroSistema > 0) // Sistema específico
+                {
+                    todosMenus = todosMenus.Where(m => _service.EstaVinculadoAoSistema(m.CodMenu, filtroSistema)).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(txtBuscarMenu.Text))
+                {
+                    string busca = txtBuscarMenu.Text.ToLower();
+                    todosMenus = todosMenus.Where(m =>
+                        (m.NomeDisplay?.ToLower().Contains(busca) == true) ||
+                        (m.NomeMenu?.ToLower().Contains(busca) == true) ||
+                        (m.NomeObjeto?.ToLower().Contains(busca) == true)).ToList();
+                }
+
+                rptMenus.DataSource = todosMenus;
+                rptMenus.DataBind();
+                litTotalMenus.Text = $"{todosMenus.Count} menus";
+                pnlNenhumResultado.Visible = todosMenus.Count == 0;
             }
             catch (Exception ex)
             {
-                MostrarMensagemErro($"Erro ao carregar menus: {ex.Message}");
+                MostrarMensagemErro($"Erro: {ex.Message}");
             }
         }
 
@@ -57,90 +79,47 @@ namespace appWhatsapp.PlennuscGestao.Views
             AplicarFiltros();
         }
 
-        private void AplicarFiltros()
-        {
-            if (ViewState["TodosMenus"] != null)
-            {
-                _todosMenus = (List<MenuModel>)ViewState["TodosMenus"];
-            }
-            else
-            {
-                CarregarTodosMenus();
-            }
-
-            if (_todosMenus == null) return;
-
-            // Aplicar filtro por sistema
-            var menusFiltrados = _todosMenus.AsEnumerable();
-
-            int filtroSistema = Convert.ToInt32(ddlFiltroSistema.SelectedValue);
-            if (filtroSistema == -1) // Não definidos
-            {
-                menusFiltrados = menusFiltrados.Where(m =>
-                    _config.GetSistemaDoMenu(m.CodMenu) == null ||
-                    _config.GetSistemaDoMenu(m.CodMenu) == 0);
-            }
-            else if (filtroSistema > 0) // Sistema específico
-            {
-                menusFiltrados = menusFiltrados.Where(m =>
-                    _config.GetSistemaDoMenu(m.CodMenu) == filtroSistema);
-            }
-
-            // Aplicar filtro por texto
-            if (!string.IsNullOrEmpty(txtBuscarMenu.Text))
-            {
-                string busca = txtBuscarMenu.Text.ToLower();
-                menusFiltrados = menusFiltrados.Where(m =>
-                    (m.NomeDisplay?.ToLower().Contains(busca) == true) ||
-                    (m.NomeMenu?.ToLower().Contains(busca) == true) ||
-                    (m.NomeObjeto?.ToLower().Contains(busca) == true));
-            }
-
-            var listaFinal = menusFiltrados.ToList();
-
-            rptMenus.DataSource = listaFinal;
-            rptMenus.DataBind();
-
-            litTotalMenus.Text = $"{listaFinal.Count} menus";
-            pnlNenhumResultado.Visible = listaFinal.Count == 0;
-        }
-
         protected void rptMenus_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
-                MenuModel menu = (MenuModel)e.Item.DataItem;
-
-                HiddenField hfCodMenu = (HiddenField)e.Item.FindControl("hfCodMenu");
+                var menu = (MenuModel)e.Item.DataItem;
+                var hfCodMenu = (HiddenField)e.Item.FindControl("hfCodMenu");
                 hfCodMenu.Value = menu.CodMenu.ToString();
 
-                Literal litSistemaAtual = (Literal)e.Item.FindControl("litSistemaAtual");
-                DropDownList ddlSistemaNovo = (DropDownList)e.Item.FindControl("ddlSistemaNovo");
+                var cbGestao = (CheckBox)e.Item.FindControl("cbGestao");
+                var cbFinance = (CheckBox)e.Item.FindControl("cbFinance");
+                var cbMedic = (CheckBox)e.Item.FindControl("cbMedic");
+                var cbOuvidoria = (CheckBox)e.Item.FindControl("cbOuvidoria");
 
-                // Obter sistema atual
-                int? sistemaAtual = _config.GetSistemaDoMenu(menu.CodMenu);
+                var sistemasVinculados = _service.GetSistemasVinculados(menu.CodMenu);
 
-                // Configurar literal com badge
-                string sistemaTexto = "Não definido";
-                string classeCss = "sistema-0";
+                cbGestao.Checked = sistemasVinculados.Contains(1);
+                cbFinance.Checked = sistemasVinculados.Contains(2);
+                cbMedic.Checked = sistemasVinculados.Contains(3);
+                cbOuvidoria.Checked = sistemasVinculados.Contains(4);
+            }
+        }
 
-                if (sistemaAtual.HasValue && sistemaAtual.Value > 0)
-                {
-                    switch (sistemaAtual.Value)
-                    {
-                        case 1: sistemaTexto = "Gestão"; classeCss = "sistema-1"; break;
-                        case 2: sistemaTexto = "Finance"; classeCss = "sistema-2"; break;
-                        case 3: sistemaTexto = "Medic"; classeCss = "sistema-3"; break;
-                    }
-                }
+        protected void btnSalvarMenu_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var btn = (Button)sender;
+                int codMenu = Convert.ToInt32(btn.CommandArgument);
+                var item = (RepeaterItem)btn.NamingContainer;
 
-                litSistemaAtual.Text = $"<span class='sistema-badge {classeCss}'>{sistemaTexto}</span>";
+                var cbGestao = (CheckBox)item.FindControl("cbGestao");
+                var cbFinance = (CheckBox)item.FindControl("cbFinance");
+                var cbMedic = (CheckBox)item.FindControl("cbMedic");
+                var cbOuvidoria = (CheckBox)item.FindControl("cbOuvidoria");
 
-                // Configurar dropdown com valor atual
-                if (sistemaAtual.HasValue)
-                {
-                    ddlSistemaNovo.SelectedValue = sistemaAtual.Value.ToString();
-                }
+                _service.SalvarConfiguracoesMenu(codMenu, cbGestao.Checked, cbFinance.Checked, cbMedic.Checked, cbOuvidoria.Checked);
+                MostrarMensagemSucesso("Menu salvo!");
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagemErro($"Erro: {ex.Message}");
             }
         }
 
@@ -152,58 +131,35 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
                     {
-                        HiddenField hfCodMenu = (HiddenField)item.FindControl("hfCodMenu");
-                        DropDownList ddlSistemaNovo = (DropDownList)item.FindControl("ddlSistemaNovo");
+                        var hfCodMenu = (HiddenField)item.FindControl("hfCodMenu");
+                        var cbGestao = (CheckBox)item.FindControl("cbGestao");
+                        var cbFinance = (CheckBox)item.FindControl("cbFinance");
+                        var cbMedic = (CheckBox)item.FindControl("cbMedic");
+                        var cbOuvidoria = (CheckBox)item.FindControl("cbOuvidoria");
 
                         int codMenu = Convert.ToInt32(hfCodMenu.Value);
-                        int novoSistema = Convert.ToInt32(ddlSistemaNovo.SelectedValue);
-
-                        if (novoSistema == 0)
-                        {
-                            _config.RemoveConfig(codMenu);
-                        }
-                        else
-                        {
-                            _config.SetSistemaDoMenu(codMenu, novoSistema);
-                        }
+                        _service.SalvarConfiguracoesMenu(codMenu, cbGestao.Checked, cbFinance.Checked, cbMedic.Checked, cbOuvidoria.Checked);
                     }
                 }
-
-                MostrarMensagemSucesso("Configurações salvas com sucesso!");
-
-                // Recarregar para mostrar as alterações
+                MostrarMensagemSucesso("Todos os menus salvos!");
                 AplicarFiltros();
             }
             catch (Exception ex)
             {
-                MostrarMensagemErro($"Erro ao salvar configurações: {ex.Message}");
+                MostrarMensagemErro($"Erro: {ex.Message}");
             }
         }
 
         private void MostrarMensagemSucesso(string mensagem)
         {
-            string script = $@"
-                Swal.fire({{
-                    icon: 'success',
-                    title: 'Sucesso!',
-                    text: '{mensagem.Replace("'", "\\'")}',
-                    confirmButtonText: 'OK',
-                    customClass: {{ confirmButton: 'btn btn-success' }}
-                }});";
-            ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso", script, true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso",
+                $"Swal.fire({{icon:'success',title:'Sucesso!',text:'{mensagem.Replace("'", "\\'")}'}});", true);
         }
 
         private void MostrarMensagemErro(string mensagem)
         {
-            string script = $@"
-                Swal.fire({{
-                    icon: 'error',
-                    title: 'Erro!',
-                    text: '{mensagem.Replace("'", "\\'")}',
-                    confirmButtonText: 'Fechar',
-                    customClass: {{ confirmButton: 'btn btn-danger' }}
-                }});";
-            ScriptManager.RegisterStartupScript(this, GetType(), "Erro", script, true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "Erro",
+                $"Swal.fire({{icon:'error',title:'Erro!',text:'{mensagem.Replace("'", "\\'")}'}});", true);
         }
     }
 }

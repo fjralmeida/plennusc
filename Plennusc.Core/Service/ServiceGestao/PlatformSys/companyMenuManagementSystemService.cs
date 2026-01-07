@@ -142,21 +142,35 @@ namespace Plennusc.Core.Service.ServiceGestao.PlatformSys
             try
             {
                 var query = @"
+                    WITH MenusUnicos AS (
+                        SELECT 
+                            m.CodMenu,
+                            m.NomeMenu,
+                            m.NomeDisplay,
+                            m.NomeObjeto,
+                            m.Conf_Nivel,
+                            m.Conf_Ordem,
+                            m.CodMenuPai,
+                            m.Conf_Habilitado,
+                            ROW_NUMBER() OVER (PARTITION BY m.NomeObjeto ORDER BY m.CodMenu) AS rn
+                        FROM Menu m
+                        WHERE m.Conf_Habilitado = 1
+                        AND m.CodMenu NOT IN (1, 2, 3, 4)
+                    )
                     SELECT 
-                        m.CodMenu,
-                        m.NomeMenu,
-                        m.NomeDisplay,
-                        m.NomeObjeto,
-                        m.Conf_Nivel,
-                        m.Conf_Ordem,
-                        m.CodMenuPai,
-                        m.Conf_Habilitado
-                    FROM Menu m
-                    WHERE m.Conf_Habilitado = 1
-                    AND m.CodMenu NOT IN (1, 2, 3, 4)
+                        CodMenu,
+                        NomeMenu,
+                        NomeDisplay,
+                        NomeObjeto,
+                        Conf_Nivel,
+                        Conf_Ordem,
+                        CodMenuPai,
+                        Conf_Habilitado
+                    FROM MenusUnicos
+                    WHERE rn = 1
                     ORDER BY 
-                        COALESCE(m.CodMenuPai, m.CodMenu),
-                        m.Conf_Ordem";
+                        COALESCE(CodMenuPai, CodMenu),
+                        Conf_Ordem";
 
                 var resultado = _db.LerPlennus(query);
 
