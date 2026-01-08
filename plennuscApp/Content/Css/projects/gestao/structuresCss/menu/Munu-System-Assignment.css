@@ -111,29 +111,24 @@
         outline: none;
     }
 
-/* ===== CORREÇÃO DO ÍCONE DE BUSCA ===== */
-.search-container {
+/* ===== ÍCONE DE BUSCA ===== */
+.filter-group .search-container {
     position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-.search-icon {
-    position: absolute !important;
-    right: 12px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    color: #6c757d !important;
-    z-index: 10 !important;
 }
 
-.search-container .form-control {
-    padding-right: 40px !important;
-    height: 40px !important;
+.filter-group .search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 2;
+    pointer-events: none;
 }
-/* Remove qualquer ícone duplicado */
-.bi-search:first-child {
-    display: none;
+
+.filter-group .search-container .form-control {
+    padding-right: 40px;
+    width: 100%;
 }
 
 /* ===== TABELA DE MENUS ===== */
@@ -321,7 +316,7 @@
         background: linear-gradient(135deg, #3b8b65, #388E3C);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(76, 176, 122, 0.3);
-        color:white;
+        color: white;
     }
 
 /* ===== SEM RESULTADOS ===== */

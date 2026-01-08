@@ -28,15 +28,15 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CarregarEmpresas();
                 pnlMenus.Visible = false;
             }
-            else
-            {
-                // RECRIA OS CONTROLES NO POSTBACK
-                if (ddlSistema.SelectedValue != "")
-                {
-                    int codSistemaEmpresa = Convert.ToInt32(ddlSistema.SelectedValue);
-                    CarregarMenusAgrupados(codSistemaEmpresa);
-                }
-            }
+            //else
+            //{
+            //    // RECRIA OS CONTROLES NO POSTBACK
+            //    if (ddlSistema.SelectedValue != "")
+            //    {
+            //        int codSistemaEmpresa = Convert.ToInt32(ddlSistema.SelectedValue);
+            //        CarregarMenusAgrupados(codSistemaEmpresa);
+            //    }
+            //}
         }
 
         private void CarregarEmpresas()

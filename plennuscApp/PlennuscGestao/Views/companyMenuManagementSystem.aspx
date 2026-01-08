@@ -20,6 +20,11 @@
                     <i class="bi bi-building-gear"></i>
                     Selecionar Empresa e Sistema
                 </h3>
+                 
+                      <asp:Button ID="btnSalvar" runat="server" Text="Salvar Vínculos" CssClass="btn btn-primary" 
+                          OnClick="btnSalvar_Click" />
+                   <%--   <asp:Button ID="btnLimpar" runat="server" Text="Limpar Seleção" CssClass="btn btn-secondary" 
+                          OnClick="btnLimpar_Click" />--%>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -64,12 +69,6 @@
                     <div class="modules-container" id="modulesContainer" runat="server">
                         <!-- Os módulos serão gerados dinamicamente no code-behind -->
                     </div>
-                </div>
-                <div class="card-footer">
-                    <asp:Button ID="btnSalvar" runat="server" Text="Salvar Vínculos" CssClass="btn btn-primary" 
-                        OnClick="btnSalvar_Click" />
-                 <%--   <asp:Button ID="btnLimpar" runat="server" Text="Limpar Seleção" CssClass="btn btn-secondary" 
-                        OnClick="btnLimpar_Click" />--%>
                 </div>
             </div>
         </asp:Panel>

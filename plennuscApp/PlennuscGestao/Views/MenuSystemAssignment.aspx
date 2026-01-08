@@ -37,18 +37,17 @@
                             <asp:ListItem Text="Medic" Value="3" />
                         </asp:DropDownList>
                     </div>
-                  <div class="filter-group">
-                        <label class="form-label">Buscar menu</label>
-                        <div class="search-container">
-                            <asp:TextBox ID="txtBuscarMenu" runat="server" CssClass="form-control" 
-                                placeholder="Digite nome ou objeto do menu..." AutoPostBack="true"
-                                OnTextChanged="txtBuscarMenu_TextChanged"></asp:TextBox>
-                            <!-- Remove o ícone duplicado e mantenha apenas este -->
-                            <span class="search-icon">
-                                <i class="bi bi-search"></i>
-                            </span>
-                        </div>
-                    </div>
+                <div class="filter-group">
+    <label class="form-label">Buscar menu</label>
+    <div id="buscaMenuPaginaAtual" class="search-container">
+        <asp:TextBox ID="txtBuscarMenu" runat="server" CssClass="form-control" 
+            placeholder="Digite nome ou objeto do menu..." AutoPostBack="true"
+            OnTextChanged="txtBuscarMenu_TextChanged"></asp:TextBox>
+        <span class="search-icon">
+            <i class="bi bi-search"></i>
+        </span>
+    </div>
+</div>
                 </div>
             </div>
         </div>

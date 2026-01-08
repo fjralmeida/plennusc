@@ -313,7 +313,14 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             var checkbox = new CheckBox();
+
+            // ID ÚNICO: inclui CodMenu E CodSistemaEmpresa
             checkbox.ID = $"chkMenu_{menu.CodMenu}_{codSistemaEmpresa}";
+
+            // O problema é aqui! Se você tem o mesmo menu em múltiplos sistemas,
+            // o ID está sendo duplicado. Vamos garantir que seja único:
+            checkbox.ID = $"chkMenu_{menu.CodMenu}_{codSistemaEmpresa}_{menu.CodSistemaEmpresaMenu}";
+
             checkbox.Text = menu.NomeDisplay;
             checkbox.Checked = menu.MenuJaVinculado;
             checkbox.CssClass = "menu-checkbox";
