@@ -65,8 +65,8 @@
     background: #f8f9fa;
     padding: 20px 24px;
     border-bottom: 1px solid #e8eaed;
-    display: flex;
-    justify-content: space-between;
+    display: flex !important;
+    justify-content: space-between !important;
 }
 
 .card-title {
