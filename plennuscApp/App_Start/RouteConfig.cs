@@ -25,7 +25,7 @@ namespace appWhatsapp
 
             // ✅ Vincular Sistemas e Menus
             routes.MapPageRoute("userSystemMenuManagement", "userSystemMenuManagement", "~/PlennuscGestao/Views/userSystemMenuManagement.aspx");
-            routes.MapPageRoute("MenuSystemAssignment", "MenuSystemAssignment", "~/PlennuscGestao/Views/MenuSystemAssignment.aspx");
+            routes.MapPageRoute("menusystemassignment", "menusystemassignment", "~/PlennuscGestao/Views/MenuSystemAssignment.aspx");
             routes.MapPageRoute("companyMenuManagementSystem", "companyMenuManagementSystem", "~/PlennuscGestao/Views/companyMenuManagementSystem.aspx");
 
             // ✅ Demandas
