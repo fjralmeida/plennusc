@@ -32,11 +32,70 @@ namespace appWhatsapp.PlennuscGestao.Views
                 var dados = ObterLinhasSelecionadasFixo(fileUploadCsv.FileContent);
                 DadosCsv = dados;
 
+                // Configura a GridView baseada no formato detectado
+                ConfigurarGridView(dados);
+
                 gridCsv.DataSource = dados;
                 gridCsv.DataBind();
 
                 btnEnviar.Enabled = gridCsv.Rows.Count > 0;
+
+                // Feedback visual
+                if (dados.Count > 0)
+                {
+                    string formato = VerificarFormato(dados[0]);
+                    litResultado.Text = $"<div class='alert alert-info alert-dismissible fade show' role='alert'>" +
+                                       $"<i class='fa-solid fa-check-circle me-2'></i>" +
+                                       $"<strong>{dados.Count} contatos</strong> carregados no formato <strong>{formato}</strong>." +
+                                       $"<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>" +
+                                       $"</div>";
+                }
             }
+            else
+            {
+                litResultado.Text = "<div class='alert alert-warning'>Selecione um arquivo CSV primeiro.</div>";
+            }
+        }
+
+        private void ConfigurarGridView(List<DadosMensagemCsv> dados)
+        {
+            if (dados.Count == 0) return;
+
+            gridCsv.Columns.Clear();
+            gridCsv.AutoGenerateColumns = false;
+
+            // Verifica o formato do primeiro item
+            var primeiroItem = dados[0];
+
+            if (IsModeloCompleto(primeiroItem))
+            {
+                // Modelo Completo (5 colunas)
+                gridCsv.Columns.Add(new BoundField { DataField = "Field3", HeaderText = "Nome" });
+                gridCsv.Columns.Add(new BoundField { DataField = "Field4", HeaderText = "Data" });
+                gridCsv.Columns.Add(new BoundField { DataField = "Telefone", HeaderText = "Telefone" });
+                gridCsv.Columns.Add(new BoundField { DataField = "Field5", HeaderText = "CPF" });
+            }
+            else
+            {
+                // Novo Plano (3 colunas)
+                gridCsv.Columns.Add(new BoundField { DataField = "Field3", HeaderText = "Nome" });
+                gridCsv.Columns.Add(new BoundField { DataField = "Telefone", HeaderText = "Telefone" });
+                gridCsv.Columns.Add(new BoundField { DataField = "Field5", HeaderText = "Antigo Cliente" });
+            }
+        }
+
+        private bool IsModeloCompleto(DadosMensagemCsv item)
+        {
+            // Se Field5 for CPF (contém apenas números e tem 11 dígitos) é Modelo Completo
+            // Se for "SIM" ou "NAO" é Novo Plano
+            return !string.IsNullOrEmpty(item.Field5) &&
+                   item.Field5.All(char.IsDigit) &&
+                   item.Field5.Length == 11;
+        }
+
+        private string VerificarFormato(DadosMensagemCsv item)
+        {
+            return IsModeloCompleto(item) ? "Modelo Completo (5 colunas)" : "Novo Plano (3 colunas)";
         }
 
         protected async void btnEnviar_Click(object sender, EventArgs e)
@@ -52,13 +111,27 @@ namespace appWhatsapp.PlennuscGestao.Views
             var api = new WhatsappService();
             var resultadoFinal = new StringBuilder();
 
-            //Tabela para armazenar o resultado para exportação posterior 
+            // Detecta formato
+            bool isModeloCompleto = IsModeloCompleto(mensagens[0]);
+
+            // Tabela para armazenar o resultado
             DataTable resultadoCsv = new DataTable();
-            resultadoCsv.Columns.Add("Nome");
-            resultadoCsv.Columns.Add("Data");
-            resultadoCsv.Columns.Add("Telefone");
-            resultadoCsv.Columns.Add("CPF");
-            resultadoCsv.Columns.Add("StatusEnvio");
+
+            if (isModeloCompleto)
+            {
+                resultadoCsv.Columns.Add("Nome");
+                resultadoCsv.Columns.Add("Data");
+                resultadoCsv.Columns.Add("Telefone");
+                resultadoCsv.Columns.Add("CPF");
+                resultadoCsv.Columns.Add("StatusEnvio");
+            }
+            else
+            {
+                resultadoCsv.Columns.Add("Nome");
+                resultadoCsv.Columns.Add("Telefone");
+                resultadoCsv.Columns.Add("Antigo Cliente");
+                resultadoCsv.Columns.Add("StatusEnvio");
+            }
 
             foreach (var mensagem in mensagens)
             {
@@ -86,22 +159,32 @@ namespace appWhatsapp.PlennuscGestao.Views
                 resultadoFinal.AppendLine(retornoApi);
 
                 // Registrar na tabela
-                resultadoCsv.Rows.Add(
-                    mensagem.Field3, // Nome
-                    mensagem.Field4, // Data
-                    mensagem.Telefone,
-                    mensagem.Field5, // CPF
-                    status
-                );
+                if (isModeloCompleto)
+                {
+                    resultadoCsv.Rows.Add(
+                        mensagem.Field3, // Nome
+                        mensagem.Field4, // Data
+                        mensagem.Telefone,
+                        mensagem.Field5, // CPF
+                        status
+                    );
+                }
+                else
+                {
+                    resultadoCsv.Rows.Add(
+                        mensagem.Field3, // Nome
+                        mensagem.Telefone,
+                        mensagem.Field5, // Antigo Cliente
+                        status
+                    );
+                }
 
                 await Task.Delay(1000); // delay entre envios
             }
 
-            // Guardar no ViewState para usar depois no botão de download
+            // Guardar no ViewState
             ViewState["ResultadoEnvio"] = resultadoCsv;
-
-            //// Exibir o modal com o resultado final e ativar botão de download
-            //ScriptManager.RegisterStartupScript(this, GetType(), "mostrarModal", $"mostrarResultadoModal(`{resultadoFinal.ToString().Replace("`", "'")}`);", true);
+            ViewState["Formato"] = isModeloCompleto ? "Completo" : "NovoPlano";
 
             string resultadoFinalTexto = resultadoFinal.ToString();
             string resultadoEscapado = HttpUtility.JavaScriptStringEncode(resultadoFinalTexto);
@@ -118,6 +201,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             using (var reader = new StreamReader(csvStream, Encoding.UTF8))
             {
                 bool primeiraLinha = true;
+                int? formatoDetectado = null; // null = não determinado, 5 = completo, 3 = novo plano
 
                 while (!reader.EndOfStream)
                 {
@@ -126,48 +210,95 @@ namespace appWhatsapp.PlennuscGestao.Views
                     if (primeiraLinha)
                     {
                         primeiraLinha = false;
-                        continue;
+                        continue; // Pula cabeçalho
                     }
 
                     if (string.IsNullOrWhiteSpace(linha))
                         continue;
 
                     string[] campos = linha.Split('\t');
-                    if (campos.Length < 5)
+                    if (campos.Length < 2)
                     {
                         campos = linha.Split(';');
-                        if (campos.Length < 5)
+                        if (campos.Length < 2)
                             continue;
                     }
 
-                    string sexo = campos[0].Trim().ToUpper(); 
-                    string nome = campos[1].Trim();
-                    string dataTexto = campos[2].Trim();
-                    string telefoneBruto = campos[3].Trim();
-                    string cpf = campos[4].Trim();
-                    cpf = new string(cpf.Where(char.IsDigit).ToArray()).PadLeft(11, '0');
-
-                    string telefone = FormatTelefone(telefoneBruto);
-                    if (string.IsNullOrEmpty(telefone))
-                        continue;
-
-                    string saudacao = sexo == "M" ? "Prezado" : "Prezada";
-                    string papel = sexo == "M" ? "Beneficiário" : "Beneficiária";
-
-
-                    lista.Add(new DadosMensagemCsv
+                    // Determina o formato na primeira linha de dados válida
+                    if (formatoDetectado == null)
                     {
-                        Telefone = telefone,
-                        Field1 = saudacao,  // "Prezado" ou "Prezada"
-                        Field2 = papel,     // "Beneficiário" ou "Beneficiária"
-                        Field3 = nome,      // nome do beneficiário
-                        Field4 = dataTexto,  // data (ou pode ser data fixa "01/07/2025" se preferir)
-                        Field5 = cpf
-                    });
+                        formatoDetectado = campos.Length;
+                    }
+
+                    // Processa de acordo com o formato
+                    if (formatoDetectado == 5) // Modelo Completo
+                    {
+                        ProcessarModeloCompleto(campos, lista);
+                    }
+                    else if (formatoDetectado == 3) // Novo Plano
+                    {
+                        ProcessarNovoPlano(campos, lista);
+                    }
                 }
             }
 
             return lista;
+        }
+
+        private void ProcessarModeloCompleto(string[] campos, List<DadosMensagemCsv> lista)
+        {
+            if (campos.Length < 5) return;
+
+            string sexo = campos[0].Trim().ToUpper();
+            string nome = campos[1].Trim();
+            string dataTexto = campos[2].Trim();
+            string telefoneBruto = campos[3].Trim();
+            string cpf = campos[4].Trim();
+            cpf = new string(cpf.Where(char.IsDigit).ToArray()).PadLeft(11, '0');
+
+            string telefone = FormatTelefone(telefoneBruto);
+            if (string.IsNullOrEmpty(telefone))
+                return;
+
+            string saudacao = sexo == "M" ? "Prezado" : "Prezada";
+            string papel = sexo == "M" ? "Beneficiário" : "Beneficiária";
+
+            lista.Add(new DadosMensagemCsv
+            {
+                Telefone = telefone,
+                Field1 = saudacao,
+                Field2 = papel,
+                Field3 = nome,
+                Field4 = dataTexto,
+                Field5 = cpf
+            });
+        }
+
+        private void ProcessarNovoPlano(string[] campos, List<DadosMensagemCsv> lista)
+        {
+            if (campos.Length < 3) return;
+
+            string nome = campos[0].Trim();
+            string telefoneBruto = campos[1].Trim();
+            string antigoCliente = campos[2].Trim().ToUpper();
+
+            string telefone = FormatTelefone(telefoneBruto);
+            if (string.IsNullOrEmpty(telefone))
+                return;
+
+            // Define saudação baseada no tipo de cliente
+            string saudacao = antigoCliente == "SIM" ? "Prezado Cliente" : "Prezado(a)";
+            string papel = antigoCliente == "SIM" ? "Cliente" : "Beneficiário(a)";
+
+            lista.Add(new DadosMensagemCsv
+            {
+                Telefone = telefone,
+                Field1 = saudacao,
+                Field2 = papel,
+                Field3 = nome,
+                Field4 = DateTime.Now.ToString("dd/MM/yyyy"), // data atual
+                Field5 = antigoCliente
+            });
         }
 
         private DataTable ResultadoEnvio
@@ -209,10 +340,13 @@ namespace appWhatsapp.PlennuscGestao.Views
             // Se não bater com nenhum formato válido
             return null;
         }
+
         protected void btnDownloadCsvStatus_Click(object sender, EventArgs e)
         {
             if (!(ViewState["ResultadoEnvio"] is DataTable dt) || dt.Rows.Count == 0)
                 return;
+
+            string formato = ViewState["Formato"] as string ?? "Completo";
 
             var sb = new StringBuilder();
 
@@ -227,13 +361,43 @@ namespace appWhatsapp.PlennuscGestao.Views
                 sb.AppendLine(string.Join(";", valores));
             }
 
-            string nomeArquivo = "ResultadoEnvio_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
+            string nomeArquivo = $"ResultadoEnvio_{formato}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
 
             Response.Clear();
             Response.ContentType = "text/csv";
             Response.AddHeader("Content-Disposition", $"attachment;filename={nomeArquivo}");
             Response.ContentEncoding = Encoding.UTF8;
             Response.Write(sb.ToString());
+            Response.End();
+        }
+
+        protected void btnModeloCompleto_Click(object sender, EventArgs e)
+        {
+            StringBuilder csv = new StringBuilder();
+            csv.AppendLine("Sexo;Nome;Data;Telefone;Cpf");
+            csv.AppendLine("M;João Silva;15/07/2025;31999999999;12345678901");
+            csv.AppendLine("F;Maria Santos;16/07/2025;31988888888;98765432100");
+
+            DownloadCsvModelo(csv.ToString(), "Modelo_Completo_5_colunas.csv");
+        }
+
+        protected void btnModeloSimples_Click(object sender, EventArgs e)
+        {
+            StringBuilder csv = new StringBuilder();
+            csv.AppendLine("Nome;Telefone;Antigo_Cliente");
+            csv.AppendLine("João Silva;31999999999;SIM");
+            csv.AppendLine("Maria Santos;31988888888;NAO");
+
+            DownloadCsvModelo(csv.ToString(), "Novo_Plano_3_colunas.csv");
+        }
+
+        private void DownloadCsvModelo(string conteudoCsv, string nomeArquivo)
+        {
+            Response.Clear();
+            Response.ContentType = "text/csv";
+            Response.AddHeader("Content-Disposition", $"attachment;filename={nomeArquivo}");
+            Response.ContentEncoding = Encoding.UTF8;
+            Response.Write(conteudoCsv);
             Response.End();
         }
     }

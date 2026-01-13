@@ -283,6 +283,8 @@
     <Content Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx" />
     <Content Include="public\uploadgestao\docs\ModeloDeInserçãoTabPreços - PS1032.xlsx" />
     <Content Include="public\uploadgestao\docs\ModeloDeAtualizaçãoTabelaPreços - PS1032.xlsx" />
+    <Content Include="public\uploadgestao\docs\messageSending\Mensagem automatica - Plano Anterior.csv" />
+    <Content Include="public\uploadgestao\docs\messageSending\Modelo de mensagem - COMERCIAL - TEMPLETE.csv" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="PlennuscMedic\Views\interviewIa.aspx" />
     <Content Include="PlennuscMedic\Views\medicalInterview.aspx" />

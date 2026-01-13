@@ -1,4 +1,5 @@
-﻿* {
+﻿/* Estilos existentes mantidos */
+* {
     font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
 }
@@ -41,12 +42,77 @@ body {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
 }
 
+/* Estilos para os cards de modelo compactos */
+.model-card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    transition: all 0.2s;
+    background-color: #fff;
+}
+
+    .model-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+.bg-primary-light {
+    background-color: rgba(76, 176, 122, 0.1) !important;
+}
+
+.bg-success-light {
+    background-color: rgba(131, 206, 238, 0.1) !important;
+}
+
+.text-primary {
+    color: #4CB07A !important;
+}
+
+.text-success {
+    color: #83CEEE !important;
+}
+
+.text-end {
+    text-align: right !important;
+    padding: 26px;
+}
+
+.model-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+    .model-columns .badge {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+/* Estilos para a seção de upload */
+.filter-panel {
+    background: #f0f2f5;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid #dee2e6;
+}
+
+.form-label.fw-semibold {
+    color: #4a5568;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Estilos dos botões */
 .btn-pill {
     border-radius: 50px;
     padding: 6px 18px;
     font-weight: 600;
     transition: all 0.3s ease-in-out;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-width: 2px;
 }
 
 .btn-success {
@@ -57,6 +123,7 @@ body {
 
     .btn-success:hover {
         background-color: #3B8B65;
+        border-color: #3B8B65;
     }
 
 .btn-purple {
@@ -67,6 +134,7 @@ body {
 
     .btn-purple:hover {
         background-color: #a14db8;
+        border-color: #a14db8;
     }
 
 .btn-info {
@@ -77,29 +145,44 @@ body {
 
     .btn-info:hover {
         background-color: #6AB9E0;
+        border-color: #6AB9E0;
     }
 
-.btn-secondary:hover {
-    background-color: #b5b5b5;
+.btn-primary {
+    background-color: #4CB07A;
+    border-color: #4CB07A;
+    color: #fff;
 }
 
-.text-end {
-    text-align: right !important;
-    padding: 10px;
+    .btn-primary:hover {
+        background-color: #3B8B65;
+        border-color: #3B8B65;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
 }
 
-.filter-panel {
-    background: #f0f2f5;
-    padding: 16px 20px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-}
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
 
+/* Ajustes para a tabela */
 .table th, .table td {
     text-align: center;
     padding: 12px;
     border-top: none;
     border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #4CB07A;
+    color: white;
+    font-weight: 600;
+    border-bottom: 2px solid #3B8B65;
 }
 
 .table-striped tbody tr:nth-child(odd) {
@@ -110,26 +193,12 @@ body {
     background-color: #f4f8fb;
 }
 
-.modal-body {
-    background-color: #f8f9fa;
+.table-striped tbody tr:hover {
+    background-color: #e3f2fd;
+    transition: background-color 0.2s;
 }
 
-.modal-header {
-    background-color: #4CB07A !important;
-    color: white;
-}
-
-.modal-footer {
-    background-color: #f1f1f1;
-}
-
-#modalResultadoConteudo {
-    white-space: pre-wrap;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-    color: #333;
-}
-
+/* Loading overlay */
 #loadingOverlay {
     display: none;
     position: fixed;
@@ -141,4 +210,46 @@ body {
     z-index: 1050;
     text-align: center;
     padding-top: 30vh;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 10px;
+    }
+
+    .card-container {
+        padding: 20px;
+    }
+
+    .filter-panel {
+        padding: 15px;
+    }
+
+    .model-columns {
+        flex-wrap: wrap;
+    }
+
+        .model-columns .badge {
+            font-size: 10px;
+            padding: 3px 6px;
+        }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+        .input-group .form-control {
+            border-radius: 50px;
+            margin-bottom: 10px;
+        }
+
+        .input-group .btn {
+            border-radius: 50px;
+            width: 100%;
+        }
 }
