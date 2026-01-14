@@ -421,6 +421,71 @@ namespace appWhatsapp.Service
             return resultadoFinal.ToString();
         }
 
+        public async Task<string> ConexaoApiNovoPlano(List<string> telefones, string nome)
+        {
+            var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
+            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var resultadoFinal = new StringBuilder();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                foreach (var telefone in telefones)
+                {
+                    // Template específico para Novo Plano (apenas 1 campo: nome)
+                    var jsonBody = $@"
+                    {{
+                        ""media_hsm_configuration_id"": ""6ec32787-1502-4c06-bc8e-1c743c3c4876"",
+                        ""hsm_type"": ""media_hsm"",
+                        ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121"",
+                        ""system"": ""whatsapp_enterprise"",
+                        ""contacts"": [
+                        {{
+                            ""phone_number"": ""{telefone}"",
+                            ""field_1"": ""{nome}"",  // Apenas o nome
+                            ""field_2"": """",
+                            ""field_3"": """",
+                            ""field_4"": """",
+                            ""field_5"": """"
+                        }}
+                        ]
+                    }}";
+
+                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    try
+                    {
+                        var response = await client.PostAsync(apiUrl, content);
+                        var responseBody = await response.Content.ReadAsStringAsync();
+
+                        var json = JObject.Parse(responseBody);
+                        var id = json["id"]?.ToString();
+
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+                            resultadoFinal.AppendLine(statusResponse);
+                        }
+                        else
+                        {
+                            resultadoFinal.AppendLine($"⚠️ {telefone}: ID não encontrado na resposta.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        resultadoFinal.AppendLine($"❌ {telefone}: Erro - {ex.Message}");
+                    }
+
+                    await Task.Delay(5000); // 5 segundos entre os envios
+                }
+            }
+
+            return resultadoFinal.ToString();
+        }
+
         public async Task<string> ConexaoApiAVencer(List<string> telefones, string pdfUrl, string notaFiscalUrl,
                                              string field1, string field2, string field3, string field4)
         {
