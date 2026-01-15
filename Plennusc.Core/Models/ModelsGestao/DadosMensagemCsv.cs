@@ -16,6 +16,6 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string Field5 { get; set; } // CPF
         public string Sexo { get; set; }
         public string ModeloTipo { get; set; } // "Completo", "NovoPlano", "Simples"
-
+        public string NomeOperador { get; set; } // Nova propriedade
     }
 }

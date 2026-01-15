@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="card-title mb-0 fw-semibold" style="color: #4CB07A;">Novo Plano</h6>
-                                    <small class="text-muted">3 colunas</small>
+                                    <small class="text-muted">4 colunas</small>
                                 </div>
                                 <asp:LinkButton ID="btnModeloSimples" runat="server" 
                                     CssClass="btn btn-success btn-sm btn-pill"
@@ -92,6 +92,7 @@
                             <div class="model-columns">
                                 <span class="badge bg-light text-dark border me-1 mb-1">Nome</span>
                                 <span class="badge bg-light text-dark border mb-1">Telefone</span>
+                                <span class="badge bg-light text-dark border mb-1">Nome Operador</span>
                                 <span class="badge bg-light text-dark border mb-1">Antigo Cliente</span>
                             </div>
                         </div>

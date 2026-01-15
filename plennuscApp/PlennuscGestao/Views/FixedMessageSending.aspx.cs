@@ -77,9 +77,10 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             else
             {
-                // Novo Plano (3 colunas)
+                // Novo Plano (4 colunas)
                 gridCsv.Columns.Add(new BoundField { DataField = "Field3", HeaderText = "Nome" });
                 gridCsv.Columns.Add(new BoundField { DataField = "Telefone", HeaderText = "Telefone" });
+                gridCsv.Columns.Add(new BoundField { DataField = "NomeOperador", HeaderText = "Operador" });
                 gridCsv.Columns.Add(new BoundField { DataField = "Field5", HeaderText = "Antigo Cliente" });
             }
         }
@@ -95,7 +96,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private string VerificarFormato(DadosMensagemCsv item)
         {
-            return IsModeloCompleto(item) ? "Modelo Completo (5 colunas)" : "Novo Plano (3 colunas)";
+            return IsModeloCompleto(item) ? "Modelo Completo (5 colunas)" : "Novo Plano (4 colunas)";
         }
 
         protected async void btnEnviar_Click(object sender, EventArgs e)
@@ -129,6 +130,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 resultadoCsv.Columns.Add("Nome");
                 resultadoCsv.Columns.Add("Telefone");
+                resultadoCsv.Columns.Add("Operador");
                 resultadoCsv.Columns.Add("Antigo Cliente");
                 resultadoCsv.Columns.Add("StatusEnvio");
             }
@@ -142,21 +144,21 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     if (isModeloCompleto)
                     {
-                        // Usa o template COMPLETO (5 colunas)
                         retornoApi = await api.ConexaoApifixo(
                             new List<string> { mensagem.Telefone },
-                            mensagem.Field1,  // "Prezado" ou "Prezada"
-                            mensagem.Field2,  // "Beneficiário" ou "Beneficiária"
-                            mensagem.Field3,  // Nome
-                            mensagem.Field4   // Data
+                            mensagem.Field1,
+                            mensagem.Field2,
+                            mensagem.Field3,
+                            mensagem.Field4
                         );
                     }
                     else
                     {
-                        // Usa o template NOVO PLANO (3 colunas)
+                        // Agora passa 2 parâmetros: nome do beneficiário e nome do operador
                         retornoApi = await api.ConexaoApiNovoPlano(
                             new List<string> { mensagem.Telefone },
-                            mensagem.Field3   // Apenas o Nome
+                            mensagem.Field3,          // Nome do beneficiário
+                            mensagem.NomeOperador     // Nome do operador
                         );
                     }
 
@@ -174,27 +176,27 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (isModeloCompleto)
                 {
                     resultadoCsv.Rows.Add(
-                        mensagem.Field3, // Nome
-                        mensagem.Field4, // Data
+                        mensagem.Field3,
+                        mensagem.Field4,
                         mensagem.Telefone,
-                        mensagem.Field5, // CPF
+                        mensagem.Field5,
                         status
                     );
                 }
                 else
                 {
                     resultadoCsv.Rows.Add(
-                        mensagem.Field3, // Nome
+                        mensagem.Field3,
                         mensagem.Telefone,
-                        mensagem.Field5, // Antigo Cliente
+                        mensagem.NomeOperador,
+                        mensagem.Field5,
                         status
                     );
                 }
 
-                await Task.Delay(1000); // delay entre envios
+                await Task.Delay(1000);
             }
 
-            // Guardar no ViewState
             ViewState["ResultadoEnvio"] = resultadoCsv;
             ViewState["Formato"] = isModeloCompleto ? "Completo" : "NovoPlano";
 
@@ -213,7 +215,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             using (var reader = new StreamReader(csvStream, Encoding.UTF8))
             {
                 bool primeiraLinha = true;
-                int? formatoDetectado = null; // null = não determinado, 5 = completo, 3 = novo plano
+                int? formatoDetectado = null; // null = não determinado, 5 = completo, 4 = novo plano
 
                 while (!reader.EndOfStream)
                 {
@@ -247,7 +249,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                     {
                         ProcessarModeloCompleto(campos, lista);
                     }
-                    else if (formatoDetectado == 3) // Novo Plano
+                    else if (formatoDetectado == 4) // Novo Plano (agora 4 colunas)
                     {
                         ProcessarNovoPlano(campos, lista);
                     }
@@ -289,11 +291,12 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void ProcessarNovoPlano(string[] campos, List<DadosMensagemCsv> lista)
         {
-            if (campos.Length < 3) return;
+            if (campos.Length < 4) return;
 
             string nome = campos[0].Trim();
             string telefoneBruto = campos[1].Trim();
-            string antigoCliente = campos[2].Trim().ToUpper();
+            string nomeOperador = campos[2].Trim();
+            string antigoCliente = campos[3].Trim().ToUpper();
 
             string telefone = FormatTelefone(telefoneBruto);
             if (string.IsNullOrEmpty(telefone))
@@ -309,8 +312,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Field1 = saudacao,
                 Field2 = papel,
                 Field3 = nome,
-                Field4 = DateTime.Now.ToString("dd/MM/yyyy"), // data atual
-                Field5 = antigoCliente
+                Field4 = DateTime.Now.ToString("dd/MM/yyyy"),
+                Field5 = antigoCliente,
+                NomeOperador = nomeOperador // Novo campo
             });
         }
 
@@ -397,11 +401,11 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void btnModeloSimples_Click(object sender, EventArgs e)
         {
             StringBuilder csv = new StringBuilder();
-            csv.AppendLine("Nome;Telefone;Antigo_Cliente");
-            csv.AppendLine("Leonardo Ambrosio;31973069983;SIM");
-            csv.AppendLine("Maria Santos;31973069983;NAO");
+            csv.AppendLine("Nome;Telefone;Nome_Operador;Antigo_Cliente");
+            csv.AppendLine("Leonardo Ambrosio;31973069983;Laryssa Moraes;SIM");
+            csv.AppendLine("Maria Santos;31973069983;Bruno Lopes;NAO");
 
-            DownloadCsvModelo(csv.ToString(), "Novo_Plano_3_colunas.csv");
+            DownloadCsvModelo(csv.ToString(), "Novo_Plano_4_colunas.csv");
         }
 
         private void DownloadCsvModelo(string conteudoCsv, string nomeArquivo)

@@ -421,7 +421,7 @@ namespace appWhatsapp.Service
             return resultadoFinal.ToString();
         }
 
-        public async Task<string> ConexaoApiNovoPlano(List<string> telefones, string nome)
+        public async Task<string> ConexaoApiNovoPlano(List<string> telefones, string nomeBeneficiario, string nomeOperador)
         {
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
             var apiKey = "280e3e7ea39279d70108384cabf81df7";
@@ -434,22 +434,27 @@ namespace appWhatsapp.Service
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
 
                 foreach (var telefone in telefones)
-                {
-                    // Template específico para Novo Plano (apenas 1 campo: nome)
+                  {
                     var jsonBody = $@"
                     {{
-                        ""media_hsm_configuration_id"": ""6ec32787-1502-4c06-bc8e-1c743c3c4876"",
-                        ""hsm_type"": ""media_hsm"",
-                        ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121"",
-                        ""system"": ""whatsapp_enterprise"",
-                        ""contacts"": [
-                        {{
-                            ""phone_number"": ""{telefone}"",
-                            ""field_1"": ""{nome}"",  // Apenas o nome
-                            ""field_2"": """",
-                            ""field_3"": """",
-                            ""field_4"": """",
-                            ""field_5"": """"
+                    ""media_hsm_configuration_id"": ""ba249449-20d1-4a8b-a10b-ad9ba768c7fb"",
+                            ""hsm_type"": ""media_hsm"",
+                            ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121"",
+                            ""system"": ""whatsapp_enterprise"",
+                            ""directed_campaigns_attributes"": [
+                                {{
+                                    ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121""
+                                }}
+                            ],
+
+                            ""contacts"": [
+                                {{
+                                ""phone_number"": ""{telefone}"",
+                                ""field_1"": ""{nomeBeneficiario}"", 
+                                ""field_2"": ""{nomeOperador}"",  
+                                ""field_3"": """",
+                                ""field_4"": """",
+                                ""field_5"": """"
                         }}
                         ]
                     }}";
@@ -479,7 +484,7 @@ namespace appWhatsapp.Service
                         resultadoFinal.AppendLine($"❌ {telefone}: Erro - {ex.Message}");
                     }
 
-                    await Task.Delay(5000); // 5 segundos entre os envios
+                    await Task.Delay(5000);
                 }
             }
 
