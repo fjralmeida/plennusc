@@ -137,8 +137,8 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             foreach (var mensagem in mensagens)
             {
-                string status;
-                string retornoApi;
+                string status = "";
+                string retornoApi = "";
 
                 try
                 {
@@ -151,18 +151,34 @@ namespace appWhatsapp.PlennuscGestao.Views
                             mensagem.Field3,
                             mensagem.Field4
                         );
+                        status = "OK";
                     }
                     else
                     {
-                        // Agora passa 2 parâmetros: nome do beneficiário e nome do operador
-                        retornoApi = await api.ConexaoApiNovoPlano(
-                            new List<string> { mensagem.Telefone },
-                            mensagem.Field3,          // Nome do beneficiário
-                            mensagem.NomeOperador     // Nome do operador
-                        );
-                    }
+                        // VALIDAÇÃO: Se AntigoCliente for nulo ou vazio, trata como "NAO"
+                        string antigoCliente = mensagem.Field5.ToString();
 
-                    status = "OK";
+                        antigoCliente.ToUpper();
+
+                        if (antigoCliente == "SIM")
+                        {
+                            retornoApi = await api.ConexaoApiNovoPlano(
+                                new List<string> { mensagem.Telefone },
+                                mensagem.Field3,          // Nome do beneficiário
+                                mensagem.NomeOperador     // Nome do operador
+                            );
+                            status = "OK";
+                        }
+                        else // Qualquer outra coisa (NAO, vazio, etc) trata como NOVO CLIENTE
+                        {
+                            retornoApi = await api.ConexaoApiNovoCliente(
+                                new List<string> { mensagem.Telefone },
+                                mensagem.Field3,          // Nome do beneficiário
+                                mensagem.NomeOperador     // Nome do operador
+                            );
+                            status = "OK";
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -176,20 +192,20 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (isModeloCompleto)
                 {
                     resultadoCsv.Rows.Add(
-                        mensagem.Field3,
-                        mensagem.Field4,
+                        mensagem.Field3,      // Nome beneficiário
+                        mensagem.Field4,      // Data
                         mensagem.Telefone,
-                        mensagem.Field5,
+                        mensagem.Field5,      // CPF
                         status
                     );
                 }
                 else
                 {
                     resultadoCsv.Rows.Add(
-                        mensagem.Field3,
+                        mensagem.Field3,          // Nome beneficiário
                         mensagem.Telefone,
                         mensagem.NomeOperador,
-                        mensagem.Field5,
+                        string.IsNullOrEmpty(mensagem.AntigoCliente) ? "NAO" : mensagem.AntigoCliente,
                         status
                     );
                 }
