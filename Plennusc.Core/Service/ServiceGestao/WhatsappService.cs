@@ -437,16 +437,10 @@ namespace appWhatsapp.Service
                   {
                     var jsonBody = $@"
                     {{
-                    ""media_hsm_configuration_id"": ""ba249449-20d1-4a8b-a10b-ad9ba768c7fb"",
+                    ""media_hsm_configuration_id"": ""fbae0067-fa5a-46d7-902d-dd30a811dc56"",
                             ""hsm_type"": ""media_hsm"",
                             ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121"",
                             ""system"": ""whatsapp_enterprise"",
-                            ""directed_campaigns_attributes"": [
-                                {{
-                                    ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121""
-                                }}
-                            ],
-
                             ""contacts"": [
                                 {{
                                 ""phone_number"": ""{telefone}"",

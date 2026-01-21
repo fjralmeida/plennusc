@@ -352,25 +352,84 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (clean.Length == 8 && clean.StartsWith("3"))
                 return null;
 
-            // Caso tenha 9 dígitos (sem DDD), remover o 9 e adicionar DDD 31
+            // CASO 1: Número já está no formato internacional completo (13 dígitos: 55 + DDD + 9 + 8 dígitos)
+            if (clean.Length == 13 && clean.StartsWith("55"))
+            {
+                // Já está no formato correto, retorna como está
+                return clean;
+            }
+
+            // CASO 2: Número tem 11 dígitos (DDD + 9 + 8 dígitos) - NÃO REMOVER O 9!
+            if (clean.Length == 11)
+            {
+                // Verifica se é um número de celular (terceiro dígito é 9)
+                if (clean[2] == '9')
+                {
+                    // Mantém o 9! Formato: 55 + DDD + 9 + 8 dígitos
+                    return "55" + clean;
+                }
+                else
+                {
+                    // Se não tem 9 no terceiro dígito, pode ser um formato diferente
+                    return "55" + clean;
+                }
+            }
+
+            // CASO 3: 9 dígitos (sem DDD) - adiciona DDD 31 e mantém o 9
             if (clean.Length == 9 && clean.StartsWith("9"))
             {
-                return "55" + "31" + clean.Substring(1);
+                return "55" + "31" + clean;
             }
 
-            // Caso tenha 10 dígitos (DDD + número sem 9) — já está ok
+            // CASO 4: 10 dígitos (DDD + número sem 9)
             if (clean.Length == 10)
             {
-                return "55" + clean;
+                // Se o terceiro dígito é 9, é celular (DDD + 9 + 8 dígitos) mas veio sem o 9?
+                // Ou se começar com 9 no primeiro dígito do número?
+                // Vamos adicionar o 9 se o primeiro dígito do número for >= 9 (provavelmente celular)
+                string ddd = clean.Substring(0, 2);
+                string numero = clean.Substring(2);
+
+                // Se o número começar com 9, já está correto
+                if (numero.StartsWith("9"))
+                {
+                    return "55" + ddd + numero;
+                }
+                else
+                {
+                    // Para números que podem ser celular mas não tem o 9, adicionamos
+                    // Mas só se o primeiro dígito do número for >= 6 (celular geralmente 6,7,8,9)
+                    if (int.Parse(numero[0].ToString()) >= 6)
+                    {
+                        return "55" + ddd + "9" + numero;
+                    }
+                    else
+                    {
+                        return "55" + ddd + numero;
+                    }
+                }
             }
 
-            // Caso tenha 11 dígitos (DDD + 9 + número), remover o 9
-            if (clean.Length == 11 && clean[2] == '9')
+            // CASO 5: Número já está com 55 no início mas tem 12 dígitos
+            if (clean.Length == 12 && clean.StartsWith("55"))
             {
-                return "55" + clean.Substring(0, 2) + clean.Substring(3);
+                // Temos: 55 + DDD + 8 dígitos (falta o 9)
+                string restante = clean.Substring(2); // Remove o 55
+                string ddd = restante.Substring(0, 2);
+                string numero = restante.Substring(2);
+
+                // Adiciona o 9 se o número parece ser de celular
+                if (int.Parse(numero[0].ToString()) >= 6)
+                {
+                    return "55" + ddd + "9" + numero;
+                }
+                else
+                {
+                    return clean;
+                }
             }
 
-            // Se não bater com nenhum formato válido
+            // Se não bate com nenhum formato válido
             return null;
         }
 
