@@ -132,6 +132,35 @@
                 }
             };
 
+            // No JavaScript inline, atualize a função aplicarMascaras:
+            window.aplicarMascaras = function () {
+                try {
+                    var $cpf = $(selectors.txtDocCPF || '');
+                    var $cpfBusca = $(selectors.txtBuscaCPF || '');
+
+                    // Máscara para CPF (com auto-tab)
+                    if ($cpf.length) {
+                        $cpf.unmask().mask('000.000.000-00', {
+                            reverse: true,
+                            onComplete: function (val) {
+                                // Chama o postback automaticamente após preencher o CPF
+                                if (val.replace(/\D/g, '').length === 11) {
+                                    setTimeout(function () {
+                                        __doPostBack($cpf.attr('name'), '');
+                                    }, 500);
+                                }
+                            }
+                        });
+                    }
+
+                    if ($cpfBusca.length) $cpfBusca.unmask().mask('000.000.000-00', { reverse: true });
+
+                    // ... resto do código das máscaras de telefone
+                } catch (err) {
+                    console.error('aplicarMascaras error:', err);
+                }
+            };
+
             // ---------- BINDs e inicializações ----------
             $(document).ready(function () {
                 // aplica máscaras no load
@@ -434,14 +463,18 @@
     
     <!-- INDICADOR DE ETAPAS -->
     <div class="wizard-steps">
-        <div class="wizard-step-indicator active" data-step="1">
-            <div class="wizard-step-number">1</div>
-            <div class="wizard-step-label">Dados Pessoais</div>
-        </div>
-        <div class="wizard-step-indicator" data-step="2">
-            <div class="wizard-step-number">2</div>
-            <div class="wizard-step-label">Documentos</div>
-        </div>
+
+<div class="wizard-step-indicator active" data-step="2">
+    <div class="wizard-step-number">1</div>
+    <div class="wizard-step-label">Documentos</div>
+</div>
+
+<div class="wizard-step-indicator" data-step="1">
+    <div class="wizard-step-number">2</div>
+    <div class="wizard-step-label">Dados Pessoais</div>
+</div>
+
+
         <div class="wizard-step-indicator" data-step="3">
             <div class="wizard-step-number">3</div>
             <div class="wizard-step-label">Eleitorais</div>
@@ -475,63 +508,35 @@
     <!-- CONTAINER DOS PASSOS -->
     <div class="wizard-container">
         
-        <!-- PASSO 1: DADOS PESSOAIS -->
-        <div class="wizard-step active" data-step="1">
-            <div class="section-block bg-white-section">
-                <h5>Dados Pessoais</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label>Nome *</label>
-                        <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvNome" runat="server" ControlToValidate="txtNome" 
-                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
-                            ValidationGroup="Cadastro" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Sobrenome *</label>
-                        <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvSobrenome" runat="server" ControlToValidate="txtSobrenome" 
-                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
-                            ValidationGroup="Cadastro" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Apelido</label>
-                        <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Sexo *</label>
-                        <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
-                            <asp:ListItem Value="">Selecione</asp:ListItem>
-                            <asp:ListItem Value="M">Masculino</asp:ListItem>
-                            <asp:ListItem Value="F">Feminino</asp:ListItem>
-                        </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" 
-                            InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
-                            Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Data de Nascimento *</label>
-                        <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" TextMode="Date" />
-                        <asp:RequiredFieldValidator ID="rfvDataNasc" runat="server" ControlToValidate="txtDataNasc" 
-                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
-                            ValidationGroup="Cadastro" />
-                    </div>
-                </div>
-            </div>
-        </div>
         
         <!-- PASSO 2: DOCUMENTOS -->
-        <div class="wizard-step" data-step="2">
+        <div class="wizard-step active" data-step="1">
             <div class="section-block bg-gray-section">
                 <h5>Documentos</h5>
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label>CPF *</label>
-                        <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="11" 
-                            placeholder="Insira apenas números" />
-                        <asp:RequiredFieldValidator ID="rfvRG" runat="server" ControlToValidate="txtDocRG" 
+                  <!-- No arquivo employeeManagement.aspx, ajuste o campo CPF: -->
+                   <div class="col-md-6">
+                         <label>CPF *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i> <!-- Ícone opcional -->
+                            </span>
+                            <asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" 
+                                placeholder="000.000.000-00" MaxLength="14"
+                                AutoPostBack="true"
+                                OnTextChanged="txtDocCPF_TextChanged" />
+                        </div>
+                        <asp:RequiredFieldValidator ID="rfvCPF" runat="server" ControlToValidate="txtDocCPF" 
                             ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
                             ValidationGroup="Cadastro" />
+                        <!-- Mensagem de validação -->
+                        <asp:Panel ID="pnlCPFMessage" runat="server" CssClass="mt-2" Visible="false">
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <asp:Literal ID="litCPFMessage" runat="server" />
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </asp:Panel>
                     </div>
                     <div class="col-md-6">
                         <label>RG *</label>
@@ -543,6 +548,51 @@
                 </div>
             </div>
         </div>
+
+          <!-- PASSO 1: DADOS PESSOAIS -->
+      <div class="wizard-step" data-step="2">
+          <div class="section-block bg-white-section">
+              <h5>Dados Pessoais</h5>
+              <div class="row g-3">
+                  <div class="col-md-6">
+                      <label>Nome *</label>
+                      <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" />
+                      <asp:RequiredFieldValidator ID="rfvNome" runat="server" ControlToValidate="txtNome" 
+                          ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                          ValidationGroup="Cadastro" />
+                  </div>
+                  <div class="col-md-6">
+                      <label>Sobrenome *</label>
+                      <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" />
+                      <asp:RequiredFieldValidator ID="rfvSobrenome" runat="server" ControlToValidate="txtSobrenome" 
+                          ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                          ValidationGroup="Cadastro" />
+                  </div>
+                  <div class="col-md-4">
+                      <label>Apelido</label>
+                      <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" />
+                  </div>
+                  <div class="col-md-4">
+                      <label>Sexo *</label>
+                      <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
+                          <asp:ListItem Value="">Selecione</asp:ListItem>
+                          <asp:ListItem Value="M">Masculino</asp:ListItem>
+                          <asp:ListItem Value="F">Feminino</asp:ListItem>
+                      </asp:DropDownList>
+                      <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" 
+                          InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                          Display="Dynamic" ValidationGroup="Cadastro" />
+                  </div>
+                  <div class="col-md-4">
+                      <label>Data de Nascimento *</label>
+                      <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" TextMode="Date" />
+                      <asp:RequiredFieldValidator ID="rfvDataNasc" runat="server" ControlToValidate="txtDataNasc" 
+                          ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
+                          ValidationGroup="Cadastro" />
+                  </div>
+              </div>
+          </div>
+      </div>
         
         <!-- PASSO 3: DADOS ELEITORAIS -->
         <div class="wizard-step" data-step="3">

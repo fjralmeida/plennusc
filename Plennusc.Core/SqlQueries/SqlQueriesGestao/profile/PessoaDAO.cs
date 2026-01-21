@@ -681,5 +681,36 @@ END CATCH;";
 
             return "";
         }
+
+
+        public bool VerificarCPFExistente(string cpf)
+        {
+            if (string.IsNullOrWhiteSpace(cpf))
+                return false;
+
+            // Remove pontos e traço
+            string cpfLimpo = cpf.Replace(".", "").Replace("-", "").Trim();
+
+            string query = @"
+                SELECT COUNT(*) as Total
+                    FROM Pessoa 
+                    WHERE DocCPF = @CPF
+                    AND Conf_Ativo = 1";
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@CPF", cpfLimpo }
+            };
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            DataTable dt = db.LerPlennus(query, parametros);
+
+            if (dt.Rows.Count > 0)
+            {
+                return Convert.ToInt32(dt.Rows[0]["Total"]) > 0;
+            }
+
+            return false;
+        }
     }
 }

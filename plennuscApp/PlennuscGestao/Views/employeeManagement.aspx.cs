@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace appWhatsapp.PlennuscGestao.Views
@@ -532,6 +533,144 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
             var up = this.FindControl("upResultado") as System.Web.UI.UpdatePanel;
             if (up != null) up.Update();
+        }
+
+
+        protected void txtDocCPF_TextChanged(object sender, EventArgs e)
+        {
+            string cpf = txtDocCPF.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(cpf))
+            {
+                pnlCPFMessage.Visible = false;
+                return;
+            }
+
+            // Remove pontos e traços para validação
+            string cpfLimpo = cpf.Replace(".", "").Replace("-", "").Trim();
+
+            // Validação básica do CPF
+            if (cpfLimpo.Length != 11)
+            {
+                MostrarMensagemCPF("CPF inválido. Deve conter 11 dígitos.", false);
+                return;
+            }
+
+            // Verifica se é um CPF válido (opcional, mas recomendado)
+            if (!ValidarCPF(cpfLimpo))
+            {
+                MostrarMensagemCPF("CPF inválido.", false);
+                return;
+            }
+
+            // Verifica se já existe na base
+            PessoaDAO dao = new PessoaDAO();
+            bool cpfExistente = dao.VerificarCPFExistente(cpfLimpo);
+
+            if (cpfExistente)
+            {
+                // Busca os dados do usuário existente
+                DataTable dtUsuario = dao.BuscarUsuarioPorCPF(cpfLimpo);
+
+                if (dtUsuario != null && dtUsuario.Rows.Count > 0)
+                {
+                    string nomeCompleto = dtUsuario.Rows[0]["NomeCompleto"].ToString();
+                    string status = dtUsuario.Rows[0]["Conf_Ativo"].ToString();
+                    string departamento = dtUsuario.Rows[0]["NomeDepartamento"].ToString();
+                    string cargo = dtUsuario.Rows[0]["NomeCargo"].ToString();
+
+                    string mensagem = $"CPF já cadastrado!<br/><br/>" +
+                                     $"<strong>Colaborador:</strong> {nomeCompleto}<br/>" +
+                                     $"<strong>Status:</strong> {status}<br/>" +
+                                     $"<strong>Departamento:</strong> {departamento}<br/>" +
+                                     $"<strong>Cargo:</strong> {cargo}<br/><br/>" +
+                                     $"Deseja continuar com o cadastro?";
+
+                    // Mostra confirmação
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ConfirmarCPFExistente",
+                        $@"Swal.fire({{
+                    title: 'CPF Já Cadastrado',
+                    html: '{mensagem.Replace("'", "\\'")}',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, continuar',
+                    cancelButtonText: 'Não, cancelar',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6'
+                }}).then((result) => {{
+                    if (!result.isConfirmed) {{
+                        // Limpa o campo CPF se o usuário cancelar
+                        document.getElementById('{txtDocCPF.ClientID}').value = '';
+                        document.getElementById('{pnlCPFMessage.ClientID}').style.display = 'none';
+                    }}
+                }});", true);
+                }
+                else
+                {
+                    MostrarMensagemCPF("CPF já cadastrado no sistema.", false);
+                }
+            }
+            else
+            {
+                MostrarMensagemCPF("CPF disponível para cadastro.", true);
+            }
+        }
+
+        private void MostrarMensagemCPF(string mensagem, bool sucesso)
+        {
+            pnlCPFMessage.Visible = true;
+            litCPFMessage.Text = mensagem;
+
+            // Atualiza a classe CSS baseada no sucesso
+            if (pnlCPFMessage.FindControl("alert") != null)
+            {
+                var alertDiv = (HtmlGenericControl)pnlCPFMessage.FindControl("alert");
+                alertDiv.Attributes["class"] = sucesso ?
+                    "alert alert-success alert-dismissible fade show" :
+                    "alert alert-warning alert-dismissible fade show";
+            }
+        }
+
+        // Método auxiliar para validar CPF (opcional, mas recomendado)
+        private bool ValidarCPF(string cpf)
+        {
+            // Remove caracteres não numéricos
+            cpf = new string(cpf.Where(char.IsDigit).ToArray());
+
+            if (cpf.Length != 11)
+                return false;
+
+            // CPFs conhecidos como inválidos
+            string[] cpfsInvalidos =
+            {
+                "00000000000", "11111111111", "22222222222", "33333333333",
+                "44444444444", "55555555555", "66666666666", "77777777777",
+                "88888888888", "99999999999"
+            };
+
+            if (cpfsInvalidos.Contains(cpf))
+                return false;
+
+            // Validação do primeiro dígito verificador
+            int soma = 0;
+            for (int i = 0; i < 9; i++)
+                soma += int.Parse(cpf[i].ToString()) * (10 - i);
+
+            int resto = soma % 11;
+            int digito1 = resto < 2 ? 0 : 11 - resto;
+
+            if (int.Parse(cpf[9].ToString()) != digito1)
+                return false;
+
+            // Validação do segundo dígito verificador
+            soma = 0;
+            for (int i = 0; i < 10; i++)
+                soma += int.Parse(cpf[i].ToString()) * (11 - i);
+
+            resto = soma % 11;
+            int digito2 = resto < 2 ? 0 : 11 - resto;
+
+            return int.Parse(cpf[10].ToString()) == digito2;
         }
     }
 }
