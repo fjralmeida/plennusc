@@ -8,6 +8,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace appWhatsapp.PlennuscGestao.Views
@@ -40,28 +41,70 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (todosMenus == null) return;
 
                 int filtroSistema = Convert.ToInt32(ddlFiltroSistema.SelectedValue);
-                if (filtroSistema == -1) // Não definidos
+
+                // Aplicar filtros existentes
+                List<MenuModel> menusFiltrados;
+
+                if (filtroSistema == -1) // Apenas não vinculados
                 {
-                    todosMenus = todosMenus.Where(m => !_service.EstaVinculadoEmAlgumSistema(m.CodMenu)).ToList();
+                    menusFiltrados = todosMenus.Where(m => !_service.EstaVinculadoEmAlgumSistema(m.CodMenu)).ToList();
                 }
                 else if (filtroSistema > 0) // Sistema específico
                 {
-                    todosMenus = todosMenus.Where(m => _service.EstaVinculadoAoSistema(m.CodMenu, filtroSistema)).ToList();
+                    menusFiltrados = todosMenus.Where(m => _service.EstaVinculadoAoSistema(m.CodMenu, filtroSistema)).ToList();
+                }
+                else // Todos (valor 0)
+                {
+                    menusFiltrados = todosMenus.ToList();
                 }
 
+                // Aplicar filtro de busca se existir
                 if (!string.IsNullOrEmpty(txtBuscarMenu.Text))
                 {
                     string busca = txtBuscarMenu.Text.ToLower();
-                    todosMenus = todosMenus.Where(m =>
+                    menusFiltrados = menusFiltrados.Where(m =>
                         (m.NomeDisplay?.ToLower().Contains(busca) == true) ||
                         (m.NomeMenu?.ToLower().Contains(busca) == true) ||
                         (m.NomeObjeto?.ToLower().Contains(busca) == true)).ToList();
                 }
 
-                rptMenus.DataSource = todosMenus;
+                // A NOVA LÓGICA: Separar menus não vinculados e ordenar
+                var menusNaoVinculados = menusFiltrados
+                    .Where(m => !_service.EstaVinculadoEmAlgumSistema(m.CodMenu))
+                    .OrderBy(m => m.CodMenuPai ?? m.CodMenu)
+                    .ThenBy(m => m.Conf_Ordem)
+                    .ToList();
+
+                var menusVinculados = menusFiltrados
+                    .Where(m => _service.EstaVinculadoEmAlgumSistema(m.CodMenu))
+                    .OrderBy(m => m.CodMenuPai ?? m.CodMenu)
+                    .ThenBy(m => m.Conf_Ordem)
+                    .ToList();
+
+                // Juntar os menus: primeiro os não vinculados, depois os vinculados
+                var menusOrdenados = new List<MenuModel>();
+                menusOrdenados.AddRange(menusNaoVinculados);
+                menusOrdenados.AddRange(menusVinculados);
+
+                // Se não estamos no filtro "Apenas não vinculados" e há menus não vinculados,
+                // vamos adicionar um separador visual
+                if (filtroSistema != -1 && menusNaoVinculados.Any() && menusVinculados.Any())
+                {
+                    // Adicionar um item especial para servir como separador
+                    // Mas como o Repeater não tem separador nativo, vamos adicionar uma propriedade
+                    // para marcar no front-end
+                    ViewState["MostrarSeparador"] = true;
+                    ViewState["PosicaoSeparador"] = menusNaoVinculados.Count;
+                }
+                else
+                {
+                    ViewState["MostrarSeparador"] = false;
+                }
+
+                rptMenus.DataSource = menusOrdenados;
                 rptMenus.DataBind();
-                litTotalMenus.Text = $"{todosMenus.Count} menus";
-                pnlNenhumResultado.Visible = todosMenus.Count == 0;
+                litTotalMenus.Text = $"{menusOrdenados.Count} menus";
+                pnlNenhumResultado.Visible = menusOrdenados.Count == 0;
             }
             catch (Exception ex)
             {
@@ -98,6 +141,28 @@ namespace appWhatsapp.PlennuscGestao.Views
                 cbFinance.Checked = sistemasVinculados.Contains(2);
                 cbMedic.Checked = sistemasVinculados.Contains(3);
                 cbOuvidoria.Checked = sistemasVinculados.Contains(4);
+
+                // ADICIONAR CLASSE PARA MENUS NÃO VINCULADOS
+                bool estaVinculado = _service.EstaVinculadoEmAlgumSistema(menu.CodMenu);
+                var menuItemRow = (HtmlGenericControl)e.Item.FindControl("menuItemRow") ??
+                                 e.Item.FindControl("menu-item-row") as HtmlGenericControl;
+
+                if (menuItemRow != null && !estaVinculado)
+                {
+                    // Por esta linha:
+                    menuItemRow.Attributes["class"] = (menuItemRow.Attributes["class"] ?? "") + " menu-nao-vinculado";
+                }
+
+                // ADICIONAR SEPARADOR VISUAL
+                bool mostrarSeparador = ViewState["MostrarSeparador"] != null && (bool)ViewState["MostrarSeparador"];
+                int posicaoSeparador = ViewState["PosicaoSeparador"] != null ? (int)ViewState["PosicaoSeparador"] : -1;
+
+                if (mostrarSeparador && e.Item.ItemIndex == posicaoSeparador)
+                {
+                    // Adicionar uma linha separadora antes do primeiro menu vinculado
+                    var separador = new LiteralControl("<div class='separador-menus'><div class='separador-texto'>Menus Vinculados</div></div>");
+                    e.Item.Controls.AddAt(0, separador);
+                }
             }
         }
 

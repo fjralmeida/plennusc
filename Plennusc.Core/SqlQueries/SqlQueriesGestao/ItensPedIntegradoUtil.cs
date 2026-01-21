@@ -28,7 +28,7 @@ namespace appWhatsapp.SqlQueries
                                 B.NOME_ASSOCIADO,
                                 A.DATA_VENCIMENTO, 
                                 A.VALOR_FATURA,
-                                C.NOME_OPERADORA,
+                                C.DESCRICAO_GRUPO_CONTRATO,
                                 D.NOME_PLANO_ABREVIADO,
                                 T.NUMERO_TELEFONE
                             FROM PS1020 A

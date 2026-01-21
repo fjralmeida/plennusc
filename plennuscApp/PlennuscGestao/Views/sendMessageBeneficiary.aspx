@@ -404,7 +404,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Operadora">
                             <ItemTemplate>
-                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("NOME_OPERADORA") %>' /></ItemTemplate>
+                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("DESCRICAO_GRUPO_CONTRATO") %>' /></ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Vencimento">
                             <ItemTemplate>

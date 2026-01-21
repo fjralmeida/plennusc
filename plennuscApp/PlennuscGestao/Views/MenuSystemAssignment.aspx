@@ -70,56 +70,54 @@
             </div>
             
             <div class="card-body">
-                <!-- Cabeçalho da Grid -->
-                <div class="grid-header">
-                    <div class="row">
-                        <div class="text-center">Código</div>
-                        <div>Nome do Menu</div>
-                        <div>Objeto</div>
-                        <div class="text-center">Gestão</div>
-                        <div class="text-center">Finance</div>
-                        <div class="text-center">Medic</div>
-                        <div class="text-center">Ouvidoria</div>
-                        <div class="text-center">Ações</div>
-                    </div>
-                </div>
+<div class="grid-header">
+    <div class="row">
+        <div>Código</div>
+        <div>Nome do Menu</div>
+        <div>Objeto</div>
+        <div>Gestão</div>
+        <div>Finance</div>
+        <div>Medic</div>
+        <div>Ouvidoria</div>
+        <div>Ações</div>
+    </div>
+</div>
 
-                <!-- Grid de Menus -->
-                <asp:Repeater ID="rptMenus" runat="server" OnItemDataBound="rptMenus_ItemDataBound">
-                    <ItemTemplate>
-                        <div class="menu-item-row">
-                            <div class="row">
-                                <div class="text-center">
-                                    <span class="menu-codigo"><%# Eval("CodMenu") %></span>
-                                </div>
-                                <div>
-                                    <div class="menu-nome"><%# Eval("NomeDisplay") %></div>
-                                    <div class="menu-objeto"><%# Eval("NomeObjeto") %></div>
-                                </div>
-                                <div>
-                                    <div class="menu-objeto"><%# Eval("NomeObjeto") %></div>
-                                </div>
-                                <div class="system-checkbox-container">
-                                    <asp:CheckBox ID="cbGestao" runat="server" CssClass="system-checkbox" data-system="1" />
-                                </div>
-                                <div class="system-checkbox-container">
-                                    <asp:CheckBox ID="cbFinance" runat="server" CssClass="system-checkbox" data-system="2" />
-                                </div>
-                                <div class="system-checkbox-container">
-                                    <asp:CheckBox ID="cbMedic" runat="server" CssClass="system-checkbox" data-system="3" />
-                                </div>
-                                <div class="system-checkbox-container">
-                                    <asp:CheckBox ID="cbOuvidoria" runat="server" CssClass="system-checkbox" data-system="4" />
-                                </div>
-                                <div class="action-buttons">
-                                    <asp:Button ID="btnSalvarMenu" runat="server" Text="Salvar" CssClass="btn btn-primary btn-sm" 
-                                        CommandArgument='<%# Eval("CodMenu") %>' OnClick="btnSalvarMenu_Click" />
-                                    <asp:HiddenField ID="hfCodMenu" runat="server" Value='<%# Eval("CodMenu") %>' />
-                                </div>
-                            </div>
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
+<!-- Grid de Menus - SEM ESPAÇOS -->
+<asp:Repeater ID="rptMenus" runat="server" OnItemDataBound="rptMenus_ItemDataBound">
+    <ItemTemplate>
+        <div class="menu-item-row" id="menuItemRow" runat="server">
+            <div class="row">
+                <div data-label="Código">
+                    <span class="menu-codigo"><%# Eval("CodMenu") %></span>
+                </div>
+                <div data-label="Nome">
+                    <div class="menu-nome"><%# Eval("NomeDisplay") %></div>
+                </div>
+                <div data-label="Objeto">
+                    <div class="menu-objeto"><%# Eval("NomeObjeto") %></div>
+                </div>
+                <div data-label="Gestão" class="system-checkbox-container">
+                    <asp:CheckBox ID="cbGestao" runat="server" CssClass="system-checkbox" data-system="1" />
+                </div>
+                <div data-label="Finance" class="system-checkbox-container">
+                    <asp:CheckBox ID="cbFinance" runat="server" CssClass="system-checkbox" data-system="2" />
+                </div>
+                <div data-label="Medic" class="system-checkbox-container">
+                    <asp:CheckBox ID="cbMedic" runat="server" CssClass="system-checkbox" data-system="3" />
+                </div>
+                <div data-label="Ouvidoria" class="system-checkbox-container">
+                    <asp:CheckBox ID="cbOuvidoria" runat="server" CssClass="system-checkbox" data-system="4" />
+                </div>
+                <div data-label="Ações" class="action-buttons">
+                    <asp:Button ID="btnSalvarMenu" runat="server" Text="Salvar" CssClass="btn-primary" 
+                        CommandArgument='<%# Eval("CodMenu") %>' OnClick="btnSalvarMenu_Click" />
+                    <asp:HiddenField ID="hfCodMenu" runat="server" Value='<%# Eval("CodMenu") %>' />
+                </div>
+            </div>
+        </div>
+    </ItemTemplate>
+</asp:Repeater>
 
                 <!-- Sem resultados -->
                 <asp:Panel ID="pnlNenhumResultado" runat="server" Visible="false" CssClass="no-results">
