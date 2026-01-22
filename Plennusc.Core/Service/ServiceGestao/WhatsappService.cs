@@ -437,7 +437,7 @@ namespace appWhatsapp.Service
                   {
                     var jsonBody = $@"
                     {{
-                    ""media_hsm_configuration_id"": ""fbae0067-fa5a-46d7-902d-dd30a811dc56"",
+                    ""media_hsm_configuration_id"": ""f28c1193-59c2-4a6b-a7c2-ba742d4c4d38"",
                             ""hsm_type"": ""media_hsm"",
                             ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121"",
                             ""system"": ""whatsapp_enterprise"",

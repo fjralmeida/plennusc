@@ -171,7 +171,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                         }
                         else // Qualquer outra coisa (NAO, vazio, etc) trata como NOVO CLIENTE
                         {
-                            retornoApi = await api.ConexaoApiNovoCliente(
+                            //retornoApi = await api.ConexaoApiNovoCliente(
+                            retornoApi = await api.ConexaoApiNovoPlano(
                                 new List<string> { mensagem.Telefone },
                                 mensagem.Field3,          // Nome do beneficiário
                                 mensagem.NomeOperador     // Nome do operador

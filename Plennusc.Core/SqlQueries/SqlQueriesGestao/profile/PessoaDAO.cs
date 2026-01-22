@@ -683,6 +683,62 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
         }
 
 
+        // No arquivo PessoaDAO.cs, adicione este método:
+        public DataTable BuscarUsuarioPorCPFCompleto(string cpf)
+        {
+            // Remove pontos e traço
+            string cpfLimpo = cpf.Replace(".", "").Replace("-", "").Trim();
+
+            string query = @"
+                SELECT 
+                    p.CodPessoa,
+                    p.Nome,
+                    p.Sobrenome,
+                    p.Apelido,
+                    p.Sexo,
+                    p.DataNasc,
+                    p.DocCPF,
+                    p.DocRG,
+                    p.TituloEleitor,
+                    p.ZonaEleitor AS Zona,
+                    p.SecaoEleitor AS Secao,
+                    p.NumCTPS AS CTPS,
+                    p.NumCTPSSerie AS Serie,
+                    p.NumCTPSUf AS UF,
+                    p.NumPIS AS PIS,
+                    p.Matricula,
+                    p.DataAdmissao,
+                    p.NomeFiliacao1 AS Filiacao1,
+                    p.NomeFiliacao2 AS Filiacao2,
+                    p.Telefone1,
+                    p.Telefone2,
+                    p.Telefone3,
+                    p.Email,
+                    p.EmailAlt,
+                    p.Observacao,
+                    p.Conf_CriaContaAD,
+                    p.Conf_CadastraPonto,
+                    p.Conf_Ativo,
+                    p.PermiteAcesso AS Conf_PermiteAcesso,
+                    c.CodCargo,
+                    c.Nome as NomeCargo,
+                    d.CodDepartamento,
+                    d.Nome as NomeDepartamento,
+                    CONCAT(p.Nome, ' ', p.Sobrenome) as NomeCompleto
+                FROM Pessoa p
+                LEFT JOIN Cargo c ON p.CodCargo = c.CodCargo
+                LEFT JOIN Departamento d ON p.CodDepartamento = d.CodDepartamento
+                WHERE p.DocCPF = @CPF";
+
+                    var parametros = new Dictionary<string, object>
+            {
+                { "@CPF", cpfLimpo }
+            };
+
+            Banco_Dados_SQLServer db = new Banco_Dados_SQLServer();
+            return db.LerPlennus(query, parametros);
+        }
+
         public bool VerificarCPFExistente(string cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf))

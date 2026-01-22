@@ -461,6 +461,16 @@
 <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="false">
     <h4 class="titulo-cadastro">Cadastro de Novo Colaborador</h4>
     
+
+    <!-- Dentro do PanelCadastro, adicione estes HiddenFields -->
+<asp:HiddenField ID="hdnColaboradorId" runat="server" />
+<asp:HiddenField ID="hdnCPFValidado" runat="server" Value="false" />
+<asp:HiddenField ID="hdnCPFExistente" runat="server" Value="" />
+
+<!-- Botão escondido para preencher dados -->
+<asp:Button ID="btnPreencherDados" runat="server" style="display:none" 
+    OnClick="btnPreencherDados_Click" />
+
     <!-- INDICADOR DE ETAPAS -->
     <div class="wizard-steps">
 

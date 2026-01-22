@@ -33,7 +33,15 @@ namespace appWhatsapp.PlennuscGestao.Views
                 CarregarPerfilPessoa();
                 CarregarCargo();
                 CarregarDepartamento();
-                //CarregarEmpresa();
+            }
+            else
+            {
+                // Verifica se é um postback de atualização
+                string eventTarget = Request["__EVENTTARGET"] ?? "";
+                if (eventTarget == "AtualizarColaborador")
+                {
+                    AtualizarColaboradorExistente();
+                }
             }
         }
 
@@ -190,6 +198,32 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
+                // Verifica se é um CPF já existente
+                if (hdnCPFValidado.Value == "true" && !string.IsNullOrEmpty(hdnColaboradorId.Value))
+                {
+                    // CPF já existe - mostra confirmação para atualizar
+                    string script = @"
+                Swal.fire({
+                    title: 'CPF Já Cadastrado',
+                    html: 'Este CPF já está cadastrado para outro colaborador.<br>Deseja atualizar as informações existentes?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, atualizar',
+                    cancelButtonText: 'Não, cancelar',
+                    confirmButtonColor: '#4CB07A',
+                    cancelButtonColor: '#d33'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Chama método para atualizar
+                        __doPostBack('AtualizarColaborador', '');
+                    }
+                });";
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ConfirmarAtualizacao", script, true);
+                    return;
+                }
+
+                // Se não for CPF existente, continua com o cadastro normal
                 int codSistema = Convert.ToInt32(Session["CodSistema"]);
                 int codUsuario = Convert.ToInt32(Session["CodUsuario"]);
                 //int codEmpresa = Convert.ToInt32(Session["CodEmpresa"]);
@@ -198,7 +232,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string sobrenome = txtSobrenome.Text.Trim();
                 string apelido = txtApelido.Text.Trim();
                 string sexo = ddlSexo.SelectedValue.Trim();
-                string cpf = txtDocCPF.Text.Replace("." ," ").Replace("-", "").Replace(" ", "").Trim();
+                string cpf = txtDocCPF.Text.Replace(".", "").Replace("-", "").Trim();
                 string rg = txtDocRG.Text.Trim();
                 string tituloEleitor = txtTitulo.Text.Trim();
                 string zona = txtZona.Text.Trim();
@@ -237,9 +271,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string emailAlt = txtEmailAlt.Text.Trim();
                 string observacao = txtObservacao.Text.Trim();
 
+                // CORREÇÃO: Adicionar codEstrutura (Perfil Pessoa)
+                int codEstrutura = int.TryParse(ddlPerfilPessoa.SelectedValue, out int estruturaResult) ? estruturaResult : 0;
+
                 int codCargo = int.TryParse(ddlCargo.SelectedValue, out int cargoResult) ? cargoResult : 0;
                 int codDepartamento = int.TryParse(ddlDepartamento.SelectedValue, out int depResult) ? depResult : 0;
-                int codEstrutura = int.TryParse(ddlPerfilPessoa.SelectedValue, out int estruturaResult) ? estruturaResult : 0;
 
                 bool criaContaAD = chkCriaContaAD.Checked;
                 bool cadastraPonto = chkCadastraPonto.Checked;
@@ -248,12 +284,12 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 //int codEmpresa = int.TryParse(ddlEmpresa.SelectedValue, out int empResult) ? empResult : 0;
 
-              //  if(codEmpresa == 0)
-              //  {
-              //      ScriptManager.RegisterStartupScript(this, GetType(), "EmpresaObrigatoria",
-              //"Swal.fire('Atenção','Selecione uma empresa.','warning');", true);
-              //      return;
-              //  }
+                //  if(codEmpresa == 0)
+                //  {
+                //      ScriptManager.RegisterStartupScript(this, GetType(), "EmpresaObrigatoria",
+                //"Swal.fire('Atenção','Selecione uma empresa.','warning');", true);
+                //      return;
+                //  }
 
                 DateTime? dataNascDt = null;
                 DateTime? dataAdmissaoDt = null;
@@ -270,7 +306,8 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 PessoaDAO pessoa = new PessoaDAO();
                 int novoCodPessoa = pessoa.InsertPersonSystem(
-                    codEstrutura, nome, sobrenome, apelido, sexo, dataNascDt, cpf, rg,
+                    codEstrutura, // AQUI ESTÁ O PARÂMETRO CORRIGIDO
+                    nome, sobrenome, apelido, sexo, dataNascDt, cpf, rg,
                     tituloEleitor, zona, secao, ctps, serie, uf, pis, matricula,
                     dataAdmissaoDt, filiacao1, filiacao2,
                     telefone1, telefone2, telefone3,
@@ -279,38 +316,21 @@ namespace appWhatsapp.PlennuscGestao.Views
                     codSistema, codUsuario, observacao
                 );
 
+                if (novoCodPessoa > 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cadastro realizado!',
+                    text: 'O colaborador foi salvo com sucesso.',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                });", true);
 
-                ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cadastro realizado!',
-                        text: 'O colaborador foi salvo com sucesso.',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                    });", true);
-
-                LimparFormulario();
-
-
-                //if (novoCodPessoa > 0)
-                //{
-                //    // AGORA VAI FUNCIONAR - método público no PessoaDAO
-                //    pessoa.VincularUsuarioEmpresa(novoCodPessoa, codEmpresa);
-
-                //    LimparFormulario();
-                //    ScriptManager.RegisterStartupScript(this, GetType(), "CadastroOK", @"
-                //    Swal.fire({
-                //        icon: 'success',
-                //        title: 'Cadastro realizado!',
-                //        text: 'O colaborador foi salvo e vinculado à empresa com sucesso.',
-                //        confirmButtonText: 'OK',
-                //        customClass: {
-                //            confirmButton: 'btn btn-success'
-                //        }
-                //    });", true);
-                //}
+                    LimparFormulario();
+                }
             }
             catch (Exception ex)
             {
@@ -322,7 +342,47 @@ namespace appWhatsapp.PlennuscGestao.Views
                 confirmButtonText: 'Fechar'
             }});", true);
             }
+        }
 
+        // Adicione este método para atualizar colaborador existente
+        private void AtualizarColaboradorExistente()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(hdnColaboradorId.Value))
+                {
+                    int codPessoa = Convert.ToInt32(hdnColaboradorId.Value);
+
+                    // Coleta os dados do formulário (igual ao seu método btnSalvarUsuario_Click)
+                    string nome = txtNome.Text.Trim();
+                    string sobrenome = txtSobrenome.Text.Trim();
+                    // ... colete todos os outros campos ...
+
+                    PessoaDAO pessoa = new PessoaDAO();
+
+                    // Você precisa criar um método de atualização no PessoaDAO
+                    // bool sucesso = pessoa.AtualizarColaborador(codPessoa, ...parâmetros...);
+
+                    // Se a atualização for bem-sucedida
+                    ScriptManager.RegisterStartupScript(this, GetType(), "AtualizacaoOK", @"
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Atualizado!',
+                    text: 'Dados do colaborador atualizados com sucesso.',
+                    confirmButtonText: 'OK'
+                });", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "erroAtualizacao", $@"
+            Swal.fire({{
+                icon: 'error',
+                title: 'Erro ao atualizar!',
+                html: '{ex.Message.Replace("'", "\\'")}',
+                confirmButtonText: 'Fechar'
+            }});", true);
+            }
         }
         private void LimparFormulario()
         {
@@ -556,7 +616,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            // Verifica se é um CPF válido (opcional, mas recomendado)
+            // Verifica se é um CPF válido
             if (!ValidarCPF(cpfLimpo))
             {
                 MostrarMensagemCPF("CPF inválido.", false);
@@ -569,41 +629,57 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (cpfExistente)
             {
-                // Busca os dados do usuário existente
-                DataTable dtUsuario = dao.BuscarUsuarioPorCPF(cpfLimpo);
+                // Busca os dados completos do usuário existente
+                DataTable dtUsuario = dao.BuscarUsuarioPorCPFCompleto(cpfLimpo);
 
                 if (dtUsuario != null && dtUsuario.Rows.Count > 0)
                 {
-                    string nomeCompleto = dtUsuario.Rows[0]["NomeCompleto"].ToString();
-                    string status = dtUsuario.Rows[0]["Conf_Ativo"].ToString();
-                    string departamento = dtUsuario.Rows[0]["NomeDepartamento"].ToString();
-                    string cargo = dtUsuario.Rows[0]["NomeCargo"].ToString();
+                    // Armazena os dados em Session para uso posterior
+                    DataRow row = dtUsuario.Rows[0];
 
-                    string mensagem = $"CPF já cadastrado!<br/><br/>" +
+                    // Cria um objeto com todos os dados
+                    var dadosColaborador = new Dictionary<string, object>();
+                    foreach (DataColumn column in dtUsuario.Columns)
+                    {
+                        dadosColaborador[column.ColumnName] = row[column];
+                    }
+
+                    // Armazena na Session
+                    Session["DadosColaboradorExistente"] = dadosColaborador;
+                    Session["CPFExistente"] = cpfLimpo;
+
+                    string nomeCompleto = row["NomeCompleto"].ToString();
+                    string status = row["Conf_Ativo"].ToString().Equals("True", StringComparison.OrdinalIgnoreCase) ? "Ativo" : "Inativo";
+                    string departamento = row["NomeDepartamento"].ToString();
+                    string cargo = row["NomeCargo"].ToString();
+
+                    string mensagem = $"<strong>CPF já cadastrado!</strong><br/><br/>" +
                                      $"<strong>Colaborador:</strong> {nomeCompleto}<br/>" +
                                      $"<strong>Status:</strong> {status}<br/>" +
                                      $"<strong>Departamento:</strong> {departamento}<br/>" +
                                      $"<strong>Cargo:</strong> {cargo}<br/><br/>" +
-                                     $"Deseja continuar com o cadastro?";
+                                     $"Deseja preencher automaticamente com estas informações?";
 
-                    // Mostra confirmação
-                    ScriptManager.RegisterStartupScript(this, GetType(), "ConfirmarCPFExistente",
-                        $@"Swal.fire({{
+                    // Mostra SweetAlert com opção de preencher automaticamente
+                    string script = $@"
+                Swal.fire({{
                     title: 'CPF Já Cadastrado',
-                    html: '{mensagem.Replace("'", "\\'")}',
+                    html: `{mensagem.Replace("'", "\\'")}`,
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Sim, continuar',
-                    cancelButtonText: 'Não, cancelar',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6'
+                    confirmButtonText: 'Sim, preencher automaticamente',
+                    cancelButtonText: 'Não, continuar vazio',
+                    confirmButtonColor: '#4CB07A',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true
                 }}).then((result) => {{
-                    if (!result.isConfirmed) {{
-                        // Limpa o campo CPF se o usuário cancelar
-                        document.getElementById('{txtDocCPF.ClientID}').value = '';
-                        document.getElementById('{pnlCPFMessage.ClientID}').style.display = 'none';
+                    if (result.isConfirmed) {{
+                        // Dispara o botão para preencher dados
+                        __doPostBack('{btnPreencherDados.UniqueID}', '');
                     }}
-                }});", true);
+                }});";
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ConfirmarCPFExistente", script, true);
                 }
                 else
                 {
@@ -614,6 +690,176 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 MostrarMensagemCPF("CPF disponível para cadastro.", true);
             }
+        }
+
+        protected void btnPreencherDados_Click(object sender, EventArgs e)
+        {
+            if (Session["DadosColaboradorExistente"] != null)
+            {
+                var dados = Session["DadosColaboradorExistente"] as Dictionary<string, object>;
+
+                if (dados != null)
+                {
+                    try
+                    {
+                        // Preenche os campos do formulário
+                        txtNome.Text = GetSafeString(dados, "Nome");
+                        txtSobrenome.Text = GetSafeString(dados, "Sobrenome");
+                        txtApelido.Text = GetSafeString(dados, "Apelido");
+
+                        // Sexo
+                        string sexo = GetSafeString(dados, "Sexo");
+                        if (!string.IsNullOrEmpty(sexo))
+                            ddlSexo.SelectedValue = sexo;
+
+                        // Data de Nascimento
+                        if (dados.ContainsKey("DataNasc") && dados["DataNasc"] != DBNull.Value)
+                        {
+                            DateTime dataNasc = (DateTime)dados["DataNasc"];
+                            txtDataNasc.Text = dataNasc.ToString("yyyy-MM-dd");
+                        }
+
+                        // RG
+                        txtDocRG.Text = GetSafeString(dados, "RG");
+
+                        // Dados Eleitorais
+                        txtTitulo.Text = GetSafeString(dados, "TituloEleitor");
+                        txtZona.Text = GetSafeString(dados, "Zona");
+                        txtSecao.Text = GetSafeString(dados, "Secao");
+
+                        // Dados Trabalhistas
+                        txtCTPS.Text = GetSafeString(dados, "CTPS");
+                        txtCTPSSerie.Text = GetSafeString(dados, "Serie");
+                        txtCTPSUf.Text = GetSafeString(dados, "UF");
+                        txtPis.Text = GetSafeString(dados, "PIS");
+                        txtMatricula.Text = GetSafeString(dados, "Matricula");
+
+                        // Data de Admissão
+                        if (dados.ContainsKey("DataAdmissao") && dados["DataAdmissao"] != DBNull.Value)
+                        {
+                            DateTime dataAdmissao = (DateTime)dados["DataAdmissao"];
+                            txtDataAdmissao.Text = dataAdmissao.ToString("yyyy-MM-dd");
+                        }
+
+                        // Filiação
+                        txtFiliacao1.Text = GetSafeString(dados, "Filiacao1");
+                        txtFiliacao2.Text = GetSafeString(dados, "Filiacao2");
+
+                        // Contato
+                        txtTelefone1.Text = FormatTelefone(GetSafeString(dados, "Telefone1"));
+                        txtTelefone2.Text = FormatTelefone(GetSafeString(dados, "Telefone2"));
+                        txtTelefone3.Text = FormatTelefone(GetSafeString(dados, "Telefone3"));
+                        txtEmail.Text = GetSafeString(dados, "Email");
+                        txtEmailAlt.Text = GetSafeString(dados, "EmailAlt");
+
+                        // Cargo e Departamento
+                        if (dados.ContainsKey("CodCargo") && dados["CodCargo"] != DBNull.Value)
+                        {
+                            string codCargo = dados["CodCargo"].ToString();
+                            ddlCargo.SelectedValue = codCargo;
+                        }
+
+                        if (dados.ContainsKey("CodDepartamento") && dados["CodDepartamento"] != DBNull.Value)
+                        {
+                            string codDepartamento = dados["CodDepartamento"].ToString();
+                            ddlDepartamento.SelectedValue = codDepartamento;
+                        }
+
+                        // Observações
+                        txtObservacao.Text = GetSafeString(dados, "Observacao");
+
+                        // Configurações
+                        chkCriaContaAD.Checked = GetSafeBool(dados, "Conf_CriaContaAD");
+                        chkCadastraPonto.Checked = GetSafeBool(dados, "Conf_CadastraPonto");
+                        chkAtivo.Checked = GetSafeBool(dados, "Conf_Ativo");
+                        chkPermiteAcesso.Checked = GetSafeBool(dados, "Conf_PermiteAcesso");
+
+                        // Armazena o ID do colaborador existente
+                        if (dados.ContainsKey("CodPessoa") && dados["CodPessoa"] != DBNull.Value)
+                        {
+                            hdnColaboradorId.Value = dados["CodPessoa"].ToString();
+                            hdnCPFValidado.Value = "true";
+                        }
+
+                        // Aplica máscaras nos campos
+                        ScriptManager.RegisterStartupScript(this, GetType(), "AplicarMascaras",
+                            "if (window.aplicarMascaras) aplicarMascaras();", true);
+
+                        // Avança para a próxima etapa do wizard (Dados Pessoais)
+                        ScriptManager.RegisterStartupScript(this, GetType(), "AvançarWizard",
+                            "if (window.goToCadastroStep) goToCadastroStep(2);", true);
+
+                        // Mostra mensagem de sucesso
+                        ScriptManager.RegisterStartupScript(this, GetType(), "DadosPreenchidos",
+                            @"Swal.fire({
+                        icon: 'success',
+                        title: 'Dados preenchidos!',
+                        text: 'Os campos foram preenchidos automaticamente com os dados existentes.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });", true);
+
+                        //// Atualiza o painel
+                        //PanelCadastro.Update();
+                    }
+                    catch (Exception ex)
+                    {
+                        ScriptManager.RegisterStartupScript(this, GetType(), "ErroPreencher",
+                            $@"Swal.fire({{
+                        icon: 'error',
+                        title: 'Erro ao preencher',
+                        text: '{ex.Message.Replace("'", "\\'")}'
+                    }});", true);
+                    }
+                }
+            }
+        }
+
+        // Métodos auxiliares
+        private string GetSafeString(Dictionary<string, object> dados, string key)
+        {
+            if (dados.ContainsKey(key) && dados[key] != DBNull.Value)
+                return dados[key].ToString();
+            return string.Empty;
+        }
+
+        private bool GetSafeBool(Dictionary<string, object> dados, string key)
+        {
+            if (dados.ContainsKey(key) && dados[key] != DBNull.Value)
+            {
+                object value = dados[key];
+                if (value is bool)
+                    return (bool)value;
+
+                string strValue = value.ToString();
+                return strValue.Equals("True", StringComparison.OrdinalIgnoreCase) ||
+                       strValue.Equals("1", StringComparison.OrdinalIgnoreCase) ||
+                       strValue.Equals("Sim", StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
+        }
+
+
+        private string FormatTelefone(string telefone)
+        {
+            if (string.IsNullOrEmpty(telefone))
+                return string.Empty;
+
+            // Remove todos os caracteres não numéricos
+            string numeros = new string(telefone.Where(char.IsDigit).ToArray());
+
+            if (numeros.Length == 10)
+            {
+                // Formato: (00) 0000-0000
+                return $"({numeros.Substring(0, 2)}) {numeros.Substring(2, 4)}-{numeros.Substring(6)}";
+            }
+            else if (numeros.Length == 11)
+            {
+                // Formato: (00) 00000-0000
+                return $"({numeros.Substring(0, 2)}) {numeros.Substring(2, 5)}-{numeros.Substring(7)}";
+            }
+
+            return telefone; // Retorna original se não conseguir formatar
         }
 
         private void MostrarMensagemCPF(string mensagem, bool sucesso)
