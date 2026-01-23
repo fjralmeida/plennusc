@@ -497,6 +497,127 @@ input[type=button].btn {
         border-bottom: none;
     }
 
+/* =======================
+   Abas de Navegação
+======================= */
+.abas-navegacao {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--panel-border);
+    background: #f8f9fa;
+    border-radius: 10px 10px 0 0;
+}
+
+.abas-container {
+    display: flex;
+    gap: 0;
+}
+
+.aba-link {
+    padding: 14px 28px;
+    background: #f1f3f5;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    white-space: nowrap;
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-right: 1px solid #dee2e6;
+}
+
+    .aba-link:hover {
+        background: #e9ecef;
+        color: var(--ink);
+    }
+
+    .aba-link:last-child {
+        border-right: none;
+        border-radius: 0 10px 0 0;
+    }
+
+    .aba-link:first-child {
+        border-radius: 10px 0 0 0;
+    }
+
+    .aba-link.ativa {
+        background: var(--panel);
+        color: var(--brand);
+        border-bottom: 3px solid var(--brand);
+        font-weight: 600;
+    }
+
+/* Container das abas de conteúdo */
+.conteudo-abas {
+    position: relative;
+}
+
+.conteudo-aba {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+    .conteudo-aba.ativa {
+        display: block;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Indicador de aba ativa */
+.aba-link.ativa::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--panel);
+}
+
+/* Responsividade para as abas */
+@media (max-width: 992px) {
+    .abas-navegacao {
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+
+    .abas-container {
+        min-width: max-content;
+    }
+
+    .aba-link {
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 768px) {
+    .abas-navegacao {
+        border-radius: 0;
+    }
+
+    .aba-link:first-child,
+    .aba-link:last-child {
+        border-radius: 0;
+    }
+
+    .aba-link {
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+}
+
 @media (min-width:768px) {
     #modalCriarLogin .form-grid {
         grid-template-columns: repeat(2,minmax(0,1fr));

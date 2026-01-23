@@ -108,6 +108,57 @@
             });
         }
 
+        // Script para navegação entre abas
+        document.addEventListener('DOMContentLoaded', function () {
+            const abasLinks = document.querySelectorAll('.aba-link');
+            const conteudoAbas = document.querySelectorAll('.conteudo-aba');
+
+            // Função para alternar abas
+            function alternarAba(abaId) {
+                // Remover classe ativa de todas as abas
+                abasLinks.forEach(link => {
+                    link.classList.remove('ativa');
+                });
+
+                conteudoAbas.forEach(conteudo => {
+                    conteudo.classList.remove('ativa');
+                });
+
+                // Adicionar classe ativa na aba clicada
+                const abaAtiva = document.querySelector(`.aba-link[data-aba="${abaId}"]`);
+                const conteudoAtivo = document.getElementById(`conteudo-${abaId}`);
+
+                if (abaAtiva && conteudoAtivo) {
+                    abaAtiva.classList.add('ativa');
+                    conteudoAtivo.classList.add('ativa');
+
+                    // Salvar a aba ativa no sessionStorage
+                    sessionStorage.setItem('abaAtiva', abaId);
+                }
+            }
+
+            // Adicionar evento de clique em cada aba
+            abasLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    const abaId = this.getAttribute('data-aba');
+                    alternarAba(abaId);
+                });
+            });
+
+            // Verificar se há uma aba salva no sessionStorage
+            const abaSalva = sessionStorage.getItem('abaAtiva');
+            if (abaSalva && abaSalva !== 'dados') {
+                alternarAba(abaSalva);
+            }
+
+            // Verificar se há parâmetro de aba na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const abaUrl = urlParams.get('aba');
+            if (abaUrl && ['dados', 'atestados', 'ferias', 'documentos'].includes(abaUrl)) {
+                alternarAba(abaUrl);
+            }
+        });
+
         // anexa validação + toast no botão
         function attach(btnId, group) {
             const btn = document.getElementById(btnId);
@@ -153,7 +204,7 @@
             attach('<%= btnSalvarUsuario.ClientID %>', 'Cadastro');
     // se quiser o mesmo comportamento no "Criar Login", descomente:
     // attach('<%= btnCriarLogin.ClientID %>', 'Acesso');
-  });
+        });
     })();
 </script>
 
@@ -163,264 +214,292 @@
      <div class="container py-4">
         <h2 class="titulo-gestao" runat="server" id="lblTitGestao">Editar Colaborador</h2>
 
-        <!-- (Opcional) barra de ações / voltar -->
-      <%--  <div class="container-gestao">
-            <a href="employeeManagement.aspx" class="btn-gestao btn-consultar"> Voltar</a>
-        </div>--%>
-
         <!-- Hidden com o ID da pessoa -->
         <asp:HiddenField ID="hfCodPessoa" runat="server" />
 
-        <!-- Painel de edição (mesmo layout do cadastro) -->
-        <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="true">
-            <h4 class="titulo-cadastro">Dados do Colaborador</h4>
-
-            <!-- DADOS PESSOAIS -->
-            <div class="section-block bg-white-section">
-                <h5>Dados Pessoais</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label>Nome *</label>
-                        <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvNome" runat="server" ControlToValidate="txtNome" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Sobrenome *</label>
-                        <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvSobrenome" runat="server" ControlToValidate="txtSobrenome" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Apelido</label>
-                        <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Sexo *</label>
-                        <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
-                            <asp:ListItem Value="">Selecione</asp:ListItem>
-                            <asp:ListItem Value="M">Masculino</asp:ListItem>
-                            <asp:ListItem Value="F">Feminino</asp:ListItem>
-                        </asp:DropDownList>
-                        <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Data de Nascimento *</label>
-                        <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" TextMode="Date" />
-                        <asp:RequiredFieldValidator ID="rfvDataNasc" runat="server" ControlToValidate="txtDataNasc" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
-                </div>
+        <!-- Abas de Navegação -->
+        <div class="abas-navegacao">
+            <div class="abas-container">
+                <button type="button" class="aba-link ativa" data-aba="dados">Dados do Colaborador</button>
+                <button type="button" class="aba-link" data-aba="atestados">Histórico de Atestados</button>
+                <button type="button" class="aba-link" data-aba="ferias">Férias</button>
+                <button type="button" class="aba-link" data-aba="documentos">Documentos</button>
             </div>
+        </div>
 
-            <!-- DOCUMENTOS -->
-            <div class="section-block bg-gray-section">
-                <h5>Documentos</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label>CPF *<asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="14" placeHolder="000.000.000-00" /> </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label>RG *
-                        <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="rfvRG" runat="server" ControlToValidate="txtDocRG" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                        </label>
-                    </div>
-                </div>
-            </div>
+        <!-- Container das Abas de Conteúdo -->
+        <div class="conteudo-abas">
+            <!-- Aba Dados do Colaborador -->
+            <div id="conteudo-dados" class="conteudo-aba ativa">
+                <asp:Panel ID="PanelCadastro" runat="server" CssClass="form-panel mt-4" Visible="true">
+                    <h4 class="titulo-cadastro">Dados do Colaborador</h4>
 
-            <!-- DADOS ELEITORAIS -->
-            <div class="section-block bg-white-section">
-                <h5>Dados Eleitorais</h5>
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label>Título de Eleitor</label>
-                        <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control" />
+                    <!-- DADOS PESSOAIS -->
+                    <div class="section-block bg-white-section">
+                        <h5>Dados Pessoais</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>Nome *</label>
+                                <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" />
+                                <asp:RequiredFieldValidator ID="rfvNome" runat="server" ControlToValidate="txtNome" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Sobrenome *</label>
+                                <asp:TextBox ID="txtSobrenome" runat="server" CssClass="form-control" />
+                                <asp:RequiredFieldValidator ID="rfvSobrenome" runat="server" ControlToValidate="txtSobrenome" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Apelido</label>
+                                <asp:TextBox ID="txtApelido" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Sexo *</label>
+                                <asp:DropDownList ID="ddlSexo" runat="server" CssClass="form-control">
+                                    <asp:ListItem Value="">Selecione</asp:ListItem>
+                                    <asp:ListItem Value="M">Masculino</asp:ListItem>
+                                    <asp:ListItem Value="F">Feminino</asp:ListItem>
+                                </asp:DropDownList>
+                                <asp:RequiredFieldValidator ID="rfvSexo" runat="server" ControlToValidate="ddlSexo" InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Data de Nascimento *</label>
+                                <asp:TextBox ID="txtDataNasc" runat="server" CssClass="form-control" TextMode="Date" />
+                                <asp:RequiredFieldValidator ID="rfvDataNasc" runat="server" ControlToValidate="txtDataNasc" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label>Zona</label>
-                        <asp:TextBox ID="txtZona" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Seção</label>
-                        <asp:TextBox ID="txtSecao" runat="server" CssClass="form-control" />
-                    </div>
-                </div>
-            </div>
 
-            <!-- DADOS TRABALHISTAS -->
-            <div class="section-block bg-gray-section">
-                <h5>Dados Trabalhistas</h5>
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label>CTPS</label>
-                        <asp:TextBox ID="txtCTPS" runat="server" CssClass="form-control" />
+                    <!-- DOCUMENTOS -->
+                    <div class="section-block bg-gray-section">
+                        <h5>Documentos</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>CPF *<asp:TextBox ID="txtDocCPF" runat="server" CssClass="form-control" MaxLength="14" placeHolder="000.000.000-00" /> </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label>RG *
+                                <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
+                                <asp:RequiredFieldValidator ID="rfvRG" runat="server" ControlToValidate="txtDocRG" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label>Série</label>
-                        <asp:TextBox ID="txtCTPSSerie" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>UF</label>
-                        <asp:TextBox ID="txtCTPSUf" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>PIS</label>
-                        <asp:TextBox ID="txtPis" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Matrícula</label>
-                        <asp:TextBox ID="txtMatricula" runat="server" CssClass="form-control" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Admissão *</label>
-                        <asp:TextBox ID="txtDataAdmissao" runat="server" CssClass="form-control" TextMode="Date" />
-                        <asp:RequiredFieldValidator ID="rfvAdmissao" runat="server" ControlToValidate="txtDataAdmissao" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
-                    <%-- <div class="col-md-6" id="linhaDemissao" runat="server">
-                        <label>Demissão</label>
-                        <asp:TextBox ID="txtDataDemissao" runat="server" CssClass="form-control" TextMode="Date" />
-                    </div> --%>
-                </div>
-            </div>
 
-            <!-- FILIAÇÃO -->
-            <div class="section-block bg-white-section">
-                <h5>Filiação</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label>Nome da Filiação 1</label>
-                        <asp:TextBox ID="txtFiliacao1" runat="server" CssClass="form-control" />
+                    <!-- DADOS ELEITORAIS -->
+                    <div class="section-block bg-white-section">
+                        <h5>Dados Eleitorais</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label>Título de Eleitor</label>
+                                <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Zona</label>
+                                <asp:TextBox ID="txtZona" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Seção</label>
+                                <asp:TextBox ID="txtSecao" runat="server" CssClass="form-control" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label>Nome da Filiação 2</label>
-                        <asp:TextBox ID="txtFiliacao2" runat="server" CssClass="form-control" />
-                    </div>
-                </div>
-            </div>
 
-            <!-- CONTATO -->
-            <div class="section-block bg-gray-section">
-                <h5>Contato</h5>
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label>Telefone 1 *</label>
-                        <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" MaxLength="15" />
-                        <asp:RequiredFieldValidator ID="rfvTel1" runat="server" ControlToValidate="txtTelefone1" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                    <!-- DADOS TRABALHISTAS -->
+                    <div class="section-block bg-gray-section">
+                        <h5>Dados Trabalhistas</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label>CTPS</label>
+                                <asp:TextBox ID="txtCTPS" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Série</label>
+                                <asp:TextBox ID="txtCTPSSerie" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>UF</label>
+                                <asp:TextBox ID="txtCTPSUf" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>PIS</label>
+                                <asp:TextBox ID="txtPis" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Matrícula</label>
+                                <asp:TextBox ID="txtMatricula" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Admissão *</label>
+                                <asp:TextBox ID="txtDataAdmissao" runat="server" CssClass="form-control" TextMode="Date" />
+                                <asp:RequiredFieldValidator ID="rfvAdmissao" runat="server" ControlToValidate="txtDataAdmissao" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label>Telefone 2</label>
-                        <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" MaxLength="15" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Telefone 3</label>
-                        <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" MaxLength="15" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Email Coorporativo *</label>
-                        <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email" />
-                        <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Email Alternativo</label>
-                        <asp:TextBox ID="txtEmailAlt" runat="server" CssClass="form-control" TextMode="Email" />
-                    </div>
-                </div>
-            </div>
 
-           <!-- CARGO E DEPARTAMENTO -->
-              <div class="section-block bg-white-section">
-                  <h5>Cargo e Departamento</h5>
-                  <div class="row g-3">
-        
-                      <%--<!-- NOVO CAMPO: EMPRESA -->
-                      <div class="col-md-12">
-                          <label>Empresa *</label>
-                          <asp:DropDownList ID="ddlEmpresa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
-                              <asp:ListItem Text="Selecione a empresa" Value="" />
-                          </asp:DropDownList>
-                          <asp:RequiredFieldValidator ID="rfvEmpresa" runat="server" ControlToValidate="ddlEmpresa" 
-                              InitialValue="" ErrorMessage="Selecione a empresa" CssClass="text-danger" 
-                              Display="Dynamic" ValidationGroup="Cadastro" />
-                      </div>--%>
+                    <!-- FILIAÇÃO -->
+                    <div class="section-block bg-white-section">
+                        <h5>Filiação</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>Nome da Filiação 1</label>
+                                <asp:TextBox ID="txtFiliacao1" runat="server" CssClass="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Nome da Filiação 2</label>
+                                <asp:TextBox ID="txtFiliacao2" runat="server" CssClass="form-control" />
+                            </div>
+                        </div>
+                    </div>
 
-                      <div class="col-md-12">
-                          <label>Perfil Pessoa *</label>
-                          <asp:DropDownList ID="ddlPerfilPessoa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
-                          </asp:DropDownList>
-                          <asp:RequiredFieldValidator ID="rfvPerfilPessoa" runat="server" ControlToValidate="ddlPerfilPessoa" 
-                              InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
-                              Display="Dynamic" ValidationGroup="Cadastro" />
+                    <!-- CONTATO -->
+                    <div class="section-block bg-gray-section">
+                        <h5>Contato</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label>Telefone 1 *</label>
+                                <asp:TextBox ID="txtTelefone1" runat="server" CssClass="form-control" MaxLength="15" />
+                                <asp:RequiredFieldValidator ID="rfvTel1" runat="server" ControlToValidate="txtTelefone1" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Telefone 2</label>
+                                <asp:TextBox ID="txtTelefone2" runat="server" CssClass="form-control" MaxLength="15" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Telefone 3</label>
+                                <asp:TextBox ID="txtTelefone3" runat="server" CssClass="form-control" MaxLength="15" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Email Coorporativo *</label>
+                                <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email" />
+                                <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" ValidationGroup="Cadastro" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Email Alternativo</label>
+                                <asp:TextBox ID="txtEmailAlt" runat="server" CssClass="form-control" TextMode="Email" />
+                            </div>
+                        </div>
+                    </div>
+
+                   <!-- CARGO E DEPARTAMENTO -->
+                      <div class="section-block bg-white-section">
+                          <h5>Cargo e Departamento</h5>
+                          <div class="row g-3">
+                
+                              <div class="col-md-12">
+                                  <label>Perfil Pessoa *</label>
+                                  <asp:DropDownList ID="ddlPerfilPessoa" runat="server" CssClass="form-control" AppendDataBoundItems="true">
+                                  </asp:DropDownList>
+                                  <asp:RequiredFieldValidator ID="rfvPerfilPessoa" runat="server" ControlToValidate="ddlPerfilPessoa" 
+                                      InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                                      Display="Dynamic" ValidationGroup="Cadastro" />
+                              </div>
+
+                              <div class="col-md-6">
+                                  <label>Cargo *</label>
+                                  <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-control">
+                                      <asp:ListItem Text="Selecione" Value="" />
+                                  </asp:DropDownList>
+                                  <asp:RequiredFieldValidator ID="rfvCargo" runat="server" ControlToValidate="ddlCargo" 
+                                      InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                                      Display="Dynamic" ValidationGroup="Cadastro" />
+                              </div>
+                
+                              <div class="col-md-6">
+                                  <label>Departamento *</label>
+                                  <asp:DropDownList ID="ddlDepartamento" runat="server" CssClass="form-control">
+                                  </asp:DropDownList>
+                                  <asp:RequiredFieldValidator ID="rfvDepartamento" runat="server" ControlToValidate="ddlDepartamento" 
+                                      InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
+                                      Display="Dynamic" ValidationGroup="Cadastro" />
+                              </div>
+                          </div>
                       </div>
 
-                      <div class="col-md-6">
-                          <label>Cargo *</label>
-                          <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-control">
-                              <asp:ListItem Text="Selecione" Value="" />
-                          </asp:DropDownList>
-                          <asp:RequiredFieldValidator ID="rfvCargo" runat="server" ControlToValidate="ddlCargo" 
-                              InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
-                              Display="Dynamic" ValidationGroup="Cadastro" />
-                      </div>
-        
-                      <div class="col-md-6">
-                          <label>Departamento *</label>
-                          <asp:DropDownList ID="ddlDepartamento" runat="server" CssClass="form-control">
-                          </asp:DropDownList>
-                          <asp:RequiredFieldValidator ID="rfvDepartamento" runat="server" ControlToValidate="ddlDepartamento" 
-                              InitialValue="" ErrorMessage="Campo obrigatório" CssClass="text-danger" 
-                              Display="Dynamic" ValidationGroup="Cadastro" />
-                      </div>
-                  </div>
-              </div>
+                    <!-- CONFIGURAÇÕES -->
+                    <div class="section-block bg-gray-section">
+                        <h5>Configurações</h5>
+                        <div class="row px-2">
+                            <div class="col-md-3">
+                                <label class="d-flex align-items-center gap-2">
+                                    <asp:CheckBox ID="chkCriaContaAD" runat="server" /> Criar conta no AD
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="d-flex align-items-center gap-2">
+                                    <asp:CheckBox ID="chkCadastraPonto" runat="server" /> Cadastrar no ponto
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="d-flex align-items-center gap-2">
+                                    <asp:CheckBox ID="chkAtivo" runat="server" Checked="true" /> Ativo *
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="d-flex align-items-center gap-2">
+                                    <asp:CheckBox ID="chkPermiteAcesso" runat="server" /> Permite Acesso
+                                </label>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- CONFIGURAÇÕES -->
-            <div class="section-block bg-gray-section">
-                <h5>Configurações</h5>
-                <div class="row px-2">
-                    <div class="col-md-3">
-                        <label class="d-flex align-items-center gap-2">
-                            <asp:CheckBox ID="chkCriaContaAD" runat="server" /> Criar conta no AD
-                        </label>
+                    <!-- OBSERVAÇÕES -->
+                    <div class="section-block bg-white-section">
+                        <h5>Observações</h5>
+                        <asp:TextBox ID="txtObservacao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
                     </div>
-                    <div class="col-md-3">
-                        <label class="d-flex align-items-center gap-2">
-                            <asp:CheckBox ID="chkCadastraPonto" runat="server" /> Cadastrar no ponto
-                        </label>
+
+                    <!-- SALVAR -->
+                    <div class="text-center mt-3">
+                        <asp:Button ID="btnSalvarUsuario" runat="server" 
+                            Text="Salvar Alterações"
+                            CssClass="btn btn-success"
+                            ValidationGroup="Cadastro"
+                            OnClick="btnSalvarUsuario_Click" />
+
+                        <asp:Button ID="btnCriarLogin" runat="server"  
+                            Text="Criar Login"
+                            CssClass="btn btn-login"
+                            ValidationGroup="Acesso"
+                            OnClick="btnCriarLogin_Click" />
+
+                        <a href="employeeManagement?acao=consultar" class="btn btn-secondary">Cancelar</a>
                     </div>
-                    <div class="col-md-3">
-                        <label class="d-flex align-items-center gap-2">
-                            <asp:CheckBox ID="chkAtivo" runat="server" Checked="true" /> Ativo *
-                        </label>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="d-flex align-items-center gap-2">
-                            <asp:CheckBox ID="chkPermiteAcesso" runat="server" /> Permite Acesso
-                        </label>
+                </asp:Panel>
+            </div>
+            
+            <!-- Aba Histórico de Atestados -->
+            <div id="conteudo-atestados" class="conteudo-aba">
+                <div class="form-panel mt-4">
+                    <h4 class="titulo-cadastro">Histórico de Atestados</h4>
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-medical fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Conteúdo do histórico de atestados será exibido aqui.</p>
                     </div>
                 </div>
             </div>
-
-            <!-- OBSERVAÇÕES -->
-            <div class="section-block bg-white-section">
-                <h5>Observações</h5>
-                <asp:TextBox ID="txtObservacao" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" />
+            
+            <!-- Aba Férias -->
+            <div id="conteudo-ferias" class="conteudo-aba">
+                <div class="form-panel mt-4">
+                    <h4 class="titulo-cadastro">Férias</h4>
+                    <div class="text-center py-5">
+                        <i class="fas fa-umbrella-beach fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Controle de férias será exibido aqui.</p>
+                    </div>
+                </div>
             </div>
-
-            <!-- SALVAR -->
-            <div class="text-center mt-3">
-                <asp:Button ID="btnSalvarUsuario" runat="server" 
-                    Text="Salvar Alterações"
-                    CssClass="btn btn-success"
-                    ValidationGroup="Cadastro"
-                    OnClick="btnSalvarUsuario_Click" />
-
-                <asp:Button ID="btnCriarLogin" runat="server"  
-                    Text="Criar Login"
-                    CssClass="btn btn-login"
-                    ValidationGroup="Acesso"
-                    OnClick="btnCriarLogin_Click" />
-
-                <a href="employeeManagement?acao=consultar" class="btn btn-secondary">Cancelar</a>
+            
+            <!-- Aba Documentos -->
+            <div id="conteudo-documentos" class="conteudo-aba">
+                <div class="form-panel mt-4">
+                    <h4 class="titulo-cadastro">Documentos</h4>
+                    <div class="text-center py-5">
+                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Documentos do colaborador serão exibidos aqui.</p>
+                    </div>
+                </div>
             </div>
-        </asp:Panel>
+        </div>
 
          <!-- MODAL: Criar Login -->
         <div class="modal fade" id="modalCriarLogin" tabindex="-1" aria-labelledby="modalCriarLoginLabel" aria-hidden="true">
@@ -450,12 +529,6 @@
                     <label class="form-label">Sobrenome</label>
                     <asp:TextBox ID="txtLoginSobrenome" runat="server" CssClass="form-control" ReadOnly="true" />
                   </div>
-
-                   <%-- <div class="cell">
-                        <label class="form-label">Empresa</label>
-                        <asp:TextBox ID="txtLoginEmpresa" runat="server" CssClass="form-control" ReadOnly="true" />
-                        <asp:HiddenField ID="hfCodEmpresa" runat="server" />
-                    </div>--%>
 
                   <div class="cell">
                     <label class="form-label">E-mail</label>
