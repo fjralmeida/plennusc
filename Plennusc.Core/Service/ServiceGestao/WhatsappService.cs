@@ -112,24 +112,31 @@ namespace appWhatsapp.Service
                 foreach (var telefone in telefones)
                 {
                     var jsonBody = $@"
-                    {{
-                      ""media_hsm_configuration_id"": ""1c0fa96f-0173-4d5c-84d8-693242fda363"",
-                      ""hsm_type"": ""media_hsm"",
-                      ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
-                      ""system"": ""whatsapp_enterprise"",
-                      ""contacts"": [ 
-                        {{ 
-                          ""phone_number"": ""{telefone}"",
-                          ""field_1"": ""{field1}"",
-                          ""field_2"": ""{field2}"",
-                          ""field_3"": ""{field3}"",
-                          ""field_4"": ""{field4}"",
-                          ""field_5"":  ""{pdfUrl}""
-                        }}
-                      ]
-                    }}";
+                     {{
+                     ""media_hsm_configuration_id"": ""1c0fa96f-0173-4d5c-84d8-693242fda363"",
+                            ""hsm_type"": ""media_hsm"",
+                            ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
+                             ""system"": ""whatsapp_enterprise"",
+                             ""directed_campaigns_attributes"": [
+                                 {{
+                                     ""campaign_id"":  ""94149ef1-e3fd-408d-a864-ed0ecbad9849""
+                                 }}
+                             ],
+
+                            ""contacts"": [ 
+                      {{ 
+                        ""phone_number"": ""{telefone}"",
+                        ""field_1"": ""{field1}"",
+                        ""field_2"": ""{field2}"",
+                        ""field_3"": ""{field3}"",
+                        ""field_4"": ""{field4}"",
+                        ""field_5"":  ""{pdfUrl}""
+                      }}
+                         ]
+                     }}";
 
                     var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
 
                     try
                     {
@@ -210,11 +217,17 @@ namespace appWhatsapp.Service
                 {
                     string jsonBody = $@"
                     {{
-                        ""media_hsm_configuration_id"": ""5fbfce1c-a0cb-4233-9257-5adf76973b7c"",
-                        ""hsm_type"": ""media_hsm"",
-                        ""campaign_id"": ""81815174-dd16-4468-9a70-37996dc48f8c"",
-                        ""system"": ""whatsapp_enterprise"",    
-                        ""contacts"": [ 
+                    ""media_hsm_configuration_id"": ""1c0fa96f-0173-4d5c-84d8-693242fda363"",
+                    ""hsm_type"": ""media_hsm"",
+                    ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
+                        ""system"": ""whatsapp_enterprise"",
+                        ""directed_campaigns_attributes"": [
+                                 {{
+                                     ""campaign_id"":  ""94149ef1-e3fd-408d-a864-ed0ecbad9849""
+                                 }}
+                             ],
+
+                            ""contacts"": [ 
                             {{ 
                                 ""phone_number"": ""{telefone}"",
                                 ""field_1"": ""{field1}"",
@@ -627,6 +640,102 @@ namespace appWhatsapp.Service
 
             return resultadoFinal.ToString();
         }
+
+        public async Task<string> ConexaoApiAVencerComAuditoria(List<string> telefones, string pdfUrl, string notaFiscalUrl,
+                                             string field1, string field2, string field3, string field4,
+                                             string mensagemFinal, string codigoAssociado, int codAutenticacao)
+        {
+            var util = new ItensPedIntegradoUtil();
+            var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
+            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var resultadoFinal = new StringBuilder();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                foreach (var telefone in telefones)
+                {
+                    // Se não tiver nota fiscal, envia string vazia
+                    string notaFiscalField = string.IsNullOrEmpty(notaFiscalUrl) ? "" : notaFiscalUrl;
+
+                    var jsonBody = $@"
+                    {{
+                        ""media_hsm_configuration_id"": ""1c0fa96f-0173-4d5c-84d8-693242fda363"",
+                            ""hsm_type"": ""media_hsm"",
+                            ""campaign_id"": ""94149ef1-e3fd-408d-a864-ed0ecbad9849"",
+                             ""system"": ""whatsapp_enterprise"",
+                             ""directed_campaigns_attributes"": [
+                                 {{
+                                     ""campaign_id"":  ""94149ef1-e3fd-408d-a864-ed0ecbad9849""
+                                 }}
+                             ],
+
+                            ""contacts"": [ 
+                            {{ 
+                                ""phone_number"": ""{telefone}"",
+                                ""field_1"": ""{field1}"",
+                                ""field_2"": ""{field2}"",
+                                ""field_3"": ""{field3}"",
+                                ""field_4"": ""{field4}"",
+                                ""field_5"": ""{pdfUrl}"",   // URL do boleto
+                                ""field_6"": ""{notaFiscalField}"" // URL da nota fiscal
+                            }}
+                        ]
+                    }}";
+
+                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    try
+                    {
+                        var response = await client.PostAsync(apiUrl, content);
+                        var responseBody = await response.Content.ReadAsStringAsync();
+
+                        var json = JObject.Parse(responseBody);
+                        var id = json["id"]?.ToString();
+
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+
+                            // ✅ GRAVA NO BANCO (igual aos outros métodos)
+                            int codEnvio = util.GravarEnvioMensagem(
+                                telefoneDestino: telefone,
+                                codAssociado: codigoAssociado,
+                                mensagemFinal: mensagemFinal,
+                                codEmpresa: 400,
+                                codUsuarioEnvio: codAutenticacao
+                            );
+
+                            util.GravarRetornoMensagem(
+                                codEnvioMensagemWpp: codEnvio,
+                                statusEnvio: "ENVIADO",
+                                idResposta: id,
+                                conteudoApi: statusResponse,
+                                codUsuarioEnvio: codAutenticacao
+                            );
+
+                            resultadoFinal.AppendLine(statusResponse);
+                        }
+                        else
+                        {
+                            resultadoFinal.AppendLine($"⚠️ {telefone}: ID não encontrado na resposta.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        resultadoFinal.AppendLine($"❌ {telefone}: Erro - {ex.Message}");
+                    }
+
+                    await Task.Delay(5000);
+                }
+            }
+
+            return resultadoFinal.ToString();
+        }
+
         private async Task<string> ConsultarStatusEnvioAsync(string id, string telefone, string apiKey)
         {
             await Task.Delay(10000);

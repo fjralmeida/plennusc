@@ -1,16 +1,26 @@
 ﻿using appWhatsapp.Models;
 using appWhatsapp.Service;
 using appWhatsapp.SqlQueries;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using Plennusc.Core.Models.ModelsGestao.modelsSendMessage;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao;
+using PlennuscApp.PlennuscGestao.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Drawing;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using LicenseContext = OfficeOpenXml.LicenseContext;
+
 
 namespace PlennuscApp.PlennuscGestao.Views
 {
@@ -146,31 +156,88 @@ namespace PlennuscApp.PlennuscGestao.Views
         protected async void btnTestarApi_Click(object sender, EventArgs e)
         {
             var mensagens = ObterLinhasSelecionadas();
-
             var api = new WhatsappService();
-
             string escolhaTemplate = hfTemplateEscolhido.Value;
 
-            var resultadoFinal = new StringBuilder();
+            // Lista para armazenar resultados detalhados (para Excel)
+            var resultadosDetalhados = new List<DetailedSubmissionResult>();
 
             int codAutenticacao = Convert.ToInt32(Session["codUsuario"]);
+            StringBuilder resultadoFinal = new StringBuilder();
 
             foreach (var dados in mensagens)
             {
+                // 1. Verificar disponibilidade REAL
+                var disponibilidade = VerificarDisponibilidade(dados.Field8, dados.NotaFiscalUrl);
+
+                // 2. Ajustar template baseado na disponibilidade REAL
+                var templateAjustado = AjustarTemplateSimples(
+                    escolhaTemplate,
+                    disponibilidade.boletoDisponivel,
+                    disponibilidade.notaFiscalDisponivel
+                );
+
+                // 3. Se não tem documento disponível, registrar e pular
+                if (templateAjustado == "nenhum")
+                {
+                    resultadosDetalhados.Add(new DetailedSubmissionResult
+                    {
+                        CodigoAssociado = dados.CodigoAssociado,
+                        Nome = dados.Field1,
+                        Telefone = dados.Telefone,
+                        TemplateEscolhido = escolhaTemplate,
+                        TemplateAplicado = "NÃO ENVIADO",
+                        BoletoDisponivel = disponibilidade.boletoDisponivel,
+                        NotaFiscalDisponivel = disponibilidade.notaFiscalDisponivel,
+                        BoletoEnviado = false,
+                        NotaFiscalEnviada = false,
+                        Status = "NÃO ENVIADO - SEM DOCUMENTOS DISPONÍVEIS",
+                        Motivo = $"Boleto: {disponibilidade.boletoDisponivel}, Nota: {disponibilidade.notaFiscalDisponivel}"
+                    });
+                    continue;
+                }
+
+                // 4. Determinar data correta baseada no template ajustado
+                string dataParaEnvio = "";
+                switch (templateAjustado)
+                {
+                    case "Suspensao":
+                        dataParaEnvio = txtDataSuspensao.Text;
+                        break;
+                    case "Definitivo":
+                        dataParaEnvio = txtDataDefinitivo.Text;
+                        break;
+                    case "aVencer":
+                        dataParaEnvio = txtDataVencer.Text;
+                        break;
+                }
+
+                // Formatar data para dd/MM/yyyy
+                if (DateTime.TryParse(dataParaEnvio, out DateTime dataFormat))
+                {
+                    dataParaEnvio = dataFormat.ToString("dd/MM/yyyy");
+                }
+                else
+                {
+                    // Se não conseguir formatar, usa a data original (já formatada)
+                    dataParaEnvio = dados.Field4;
+                }
+
+                // 5. Enviar com template ajustado - NÃO MODIFICA OS CAMPOS ORIGINAIS
                 List<string> telefones = new List<string> { dados.Telefone };
                 string resultado = string.Empty;
 
-                switch (escolhaTemplate)
-                    {
+                switch (templateAjustado)
+                {
                     case "Suspensao":
                         resultado = await api.ConexaoApiSuspensao(
                             telefones,
-                            dados.Field8, // pdfUrl (boleto)
-                            dados.Field1, // nome
-                            dados.Field3, // plano
-                            dados.Field4, // vencimento formatado (dd/MM/yyyy)
+                            dados.Field8, // pdfUrl (boleto) - ORIGINAL
+                            dados.Field1, // nome - ORIGINAL
+                            dados.Field3, // plano - ORIGINAL (NÃO MODIFICADO)
+                            dataParaEnvio, // vencimento formatado
                             $"R$ {dados.Field7}", // valor formatado
-                            escolhaTemplate,
+                            templateAjustado, // template AJUSTADO
                             dados.CodigoAssociado,
                             codAutenticacao
                         );
@@ -180,60 +247,129 @@ namespace PlennuscApp.PlennuscGestao.Views
                         resultado = await api.ConexaoApiNotaFiscal(
                             telefones,
                             dados.NotaFiscalUrl,
-                            dados.Field1,
-                            dados.Field3,
-                            dados.Field4,
+                            dados.Field1, // ORIGINAL
+                            dados.Field3, // ORIGINAL
+                            dataParaEnvio, // vencimento formatado
                             $"R$ {dados.Field7}",
-                            escolhaTemplate,
+                            templateAjustado, // template AJUSTADO
                             dados.CodigoAssociado,
                             codAutenticacao
                         );
                         break;
 
-
                     case "aVencer":
                         resultado = await api.ConexaoApiAVencer(
                             telefones,
-                            dados.Field8, // pdfUrl (boleto)
-                            dados.NotaFiscalUrl, // notaFiscalUrl
-                            dados.Field1, // nome
-                            dados.Field3, // plano
-                            dados.Field4, // vencimento formatado (dd/MM/yyyy)
+                            dados.Field8, // ORIGINAL
+                            dados.NotaFiscalUrl, // ORIGINAL
+                            dados.Field1, // ORIGINAL
+                            dados.Field3, // ORIGINAL
+                            dataParaEnvio, // vencimento formatado
                             $"R$ {dados.Field7}" // valor formatado
                         );
                         break;
-
-                    //case "DoisBoletos":
-                    //    resultado = await api.ConexaoApiDoisBoletos(
-                    //        telefones,
-                    //        dados.Field1, // substitua se tiver um campo específico
-                    //        dados.Field1,
-                    //        dados.Field2,
-                    //        dados.Field3,
-                    //        dados.Field4,
-                    //        dados.Field5,
-                    //        dados.Field6,
-                    //        dados.Field7
-                    //    );
-                    //    break;
-
-
-                    default:
-                        resultado = "Template não selecionado corretamente.";
-                        break;
                 }
+
+
+                // 6. Registrar resultado detalhado
+                resultadosDetalhados.Add(new DetailedSubmissionResult
+                {
+                    CodigoAssociado = dados.CodigoAssociado,
+                    Nome = dados.Field1,
+                    Telefone = dados.Telefone,
+                    TemplateEscolhido = escolhaTemplate,
+                    TemplateAplicado = templateAjustado,
+                    BoletoDisponivel = disponibilidade.boletoDisponivel,
+                    NotaFiscalDisponivel = disponibilidade.notaFiscalDisponivel,
+                    BoletoEnviado = templateAjustado == "Suspensao" || templateAjustado == "aVencer",
+                    NotaFiscalEnviada = templateAjustado == "Definitivo" || templateAjustado == "aVencer",
+                    Status = resultado.Contains("✅") || resultado.Contains("Enviado") ? "ENVIADO" : "ERRO",
+                    Motivo = resultado.Length > 200 ? resultado.Substring(0, 200) + "..." : resultado
+                });
 
                 resultadoFinal.AppendLine(resultado);
             }
 
+            // 7. Gerar Excel com resultados detalhados
+            GerarExcelResultados(resultadosDetalhados);
+
+            // 8. Mostrar resultado resumido no modal
             string resultadoFinalTexto = resultadoFinal.ToString();
             string resultadoEscapado = HttpUtility.JavaScriptStringEncode(resultadoFinalTexto);
 
             ScriptManager.RegisterStartupScript(
                 Page, Page.GetType(), "MostrarResultado",
                 $"mostrarResultadoModal('{resultadoEscapado}');", true);
+        }
 
-            //lblResultado.Text = resultadoFinal.ToString().Replace("\n", "<br/>");
+        private (bool boletoDisponivel, bool notaFiscalDisponivel) VerificarDisponibilidade(string pdfUrl, string notaFiscalUrl)
+        {
+            // Verifica se as URLs são válidas e não estão vazias
+            bool boletoOk = !string.IsNullOrWhiteSpace(pdfUrl) && pdfUrl != "0" && pdfUrl != "null";
+            bool notaFiscalOk = !string.IsNullOrWhiteSpace(notaFiscalUrl) && notaFiscalUrl != "0" && notaFiscalUrl != "null";
+
+            return (boletoOk, notaFiscalOk);
+        }
+
+
+        // MÉTODO SIMPLIFICADO - Só verifica disponibilidade
+        private string AjustarTemplateSimples(
+            string templateEscolhido,
+            bool boletoDisponivel,
+            bool notaFiscalDisponivel)
+        {
+            switch (templateEscolhido)
+            {
+                case "Suspensao":
+                    return boletoDisponivel ? "Suspensao" : "nenhum";
+
+                case "Definitivo":
+                    return notaFiscalDisponivel ? "Definitivo" : "nenhum";
+
+                case "aVencer":
+                    if (boletoDisponivel && notaFiscalDisponivel)
+                        return "aVencer";
+                    else if (boletoDisponivel)
+                        return "Suspensao";
+                    else if (notaFiscalDisponivel)
+                        return "Definitivo";
+                    else
+                        return "nenhum";
+
+                default:
+                    return "nenhum";
+            }
+        }
+
+
+
+        // MÉTODO SIMPLIFICADO - Só verifica disponibilidade
+        private string AjustarTemplate(
+            string templateEscolhido,
+            bool boletoDisponivel,
+            bool notaFiscalDisponivel)
+        {
+            switch (templateEscolhido)
+            {
+                case "Suspensao":
+                    return boletoDisponivel ? "Suspensao" : "nenhum";
+
+                case "Definitivo":
+                    return notaFiscalDisponivel ? "Definitivo" : "nenhum";
+
+                case "aVencer":
+                    if (boletoDisponivel && notaFiscalDisponivel)
+                        return "aVencer";
+                    else if (boletoDisponivel)
+                        return "Suspensao";
+                    else if (notaFiscalDisponivel)
+                        return "Definitivo";
+                    else
+                        return "nenhum";
+
+                default:
+                    return "nenhum";
+            }
         }
         protected List<DadosMensagem> ObterLinhasSelecionadas()
         {
@@ -369,16 +505,76 @@ namespace PlennuscApp.PlennuscGestao.Views
             return null;
         }
 
-        protected void btnEscMens_Click(object sender, EventArgs e)
-        {
-            string escolherTemplete = hfTemplateEscolhido.Value;
 
-            if (string.IsNullOrEmpty(escolherTemplete))
+        private void GerarExcelResultados(List<DetailedSubmissionResult> resultados)
             {
-                lblResultado.Text = "Selecionar um templete";
-                return;
+                try
+                {
+                    // Chama o serviço de Excel que você já tem pronto
+                    var excelService = new ExcelReportService();
+                    byte[] excelBytes = excelService.GerarExcelRelatorio(resultados);
+
+                    // Salva na sessão
+                    Session["ExcelBytes"] = excelBytes;
+                    Session["ExcelFileName"] = $"Relatorio_Envio_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                }
+                catch (Exception ex)
+                {
+                    // Se der erro com o Excel, usa fallback CSV
+                    var excelService = new ExcelReportService();
+                    byte[] csvBytes = excelService.GerarCSVResumo(resultados);
+
+                    Session["ExcelBytes"] = csvBytes;
+                    Session["ExcelFileName"] = $"Relatorio_Envio_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+                }
             }
-            lblResultado.Text = $"Templete escolhido: {escolherTemplete}";
+
+        protected void btnDownloadExcel_Click(object sender, EventArgs e)
+        {
+            byte[] fileBytes = Session["ExcelBytes"] as byte[];
+            string fileName = Session["ExcelFileName"] as string;
+
+            if (fileBytes != null && fileBytes.Length > 0)
+            {
+                Response.Clear();
+
+                // Determinar content type baseado na extensão
+                if (fileName.EndsWith(".xlsx"))
+                {
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                }
+                else
+                {
+                    Response.ContentType = "text/csv";
+                }
+
+                Response.AddHeader("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+                Response.AddHeader("Content-Length", fileBytes.Length.ToString());
+                Response.BinaryWrite(fileBytes);
+                Response.Flush();
+
+                // Limpar sessão
+                Session.Remove("ExcelBytes");
+                Session.Remove("ExcelFileName");
+                Response.End();
+            }
+            else
+            {
+                string script = "alert('Nenhum relatório disponível para download.');";
+                ScriptManager.RegisterStartupScript(this, GetType(), "NoDataAlert", script, true);
+            }
         }
+
+        protected void btnEscMens_Click(object sender, EventArgs e)
+            {
+                string escolherTemplete = hfTemplateEscolhido.Value;
+
+                if (string.IsNullOrEmpty(escolherTemplete))
+                {
+                    lblResultado.Text = "Selecionar um templete";
+                    return;
+                }
+                lblResultado.Text = $"Templete escolhido: {escolherTemplete}";
+            }
     }
 }

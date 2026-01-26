@@ -85,7 +85,7 @@
         const mapInputPorTemplate = {
             "Suspensao": "txtDataSuspensao",
             "Definitivo": "txtDataDefinitivo",
-            "DoisBoletos": "txtDataNovaOpcao"
+            "aVencer": "txtDataVencer"
         };
 
         function selecionarTemplate(template) {
@@ -125,26 +125,31 @@
     <!-- Bootstrap JS carregado no final para garantir que o DOM esteja pronto -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-
-    <!-- Modal de Resultado -->
-    <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-4 shadow">
-                <div class="modal-header bg-success text-white rounded-top-4">
-                    <h5 class="modal-title" id="resultadoModalLabel"><i class="fa-solid fa-paper-plane me-2"></i>Resultado do Envio</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                    <pre id="modalResultadoConteudo" class="mb-0" style="white-space: pre-wrap; font-family: 'Inter', sans-serif;"></pre>
-                </div>
-                <div class="modal-footer bg-light rounded-bottom-4">
-                    <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
-                        <i class="fa-solid fa-xmark me-1"></i>Fechar
-                    </button>
-                </div>
+<!-- Modal de Resultado -->
+<div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header bg-success text-white rounded-top-4">
+                <h5 class="modal-title" id="resultadoModalLabel"><i class="fa-solid fa-paper-plane me-2"></i>Resultado do Envio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <pre id="modalResultadoConteudo" class="mb-0" style="white-space: pre-wrap; font-family: 'Inter', sans-serif;"></pre>
+            </div>
+            <div class="modal-footer bg-light rounded-bottom-4">
+                <!-- BOTÃO DE DOWNLOAD EXCEL (AGORA DENTRO DO MODAL) -->
+                <asp:Button ID="btnDownloadExcel" runat="server"
+                    CssClass="btn btn-success btn-pill me-2"
+                    Text='<i class="fa-solid fa-download me-1"></i> Baixar Relatório Excel'
+                    OnClick="btnDownloadExcel_Click" />
+                
+                <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-xmark me-1"></i>Fechar
+                </button>
             </div>
         </div>
     </div>
+</div>
 
     <%--MODAL TEMPLETE MENSAGEM--%>
 
