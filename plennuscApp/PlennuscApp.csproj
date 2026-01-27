@@ -230,6 +230,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\register-Structures.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendCompanyMessage.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageBeneficiary.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\sendMessage\ViewShippingHistory.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sistema\Company-Menu-Management-System.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\updatePriceTable.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\user-company-management.css" />
@@ -280,6 +281,7 @@
     <Content Include="PlennuscGestao\Views\userCompanyRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\userSystemMenuManagement.aspx" />
     <Content Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx" />
+    <Content Include="PlennuscGestao\Views\viewShippingHistory.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
     <Content Include="PlennuscMedic\Views\demandMedic.aspx" />
     <Content Include="PlennuscMedic\Views\detailDemandMedic.aspx" />
@@ -699,6 +701,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx.designer.cs">
       <DependentUpon>viewDemandBeforeAccept.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\viewShippingHistory.aspx.cs">
+      <DependentUpon>viewShippingHistory.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\viewShippingHistory.aspx.designer.cs">
+      <DependentUpon>viewShippingHistory.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx.cs">
       <DependentUpon>csvImportPlaniumMedic.aspx</DependentUpon>

@@ -117,7 +117,6 @@
 }
 
     </script>
-
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -140,7 +139,7 @@
                 <!-- BOTÃO DE DOWNLOAD EXCEL (AGORA DENTRO DO MODAL) -->
                 <asp:Button ID="btnDownloadExcel" runat="server"
                     CssClass="btn btn-success btn-pill me-2"
-                    Text='<i class="fa-solid fa-download me-1"></i> Baixar Relatório Excel'
+                    Text="Baixar Relatório Excel"
                     OnClick="btnDownloadExcel_Click" />
                 
                 <button type="button" class="btn btn-secondary btn-pill" data-bs-dismiss="modal">
@@ -305,6 +304,10 @@
                     CssClass="btn btn-success btn-pill"
                     Text='Enviar mensagem'
                     OnClientClick="mostrarLoading();" OnClick="btnTestarApi_Click" Enabled="false" />
+
+                    <a href="viewShippingHistory" class="btn btn-info btn-pill">
+                        <i class="fa-solid fa-history me-2"></i>Ver Histórico
+                    </a>
             </div>
 
             <asp:Label ID="lblResultado" runat="server" CssClass="text-muted d-block mb-3"></asp:Label>

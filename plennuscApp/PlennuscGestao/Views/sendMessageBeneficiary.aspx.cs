@@ -156,6 +156,15 @@ namespace PlennuscApp.PlennuscGestao.Views
         protected async void btnTestarApi_Click(object sender, EventArgs e)
         {
             var mensagens = ObterLinhasSelecionadas();
+
+            // VERIFICA SE TEM MENSAGENS SELECIONADAS
+            if (mensagens.Count == 0)
+            {
+                string script = "alert('Selecione pelo menos um associado para enviar mensagem.');";
+                ScriptManager.RegisterStartupScript(this, GetType(), "NenhumSelecionado", script, true);
+                return;
+            }
+
             var api = new WhatsappService();
             string escolhaTemplate = hfTemplateEscolhido.Value;
 
@@ -164,6 +173,9 @@ namespace PlennuscApp.PlennuscGestao.Views
 
             int codAutenticacao = Convert.ToInt32(Session["codUsuario"]);
             StringBuilder resultadoFinal = new StringBuilder();
+
+            int totalSemDocumentos = 0;
+            int totalComDocumentos = 0;
 
             foreach (var dados in mensagens)
             {
@@ -180,6 +192,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                 // 3. Se não tem documento disponível, registrar e pular
                 if (templateAjustado == "nenhum")
                 {
+                    totalSemDocumentos++;
                     resultadosDetalhados.Add(new DetailedSubmissionResult
                     {
                         CodigoAssociado = dados.CodigoAssociado,
@@ -196,6 +209,8 @@ namespace PlennuscApp.PlennuscGestao.Views
                     });
                     continue;
                 }
+
+                totalComDocumentos++;
 
                 // 4. Determinar data correta baseada no template ajustado
                 string dataParaEnvio = "";
@@ -270,7 +285,6 @@ namespace PlennuscApp.PlennuscGestao.Views
                         break;
                 }
 
-
                 // 6. Registrar resultado detalhado
                 resultadosDetalhados.Add(new DetailedSubmissionResult
                 {
@@ -288,6 +302,81 @@ namespace PlennuscApp.PlennuscGestao.Views
                 });
 
                 resultadoFinal.AppendLine(resultado);
+            }
+            // MOSTRAR ALERTA SE ALGUNS NÃO TIVERAM DOCUMENTOS
+            if (totalSemDocumentos > 0)
+            {
+                if (totalComDocumentos == 0)
+                {
+                    // NENHUM tinha documentos
+                    string msg = $"Nenhum documento disponível para envio.";
+
+                    //lblResultado.Text = $"Nenhum dos {totalSemDocumentos} associados possui documentos (boleto ou nota fiscal).";
+                    //lblResultado.CssClass = "text-danger fw-bold alert-warning p-3 rounded";
+
+                    // TOAST MENOR
+                    string script = $@"
+                    Swal.fire({{
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'warning',
+                        title: 'Sem documentos',
+                        text: '{msg.Replace("'", "\\'")}',
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true,
+                        width: 350
+                    }});";
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ToastAviso", script, true);
+                    GerarExcelResultados(resultadosDetalhados);
+                    return;
+                }
+                else
+                {
+                    // Alguns tinham, outros não
+                    string msg = $"{totalComDocumentos} enviadas, {totalSemDocumentos} sem docs.";
+
+                    resultadoFinal.Insert(0, msg + "\n\n");
+                    lblResultado.Text = msg;
+                    lblResultado.CssClass = "text-warning fw-bold alert-info p-3 rounded";
+
+                    string script = $@"
+                    Swal.fire({{
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'info',
+                        title: 'Envio parcial',
+                        text: '{msg.Replace("'", "\\'")}',
+                        showConfirmButton: false,
+                        timer: 4000,
+                        width: 320
+                    }});";
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ToastInfo", script, true);
+                }
+            }
+            else
+            {
+                // Todos tinham documentos
+                string msg = $"{mensagens.Count} mensagens enviadas!";
+
+                lblResultado.Text = msg;
+                lblResultado.CssClass = "text-success fw-bold alert-success p-3 rounded";
+
+                string script = $@"
+                Swal.fire({{
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Concluído',
+                    text: '{msg.Replace("'", "\\'")}',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: 300
+                }});";
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "ToastSucesso", script, true);
             }
 
             // 7. Gerar Excel com resultados detalhados
@@ -314,37 +403,6 @@ namespace PlennuscApp.PlennuscGestao.Views
 
         // MÉTODO SIMPLIFICADO - Só verifica disponibilidade
         private string AjustarTemplateSimples(
-            string templateEscolhido,
-            bool boletoDisponivel,
-            bool notaFiscalDisponivel)
-        {
-            switch (templateEscolhido)
-            {
-                case "Suspensao":
-                    return boletoDisponivel ? "Suspensao" : "nenhum";
-
-                case "Definitivo":
-                    return notaFiscalDisponivel ? "Definitivo" : "nenhum";
-
-                case "aVencer":
-                    if (boletoDisponivel && notaFiscalDisponivel)
-                        return "aVencer";
-                    else if (boletoDisponivel)
-                        return "Suspensao";
-                    else if (notaFiscalDisponivel)
-                        return "Definitivo";
-                    else
-                        return "nenhum";
-
-                default:
-                    return "nenhum";
-            }
-        }
-
-
-
-        // MÉTODO SIMPLIFICADO - Só verifica disponibilidade
-        private string AjustarTemplate(
             string templateEscolhido,
             bool boletoDisponivel,
             bool notaFiscalDisponivel)

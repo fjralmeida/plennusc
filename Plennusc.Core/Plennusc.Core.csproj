@@ -178,6 +178,7 @@
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\ExcelReportService.cs" />
+    <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />
     <Compile Include="Service\ServiceGestao\usuario\userSystemMenuManagementService.cs" />
     <Compile Include="Service\ServiceGestao\vinculaDepartameto\departmentService.cs" />
@@ -204,6 +205,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\price\TablePrice.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\AutenticacaoDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\sendMessage\HistoricoEnvioQuery.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SysPlatform\companyMenuManagementSystemQueries.cs" />

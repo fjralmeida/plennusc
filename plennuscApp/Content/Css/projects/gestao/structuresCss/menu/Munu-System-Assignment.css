@@ -426,15 +426,21 @@
     white-space: nowrap;
 }
 
-/* ===== SEM ESPAÇOS BRANCOS ===== */
-.card-header {
-    padding: 12px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-}
+    .btn-salvar-todos:hover {
+        background-color: #36895c;
+        color: white;
+    }
+
+
+    /* ===== SEM ESPAÇOS BRANCOS ===== */
+    .card-header {
+        padding: 12px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
 
 .card-title {
     margin: 0;

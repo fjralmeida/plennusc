@@ -47,6 +47,7 @@ namespace appWhatsapp
             routes.MapPageRoute("sendMessageBeneficiary", "sendMessageBeneficiary", "~/PlennuscGestao/Views/sendMessageBeneficiary.aspx");
             routes.MapPageRoute("sendCompanyMessage", "sendCompanyMessage", "~/PlennuscGestao/Views/sendCompanyMessage.aspx");
             routes.MapPageRoute("FixedMessageSending", "FixedMessageSending", "~/PlennuscGestao/Views/FixedMessageSending.aspx");
+            routes.MapPageRoute("viewShippingHistory", "viewShippingHistory", "~/PlennuscGestao/Views/viewShippingHistory.aspx");
 
             // ✅ Tabela de preços
             routes.MapPageRoute("priceTable", "priceTable", "~/PlennuscGestao/Views/priceTable.aspx");

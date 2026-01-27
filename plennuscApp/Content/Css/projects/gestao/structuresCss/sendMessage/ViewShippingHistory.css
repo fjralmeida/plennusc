@@ -1,0 +1,360 @@
+﻿/* viewShippingHistory.css - VERSÃO CLEAN E ALINHADA */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    background: #f5f7fa;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* CARD PRINCIPAL */
+.card-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid #e8ecef;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e8ecef;
+}
+
+    .card-header h5 {
+        margin: 0;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 18px;
+    }
+
+        .card-header h5 i {
+            color: #4CB07A;
+            margin-right: 10px;
+        }
+
+/* FILTROS - LAYOUT MAIS CLEAN */
+.filter-panel {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    border: 1px solid #e8ecef;
+}
+
+    .filter-panel label.form-label {
+        font-weight: 500;
+        font-size: 12px;
+        color: #5a6c7d;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .filter-panel .form-control,
+    .filter-panel .form-select {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #dce1e6;
+        background-color: #fff;
+        font-size: 13px;
+        height: 38px;
+        transition: all 0.2s ease;
+        width: 100%;
+    }
+
+        .filter-panel .form-control:focus,
+        .filter-panel .form-select:focus {
+            border-color: #4CB07A;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 176, 122, 0.1);
+        }
+
+/* BOTÕES ALINHADOS E CLEAN */
+.btn-pill {
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-weight: 500;
+    font-size: 13px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    min-width: 100px;
+    height: 38px;
+}
+
+    .btn-pill i {
+        margin-right: 6px;
+        font-size: 12px;
+    }
+
+    .btn-pill:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+.btn-primary {
+    background-color: #4CB07A;
+    border-color: #4CB07A;
+    color: #fff;
+}
+
+    .btn-primary:hover {
+        background-color: #3B8B65;
+        border-color: #3B8B65;
+        color: #fff;
+    }
+
+.btn-outline-secondary {
+    background-color: transparent;
+    border-color: #dce1e6;
+    color: #5a6c7d;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        border-color: #bdc6d0;
+        color: #5a6c7d;
+    }
+
+/* CONTADOR DE REGISTROS */
+.alert-info {
+    background-color: #f0f7ff;
+    border: 1px solid #cce5ff;
+    color: #004085;
+    border-radius: 6px;
+    padding: 12px 16px;
+}
+
+    .alert-info i {
+        color: #4CB07A;
+        margin-right: 8px;
+    }
+
+/* TABELA CLEAN */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e8ecef;
+    background: #fff;
+}
+
+.table {
+    margin-bottom: 0;
+    border-collapse: collapse;
+}
+
+    .table thead {
+        background-color: #f8f9fa;
+    }
+
+    .table th {
+        font-weight: 600;
+        font-size: 12px;
+        color: #5a6c7d;
+        text-transform: uppercase;
+        padding: 14px 12px;
+        border-bottom: 2px solid #e8ecef;
+        text-align: left;
+        vertical-align: middle;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        padding: 12px;
+        border-bottom: 1px solid #f0f3f5;
+        text-align: left;
+        vertical-align: middle;
+        font-size: 13px;
+        color: #2c3e50;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s;
+    }
+
+        .table tbody tr:hover {
+            background-color: rgba(76, 176, 122, 0.03);
+        }
+
+        /* LINHAS ALTERNADAS SUAVES */
+        .table tbody tr:nth-child(even) {
+            background-color: #fafcfd;
+        }
+
+/* BADGES CLEAN E SUBTIS */
+.badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+/* Badges com cores suaves */
+.badge-success {
+    background-color: rgba(76, 176, 122, 0.1);
+    color: #2e7d5a;
+    border-color: rgba(76, 176, 122, 0.2);
+}
+
+.badge-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #856404;
+    border-color: rgba(255, 193, 7, 0.2);
+}
+
+.badge-info {
+    background-color: rgba(13, 202, 240, 0.1);
+    color: #0c5460;
+    border-color: rgba(13, 202, 240, 0.2);
+}
+
+.badge-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #721c24;
+    border-color: rgba(220, 53, 69, 0.2);
+}
+
+.badge-secondary {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #383d41;
+    border-color: rgba(108, 117, 125, 0.2);
+}
+
+.badge-primary {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #084298;
+    border-color: rgba(13, 110, 253, 0.2);
+}
+
+/* PAGINAÇÃO MINIMALISTA */
+.pagination {
+    margin-top: 20px;
+    margin-bottom: 0;
+    justify-content: flex-end;
+}
+
+    .pagination .page-item .page-link {
+        padding: 6px 12px;
+        font-size: 13px;
+        color: #5a6c7d;
+        border: 1px solid #e8ecef;
+        margin: 0 2px;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #4CB07A;
+        border-color: #4CB07A;
+        color: white;
+    }
+
+    .pagination .page-item:not(.active) .page-link:hover {
+        background-color: #f8f9fa;
+        color: #4CB07A;
+        border-color: #dce1e6;
+    }
+
+
+/* REMOVE COMPLETAMENTE O EFEITO AZUL - SOBRESCREVE TUDO */
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* REMOVE O :focus-visible DO BOOTSTRAP 5 */
+.btn:focus-visible {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* FORÇA A SOBRESCRITA DO ESTILO DO ACTIVE */
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+    background-color: #4CB07A !important;
+    border-color: #4CB07A !important;
+    box-shadow: none !important;
+}
+
+.btn-outline-secondary:not(:disabled):not(.disabled):active,
+.btn-outline-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-secondary.dropdown-toggle {
+    background-color: transparent !important;
+    border-color: #dce1e6 !important;
+    color: #5a6c7d !important;
+    box-shadow: none !important;
+}
+
+/* REMOVE O BACKDROP DO BOOTSTRAP */
+.btn:focus,
+.btn:focus-visible {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+    .filter-panel .col-md-3 {
+        margin-bottom: 16px;
+    }
+
+    .filter-panel .col-md-6 {
+        margin-top: 10px;
+    }
+
+    .btn-pill {
+        min-width: 90px;
+        padding: 8px 16px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table th,
+    .table td {
+        white-space: nowrap;
+    }
+}
+
+/* SCROLLBAR SUAVE */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a1a1a1;
+    }

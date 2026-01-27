@@ -349,6 +349,28 @@ input[type="checkbox"].form-check-input {
     box-sizing: border-box;
     transition: border-color 0.3s ease;
 }
+.alert-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border: 1px solid #0dcaf0;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+    border: 1px solid #198754;
+}
+
+.p-3 {
+    padding: 1rem !important;
+}
+
+.rounded {
+    border-radius: 0.375rem !important;
+}
 
     .campo-data:focus {
         border-color: #4CB07A;
