@@ -10,6 +10,52 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.sendMessage
 {
     public class HistoricoEnvioQuery
     {
+        // Método auxiliar para buscar nomes no banco Aliança
+        private Dictionary<string, string> BuscarNomesAssociados(List<string> codigos)
+        {
+            var nomes = new Dictionary<string, string>();
+
+            if (codigos == null || codigos.Count == 0)
+                return nomes;
+
+            // Cria uma string com os códigos para a consulta SQL
+            string codigosStr = string.Join(",", codigos.Select(c => $"'{c}'"));
+
+            string query = $@"
+                SELECT CODIGO_ASSOCIADO, NOME_ASSOCIADO
+                FROM ps1000 
+                WHERE CODIGO_ASSOCIADO IN ({codigosStr})";
+
+            try
+            {
+                using (var conn = new SqlConnection(
+                    System.Configuration.ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString))
+                {
+                    conn.Open();
+                    using (var cmd = new SqlCommand(query, conn))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string codigo = reader["CODIGO_ASSOCIADO"].ToString();
+                                string nome = reader["NOME_ASSOCIADO"].ToString();
+                                nomes[codigo] = nome;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Logar erro, se necessário
+                // Se houver erro, retorna dicionário vazio
+                nomes.Clear();
+            }
+
+            return nomes;
+        }
+
         public DataTable ConsultarHistoricoEnvios(
             DateTime? dataInicio = null,
             DateTime? dataFim = null,
@@ -30,15 +76,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.sendMessage
                         e.CodEnvioMensagemWpp,
                         e.CodigoEmpresa,
                         e.CodigoAssociado,
-                        -- CORREÇÃO: Use valor fixo se não houver tabela de associados
-                        'N/A' AS NomeAssociado,
                         e.NumTelefoneDestino,
                         e.DataEnvio,
                         e.Mensagem,
                         e.StatusEnvio,
                         e.CodUsuarioEnvio,
-                        -- CORREÇÃO: Use valor fixo se não houver tabela de usuários
-                        'N/A' AS NomeUsuario,
                         ISNULL(r.ID_RESPOSTA_API, '') AS ID_RESPOSTA_API,
                         ISNULL(r.STATUS_API_JSON, '') AS STATUS_API_JSON,
                         ROW_NUMBER() OVER (ORDER BY e.DataEnvio DESC) AS RowNum,
@@ -79,8 +121,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.sendMessage
                 parametros.Add(new SqlParameter("@CodigoAssociado", $"%{codigoAssociado}%"));
             }
 
-            // Removido filtro por nomeAssociado pois não temos essa informação
-
             if (!string.IsNullOrEmpty(telefone))
             {
                 string telefoneLimpo = new string(telefone.Where(char.IsDigit).ToArray());
@@ -105,21 +145,58 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.sendMessage
 
             try
             {
-                using (var conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["Plennus"].ConnectionString))
+                DataTable dt;
+
+                using (var conn = new SqlConnection(
+                    System.Configuration.ConfigurationManager.ConnectionStrings["Plennus"].ConnectionString))
                 {
                     conn.Open();
                     using (var cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddRange(parametros.ToArray());
 
-                        var dt = new DataTable();
+                        dt = new DataTable();
                         using (var da = new SqlDataAdapter(cmd))
                         {
                             da.Fill(dt);
                         }
-                        return dt;
                     }
                 }
+
+                // Se encontrou registros, busca os nomes no banco Aliança
+                if (dt.Rows.Count > 0)
+                {
+                    // Coleta todos os códigos de associados distintos
+                    var codigos = dt.AsEnumerable()
+                        .Select(row => row.Field<string>("CodigoAssociado"))
+                        .Distinct()
+                        .ToList();
+
+                    // Busca os nomes no banco Aliança
+                    var nomesAssociados = BuscarNomesAssociados(codigos);
+
+                    // Adiciona coluna para o nome se não existir
+                    if (!dt.Columns.Contains("NomeAssociado"))
+                    {
+                        dt.Columns.Add("NomeAssociado", typeof(string));
+                    }
+
+                    // Preenche os nomes
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string codigo = row["CodigoAssociado"].ToString();
+                        if (nomesAssociados.ContainsKey(codigo))
+                        {
+                            row["NomeAssociado"] = nomesAssociados[codigo];
+                        }
+                        else
+                        {
+                            row["NomeAssociado"] = "NOME NÃO ENCONTRADO";
+                        }
+                    }
+                }
+
+                return dt;
             }
             catch (Exception ex)
             {
@@ -134,7 +211,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.sendMessage
                 dt.Columns.Add("Mensagem", typeof(string));
                 dt.Columns.Add("StatusEnvio", typeof(string));
                 dt.Columns.Add("CodUsuarioEnvio", typeof(int));
-                dt.Columns.Add("NomeUsuario", typeof(string));
                 dt.Columns.Add("ID_RESPOSTA_API", typeof(string));
                 dt.Columns.Add("STATUS_API_JSON", typeof(string));
 
@@ -142,13 +218,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.sendMessage
                 if (dt.Rows.Count == 0)
                 {
                     dt.Rows.Add(0, 0, "000", "N/A", "(00) 00000-0000",
-                                DateTime.Now, "Template", "ENVIADO", 0, "Usuário", "", "");
+                                DateTime.Now, "Template", "ENVIADO", 0, "", "");
                 }
 
                 return dt;
             }
         }
-
         public int ContarTotalRegistros(
             DateTime? dataInicio = null,
             DateTime? dataFim = null,

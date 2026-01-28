@@ -96,70 +96,63 @@
                     </span>
                 </div>
                 
-                <!-- TABELA SIMPLIFICADA -->
-                <div class="table-responsive">
-                    <asp:GridView ID="GridHistorico" runat="server"
-                        AutoGenerateColumns="False"
-                        CssClass="table table-hover align-middle mb-0"
-                        EmptyDataText="Nenhum registro encontrado."
-                        AllowPaging="true"
-                        PageSize="30"
-                        OnPageIndexChanging="GridHistorico_PageIndexChanging">
-                        <Columns>
-                            <asp:TemplateField HeaderText="Data/Hora">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblDataHora" runat="server"
-                                        Text='<%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            
-                            <asp:TemplateField HeaderText="Código">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblCodigo" runat="server"
-                                        Text='<%# Eval("CodigoAssociado") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            
-                         <%--   <asp:TemplateField HeaderText="Associado">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblNome" runat="server"
-                                        Text='<%# Eval("NomeAssociado") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            --%>
-                            <asp:TemplateField HeaderText="Telefone">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblTelefone" runat="server"
-                                        Text='<%# Eval("NumTelefoneDestino") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
+             <div class="table-responsive">
+    <asp:GridView ID="GridHistorico" runat="server"
+        AutoGenerateColumns="False"
+        CssClass="table table-hover align-middle mb-0"
+        EmptyDataText="Nenhum registro encontrado."
+        AllowPaging="true"
+        PageSize="30"
+        OnPageIndexChanging="GridHistorico_PageIndexChanging">
+        <Columns>
+            <asp:TemplateField HeaderText="Data/Hora">
+                <ItemTemplate>
+                    <asp:Label ID="lblDataHora" runat="server"
+                        Text='<%# Eval("DataEnvio", "{0:dd/MM/yyyy HH:mm}") %>'></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+            
+            <asp:TemplateField HeaderText="Código">
+                <ItemTemplate>
+                    <asp:Label ID="lblCodigo" runat="server"
+                        Text='<%# Eval("CodigoAssociado") %>'></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
 
-                           <asp:TemplateField HeaderText="Template">
-                            <ItemTemplate>
-                                <span class='<%# GetBadgeTemplate(Eval("Mensagem").ToString()) %>'>
-                                    <%# GetDescricaoTemplate(Eval("Mensagem").ToString()) %>
-                                </span>
-                            </ItemTemplate>
-                        </asp:TemplateField>
+            <asp:TemplateField HeaderText="Associado">
+                <ItemTemplate>
+                    <asp:Label ID="lblNome" runat="server"
+                        Text='<%# Eval("NomeAssociado") %>'></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
+            
+            <asp:TemplateField HeaderText="Telefone">
+                <ItemTemplate>
+                    <asp:Label ID="lblTelefone" runat="server"
+                        Text='<%# Eval("NumTelefoneDestino") %>'></asp:Label>
+                </ItemTemplate>
+            </asp:TemplateField>
 
-                        <asp:TemplateField HeaderText="Status">
-                            <ItemTemplate>
-                                <span class='<%# GetBadgeStatus(Eval("StatusEnvio").ToString()) %>'>
-                                    <%# Eval("StatusEnvio") %>
-                                </span>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                           <%-- <asp:TemplateField HeaderText="Usuário">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblUsuario" runat="server"
-                                        Text='<%# Eval("NomeUsuario") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>--%>
-                        </Columns>
-                        <PagerSettings Mode="NumericFirstLast" Position="Bottom" />
-                        <PagerStyle CssClass="pagination justify-content-end" />
-                    </asp:GridView>
-                </div>
+            <asp:TemplateField HeaderText="Template">
+                <ItemTemplate>
+                    <span class='<%# GetBadgeTemplate(Eval("Mensagem").ToString()) %>'>
+                        <%# GetDescricaoTemplate(Eval("Mensagem").ToString()) %>
+                    </span>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField HeaderText="Status">
+                <ItemTemplate>
+                    <span class='<%# GetBadgeStatus(Eval("StatusEnvio").ToString()) %>'>
+                        <%# Eval("StatusEnvio") %>
+                    </span>
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+        <PagerSettings Mode="NumericFirstLast" Position="Bottom" />
+        <PagerStyle CssClass="pagination justify-content-end" />
+    </asp:GridView>
+</div>
             </div>
         </div>
     </div>

@@ -305,9 +305,9 @@
                     Text='Enviar mensagem'
                     OnClientClick="mostrarLoading();" OnClick="btnTestarApi_Click" Enabled="false" />
 
-                    <a href="viewShippingHistory" class="btn btn-info btn-pill">
+<%--                    <a href="viewShippingHistory" class="btn btn-info btn-pill">
                         <i class="fa-solid fa-history me-2"></i>Ver Histórico
-                    </a>
+                    </a>--%>
             </div>
 
             <asp:Label ID="lblResultado" runat="server" CssClass="text-muted d-block mb-3"></asp:Label>
@@ -320,12 +320,22 @@
                     </asp:DropDownList>
                 </div>
 
-                <div class="col-md-4">
+                <!-- ADICIONE ESTE NOVO FILTRO -->
+                <div class="col-md-3">
+                    <label class="form-label">Status de Envio:</label>
+                    <asp:DropDownList ID="ddlFiltroEnvio" runat="server" CssClass="form-select">
+                        <asp:ListItem Text="Disponíveis para envio" Value="disponiveis" Selected="True" />
+                        <asp:ListItem Text="Já enviados (últimas 24h)" Value="enviados24h" />
+                        <asp:ListItem Text="Todos" Value="todos" />
+                    </asp:DropDownList>
+                </div>
+
+                <div class="col-md-3">
                     <label class="form-label">De:</label>
                     <input type="date" id="txtDataInicio" runat="server" class="form-control" />
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Até:</label>
                     <input type="date" id="txtDataFim" runat="server" class="form-control" />
                 </div>
@@ -364,7 +374,7 @@
                     </asp:DropDownList>
                 </div>
 
-                <asp:GridView ID="GridAssociados" runat="server"
+           <asp:GridView ID="GridAssociados" runat="server"
                     AutoGenerateColumns="False"
                     CssClass="table table-hover align-middle mb-0"
                     ClientIDMode="Static"
@@ -375,7 +385,8 @@
                     AllowPaging="true"
                     PageSize="15"
                     OnPageIndexChanging="GridAssociados_PageIndexChanging"
-                    OnPreRender="GridAssociados_PreRender">
+                    OnPreRender="GridAssociados_PreRender"
+                    OnRowDataBound="GridAssociados_RowDataBound">
                     <Columns>
 
                         <asp:TemplateField HeaderText="">
@@ -387,7 +398,10 @@
                             </HeaderTemplate>
                             <ItemTemplate>
                                 <div>
-                                    <asp:CheckBox ID="chkSelecionar" runat="server" CssClass="form-check-input" onclick="alternarSelecao(this);" />
+                                    <asp:CheckBox ID="chkSelecionar" runat="server" 
+                                        CssClass="form-check-input" 
+                                        onclick="alternarSelecao(this);"
+                                        Enabled='<%# !Convert.ToBoolean(Eval("JA_ENVIADO_24H")) && ddlFiltroEnvio.SelectedValue != "enviados24h" %>' />
                                 </div>
                             </ItemTemplate>
                             <ItemStyle CssClass="col-selecao" />
@@ -396,39 +410,64 @@
 
                         <asp:TemplateField HeaderText="Código">
                             <ItemTemplate>
-                                <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblCodigo" runat="server" Text='<%# Eval("CODIGO_ASSOCIADO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
                         <asp:TemplateField HeaderText="Registro">
                             <ItemTemplate>
-                                <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblRegistro" runat="server" Text='<%# Eval("NUMERO_REGISTRO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
                         <asp:TemplateField HeaderText="Associado">
                             <ItemTemplate>
-                                <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblNome" runat="server" Text='<%# Eval("NOME_ASSOCIADO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
                         <asp:TemplateField HeaderText="Plano">
                             <ItemTemplate>
-                                <asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblPlano" runat="server" Text='<%# Eval("NOME_PLANO_ABREVIADO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
                         <asp:TemplateField HeaderText="Operadora">
                             <ItemTemplate>
-                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("DESCRICAO_GRUPO_CONTRATO") %>' /></ItemTemplate>
+                                <asp:Label ID="lblOperadora" runat="server" Text='<%# Eval("DESCRICAO_GRUPO_CONTRATO") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
                         <asp:TemplateField HeaderText="Vencimento">
                             <ItemTemplate>
-                                <asp:Label ID="lblVencimento" runat="server" Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' /></ItemTemplate>
+                                <asp:Label ID="lblVencimento" runat="server" 
+                                    Text='<%# String.Format("{0:dd/MM/yyyy}", Eval("DATA_VENCIMENTO")) %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
                         <asp:TemplateField HeaderText="Valor">
                             <ItemTemplate>
-                                <asp:Label ID="lblValor" runat="server" Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' /></ItemTemplate>
+                                <asp:Label ID="lblValor" runat="server" 
+                                    Text='<%# String.Format("R$ {0:N2}", Eval("VALOR_FATURA")) %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
                         <asp:TemplateField HeaderText="Telefone">
                             <ItemTemplate>
-                                <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' /></ItemTemplate>
+                                <asp:Label ID="lblTelefone" runat="server" Text='<%# Eval("NUMERO_TELEFONE") %>' />
+                            </ItemTemplate>
                         </asp:TemplateField>
+        
+                   <asp:TemplateField HeaderText="Status Envio">
+                    <ItemTemplate>
+                        <span class='<%# Convert.ToBoolean(Eval("JA_ENVIADO_24H")) ? "status-enviado" : "status-disponivel" %>'>
+                            <%# Convert.ToBoolean(Eval("JA_ENVIADO_24H")) ? "Enviado 24h" : "Disponível" %>
+                        </span>
+                    </ItemTemplate>
+                    <ItemStyle Width="120px" />
+                </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
-
             </div>
         </div>
     </div>

@@ -372,6 +372,77 @@ input[type="checkbox"].form-check-input {
     border-radius: 0.375rem !important;
 }
 
+/* ESTILOS PARA STATUS DE ENVIO */
+.status-disponivel {
+    background-color: #28a745 !important; /* VERDE - muito mais visível */
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    display: inline-block;
+    text-align: center;
+    min-width: 90px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.status-enviado {
+    background-color: #ffc107 !important; /* AMARELO - mantém */
+    color: #000000 !important;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    display: inline-block;
+    text-align: center;
+    min-width: 90px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Ou se preferir AZUL ao invés de VERDE para "Disponível" */
+/*
+.status-disponivel {
+    background-color: #007bff !important; 
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    display: inline-block;
+    text-align: center;
+    min-width: 90px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+*/
+
+/* Ajuste para melhor visibilidade na tabela */
+.table-hover tbody tr:hover .status-disponivel,
+.table-hover tbody tr:hover .status-enviado {
+    opacity: 0.9;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
+
+/* Linhas de associados já enviados */
+.enviado-recente {
+    background-color: #f8f9fa !important;
+}
+
+    .enviado-recente td {
+        color: #6c757d;
+        opacity: 0.8;
+    }
+
+    .enviado-recente .status-enviado {
+        opacity: 0.9;
+    }
+
+/* Checkbox desabilitado */
+.form-check-input.disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+}
+
     .campo-data:focus {
         border-color: #4CB07A;
         outline: none;

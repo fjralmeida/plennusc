@@ -345,5 +345,83 @@ WHERE
             object result = new Banco_Dados_SQLServer().LerPlennus(sql, parametros);
             return result != null;
         }
+
+
+        public DataTable ConsultarEnviosUltimas24H(List<string> codigosAssociados, string template)
+        {
+            if (codigosAssociados == null || codigosAssociados.Count == 0)
+                return new DataTable();
+
+            // Cria uma lista de códigos para a consulta IN
+            string listaCodigos = string.Join(",", codigosAssociados.Select(c => $"'{c.Replace("'", "''")}'"));
+
+            string sql = $@"
+        SELECT CodigoAssociado, MAX(DataEnvio) as DataUltimoEnvio
+        FROM API_EnvioMensagemWpp
+        WHERE CodigoAssociado IN ({listaCodigos})
+          AND StatusEnvio = 'ENVIADO'
+          AND DataEnvio >= DATEADD(HOUR, -24, GETDATE())
+          AND (@Template IS NULL OR Mensagem = @Template)
+        GROUP BY CodigoAssociado";
+
+            var parametros = new Dictionary<string, object>
+            {
+                ["@Template"] = string.IsNullOrEmpty(template) ? (object)DBNull.Value : template
+            };
+
+            return new Banco_Dados_SQLServer().LerPlennus(sql, parametros);
+        }
+
+        public DataTable ConsultaAssociadosComFiltroEnvio(
+         DateTime? dataIni = null,
+         DateTime? dataFim = null,
+         int? codigoOperadora = null,
+         string template = null,
+         string filtroEnvio = "disponiveis")
+        {
+            if (!dataIni.HasValue || !dataFim.HasValue)
+            {
+                return new DataTable();
+            }
+
+            // Primeiro, busca os associados do banco Aliança
+            string sql = @"
+        SELECT 
+            A.NUMERO_REGISTRO, 
+            A.CODIGO_ASSOCIADO, 
+            B.NOME_ASSOCIADO,
+            A.DATA_VENCIMENTO, 
+            A.VALOR_FATURA,
+            C.DESCRICAO_GRUPO_CONTRATO,
+            D.NOME_PLANO_ABREVIADO,
+            T.NUMERO_TELEFONE
+        FROM PS1020 A
+        LEFT JOIN PS1000 B ON A.CODIGO_ASSOCIADO = B.CODIGO_ASSOCIADO
+        LEFT JOIN ESP0002 C ON B.CODIGO_GRUPO_CONTRATO = C.CODIGO_GRUPO_CONTRATO
+        LEFT JOIN PS1030 D ON D.CODIGO_PLANO = B.CODIGO_PLANO
+        OUTER APPLY (
+            SELECT TOP 1 NUMERO_TELEFONE 
+            FROM PS1006 
+            WHERE PS1006.CODIGO_ASSOCIADO = A.CODIGO_ASSOCIADO
+        ) T
+        WHERE 
+            A.DATA_VENCIMENTO BETWEEN @DataIni AND @DataFim
+            AND A.DATA_PAGAMENTO IS NULL
+            AND (VALOR_PAGO <> '0.00' OR VALOR_PAGO IS NOT NULL)
+            AND A.DATA_CANCELAMENTO IS NULL
+            AND A.CODIGO_EMPRESA = 400
+            AND B.CODIGO_MOTIVO_EXCLUSAO IS NULL
+            AND B.DATA_EXCLUSAO IS NULL
+            AND (@CodigoOperadora IS NULL OR C.CODIGO_GRUPO_CONTRATO = @CodigoOperadora)";
+
+            var parametros = new Dictionary<string, object>
+            {
+                ["@DataIni"] = dataIni.Value.Date,
+                ["@DataFim"] = dataFim.Value.Date,
+                ["@CodigoOperadora"] = (object)codigoOperadora ?? DBNull.Value
+            };
+
+            return new Banco_Dados_SQLServer().LerAlianca(sql, parametros);
+        }
     }
 }

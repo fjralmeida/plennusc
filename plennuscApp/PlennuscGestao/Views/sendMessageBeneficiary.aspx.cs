@@ -77,9 +77,40 @@ namespace PlennuscApp.PlennuscGestao.Views
         {
             GridAssociados.PageIndex = 0; // Reinicia para a primeira página
             CarregarGrid();
+
+            // Se mudou para "enviados24h", mostra mensagem informativa
+            if (ddlFiltroEnvio.SelectedValue == "enviados24h")
+            {
+                string script = @"
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Modo de visualização',
+                    text: 'Estes associados já receberam mensagem nas últimas 24 horas. Não é possível selecioná-los para novo envio.',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: 450
+                });";
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "ModoVisualizacao", script, true);
+            }
+            else if (ddlFiltroEnvio.SelectedValue == "disponiveis")
+            {
+                string script = @"
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Modo de visualização',
+                    text: 'Estes associados estão disponíveis para receberam mensagem.',
+                    showConfirmButton: false,
+                    timer: 3000
+                });";
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "ModoVisualizacao", script, true);
+            }
         }
-
-
 
         private void CarregarGrid()
         {
@@ -104,15 +135,171 @@ namespace PlennuscApp.PlennuscGestao.Views
                     var temp = ini; ini = fim; fim = temp;
                 }
 
-                GridAssociados.DataSource = ItensAssoci.ConsultaAssociados(ini, fim, operadoraSel);
-                btnTestarApi.Enabled = true;
+                string templateEscolhido = hfTemplateEscolhido.Value;
+                string filtroEnvio = ddlFiltroEnvio.SelectedValue;
+
+                // 1. Busca associados do banco Aliança
+                DataTable dtAssociados = ItensAssoci.ConsultaAssociados(ini, fim, operadoraSel);
+
+                // Se não há associados, para aqui
+                if (dtAssociados.Rows.Count == 0)
+                {
+                    GridAssociados.DataSource = null;
+                    btnTestarApi.Enabled = false;
+                    GridAssociados.DataBind();
+                    return;
+                }
+
+                // 2. Prepara lista de códigos para verificar envios
+                List<string> codigosAssociados = new List<string>();
+                foreach (DataRow row in dtAssociados.Rows)
+                {
+                    codigosAssociados.Add(row["CODIGO_ASSOCIADO"].ToString());
+                }
+
+                // 3. Busca quais já foram enviados (banco Plennus)
+                DataTable dtEnvios = ItensAssoci.ConsultarEnviosUltimas24H(codigosAssociados, templateEscolhido);
+
+                // 4. Cria um HashSet para busca rápida
+                HashSet<string> enviados24h = new HashSet<string>();
+                foreach (DataRow row in dtEnvios.Rows)
+                {
+                    enviados24h.Add(row["CodigoAssociado"].ToString());
+                }
+
+                // 5. Adiciona coluna de status ao DataTable
+                dtAssociados.Columns.Add("JA_ENVIADO_24H", typeof(bool));
+                dtAssociados.Columns.Add("DATA_ULTIMO_ENVIO", typeof(DateTime));
+
+                foreach (DataRow row in dtAssociados.Rows)
+                {
+                    string codigo = row["CODIGO_ASSOCIADO"].ToString();
+                    bool jaEnviado = enviados24h.Contains(codigo);
+                    row["JA_ENVIADO_24H"] = jaEnviado;
+
+                    // Encontra a data do último envio se existir
+                    if (jaEnviado)
+                    {
+                        DataRow[] envioRows = dtEnvios.Select($"CodigoAssociado = '{codigo.Replace("'", "''")}'");
+                        if (envioRows.Length > 0)
+                        {
+                            row["DATA_ULTIMO_ENVIO"] = envioRows[0]["DataUltimoEnvio"];
+                        }
+                    }
+                }
+
+                // 6. Aplica filtro de envio
+                DataTable dtFiltrado = dtAssociados.Clone();
+                DataRow[] rowsFiltradas;
+
+                switch (filtroEnvio)
+                {
+                    case "disponiveis":
+                        rowsFiltradas = dtAssociados.Select("JA_ENVIADO_24H = false");
+                        break;
+                    case "enviados24h":
+                        rowsFiltradas = dtAssociados.Select("JA_ENVIADO_24H = true");
+                        break;
+                    case "todos":
+                    default:
+                        rowsFiltradas = dtAssociados.Select();
+                        break;
+                }
+
+                foreach (DataRow row in rowsFiltradas)
+                {
+                    dtFiltrado.ImportRow(row);
+                }
+
+                // 7. Configura o GridView
+                GridAssociados.DataSource = dtFiltrado;
+
+                // Habilita ou desabilita o botão de envio
+                if (filtroEnvio == "enviados24h" || dtFiltrado.Rows.Count == 0)
+                {
+                    btnTestarApi.Enabled = false;
+                    btnTestarApi.ToolTip = filtroEnvio == "enviados24h"
+                        ? "Modo visualização apenas - estes associados já receberam mensagem nas últimas 24 horas"
+                        : "Nenhum associado disponível para envio";
+                }
+                else
+                {
+                    btnTestarApi.Enabled = true;
+                    btnTestarApi.ToolTip = "";
+                }
             }
             else
             {
                 GridAssociados.DataSource = null;
+                btnTestarApi.Enabled = false;
             }
 
             GridAssociados.DataBind();
+
+            // Aplica estilo especial para linhas de associados já enviados
+            AplicarEstiloEnviados();
+        }
+
+        private void AplicarEstiloEnviados()
+        {
+            // Aplica estilo apenas se estamos visualizando enviados
+            if (ddlFiltroEnvio.SelectedValue != "enviados24h")
+                return;
+
+            foreach (GridViewRow row in GridAssociados.Rows)
+            {
+                if (row.RowType == DataControlRowType.DataRow)
+                {
+                    // Desabilita o checkbox
+                    CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
+                    if (chk != null)
+                    {
+                        chk.Enabled = false;
+                        chk.CssClass = "form-check-input disabled";
+                        chk.Attributes["title"] = "Associado já recebeu mensagem nas últimas 24 horas";
+                    }
+
+                    // Aplica estilo visual
+                    row.CssClass = row.CssClass + " table-secondary enviado-recente";
+                }
+            }
+
+            // Desabilita o checkbox "Selecionar Todos" no header
+            if (GridAssociados.HeaderRow != null)
+            {
+                CheckBox chkTodos = (CheckBox)GridAssociados.HeaderRow.FindControl("chkSelecionarTodos");
+                if (chkTodos != null)
+                {
+                    chkTodos.Enabled = false;
+                    chkTodos.CssClass = "form-check-input disabled";
+                }
+            }
+        }
+        protected void GridAssociados_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                // Verifica se o associado já foi enviado nas últimas 24 horas
+                DataRowView rowView = (DataRowView)e.Row.DataItem;
+                bool jaEnviado24h = Convert.ToInt32(rowView["JA_ENVIADO_24H"]) == 1;
+
+                if (jaEnviado24h)
+                {
+                    // Aplica estilo visual
+                    e.Row.CssClass = e.Row.CssClass + " enviado-recente";
+
+                    // Desabilita o checkbox se estiver no modo de visualização
+                    if (ddlFiltroEnvio.SelectedValue == "enviados24h")
+                    {
+                        CheckBox chk = (CheckBox)e.Row.FindControl("chkSelecionar");
+                        if (chk != null)
+                        {
+                            chk.Enabled = false;
+                            chk.CssClass = "form-check-input disabled";
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -324,8 +511,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                         text: '{msg.Replace("'", "\\'")}',
                         showConfirmButton: false,
                         timer: 4000,
-                        timerProgressBar: true,
-                        width: 350
+                        timerProgressBar: true
                     }});";
 
                     ScriptManager.RegisterStartupScript(this, GetType(), "ToastAviso", script, true);
@@ -349,8 +535,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                         title: 'Envio parcial',
                         text: '{msg.Replace("'", "\\'")}',
                         showConfirmButton: false,
-                        timer: 4000,
-                        width: 320
+                        timer: 4000
                     }});";
 
                     ScriptManager.RegisterStartupScript(this, GetType(), "ToastInfo", script, true);
@@ -361,8 +546,8 @@ namespace PlennuscApp.PlennuscGestao.Views
                 // Todos tinham documentos
                 string msg = $"{mensagens.Count} mensagens enviadas!";
 
-                lblResultado.Text = msg;
-                lblResultado.CssClass = "text-success fw-bold alert-success p-3 rounded";
+                //lblResultado.Text = msg;
+                //lblResultado.CssClass = "text-success fw-bold alert-success p-3 rounded";
 
                 string script = $@"
                 Swal.fire({{
@@ -372,8 +557,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                     title: 'Concluído',
                     text: '{msg.Replace("'", "\\'")}',
                     showConfirmButton: false,
-                    timer: 3000,
-                    width: 300
+                    timer: 3000
                 }});";
 
                 ScriptManager.RegisterStartupScript(this, GetType(), "ToastSucesso", script, true);

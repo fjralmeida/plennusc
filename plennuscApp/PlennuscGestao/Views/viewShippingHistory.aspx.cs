@@ -175,6 +175,12 @@ namespace appWhatsapp.PlennuscGestao.Views
                 colCodigo.DataField = "CodigoAssociado";
                 gv.Columns.Add(colCodigo);
 
+                // NOVA COLUNA: Nome do Associado
+                BoundField colNome = new BoundField();
+                colNome.HeaderText = "Associado";
+                colNome.DataField = "NomeAssociado";
+                gv.Columns.Add(colNome);
+
                 // Coluna Telefone
                 BoundField colTelefone = new BoundField();
                 colTelefone.HeaderText = "Telefone";

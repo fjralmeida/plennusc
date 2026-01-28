@@ -346,6 +346,9 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeDisplay.Contains("msg fixa") || nomeObjeto.Contains("fixedmessagesending"))
                 return "bi bi-pin-angle me-2";
 
+            if(nomeDisplay.Contains("histórico de envios") || nomeObjeto.Contains("viewshippinghistory"))
+                return "bi bi-clock-history me-2";
+
             // ✅ OUTROS
             if (nomeObjeto.Contains("home") || nomeDisplay.Contains("inicio"))
                 return "bi bi-house me-2";

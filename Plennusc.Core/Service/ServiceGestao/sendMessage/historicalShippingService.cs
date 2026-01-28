@@ -51,13 +51,13 @@ namespace Plennusc.Core.Service.ServiceGestao.sendMessage
         }
 
         public byte[] GerarExcelHistorico(
-            DateTime? dataInicio = null,
-            DateTime? dataFim = null,
-            string codigoAssociado = null,
-            string nomeAssociado = null,
-            string telefone = null,
-            string status = null,
-            string template = null)
+           DateTime? dataInicio = null,
+           DateTime? dataFim = null,
+           string codigoAssociado = null,
+           string nomeAssociado = null,
+           string telefone = null,
+           string status = null,
+           string template = null)
         {
             // Busca todos os registros sem paginação
             var dt = _query.ConsultarHistoricoEnvios(
@@ -68,7 +68,7 @@ namespace Plennusc.Core.Service.ServiceGestao.sendMessage
             {
                 var worksheet = package.Workbook.Worksheets.Add("Histórico de Envios");
 
-                // Cabeçalhos
+                // Cabeçalhos - AGORA COM NOME
                 string[] cabecalhos = {
                     "Data/Hora", "Código Associado", "Nome Associado", "Telefone",
                     "Template", "Status", "Usuário", "ID Resposta API", "Log API"
@@ -92,11 +92,11 @@ namespace Plennusc.Core.Service.ServiceGestao.sendMessage
                     worksheet.Cells[excelRow, 1].Style.Numberformat.Format = "dd/MM/yyyy HH:mm:ss";
 
                     worksheet.Cells[excelRow, 2].Value = row["CodigoAssociado"];
-                    worksheet.Cells[excelRow, 3].Value = row["NomeAssociado"];
+                    worksheet.Cells[excelRow, 3].Value = row["NomeAssociado"]; // Nome do associado
                     worksheet.Cells[excelRow, 4].Value = row["NumTelefoneDestino"];
                     worksheet.Cells[excelRow, 5].Value = GetDescricaoTemplate(row["Mensagem"]?.ToString());
                     worksheet.Cells[excelRow, 6].Value = row["StatusEnvio"];
-                    worksheet.Cells[excelRow, 7].Value = row["NomeUsuario"];
+                    worksheet.Cells[excelRow, 7].Value = row["CodUsuarioEnvio"]; // Usuário (código)
                     worksheet.Cells[excelRow, 8].Value = row["ID_RESPOSTA_API"];
                     worksheet.Cells[excelRow, 9].Value = row["STATUS_API_JSON"];
                 }
