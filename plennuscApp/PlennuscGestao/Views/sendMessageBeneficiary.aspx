@@ -340,7 +340,7 @@
             </div>
 
             <div class="modal-body">
-
+                 teste
                 <!-- APENAS BOLETO -->
                <div class="template-opcao" onclick="selecionarTemplate('Suspensao')">
                     <h4>[BOLETO]</h4>
