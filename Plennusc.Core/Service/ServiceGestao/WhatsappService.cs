@@ -100,7 +100,7 @@ namespace appWhatsapp.Service
             //}
 
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
             var resultadoFinal = new StringBuilder();
 
             using (var client = new HttpClient())
@@ -204,7 +204,7 @@ namespace appWhatsapp.Service
         {
             var util = new ItensPedIntegradoUtil();
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
             var resultadoFinal = new StringBuilder();
 
             using (var client = new HttpClient())
@@ -373,7 +373,7 @@ namespace appWhatsapp.Service
             //    return $"⛔ Associado {codigoAssociado}: já recebeu '{mensagemFinal}' nas últimas 24h.";
             //}
 
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
             var resultadoFinal = new StringBuilder();
 
             using (var client = new HttpClient())
@@ -437,7 +437,7 @@ namespace appWhatsapp.Service
         public async Task<string> ConexaoApiNovoPlano(List<string> telefones, string nomeBeneficiario, string nomeOperador)
         {
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
             var resultadoFinal = new StringBuilder();
 
             using (var client = new HttpClient())
@@ -501,7 +501,7 @@ namespace appWhatsapp.Service
         public async Task<string> ConexaoApiNovoCliente(List<string> telefones, string nomeBeneficiario, string nomeOperador)
         {
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
             var resultadoFinal = new StringBuilder();
 
             using (var client = new HttpClient())
@@ -572,7 +572,7 @@ namespace appWhatsapp.Service
                                              string field1, string field2, string field3, string field4)
         {
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
             var resultadoFinal = new StringBuilder();
 
             using (var client = new HttpClient())
@@ -647,7 +647,7 @@ namespace appWhatsapp.Service
         {
             var util = new ItensPedIntegradoUtil();
             var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
-            var apiKey = "280e3e7ea39279d70108384cabf81df7";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
             var resultadoFinal = new StringBuilder();
 
             using (var client = new HttpClient())
