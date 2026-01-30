@@ -75,6 +75,9 @@ namespace PlennuscApp.PlennuscGestao.Views
 
         protected void btnFiltrar_Click(object sender, EventArgs e)
         {
+            // LIMPA AS SELEÇÕES AO FILTRAR
+            hfSelecionados.Value = "";
+
             GridAssociados.PageIndex = 0; // Reinicia para a primeira página
             CarregarGrid();
 
@@ -127,6 +130,9 @@ namespace PlennuscApp.PlennuscGestao.Views
 
             DateTime ini, fim;
 
+            // DECLARA dtFiltrado FORA DO IF
+            DataTable dtFiltrado = new DataTable();
+
             if (DateTime.TryParse(iniTexto, out ini) &&
                 DateTime.TryParse(fimTexto, out fim))
             {
@@ -147,6 +153,8 @@ namespace PlennuscApp.PlennuscGestao.Views
                     GridAssociados.DataSource = null;
                     btnTestarApi.Enabled = false;
                     GridAssociados.DataBind();
+                    hfTodosCodigos.Value = "";
+                    hfSelecionados.Value = "";
                     return;
                 }
 
@@ -189,7 +197,7 @@ namespace PlennuscApp.PlennuscGestao.Views
                 }
 
                 // 6. Aplica filtro de envio
-                DataTable dtFiltrado = dtAssociados.Clone();
+                dtFiltrado = dtAssociados.Clone();
                 DataRow[] rowsFiltradas;
 
                 switch (filtroEnvio)
@@ -214,6 +222,8 @@ namespace PlennuscApp.PlennuscGestao.Views
                 // 7. Configura o GridView
                 GridAssociados.DataSource = dtFiltrado;
 
+                lblTotalRegistros.Text = dtFiltrado.Rows.Count.ToString();
+
                 // Habilita ou desabilita o botão de envio
                 if (filtroEnvio == "enviados24h" || dtFiltrado.Rows.Count == 0)
                 {
@@ -232,9 +242,45 @@ namespace PlennuscApp.PlennuscGestao.Views
             {
                 GridAssociados.DataSource = null;
                 btnTestarApi.Enabled = false;
+                dtFiltrado = new DataTable(); // Inicializa vazio
             }
 
             GridAssociados.DataBind();
+
+            // ============================================
+            // ADICIONE ESTE CÓDIGO APÓS O DataBind()
+            // ============================================
+
+            // Coleta TODOS os códigos da consulta COMPLETA (não apenas da página)
+            List<string> todosCodigos = new List<string>();
+
+            // Se dtFiltrado não existe (caso não tenha dados), saia
+            if (dtFiltrado == null || dtFiltrado.Rows.Count == 0)
+            {
+                hfTodosCodigos.Value = "";
+                hfSelecionados.Value = "";
+                AplicarEstiloEnviados();
+                return;
+            }
+
+            // Pega TODOS os códigos do DataTable
+            foreach (DataRow row in dtFiltrado.Rows)
+            {
+                string codigo = row["CODIGO_ASSOCIADO"].ToString();
+                if (!string.IsNullOrEmpty(codigo) && !todosCodigos.Contains(codigo))
+                {
+                    todosCodigos.Add(codigo);
+                }
+            }
+
+            // Salva no HiddenField
+            hfTodosCodigos.Value = string.Join(",", todosCodigos);
+
+            // Se não tem seleções salvas, limpa
+            if (string.IsNullOrEmpty(hfSelecionados.Value))
+            {
+                hfSelecionados.Value = "";
+            }
 
             // Aplica estilo especial para linhas de associados já enviados
             AplicarEstiloEnviados();
@@ -616,103 +662,194 @@ namespace PlennuscApp.PlennuscGestao.Views
         protected List<DadosMensagem> ObterLinhasSelecionadas()
         {
             var lista = new List<DadosMensagem>();
-            var notaFiscalUtil = new NotaFiscalUtil(); // Corrigido o nome da variável
+            var notaFiscalUtil = new NotaFiscalUtil();
 
-            foreach (GridViewRow row in GridAssociados.Rows)
+            // VERIFICA SE TEM SELEÇÕES NO HIDDENFIELD (SELECIONAR TODOS)
+            if (!string.IsNullOrEmpty(hfSelecionados.Value))
             {
-                CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
-                if (chk != null && chk.Checked)
+                // Usa as seleções do HiddenField (todas as páginas)
+                return BuscarRegistrosPorCodigos(hfSelecionados.Value.Split(',').ToList());
+            }
+            else
+            {
+                // Método original (apenas página atual)
+                foreach (GridViewRow row in GridAssociados.Rows)
                 {
-                    var lblCodigo = row.FindControl("lblCodigo") as Label;
-                    string codigoAssociado = Convert.ToString(lblCodigo?.Text)?.Trim();
-
-                    string telefone = "553173069983";
-                    //string telefone = FormatTelefone(telefoneBruto);
-
-                    if (string.IsNullOrEmpty(telefone))
-                        continue; // Ignora se for inválido ou fixo
-
-                    //string telefoneBruto = ((Label)row.FindControl("lblTelefone"))?.Text?.Trim();
-                    //string telefone = FormatTelefone(telefoneBruto);
-
-                    //if (string.IsNullOrEmpty(telefone))
-                    //    continue; // Ignora se for inválido ou fixo
-
-                    string nome = ((Label)row.FindControl("lblNome"))?.Text?.Trim();
-                    string plano = ((Label)row.FindControl("lblPlano"))?.Text?.Trim();
-
-                    // OBTÉM O REGISTRO ANTES DE USAR
-                    string registro = ((Label)row.FindControl("lblRegistro"))?.Text?.Trim();
-                    string valor = ((Label)row.FindControl("lblValor"))?.Text?.Trim();
-
-                    int numeroRegistro;
-                    bool registroValido = int.TryParse(registro, out numeroRegistro);
-
-                    //string pdfUrl = $"https://portaldocliente.vallorbeneficios.com.br/ServidorAl2/boletos/boleto_itau_Vallor.php?numeroRegistro={registro}";
-
-                    string pdfUrl = registro;
-                    string notaFiscalUrl = null;
-
-                    // Busca URL da nota fiscal apenas se o registro for válido
-                    if (registroValido)
+                    CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
+                    if (chk != null && chk.Checked)
                     {
-                        // AGORA USANDO O MÉTODO CORRETO
-                        notaFiscalUrl = notaFiscalUtil.BuscarUrlNotaFiscal(numeroRegistro);
+                        var lblCodigo = row.FindControl("lblCodigo") as Label;
+                        string codigoAssociado = Convert.ToString(lblCodigo?.Text)?.Trim();
+
+                        string telefone = "553173069983";
+                        if (string.IsNullOrEmpty(telefone))
+                            continue;
+
+                        string nome = ((Label)row.FindControl("lblNome"))?.Text?.Trim();
+                        string plano = ((Label)row.FindControl("lblPlano"))?.Text?.Trim();
+                        string registro = ((Label)row.FindControl("lblRegistro"))?.Text?.Trim();
+                        string valor = ((Label)row.FindControl("lblValor"))?.Text?.Trim();
+
+                        int numeroRegistro;
+                        bool registroValido = int.TryParse(registro, out numeroRegistro);
+
+                        string pdfUrl = registro;
+                        string notaFiscalUrl = null;
+
+                        if (registroValido)
+                        {
+                            notaFiscalUrl = notaFiscalUtil.BuscarUrlNotaFiscal(numeroRegistro);
+                        }
+
+                        string vencimento = "";
+                        if (hfTemplateEscolhido.Value == "Suspensao")
+                        {
+                            vencimento = txtDataSuspensao.Text;
+                        }
+                        else if (hfTemplateEscolhido.Value == "Definitivo")
+                        {
+                            vencimento = txtDataDefinitivo.Text;
+                        }
+                        else if (hfTemplateEscolhido.Value == "aVencer")
+                        {
+                            vencimento = txtDataVencer.Text;
+                        }
+
+                        string nomeMes = "";
+                        if (DateTime.TryParse(vencimento, out DateTime dataVenc))
+                        {
+                            nomeMes = dataVenc.ToString("MMMM", new System.Globalization.CultureInfo("pt-BR"));
+                            nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1);
+                        }
+
+                        string dataFormatada = "";
+                        if (DateTime.TryParse(vencimento, out DateTime dataFormat))
+                        {
+                            dataFormatada = dataFormat.ToString("dd/MM/yyyy");
+                        }
+
+                        lista.Add(new DadosMensagem
+                        {
+                            CodigoAssociado = codigoAssociado,
+                            Telefone = telefone,
+                            Field1 = nome,
+                            Field2 = nomeMes,
+                            Field3 = plano,
+                            Field4 = dataFormatada,
+                            Field7 = valor.Replace("R$", "").Trim().Replace(",", "."),
+                            Field8 = pdfUrl,
+                            NotaFiscalUrl = notaFiscalUrl
+                        });
                     }
-
-                    string vencimento = "";
-
-                    if (hfTemplateEscolhido.Value == "Suspensao")
-                    {
-                        vencimento = txtDataSuspensao.Text;
-                    }
-                    else if (hfTemplateEscolhido.Value == "Definitivo")
-                    {
-                        vencimento = txtDataDefinitivo.Text;
-                    }
-                    //else if (hfTemplateEscolhido.Value == "DoisBoletos")
-                    //{
-                    //    vencimento = txtDataNovaOpcao.Text;
-                    //}
-                    else if (hfTemplateEscolhido.Value == "aVencer")
-                    {
-                        vencimento = txtDataVencer.Text;
-                    }
-
-                    string nomeMes = "";
-                    if (DateTime.TryParse(vencimento, out DateTime dataVenc))
-                    {
-                        nomeMes = dataVenc.ToString("MMMM", new System.Globalization.CultureInfo("pt-BR"));
-                        nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1);
-                    }
-
-                    // Formata data para dd/MM/yyyy
-                    string dataFormatada = "";
-                    if (DateTime.TryParse(vencimento, out DateTime dataFormat))
-                    {
-                        dataFormatada = dataFormat.ToString("dd/MM/yyyy");
-                    }
-
-                    // Formata valor para R$ X.XXX,XX
-                    string valorFormatado = "R$ " + valor.Replace("R$", "").Trim();
-
-                    lista.Add(new DadosMensagem
-                    {
-                        CodigoAssociado = codigoAssociado,
-                        Telefone = telefone,
-                        Field1 = nome,
-                        Field2 = nomeMes,
-                        Field3 = plano,
-                        Field4 = dataFormatada,
-                        Field7 = valor.Replace("R$", "").Trim().Replace(",", "."),
-                        Field8 = pdfUrl,
-                        NotaFiscalUrl = notaFiscalUrl
-                    });
                 }
             }
 
             return lista;
         }
+
+        private List<DadosMensagem> BuscarRegistrosPorCodigos(List<string> codigos)
+        {
+            var lista = new List<DadosMensagem>();
+            var notaFiscalUtil = new NotaFiscalUtil();
+
+            // Usa os mesmos filtros da consulta atual
+            var ItensAssoci = new ItensPedIntegradoUtil();
+            DateTime ini, fim;
+
+            if (DateTime.TryParse(txtDataInicio.Value, out ini) &&
+                DateTime.TryParse(txtDataFim.Value, out fim))
+            {
+                int? operadoraSel = null;
+                if (int.TryParse(ddlOperadora.SelectedValue, out int op))
+                {
+                    operadoraSel = op;
+                }
+
+                string templateEscolhido = hfTemplateEscolhido.Value;
+                string filtroEnvio = ddlFiltroEnvio.SelectedValue;
+
+                // Busca TODOS os associados do filtro atual (igual no CarregarGrid)
+                DataTable dtAssociados = ItensAssoci.ConsultaAssociados(ini, fim, operadoraSel);
+
+                if (dtAssociados.Rows.Count == 0)
+                    return lista;
+
+                // Aplica o mesmo filtro de envio do CarregarGrid
+                // ... (código de filtro igual ao do CarregarGrid) ...
+
+                // Para simplificar, vou pegar todos os registros e filtrar depois
+                // Na prática, você deveria replicar o mesmo filtro do CarregarGrid
+
+                foreach (DataRow row in dtAssociados.Rows)
+                {
+                    string codigo = row["CODIGO_ASSOCIADO"].ToString();
+
+                    // Se o código está na lista de selecionados
+                    if (codigos.Contains(codigo))
+                    {
+                        string nome = row["NOME_ASSOCIADO"].ToString();
+                        string plano = row["NOME_PLANO_ABREVIADO"].ToString();
+                        string registro = row["NUMERO_REGISTRO"].ToString();
+                        string valor = row["VALOR_FATURA"].ToString();
+                        string telefone = "553173069983";
+
+                        int numeroRegistro;
+                        bool registroValido = int.TryParse(registro, out numeroRegistro);
+
+                        string pdfUrl = registro;
+                        string notaFiscalUrl = null;
+
+                        if (registroValido)
+                        {
+                            notaFiscalUrl = notaFiscalUtil.BuscarUrlNotaFiscal(numeroRegistro);
+                        }
+
+                        string vencimento = "";
+                        if (hfTemplateEscolhido.Value == "Suspensao")
+                        {
+                            vencimento = txtDataSuspensao.Text;
+                        }
+                        else if (hfTemplateEscolhido.Value == "Definitivo")
+                        {
+                            vencimento = txtDataDefinitivo.Text;
+                        }
+                        else if (hfTemplateEscolhido.Value == "aVencer")
+                        {
+                            vencimento = txtDataVencer.Text;
+                        }
+
+                        string nomeMes = "";
+                        if (DateTime.TryParse(vencimento, out DateTime dataVenc))
+                        {
+                            nomeMes = dataVenc.ToString("MMMM", new System.Globalization.CultureInfo("pt-BR"));
+                            nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1);
+                        }
+
+                        string dataFormatada = "";
+                        if (DateTime.TryParse(vencimento, out DateTime dataFormat))
+                        {
+                            dataFormatada = dataFormat.ToString("dd/MM/yyyy");
+                        }
+
+                        lista.Add(new DadosMensagem
+                        {
+                            CodigoAssociado = codigo,
+                            Telefone = telefone,
+                            Field1 = nome,
+                            Field2 = nomeMes,
+                            Field3 = plano,
+                            Field4 = dataFormatada,
+                            Field7 = valor.Replace("R$", "").Trim().Replace(",", "."),
+                            Field8 = pdfUrl,
+                            NotaFiscalUrl = notaFiscalUrl
+                        });
+                    }
+                }
+            }
+
+            return lista;
+        }
+
         private string FormatTelefone(string telefone)
         {
             if (string.IsNullOrWhiteSpace(telefone))

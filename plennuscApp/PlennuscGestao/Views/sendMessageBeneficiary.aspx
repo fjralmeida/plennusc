@@ -12,111 +12,287 @@
 
     <link href="../../Content/Css/projects/gestao/structuresCss/sendMessageBeneficiary.css" rel="stylesheet" />
 
-    <script>
+<script>
+    // ============================================
+    // FUNÇÕES ORIGINAIS (MANTÉM TUDO FUNCIONANDO)
+    // ============================================
 
-        function alternarSelecao(chk) {
+    function alternarSelecao(chk) {
+        var row = chk.closest('tr');
+        if (row) {
+            if (chk.checked) {
+                row.classList.add('linha-selecionada');
+            } else {
+                row.classList.remove('linha-selecionada');
+            }
+        }
+        atualizarSelecionarTodos();
+        atualizarContadorSelecionados();
+    }
+
+    function selecionarTodos(chkHeader) {
+        var grid = document.getElementById("GridAssociados");
+        var checkboxes = grid.querySelectorAll(
+            "input[type='checkbox'][id*='chkSelecionar']:not(:disabled)"
+        );
+
+        checkboxes.forEach(function (chk) {
+            chk.checked = chkHeader.checked;
             var row = chk.closest('tr');
-            if (row) {
-                if (chk.checked) {
-                    row.classList.add('linha-selecionada');
-                } else {
-                    row.classList.remove('linha-selecionada');
-                }
+            if (chk.checked) {
+                row.classList.add('linha-selecionada');
+            } else {
+                row.classList.remove('linha-selecionada');
             }
-            atualizarSelecionarTodos();
-        }
+        });
 
-        function selecionarTodos(chkHeader) {
-            var grid = document.getElementById("GridAssociados");
-            var checkboxes = grid.querySelectorAll("input[type='checkbox'][id*='chkSelecionar']");
-            checkboxes.forEach(function (chk) {
-                chk.checked = chkHeader.checked;
-                var row = chk.closest('tr');
-                if (chk.checked) {
-                    row.classList.add('linha-selecionada');
-                } else {
-                    row.classList.remove('linha-selecionada');
-                }
-            });
-        }
+        atualizarContadorSelecionados();
+    }
 
-        function atualizarSelecionarTodos() {
-            var grid = document.getElementById("GridAssociados");
-            var chkTodos = grid.querySelector("input[type='checkbox'][id*='chkSelecionarTodos']");
-            var checkboxes = grid.querySelectorAll("input[type='checkbox'][id*='chkSelecionar']");
-            var todosMarcados = true;
-            checkboxes.forEach(function (chk) {
-                if (!chk.checked) {
-                    todosMarcados = false;
-                }
-            });
-            if (chkTodos) {
-                chkTodos.checked = todosMarcados;
+    function atualizarSelecionarTodos() {
+        var grid = document.getElementById("GridAssociados");
+        var chkTodos = grid.querySelector("input[type='checkbox'][id*='chkSelecionarTodos']");
+        var checkboxes = grid.querySelectorAll("input[type='checkbox'][id*='chkSelecionar']");
+        var todosMarcados = true;
+        checkboxes.forEach(function (chk) {
+            if (!chk.checked) {
+                todosMarcados = false;
             }
+        });
+        if (chkTodos) {
+            chkTodos.checked = todosMarcados;
         }
+    }
 
-        // 🔁 FUNÇÃO  MOSTRAR OVERLAY DE CARREGAMENTO
-        function mostrarLoading() {
-            document.getElementById('loadingOverlay').style.display = 'block';
-        }
+    function mostrarLoading() {
+        document.getElementById('loadingOverlay').style.display = 'block';
+    }
 
+    function mostrarResultadoModal(texto) {
+        document.getElementById("modalResultadoConteudo").textContent = texto;
+        var modal = new bootstrap.Modal(document.getElementById('resultadoModal'));
+        modal.show();
+    }
 
-        function mostrarResultadoModal(texto) {
-            document.getElementById("modalResultadoConteudo").textContent = texto;
-            var modal = new bootstrap.Modal(document.getElementById('resultadoModal'));
-            modal.show();
-        }
+    function abrirModal() {
+        document.getElementById('modalEscolherMensagem').style.display = 'block';
+    }
 
-        // 🔁 FUNÇÃO PARA MODAL MENSAGEM
-        function abrirModal() {
-            document.getElementById('modalEscolherMensagem').style.display = 'block';
-        }
+    function fecharModal() {
+        document.getElementById('modalEscolherMensagem').style.display = 'none';
+    }
 
-        function fecharModal() {
-            document.getElementById('modalEscolherMensagem').style.display = 'none';
-        }
+    function selecionarTemplate(template) {
+        document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
+        fecharModal();
+    }
 
-        function selecionarTemplate(template) {
+    const mapInputPorTemplate = {
+        "Suspensao": "txtDataSuspensao",
+        "Definitivo": "txtDataDefinitivo",
+        "aVencer": "txtDataVencer"
+    };
+
+    function selecionarTemplate(template) {
+        const inputId = mapInputPorTemplate[template];
+        const input = document.getElementById(inputId);
+
+        if (!input) {
             document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
             fecharModal();
+            return;
         }
 
-        // mapeia template -> id do input date
-        const mapInputPorTemplate = {
-            "Suspensao": "txtDataSuspensao",
-            "Definitivo": "txtDataDefinitivo",
-            "aVencer": "txtDataVencer"
-        };
+        input.classList.remove('is-invalid');
+        const val = (input.value || "").trim();
+        if (!val) {
+            input.classList.add('is-invalid');
+            input.focus();
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
 
-        function selecionarTemplate(template) {
-            const inputId = mapInputPorTemplate[template];
-            const input = document.getElementById(inputId);
-
-            if (!input) {
-                // fallback raro: se o input não existir, não bloqueia a escolha
-                document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
+        document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
         fecharModal();
-        return;
     }
 
-    // limpa estado de erro anterior
-    input.classList.remove('is-invalid');
+    function atualizarContadorSelecionados() {
+        var grid = document.getElementById("GridAssociados");
+        if (!grid) return;
 
-    const val = (input.value || "").trim();
-    if (!val) {
-        // marca como inválido e foca — NÃO fecha o modal
-        input.classList.add('is-invalid');
-        input.focus();
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
+        var checkboxes = grid.querySelectorAll(
+            "input[type='checkbox'][id*='chkSelecionar']:not(:disabled)"
+        );
+
+        var totalSelecionados = 0;
+        checkboxes.forEach(function (chk) {
+            if (chk.checked) totalSelecionados++;
+        });
+
+        document.getElementById("lblSelecionados").innerText = totalSelecionados;
     }
 
-    // data ok → grava e fecha
-    document.getElementById('<%= hfTemplateEscolhido.ClientID %>').value = template;
-    fecharModal();
-}
+    // ============================================
+    // FUNÇÕES NOVAS PARA SELECIONAR TODAS AS PÁGINAS
+    // ============================================
 
-    </script>
+    // Variável global para armazenar TODOS os códigos da consulta
+    var todosCodigosConsulta = [];
+
+    // Função para coletar TODOS os códigos do grid
+    function coletarTodosCodigos() {
+        var grid = document.getElementById("GridAssociados");
+        if (!grid) return [];
+
+        var codigos = [];
+        var codigosElements = grid.querySelectorAll('[id*="lblCodigo"]');
+
+        for (var i = 0; i < codigosElements.length; i++) {
+            var codigo = codigosElements[i].innerText.trim();
+            if (codigo && codigo !== '') {
+                codigos.push(codigo);
+            }
+        }
+
+        return codigos;
+    }
+
+    // Função para SALVAR TODAS as seleções (usada quando clica em "Selecionar Todos")
+    function salvarSelecoesGlobais(selecionar) {
+        // Pega o HiddenField
+        var hfSelecionados = document.getElementById('<%= hfSelecionados.ClientID %>');
+        if (!hfSelecionados) return;
+        
+        // Se está selecionando TODOS
+        if (selecionar) {
+            // Coleta TODOS os códigos da página atual
+            var codigosPagina = coletarTodosCodigos();
+            
+            // Se tem o HiddenField com todos os códigos, usa ele
+            var hfTodosCodigos = document.getElementById('<%= hfTodosCodigos.ClientID %>');
+            if (hfTodosCodigos && hfTodosCodigos.value) {
+                // Usa TODOS os códigos da consulta completa
+                hfSelecionados.value = hfTodosCodigos.value;
+            } else {
+                // Usa os códigos da página atual (fallback)
+                hfSelecionados.value = codigosPagina.join(',');
+            }
+        } else {
+            // Se está DESMARCADO, limpa tudo
+            hfSelecionados.value = '';
+        }
+        
+        // Atualiza contador
+        atualizarContadorSelecionadosGlobais();
+    }
+    
+    // Atualiza contador baseado no HiddenField (todas as páginas)
+    function atualizarContadorSelecionadosGlobais() {
+        var hfSelecionados = document.getElementById('<%= hfSelecionados.ClientID %>');
+        if (!hfSelecionados) return;
+        
+        var total = 0;
+        if (hfSelecionados.value && hfSelecionados.value.trim() !== '') {
+            total = hfSelecionados.value.split(',').length;
+        }
+        
+        document.getElementById("lblSelecionados").innerText = total;
+    }
+    
+    // NOVA FUNÇÃO para "Selecionar Todos" que seleciona TODAS as páginas
+    function selecionarTodosGlobal(chkHeader) {
+        // Primeiro executa a função normal (para marcar na página atual)
+        selecionarTodos(chkHeader);
+        
+        // Depois salva no HiddenField para todas as páginas
+        salvarSelecoesGlobais(chkHeader.checked);
+    }
+    
+    // NOVA FUNÇÃO para seleção individual que salva no HiddenField
+    function alternarSelecaoGlobal(chk) {
+        // Executa a função normal
+        alternarSelecao(chk);
+        
+        // Pega o código do registro
+        var row = chk.closest('tr');
+        var codigoElement = row.querySelector('[id*="lblCodigo"]');
+        var codigo = codigoElement ? codigoElement.innerText.trim() : '';
+        
+        if (!codigo) return;
+        
+        // Pega o HiddenField
+        var hfSelecionados = document.getElementById('<%= hfSelecionados.ClientID %>');
+        if (!hfSelecionados) return;
+        
+        // Pega as seleções atuais
+        var selecionados = [];
+        if (hfSelecionados.value && hfSelecionados.value.trim() !== '') {
+            selecionados = hfSelecionados.value.split(',');
+        }
+        
+        // Adiciona ou remove o código
+        if (chk.checked) {
+            if (!selecionados.includes(codigo)) {
+                selecionados.push(codigo);
+            }
+        } else {
+            var index = selecionados.indexOf(codigo);
+            if (index > -1) {
+                selecionados.splice(index, 1);
+            }
+        }
+        
+        // Atualiza o HiddenField
+        hfSelecionados.value = selecionados.join(',');
+        
+        // Atualiza contador global
+        atualizarContadorSelecionadosGlobais();
+    }
+    
+    // Função para RESTAURAR seleções quando carrega a página
+    function restaurarSelecoes() {
+        var hfSelecionados = document.getElementById('<%= hfSelecionados.ClientID %>');
+        if (!hfSelecionados || !hfSelecionados.value || hfSelecionados.value.trim() === '') {
+            return;
+        }
+
+        var selecionados = hfSelecionados.value.split(',');
+        var grid = document.getElementById("GridAssociados");
+        if (!grid) return;
+
+        var checkboxes = grid.querySelectorAll("input[type='checkbox'][id*='chkSelecionar']");
+
+        for (var i = 0; i < checkboxes.length; i++) {
+            var chk = checkboxes[i];
+            var row = chk.closest('tr');
+            var codigoElement = row.querySelector('[id*="lblCodigo"]');
+            var codigo = codigoElement ? codigoElement.innerText.trim() : '';
+
+            if (codigo && selecionados.includes(codigo)) {
+                chk.checked = true;
+                row.classList.add('linha-selecionada');
+            } else {
+                chk.checked = false;
+                row.classList.remove('linha-selecionada');
+            }
+        }
+
+        // Atualiza contador
+        atualizarContadorSelecionadosGlobais();
+    }
+
+    // ============================================
+    // INICIALIZAÇÃO
+    // ============================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Inicializa contador
+        atualizarContadorSelecionadosGlobais();
+
+        // Restaura seleções salvas
+        restaurarSelecoes();
+    });
+</script>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -153,6 +329,9 @@
     <%--MODAL TEMPLETE MENSAGEM--%>
 
     <asp:HiddenField ID="hfTemplateEscolhido" runat="server" />
+
+<asp:HiddenField ID="hfTodosCodigos" runat="server" />
+<asp:HiddenField ID="hfSelecionados" runat="server" />
     <div id="modalEscolherMensagem">
         <div class="modal-content">
             <div class="modal-header">
@@ -357,42 +536,56 @@
 
             <asp:Literal ID="LiteralMensagem" runat="server"></asp:Literal>
 
+            <div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+        <strong>Total de registros:</strong>
+        <asp:Label ID="lblTotalRegistros" runat="server" Text="0"></asp:Label>
+    </div>
+
+    <div>
+        <strong>Selecionados:</strong>
+        <span id="lblSelecionados">0</span>
+    </div>
+</div>
+
             <div class="table-responsive">
 
                 <div class="mb-2 d-flex justify-content-end align-items-center">
                     <label for="ddlPageSize" class="form-label me-2 mb-0">Itens por página:</label>
-                    <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="true"
-                        CssClass="form-select w-auto" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged">
-                        <asp:ListItem Text="15" Value="15" Selected="True" />
-                        <asp:ListItem Text="30" Value="30" />
-                        <asp:ListItem Text="50" Value="50" />
-                        <asp:ListItem Text="100" Value="100" />
-                        <asp:ListItem Text="200" Value="200" />
-                        <asp:ListItem Text="300" Value="300" />
-                          <asp:ListItem Text="500" Value="500" />
-                          <asp:ListItem Text="1000" Value="1000" />
-                    </asp:DropDownList>
+                   <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="true"
+    CssClass="form-select w-auto" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged">
+    <asp:ListItem Text="6" Value="6" Selected="True" />
+    <asp:ListItem Text="30" Value="30" />
+    <asp:ListItem Text="50" Value="50" />
+    <asp:ListItem Text="100" Value="100" />
+    <asp:ListItem Text="200" Value="200" />
+    <asp:ListItem Text="300" Value="300" />
+    <asp:ListItem Text="500" Value="500" />
+    <asp:ListItem Text="1000" Value="1000" />
+</asp:DropDownList>
                 </div>
 
-           <asp:GridView ID="GridAssociados" runat="server"
-                    AutoGenerateColumns="False"
-                    CssClass="table table-hover align-middle mb-0"
-                    ClientIDMode="Static"
-                    EmptyDataText="Nenhum registro encontrado."
-                    ShowFooter="true"
-                    PagerStyle-CssClass="pager-footer"
-                    PagerStyle-HorizontalAlign="Right"
-                    AllowPaging="true"
-                    PageSize="15"
-                    OnPageIndexChanging="GridAssociados_PageIndexChanging"
-                    OnPreRender="GridAssociados_PreRender"
-                    OnRowDataBound="GridAssociados_RowDataBound">
+<asp:GridView ID="GridAssociados" runat="server"
+    AutoGenerateColumns="False"
+    CssClass="table table-hover align-middle mb-0"
+    ClientIDMode="Static"
+    EmptyDataText="Nenhum registro encontrado."
+    ShowFooter="true"
+    PagerStyle-CssClass="pager-footer"
+    PagerStyle-HorizontalAlign="Right"
+    AllowPaging="true"
+    PageSize="6"
+    OnPageIndexChanging="GridAssociados_PageIndexChanging"
+    OnPreRender="GridAssociados_PreRender"
+    OnRowDataBound="GridAssociados_RowDataBound">
                     <Columns>
 
                         <asp:TemplateField HeaderText="">
                             <HeaderTemplate>
                                 <div class="checkbox-header">
-                                    <asp:CheckBox ID="chkSelecionarTodos" runat="server" CssClass="form-check-input" onclick="selecionarTodos(this);" />
+<asp:CheckBox ID="chkSelecionarTodos" runat="server"
+    CssClass="form-check-input"
+    onclick="selecionarTodosGlobal(this);" />
                                     <span>Todos</span>
                                 </div>
                             </HeaderTemplate>
@@ -400,7 +593,7 @@
                                 <div>
                                     <asp:CheckBox ID="chkSelecionar" runat="server" 
                                         CssClass="form-check-input" 
-                                        onclick="alternarSelecao(this);"
+                                       onclick="alternarSelecaoGlobal(this);"
                                         Enabled='<%# !Convert.ToBoolean(Eval("JA_ENVIADO_24H")) && ddlFiltroEnvio.SelectedValue != "enviados24h" %>' />
                                 </div>
                             </ItemTemplate>
