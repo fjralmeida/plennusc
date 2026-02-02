@@ -399,6 +399,275 @@ input[type="checkbox"].form-check-input {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* ============================================
+   MODAL DE CONFIRMAÇÃO ENVIO EM MASSA - NOVO DESIGN
+   ============================================ */
+.modal-massa-confirmacao {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-massa-content {
+    background: #fff;
+    padding: 32px;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e9ecef;
+    position: relative;
+    overflow: hidden;
+}
+
+    .modal-massa-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #4CB07A, #83CEEE);
+    }
+
+.modal-massa-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+    .modal-massa-header i {
+        color: #ff9800;
+        font-size: 24px;
+    }
+
+.modal-massa-quantidade {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.quantidade-numero {
+    font-size: 32px;
+    font-weight: 700;
+    color: #4CB07A;
+    display: block;
+    line-height: 1.2;
+}
+
+.quantidade-texto {
+    font-size: 14px;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.modal-massa-alerta {
+    background: #fff8e6;
+    border-left: 4px solid #ff9800;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.alerta-titulo {
+    color: #d32f2f;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alerta-lista {
+    margin: 0;
+    padding-left: 20px;
+    color: #5a6268;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+    .alerta-lista li {
+        margin-bottom: 6px;
+    }
+
+.modal-massa-pergunta {
+    text-align: center;
+    font-weight: 600;
+    color: #333;
+    margin: 24px 0 20px;
+    font-size: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e9ecef;
+}
+
+.modal-massa-botoes {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-cancelar-massa {
+    flex: 1;
+    padding: 12px 24px;
+    font-size: 15px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+    .btn-cancelar-massa:hover {
+        background: #5a6268;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+.btn-confirmar-massa {
+    flex: 1;
+    padding: 12px 24px;
+    font-size: 15px;
+    background: linear-gradient(135deg, #4CB07A, #3B8B65);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+    .btn-confirmar-massa:hover {
+        background: linear-gradient(135deg, #3B8B65, #2E6B4F);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(76, 176, 122, 0.3);
+    }
+
+/* ============================================
+   LOADING OVERLAY - AJUSTADO PARA MATCH
+   ============================================ */
+#loadingOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 999999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top: 3px solid #4CB07A;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.loading-subtext {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    text-align: center;
+    max-width: 400px;
+    line-height: 1.5;
+}
+
+.loading-progress {
+    width: 300px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-top: 24px;
+    overflow: hidden;
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4CB07A, #83CEEE);
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 3px;
+}
+
+/* Ajuste para responsividade */
+@media (max-width: 576px) {
+    .modal-massa-content {
+        padding: 24px 20px;
+        max-width: 100%;
+    }
+
+    .modal-massa-header {
+        font-size: 18px;
+    }
+
+    .quantidade-numero {
+        font-size: 28px;
+    }
+
+    .modal-massa-botoes {
+        flex-direction: column;
+    }
+
+    .btn-cancelar-massa,
+    .btn-confirmar-massa {
+        padding: 14px;
+    }
+
+    .loading-progress {
+        width: 250px;
+    }
+}
 /* Ou se preferir AZUL ao invés de VERDE para "Disponível" */
 /*
 .status-disponivel {

@@ -9,7 +9,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-
     <link href="../../Content/Css/projects/gestao/structuresCss/sendMessageBeneficiary.css" rel="stylesheet" />
 
 <script>
@@ -293,6 +292,185 @@
         restaurarSelecoes();
     });
 </script>
+
+    <script>
+// ============================================
+// FUNÇÕES DE ENVIO EM MASSA E LOADING
+// ============================================
+
+var quantidadeSelecionadaGlobal = 0;
+var envioConfirmadoPeloUsuario = false;
+
+function validarQuantidadeMensagens() {
+    console.log('Validando quantidade de mensagens...');
+    
+    // Se já confirmou pelo modal, deixa prosseguir
+    if (envioConfirmadoPeloUsuario) {
+        console.log('Já confirmado anteriormente, mostrando loading...');
+        mostrarLoading();
+        return true;
+    }
+    
+    var hfSelecionados = document.getElementById('<%= hfSelecionados.ClientID %>');
+    if (!hfSelecionados || !hfSelecionados.value || hfSelecionados.value.trim() === '') {
+        console.log('Nenhum código selecionado');
+        alert('Selecione pelo menos um associado para enviar mensagem.');
+        return false;
+    }
+    
+    // Conta quantos códigos foram selecionados
+    var codigos = hfSelecionados.value.split(',');
+    quantidadeSelecionadaGlobal = 0;
+    
+    for (var i = 0; i < codigos.length; i++) {
+        if (codigos[i].trim() !== '') {
+            quantidadeSelecionadaGlobal++;
+        }
+    }
+    
+    console.log('Quantidade encontrada:', quantidadeSelecionadaGlobal);
+    
+    // Se for mais de 100, mostra o modal de confirmação
+    if (quantidadeSelecionadaGlobal > 1) {
+        console.log('Mostrando modal de confirmação para envio em massa');
+        
+        // Atualiza os números no modal
+        document.getElementById('quantidadeMensagens').textContent = quantidadeSelecionadaGlobal;
+        document.getElementById('quantidadeBotoes').textContent = quantidadeSelecionadaGlobal;
+        
+        // Mostra o modal
+        document.getElementById('modalMassa').style.display = 'flex';
+        
+        // Retorna false para impedir o postback imediato
+        return false;
+    } else {
+        // Menos de 100 mensagens: mostra loading e permite postback
+        console.log('Menos de 100 mensagens, mostrando loading direto');
+        mostrarLoading();
+        return true;
+    }
+}
+
+function cancelarEnvioMassa() {
+    console.log('Envio em massa cancelado');
+    
+    // Esconde o modal
+    document.getElementById('modalMassa').style.display = 'none';
+    
+    // Reseta a flag
+    envioConfirmadoPeloUsuario = false;
+    
+    // Mostra alerta de cancelamento
+    Swal.fire({
+        icon: 'info',
+        title: 'Cancelado',
+        text: 'Envio em massa cancelado pelo usuário.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
+}
+
+function confirmarEnvioMassa() {
+    console.log('Usuário confirmou envio em massa');
+    
+    // Marca que o usuário já confirmou
+    envioConfirmadoPeloUsuario = true;
+    
+    // Esconde o modal de confirmação
+    document.getElementById('modalMassa').style.display = 'none';
+    
+    // Mostra o loading com mensagem personalizada
+    mostrarLoadingComMensagem(quantidadeSelecionadaGlobal);
+    
+    // Aguarda 500ms para garantir que o loading apareça
+    setTimeout(function() {
+        // Dispara o postback manualmente
+        __doPostBack('<%= btnTestarApi.UniqueID %>', '');
+    }, 500);
+}
+
+function mostrarLoading() {
+    var overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        // Mensagem padrão para menos de 100 mensagens
+        document.getElementById('loadingSubtext').textContent = 
+            'Por favor, aguarde. Este processo pode levar alguns minutos.';
+        
+        // Reseta a barra de progresso
+        document.getElementById('loadingProgressBar').style.width = '0%';
+        
+        overlay.style.display = 'flex';
+        
+        // Inicia animação da barra de progresso
+        iniciarAnimacaoProgresso();
+    }
+}
+
+function mostrarLoadingComMensagem(quantidade) {
+    var overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        // Mensagem personalizada para envio em massa
+        document.getElementById('loadingSubtext').textContent = 
+            'Enviando ' + quantidade + ' mensagens. Por favor, não feche esta janela.';
+        
+        // Reseta a barra de progresso
+        document.getElementById('loadingProgressBar').style.width = '0%';
+        
+        overlay.style.display = 'flex';
+        
+        // Inicia animação da barra de progresso
+        iniciarAnimacaoProgresso();
+    }
+}
+
+function iniciarAnimacaoProgresso() {
+    var progressBar = document.getElementById('loadingProgressBar');
+    var width = 0;
+    
+    // Anima a barra de progresso até 90% (os 10% finais são completados no servidor)
+    var interval = setInterval(function() {
+        if (width >= 90) {
+            clearInterval(interval);
+        } else {
+            width += 0.5;
+            progressBar.style.width = width + '%';
+        }
+    }, 50);
+}
+
+// Função para completar o progresso (pode ser chamada quando o envio terminar)
+function completarProgresso() {
+    var progressBar = document.getElementById('loadingProgressBar');
+    if (progressBar) {
+        progressBar.style.width = '100%';
+    }
+    
+    // Esconde o loading após 1 segundo
+    setTimeout(function() {
+        var overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+        
+        // Reseta a flag de confirmação
+        envioConfirmadoPeloUsuario = false;
+    }, 1000);
+}
+
+// Função para esconder o loading em caso de erro
+function esconderLoading() {
+    var overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+    
+    // Reseta a flag de confirmação
+    envioConfirmadoPeloUsuario = false;
+}
+    </script>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -323,6 +501,59 @@
                 </button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação para Envio em Massa -->
+<div id="modalMassa" class="modal-massa-confirmacao">
+    <div class="modal-massa-content">
+        <div class="modal-massa-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            ATENÇÃO: ENVIO EM MASSA
+        </div>
+        
+        <div class="modal-massa-quantidade">
+            <span class="quantidade-numero" id="quantidadeMensagens">0</span>
+            <span class="quantidade-texto">mensagens selecionadas</span>
+        </div>
+        
+        <div class="modal-massa-alerta">
+            <div class="alerta-titulo">
+                <i class="fas fa-ban"></i>
+                Este envio não poderá ser cancelado ou interrompido!
+            </div>
+            
+            <ul class="alerta-lista">
+                <li>O processo levará vários minutos</li>
+                <li>Não feche a janela durante o envio</li>
+                <li>Não será possível parar depois de iniciado</li>
+                <li>Verifique se os dados estão corretos</li>
+            </ul>
+        </div>
+        
+        <div class="modal-massa-pergunta">
+            Deseja prosseguir com o envio em massa?
+        </div>
+        
+        <div class="modal-massa-botoes">
+            <button type="button" onclick="cancelarEnvioMassa()" class="btn-cancelar-massa">
+                <i class="fas fa-times"></i> CANCELAR
+            </button>
+            
+            <button type="button" onclick="confirmarEnvioMassa()" class="btn-confirmar-massa">
+                <i class="fas fa-check"></i> ENVIAR <span id="quantidadeBotoes">0</span> MENSAGENS
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Enviando mensagens...</div>
+    <div class="loading-subtext" id="loadingSubtext">Por favor, aguarde. Este processo pode levar alguns minutos.</div>
+    <div class="loading-progress">
+        <div class="loading-progress-bar" id="loadingProgressBar"></div>
     </div>
 </div>
 
@@ -469,20 +700,15 @@
         </div>
     </div>
 
-
-    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.9); z-index: 1050; text-align: center; padding-top: 30vh;">
-        <div class="spinner-border text-success" style="width: 50px; height: 50px;"></div>
-        <div style="margin-top: 8px; font-size: 18px; color: #4CB07A;">Enviando mensagens...</div>
-    </div>
-
     <div class="container-fluid p-4">
         <div class="card-container">
             <div class="card-header">
                 <h5 class="mb-0">Envio de Mensagens</h5>
                 <asp:Button ID="btnTestarApi" runat="server"
-                    CssClass="btn btn-success btn-pill"
-                    Text='Enviar mensagem'
-                    OnClientClick="mostrarLoading();" OnClick="btnTestarApi_Click" Enabled="false" />
+    CssClass="btn btn-success btn-pill"
+    Text='Enviar mensagem'
+    OnClientClick="return validarQuantidadeMensagens();" 
+    OnClick="btnTestarApi_Click" Enabled="false" />
 
 <%--                    <a href="viewShippingHistory" class="btn btn-info btn-pill">
                         <i class="fa-solid fa-history me-2"></i>Ver Histórico
