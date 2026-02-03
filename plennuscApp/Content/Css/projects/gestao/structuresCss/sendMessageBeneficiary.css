@@ -1,16 +1,17 @@
-﻿body {
+﻿/* ESTILOS BASE */
+body {
     background: #f5f7fa;
     font-family: 'Poppins', sans-serif;
-    font-size: 13px; /* Ajuste aqui o tamanho global da fonte */
+    font-size: 13px;
     color: #333;
 }
 
-
+/* CONTAINER PRINCIPAL */
 .card-container {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-    padding: 16px;
+    padding: 20px;
     margin-bottom: 24px;
 }
 
@@ -18,147 +19,180 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e9ecef;
 }
 
+.text-primary {
+    --bs-text-opacity: 1;
+    color: #323437 !important;
+}
+
+/* BOTÕES */
 .btn-pill {
     border-radius: 50px;
-    padding: 6px 18px;
+    padding: 8px 20px;
     font-weight: 600;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-    .btn-pill .fa {
-        margin-right: 8px;
+    .btn-pill:hover {
+        transform: translateY(-1px);
     }
 
 .btn-success {
-    background-color: #4CB07A;
-    border-color: #4CB07A;
+    background: linear-gradient(135deg, #4CB07A, #3B8B65);
     color: #fff;
 }
 
     .btn-success:hover {
-        background-color: #3B8B65;
+        background: linear-gradient(135deg, #3B8B65, #2E6B4F);
+        box-shadow: 0 4px 12px rgba(76, 176, 122, 0.3);
     }
 
-.btn-danger {
-    background-color: #DC8689;
-    border-color: #DC8689;
-    color: #fff;
-}
-
-    .btn-danger:hover {
-        background-color: #b75963;
+    .btn-success:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
     }
 
 .btn-info {
     background-color: #83CEEE;
-    border-color: #83CEEE;
     color: #fff;
 }
 
     .btn-info:hover {
         background-color: #6AB9E0;
-        color: white;
     }
 
 .btn-purple {
     background-color: #C06ED4;
-    border-color: #C06ED4;
     color: #fff;
 }
 
     .btn-purple:hover {
         background-color: #a14db8;
-        border-color: #a14db8;
-        color: #fff;
     }
 
-.botoes-acoes {
-    display: flex;
-    justify-content: space-evenly;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.btn-info,
-.btn-info:hover,
-.btn-info:focus,
-.btn-info:active,
-.btn-info:visited {
-    color: #fff !important;
-}
-
+/* FILTROS REORGANIZADOS */
 .filter-panel {
-    background: #f0f2f5;
-    padding: 12px;
-    border-radius: 8px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
     margin-bottom: 16px;
 }
 
-    .filter-panel .form-select {
-        padding: 6px 12px;
-        border-radius: 8px;
-        border: 1px solid #ced4da;
-        background-color: #fff;
-        transition: border-color 0.3s;
-    }
-
-        .filter-panel .form-select:focus {
-            border-color: #4CB07A;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.25);
-        }
-
-
-.table thead {
-    background-color: #fff;
+.filter-group {
+    display: flex;
+    flex-direction: column;
 }
 
-.table th, .table td {
-    text-align: center;
+    .filter-group label {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 8px;
+        color: #495057;
+    }
+
+    .filter-group .form-select,
+    .filter-group .form-control {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        font-size: 13px;
+        transition: all 0.3s;
+    }
+
+        .filter-group .form-select:focus,
+        .filter-group .form-control:focus {
+            border-color: #4CB07A;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 176, 122, 0.1);
+        }
+
+.filter-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #dee2e6;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-around;
+}
+/* TABELA */
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 12px 10px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
     padding: 10px;
-    border-top: none;
+    vertical-align: middle;
     border-bottom: 1px solid #e9ecef;
 }
 
-/* LINHAS ALTERNADAS NO GRID PARA MELHOR VISUALIZAÇÃO */
+/* LINHAS ALTERNADAS */
 #GridAssociados tbody tr:nth-child(odd) {
     background-color: #ffffff;
 }
 
 #GridAssociados tbody tr:nth-child(even) {
-    background-color: #f4f8fb;
+    background-color: #f8fafc;
 }
 
 /* LINHA SELECIONADA */
 .linha-selecionada td {
-    background-color: rgba(76, 176, 122, 0.2) !important;
+    background-color: rgba(76, 176, 122, 0.1) !important;
 }
 
+/* SCROLL DA TABELA */
 #GridAssociados > tbody {
     display: block;
-    max-height: 520px; /* altura visível do grid */
-    overflow-y: auto; /* scroll só de subir/descer */
+    max-height: 500px;
+    overflow-y: auto;
 }
 
     #GridAssociados > thead,
     #GridAssociados > tbody tr {
         display: table;
         width: 100%;
-        table-layout: fixed; /* mantém alinhamento das colunas */
+        table-layout: fixed;
     }
 
-/* Se o Grid emitir THEAD, o header ainda gruda no topo do grid */
+/* HEADER FIXO */
 #GridAssociados thead th {
     position: sticky;
     top: 0;
     z-index: 2;
-    background: #fff; /* neutro, não mexe nas outras cores */
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
 }
 
+/* CHECKBOX */
 /* ESTILO DO CHECKBOX - APENAS APARÊNCIA PADRÃO, SEM FUNDO COLORIDO */
 input[type="checkbox"].form-check-input {
     width: 20px;
@@ -216,10 +250,37 @@ input[type="checkbox"].form-check-input {
     outline: 2px solid #4CB07A;
     outline-offset: 2px;
 }
-/* PAGINAÇÃO DO GRID */
-/* 🔧 Estilo simples e elegante para a paginação do GridView */
+
+/* STATUS */
+.status-disponivel {
+    background-color: #28a745 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    display: inline-block;
+    text-align: center;
+    min-width: 90px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.status-enviado {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    display: inline-block;
+    text-align: center;
+    min-width: 90px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* PAGINAÇÃO */
 #GridAssociados .pager-footer {
-    padding: 10px 16px;
+    padding: 12px 16px;
     border-top: 1px solid #e6e6e6;
     background-color: #fff;
     font-size: 13px;
@@ -229,12 +290,12 @@ input[type="checkbox"].form-check-input {
     #GridAssociados .pager-footer a,
     #GridAssociados .pager-footer span {
         display: inline-block;
-        padding: 4px 10px;
+        padding: 6px 12px;
         margin: 0 2px;
         text-decoration: none;
         font-weight: 500;
         color: #4CB07A;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: all 0.2s ease-in-out;
     }
 
@@ -248,22 +309,7 @@ input[type="checkbox"].form-check-input {
         color: white;
     }
 
-#modalResultadoConteudo {
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    color: #333;
-}
-
-.modal-body {
-    background-color: #f8f9fa;
-}
-
-.modal-header {
-    background-color: #4CB07A !important;
-    color: white;
-}
-
-/* 🔥 Modal Escolher Template */
+/* MODAL TEMPLATE MENSAGEM */
 #modalEscolherMensagem {
     display: none;
     position: fixed;
@@ -294,8 +340,7 @@ input[type="checkbox"].form-check-input {
         background-color: #4CB07A;
         color: white;
         border-radius: 12px 12px 0 0;
-        padding: 12px 20px;
-        margin: 3px;
+        padding: 16px 24px;
     }
 
         #modalEscolherMensagem .modal-header h2 {
@@ -312,7 +357,7 @@ input[type="checkbox"].form-check-input {
 .template-opcao {
     border: 2px solid #ccc;
     border-radius: 12px;
-    padding: 16px;
+    padding: 20px;
     margin-bottom: 20px;
     cursor: pointer;
     transition: all 0.3s;
@@ -322,86 +367,33 @@ input[type="checkbox"].form-check-input {
     .template-opcao:hover {
         border-color: #4CB07A;
         background-color: #e6f5ee;
+        transform: translateY(-2px);
     }
 
     .template-opcao h4 {
         color: #4CB07A;
         margin-top: 0;
+        margin-bottom: 12px;
     }
-
-.data-pequena {
-    max-width: 200px; /* ajustável, você pode testar com 180px ou 150px */
-    width: 100%;
-    padding: 6px 12px;
-    box-sizing: border-box;
-    cursor: pointer;
-}
 
 .campo-data {
     max-width: 240px;
     width: 100%;
     padding: 10px;
     font-size: 14px;
-    text-transform: uppercase;
-    cursor: pointer;
     border-radius: 6px;
     border: 1px solid #ccc;
     box-sizing: border-box;
     transition: border-color 0.3s ease;
 }
-.alert-warning {
-    background-color: #fff3cd;
-    border: 1px solid #ffc107;
-}
 
-.alert-info {
-    background-color: #d1ecf1;
-    border: 1px solid #0dcaf0;
-}
+    .campo-data:focus {
+        border-color: #4CB07A;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
+    }
 
-.alert-success {
-    background-color: #d1e7dd;
-    border: 1px solid #198754;
-}
-
-.p-3 {
-    padding: 1rem !important;
-}
-
-.rounded {
-    border-radius: 0.375rem !important;
-}
-
-/* ESTILOS PARA STATUS DE ENVIO */
-.status-disponivel {
-    background-color: #28a745 !important; /* VERDE - muito mais visível */
-    color: #ffffff !important;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    display: inline-block;
-    text-align: center;
-    min-width: 90px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.status-enviado {
-    background-color: #ffc107 !important; /* AMARELO - mantém */
-    color: #000000 !important;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    display: inline-block;
-    text-align: center;
-    min-width: 90px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* ============================================
-   MODAL DE CONFIRMAÇÃO ENVIO EM MASSA - NOVO DESIGN
-   ============================================ */
+/* MODAL CONFIRMAÇÃO MASSA */
 .modal-massa-confirmacao {
     display: none;
     position: fixed;
@@ -569,9 +561,7 @@ input[type="checkbox"].form-check-input {
         box-shadow: 0 4px 12px rgba(76, 176, 122, 0.3);
     }
 
-/* ============================================
-   LOADING OVERLAY - AJUSTADO PARA MATCH
-   ============================================ */
+/* LOADING OVERLAY */
 #loadingOverlay {
     display: none;
     position: fixed;
@@ -640,88 +630,7 @@ input[type="checkbox"].form-check-input {
     border-radius: 3px;
 }
 
-/* Ajuste para responsividade */
-@media (max-width: 576px) {
-    .modal-massa-content {
-        padding: 24px 20px;
-        max-width: 100%;
-    }
-
-    .modal-massa-header {
-        font-size: 18px;
-    }
-
-    .quantidade-numero {
-        font-size: 28px;
-    }
-
-    .modal-massa-botoes {
-        flex-direction: column;
-    }
-
-    .btn-cancelar-massa,
-    .btn-confirmar-massa {
-        padding: 14px;
-    }
-
-    .loading-progress {
-        width: 250px;
-    }
-}
-/* Ou se preferir AZUL ao invés de VERDE para "Disponível" */
-/*
-.status-disponivel {
-    background-color: #007bff !important; 
-    color: #ffffff !important;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.85em;
-    display: inline-block;
-    text-align: center;
-    min-width: 90px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-*/
-
-/* Ajuste para melhor visibilidade na tabela */
-.table-hover tbody tr:hover .status-disponivel,
-.table-hover tbody tr:hover .status-enviado {
-    opacity: 0.9;
-    transform: scale(1.02);
-    transition: all 0.2s ease;
-}
-
-.p-4 {
-    padding: 0.5rem !important;
-}
-
-/* Linhas de associados já enviados */
-.enviado-recente {
-    background-color: #f8f9fa !important;
-}
-
-    .enviado-recente td {
-        color: #6c757d;
-        opacity: 0.8;
-    }
-
-    .enviado-recente .status-enviado {
-        opacity: 0.9;
-    }
-
-/* Checkbox desabilitado */
-.form-check-input.disabled {
-    opacity: 0.5;
-    cursor: not-allowed !important;
-}
-
-    .campo-data:focus {
-        border-color: #4CB07A;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
-    }
-
+/* ANIMAÇÕES */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -729,5 +638,78 @@ input[type="checkbox"].form-check-input {
 
     to {
         opacity: 1;
+    }
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .filter-actions {
+        flex-direction: column;
+    }
+
+        .filter-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+    .modal-massa-content {
+        padding: 24px 16px;
+        max-width: 100%;
+    }
+
+    .modal-massa-header {
+        font-size: 18px;
+    }
+
+    .modal-massa-botoes {
+        flex-direction: column;
+    }
+
+    .loading-progress {
+        width: 250px;
+    }
+
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    #GridAssociados > tbody {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-container {
+        padding: 16px;
+    }
+
+    .filter-panel {
+        padding: 16px;
+    }
+
+    .btn-pill {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .modal-massa-content {
+        padding: 20px 12px;
+    }
+
+    .quantidade-numero {
+        font-size: 28px;
     }
 }
