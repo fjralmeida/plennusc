@@ -243,6 +243,7 @@
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\Butyou.aspx" />
     <Content Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx" />
     <Content Include="PlennuscGestao\Views\companyRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
@@ -429,6 +430,13 @@
     </Compile>
     <Compile Include="PlennuscFinance\Views\profileFinance.aspx.designer.cs">
       <DependentUpon>profileFinance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\Butyou.aspx.cs">
+      <DependentUpon>Butyou.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\Butyou.aspx.designer.cs">
+      <DependentUpon>Butyou.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx.cs">
       <DependentUpon>companyMenuManagementSystem.aspx</DependentUpon>
