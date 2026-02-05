@@ -27,6 +27,11 @@
             <!-- BOTÃO DE TESTE NOVO CORRIGIDO -->
             <asp:Button ID="btnTestarPreenchimento" runat="server" Text="✅ TESTAR PREENCHIMENTO" 
                 OnClick="btnTestarPreenchimento_Click" CssClass="btn btn-info" />
+
+        <asp:Button ID="btnPreencherComDadosReais" runat="server" 
+                    Text="Preencher com Dados Reais" 
+                    OnClick="btnPreencherComDadosReais_Click" 
+                    CssClass="btn btn-primary" />
           
         </div>
         

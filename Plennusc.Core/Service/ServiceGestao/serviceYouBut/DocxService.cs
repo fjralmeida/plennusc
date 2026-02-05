@@ -31,6 +31,18 @@ namespace appWhatsapp.PlennuscGestao.Services
             return runProperties;
         }
 
+        // MÉTODO PARA CRIAR RUN PROPERTIES COM AZUL (para valores preenchidos)
+        private RunProperties CriarRunPropertiesAzul()
+        {
+            var runProperties = new RunProperties();
+            runProperties.Append(new Bold());
+            runProperties.Append(new FontSize() { Val = "12" });
+            runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+            // ADICIONA COR AZUL (hexadecimal sem #)
+            runProperties.Append(new Color() { Val = "0000FF" });
+            return runProperties;
+        }
+
         public int FillTitularBasico(
        string templatePath,
        string outputPath,
@@ -264,36 +276,36 @@ namespace appWhatsapp.PlennuscGestao.Services
                     "CARTAO_SUS", "CARTÃO DO SUS");
             }
 
-            // RESPONSÁVEL FINANCEIRO - APENAS se não contiver CPF
-            // Verificar se contém RESPONSÁVEL FINANCEIRO mas NÃO contém CPF
-            if (upperContent.Contains("RESPONSÁVEL") && upperContent.Contains("FINANCEIRO") && !upperContent.Contains("CPF"))
-            {
-                string patternResponsavel = @"RESPONSÁVEL\s+FINANCEIRO";
-                Match match = Regex.Match(cellContent, patternResponsavel, RegexOptions.IgnoreCase);
+            //// RESPONSÁVEL FINANCEIRO - APENAS se não contiver CPF
+            //// Verificar se contém RESPONSÁVEL FINANCEIRO mas NÃO contém CPF
+            //if (upperContent.Contains("RESPONSÁVEL") && upperContent.Contains("FINANCEIRO") && !upperContent.Contains("CPF"))
+            //{
+            //    string patternResponsavel = @"RESPONSÁVEL\s+FINANCEIRO";
+            //    Match match = Regex.Match(cellContent, patternResponsavel, RegexOptions.IgnoreCase);
 
-                if (match.Success)
-                {
-                    applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados,
-                        "RESPONSAVEL_FINANCEIRO", "RESPONSÁVEL FINANCEIRO");
-                }
-            }
+            //    if (match.Success)
+            //    {
+            //        applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados,
+            //            "RESPONSAVEL_FINANCEIRO", "RESPONSÁVEL FINANCEIRO");
+            //    }
+            //}
 
-            // CPF RESPONSÁVEL FINANCEIRO - verificar SEQUÊNCIA EXATA
-            if (upperContent.Contains("CPF") && upperContent.Contains("RESPONSÁVEL") && upperContent.Contains("FINANCEIRO"))
-            {
-                // Verificar a ordem correta das palavras
-                string patternCPFResponsavel = @"CPF\s+RESPONSÁVEL\s+FINANCEIRO";
-                Match matchCPF = Regex.Match(cellContent, patternCPFResponsavel, RegexOptions.IgnoreCase);
+            //// CPF RESPONSÁVEL FINANCEIRO - verificar SEQUÊNCIA EXATA
+            //if (upperContent.Contains("CPF") && upperContent.Contains("RESPONSÁVEL") && upperContent.Contains("FINANCEIRO"))
+            //{
+            //    // Verificar a ordem correta das palavras
+            //    string patternCPFResponsavel = @"CPF\s+RESPONSÁVEL\s+FINANCEIRO";
+            //    Match matchCPF = Regex.Match(cellContent, patternCPFResponsavel, RegexOptions.IgnoreCase);
 
-                if (matchCPF.Success)
-                {
-                    applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados,
-                        "CPF_RESPONSAVEL_FINANCEIRO", "CPF RESPONSÁVEL FINANCEIRO");
+            //    if (matchCPF.Success)
+            //    {
+            //        applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados,
+            //            "CPF_RESPONSAVEL_FINANCEIRO", "CPF RESPONSÁVEL FINANCEIRO");
 
-                    // IMPORTANTE: Retornar aqui para evitar processar o outro campo
-                    return applied;
-                }
-            }
+            //        // IMPORTANTE: Retornar aqui para evitar processar o outro campo
+            //        return applied;
+            //    }
+            //}
 
 
             // Nº DECLARAÇÃO NASCIDO VIVO
@@ -470,14 +482,15 @@ namespace appWhatsapp.PlennuscGestao.Services
                     var parentRun = textos[0].Parent as Run;
                     if (parentRun != null)
                     {
-                        // Criar um novo Run para o valor em negrito
+                        // Criar um novo Run para o valor em negrito COM AZUL
                         Run boldRun = new Run();
 
-                        // Adicionar propriedades de negrito e tamanho de fonte menor
+                        // Adicionar propriedades de negrito, tamanho de fonte menor e COR AZUL
                         RunProperties runProperties = new RunProperties();
-                        runProperties.Append(new Bold());
-                        runProperties.Append(new FontSize() { Val = "12" });
-                        runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+                        runProperties.Append(new FontSize() { Val = "16" });
+                        runProperties.Append(new FontSizeComplexScript() { Val = "16" });
+                        // ADICIONA COR AZUL
+                        runProperties.Append(new Color() { Val = "0000FF" });
                         boldRun.AppendChild(runProperties);
 
                         // Adicionar o texto do valor
@@ -569,18 +582,18 @@ namespace appWhatsapp.PlennuscGestao.Services
                         // Adicionar quebra de linha
                         parentRun.AppendChild(new Break());
 
-                        // Criar um novo Run para o valor em negrito
+                        // Criar um novo Run para o valor em negrito COM AZUL
                         Run boldRun = new Run();
 
-                        // Adicionar propriedades de negrito E tamanho de fonte menor
+                        // Adicionar propriedades de negrito E tamanho de fonte menor E COR AZUL
                         RunProperties runProperties = new RunProperties();
 
-                        // Negrito
-                        runProperties.Append(new Bold());
-
                         // Tamanho de fonte menor (20 = 10 pontos, o padrão é 24 = 12 pontos)
-                        runProperties.Append(new FontSize() { Val = "12" });
-                        runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+                        runProperties.Append(new FontSize() { Val = "16" });
+                        runProperties.Append(new FontSizeComplexScript() { Val = "16" });
+
+                        // ADICIONA COR AZUL
+                        runProperties.Append(new Color() { Val = "0000FF" });
 
                         boldRun.AppendChild(runProperties);
 
@@ -655,14 +668,15 @@ namespace appWhatsapp.PlennuscGestao.Services
                     // Adicionar quebra de linha
                     parentRun.AppendChild(new Break());
 
-                    // Criar um novo Run para o valor em negrito
+                    // Criar um novo Run para o valor em negrito COM AZUL
                     Run boldRun = new Run();
 
-                    // Adicionar propriedades de negrito e tamanho de fonte menor
+                    // Adicionar propriedades de negrito e tamanho de fonte menor E COR AZUL
                     RunProperties runProperties = new RunProperties();
-                    runProperties.Append(new Bold());
-                    runProperties.Append(new FontSize() { Val = "12" });
-                    runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+                    runProperties.Append(new FontSize() { Val = "16" });
+                    runProperties.Append(new FontSizeComplexScript() { Val = "16" });
+                    // ADICIONA COR AZUL
+                    runProperties.Append(new Color() { Val = "0000FF" });
                     boldRun.AppendChild(runProperties);
 
                     // Adicionar o texto do valor
@@ -734,14 +748,15 @@ namespace appWhatsapp.PlennuscGestao.Services
                     // Adicionar quebra de linha
                     parentRun.AppendChild(new Break());
 
-                    // Criar um novo Run para o valor em negrito
+                    // Criar um novo Run para o valor em negrito COM AZUL
                     Run boldRun = new Run();
 
-                    // Adicionar propriedades de negrito e tamanho de fonte menor
+                    // Adicionar propriedades de negrito e tamanho de fonte menor E COR AZUL
                     RunProperties runProperties = new RunProperties();
-                    runProperties.Append(new Bold());
-                    runProperties.Append(new FontSize() { Val = "12" });
-                    runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+                    runProperties.Append(new FontSize() { Val = "16" });
+                    runProperties.Append(new FontSizeComplexScript() { Val = "16" });
+                    // ADICIONA COR AZUL
+                    runProperties.Append(new Color() { Val = "0000FF" });
                     boldRun.AppendChild(runProperties);
 
                     // Adicionar o texto do valor
@@ -812,14 +827,15 @@ namespace appWhatsapp.PlennuscGestao.Services
                     // Adicionar quebra de linha
                     parentRun.AppendChild(new Break());
 
-                    // Criar um novo Run para o valor em negrito
+                    // Criar um novo Run para o valor em negrito COM AZUL
                     Run boldRun = new Run();
 
-                    // Adicionar propriedades de negrito e tamanho de fonte menor
+                    // Adicionar propriedades de negrito e tamanho de fonte menor E COR AZUL
                     RunProperties runProperties = new RunProperties();
-                    runProperties.Append(new Bold());
-                    runProperties.Append(new FontSize() { Val = "12" });
-                    runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+                    runProperties.Append(new FontSize() { Val = "16" });
+                    runProperties.Append(new FontSizeComplexScript() { Val = "16" });
+                    // ADICIONA COR AZUL
+                    runProperties.Append(new Color() { Val = "0000FF" });
                     boldRun.AppendChild(runProperties);
 
                     // Adicionar o texto do valor
@@ -910,14 +926,14 @@ namespace appWhatsapp.PlennuscGestao.Services
             // Adicionar quebra de linha após o rótulo
             runRotulo.AppendChild(new Break());
 
-            // 2. SEGUNDO RUN: Opções dos checkboxes COM NEGRITO
+            // 2. SEGUNDO RUN: Opções dos checkboxes COM NEGRITO E AZUL
             Run runOpcoes = new Run();
             RunProperties runPropertiesOpcoes = new RunProperties();
 
-            // NEGRITO para as opções
-            runPropertiesOpcoes.Append(new Bold());
-            runPropertiesOpcoes.Append(new FontSize() { Val = "12" });
-            runPropertiesOpcoes.Append(new FontSizeComplexScript() { Val = "12" });
+            runPropertiesOpcoes.Append(new FontSize() { Val = "16" });
+            runPropertiesOpcoes.Append(new FontSizeComplexScript() { Val = "16" });
+            // ADICIONA COR AZUL
+            runPropertiesOpcoes.Append(new Color() { Val = "0000FF" });
 
             runOpcoes.AppendChild(runPropertiesOpcoes);
             runOpcoes.AppendChild(new Text(opcoes));
@@ -984,22 +1000,23 @@ namespace appWhatsapp.PlennuscGestao.Services
             Run runRotulo = new Run();
             RunProperties runPropertiesRotulo = new RunProperties();
             // Apenas tamanho padrão, SEM negrito
-            runPropertiesRotulo.Append(new FontSize() { Val = "12" });
-            runPropertiesRotulo.Append(new FontSizeComplexScript() { Val = "12" });
+            runPropertiesRotulo.Append(new FontSize() { Val = "16" });
+            runPropertiesRotulo.Append(new FontSizeComplexScript() { Val = "16" });
             runRotulo.AppendChild(runPropertiesRotulo);
             runRotulo.AppendChild(new Text("ESTADO CIVIL"));
 
             // Adicionar quebra de linha após o rótulo
             runRotulo.AppendChild(new Break());
 
-            // 2. SEGUNDO RUN: Opções dos checkboxes COM NEGRITO
+            // 2. SEGUNDO RUN: Opções dos checkboxes COM NEGRITO E AZUL
             Run runOpcoes = new Run();
             RunProperties runPropertiesOpcoes = new RunProperties();
 
             // NEGRITO para as opções
-            runPropertiesOpcoes.Append(new Bold());
-            runPropertiesOpcoes.Append(new FontSize() { Val = "12" });
-            runPropertiesOpcoes.Append(new FontSizeComplexScript() { Val = "12" });
+            runPropertiesOpcoes.Append(new FontSize() { Val = "16" });
+            runPropertiesOpcoes.Append(new FontSizeComplexScript() { Val = "16" });
+            // ADICIONA COR AZUL
+            runPropertiesOpcoes.Append(new Color() { Val = "0000FF" });
 
             runOpcoes.AppendChild(runPropertiesOpcoes);
             runOpcoes.AppendChild(new Text(opcoes));
@@ -1477,12 +1494,19 @@ namespace appWhatsapp.PlennuscGestao.Services
                 var paragraph = cell.Elements<Paragraph>().FirstOrDefault();
                 if (paragraph != null)
                 {
-                    // Criar um novo run com o checkbox marcado
-                    var run = new Run();
-                    run.Append(new Text("☑"));
-                    paragraph.Append(run);
+                    // Criar um novo run com o checkbox marcado EM AZUL
+                    Run newRun = new Run();
+                    // Adicionar propriedades COM AZUL
+                    RunProperties runProperties = new RunProperties();
+                    runProperties.Append(new FontSize() { Val = "16" });
+                    runProperties.Append(new FontSizeComplexScript() { Val = "16" });
+                    // ADICIONA COR AZUL
+                    runProperties.Append(new Color() { Val = "0000FF" });
+                    newRun.AppendChild(runProperties);
+                    newRun.Append(new Text("☑"));
+                    paragraph.Append(newRun);
                     applied++;
-                    Console.WriteLine("Checkbox adicionado na célula vazia");
+                    Console.WriteLine("Checkbox adicionado na célula vazia (AZUL)");
                 }
                 return applied;
             }
@@ -1499,37 +1523,49 @@ namespace appWhatsapp.PlennuscGestao.Services
                     conteudo.Contains("[ ]") || conteudo.Contains("( )") ||
                     conteudo.Trim() == "")
                 {
-                    // Substituir por checkbox marcado mantendo o restante do texto se houver
+                    // Obtém o Run pai para adicionar a cor azul
+                    var parentRun = text.Parent as Run;
+                    if (parentRun != null)
+                    {
+                        // Adiciona propriedades de cor azul ao Run
+                        RunProperties runProperties = parentRun.RunProperties ?? new RunProperties();
+
+                        if (!runProperties.Elements<Color>().Any())
+                            runProperties.Append(new Color() { Val = "0000FF" });
+
+                        parentRun.RunProperties = runProperties;
+                    }
+
                     if (conteudo.Contains("☐"))
                     {
-                        text.Text = conteudo.Replace("☐", "☑");
+                        text.Text = conteudo.Replace("☐", "☒");
                         encontrouCheckbox = true;
                     }
                     else if (conteudo.Contains("□"))
                     {
-                        text.Text = conteudo.Replace("□", "☑");
+                        text.Text = conteudo.Replace("□", "☒");
                         encontrouCheckbox = true;
                     }
                     else if (conteudo.Contains("[ ]"))
                     {
-                        text.Text = conteudo.Replace("[ ]", "[✓]");
+                        text.Text = conteudo.Replace("[ ]", "☒");
                         encontrouCheckbox = true;
                     }
                     else if (conteudo.Contains("( )"))
                     {
-                        text.Text = conteudo.Replace("( )", "(✓)");
+                        text.Text = conteudo.Replace("( )", "☒");
                         encontrouCheckbox = true;
                     }
                     else if (string.IsNullOrWhiteSpace(conteudo))
                     {
-                        text.Text = "☑";
+                        text.Text = "☒";
                         encontrouCheckbox = true;
                     }
 
                     if (encontrouCheckbox)
                     {
                         applied++;
-                        Console.WriteLine($"Checkbox substituído: '{conteudo}' -> '{text.Text}'");
+                        Console.WriteLine($"Checkbox substituído (AZUL): '{conteudo}' -> '{text.Text}'");
                         break;
                     }
                 }
@@ -1540,17 +1576,347 @@ namespace appWhatsapp.PlennuscGestao.Services
             {
                 // Verificar se o primeiro texto tem conteúdo
                 var primeiroTexto = texts[0];
+                var parentRun = primeiroTexto.Parent as Run;
+
+                if (parentRun != null)
+                {
+                    // Adiciona propriedades de cor azul ao Run
+                    RunProperties runProperties = parentRun.RunProperties ?? new RunProperties();
+
+                    if (!runProperties.Elements<Color>().Any())
+                        runProperties.Append(new Color() { Val = "0000FF" });
+
+                    parentRun.RunProperties = runProperties;
+                }
+
                 if (string.IsNullOrWhiteSpace(primeiroTexto.Text))
                 {
-                    primeiroTexto.Text = "☑";
+                    primeiroTexto.Text = "☒";
                 }
                 else
                 {
                     // Adicionar um checkbox antes do texto existente
-                    primeiroTexto.Text = "☑ " + primeiroTexto.Text;
+                    primeiroTexto.Text = "☒ " + primeiroTexto.Text;
                 }
                 applied++;
-                Console.WriteLine("Checkbox adicionado no início da célula");
+                Console.WriteLine("Checkbox adicionado no início da célula (AZUL)");
+            }
+
+            return applied;
+        }
+
+        // FUNÇÃO SIMPLIFICADA PARA PREENCHER A TABELA DE VALORES
+        public int FillTabelaValores(string documentoPath, Dictionary<string, string> composicaoContraprestacao)
+        {
+            int applied = 0;
+
+            using (var doc = WordprocessingDocument.Open(documentoPath, true))
+            {
+                var body = doc.MainDocumentPart.Document.Body;
+                var tables = body.Descendants<Table>().ToList();
+
+                foreach (var table in tables)
+                {
+                    var rows = table.Descendants<TableRow>().ToList();
+                    bool encontrouCabecalho = false;
+                    int linhaCabecalho = -1;
+
+                    // Primeiro: encontrar a linha do cabeçalho
+                    for (int rowIndex = 0; rowIndex < rows.Count; rowIndex++)
+                    {
+                        var cells = rows[rowIndex].Descendants<TableCell>().ToList();
+
+                        // Verificar se esta linha tem 6 células (ou pelo menos algumas com os textos que procuramos)
+                        if (cells.Count >= 2) // Pelo menos 2 células
+                        {
+                            bool temTitular = false;
+                            bool temDependente = false;
+
+                            foreach (var cell in cells)
+                            {
+                                var textos = cell.Descendants<Text>().ToList();
+                                if (textos.Count == 0) continue;
+
+                                string conteudo = string.Join("", textos.Select(t => t.Text)).ToUpper();
+
+                                if (conteudo.Contains("TITULAR") && conteudo.Contains("(R"))
+                                    temTitular = true;
+
+                                if (conteudo.Contains("DEPENDENTE") && conteudo.Contains("(R"))
+                                    temDependente = true;
+                            }
+
+                            if (temTitular && temDependente)
+                            {
+                                encontrouCabecalho = true;
+                                linhaCabecalho = rowIndex;
+                                Console.WriteLine($"Encontrou cabeçalho na linha {rowIndex}");
+                                break;
+                            }
+                        }
+                    }
+
+                    if (encontrouCabecalho && linhaCabecalho + 1 < rows.Count)
+                    {
+                        // A linha seguinte tem os valores
+                        var linhaValores = rows[linhaCabecalho + 1];
+                        var celulasValores = linhaValores.Descendants<TableCell>().ToList();
+
+                        Console.WriteLine($"Linha de valores tem {celulasValores.Count} células");
+
+                        // Preencher os valores
+                        if (celulasValores.Count >= 1 && composicaoContraprestacao.ContainsKey("VALOR_TITULAR"))
+                        {
+                            // TITULAR
+                            var celulaTitular = celulasValores[0];
+                            celulaTitular.RemoveAllChildren<Paragraph>();
+
+                            Paragraph p1 = new Paragraph();
+                            Run r1 = new Run();
+                            RunProperties rp1 = new RunProperties();
+                            rp1.Append(new Color() { Val = "0000FF" });
+                            rp1.Append(new FontSize() { Val = "16" });
+                            r1.RunProperties = rp1;
+                            r1.AppendChild(new Text(composicaoContraprestacao["VALOR_TITULAR"]));
+                            p1.AppendChild(r1);
+                            celulaTitular.AppendChild(p1);
+                            applied++;
+                            Console.WriteLine($"Preenchido TITULAR: {composicaoContraprestacao["VALOR_TITULAR"]}");
+                        }
+
+                        if (celulasValores.Count >= 2 && composicaoContraprestacao.ContainsKey("VALOR_DEPENDENTE_1"))
+                        {
+                            // DEPENDENTE 1
+                            var celulaDep1 = celulasValores[1];
+                            celulaDep1.RemoveAllChildren<Paragraph>();
+
+                            Paragraph p2 = new Paragraph();
+                            Run r2 = new Run();
+                            RunProperties rp2 = new RunProperties();
+                            rp2.Append(new Color() { Val = "0000FF" });
+                            rp2.Append(new FontSize() { Val = "16" });
+                            r2.RunProperties = rp2;
+                            r2.AppendChild(new Text(composicaoContraprestacao["VALOR_DEPENDENTE_1"]));
+                            p2.AppendChild(r2);
+                            celulaDep1.AppendChild(p2);
+                            applied++;
+                            Console.WriteLine($"Preenchido DEPENDENTE 1: {composicaoContraprestacao["VALOR_DEPENDENTE_1"]}");
+                        }
+
+                        if (celulasValores.Count >= 3 && composicaoContraprestacao.ContainsKey("VALOR_DEPENDENTE_2"))
+                        {
+                            // DEPENDENTE 2
+                            var celulaDep2 = celulasValores[2];
+                            celulaDep2.RemoveAllChildren<Paragraph>();
+
+                            Paragraph p3 = new Paragraph();
+                            Run r3 = new Run();
+                            RunProperties rp3 = new RunProperties();
+                            rp3.Append(new Color() { Val = "0000FF" });
+                            rp3.Append(new FontSize() { Val = "16" });
+                            r3.RunProperties = rp3;
+                            r3.AppendChild(new Text(composicaoContraprestacao["VALOR_DEPENDENTE_2"]));
+                            p3.AppendChild(r3);
+                            celulaDep2.AppendChild(p3);
+                            applied++;
+                            Console.WriteLine($"Preenchido DEPENDENTE 2: {composicaoContraprestacao["VALOR_DEPENDENTE_2"]}");
+                        }
+
+                        if (celulasValores.Count >= 4 && composicaoContraprestacao.ContainsKey("VALOR_DEPENDENTE_3"))
+                        {
+                            // DEPENDENTE 3
+                            var celulaDep3 = celulasValores[3];
+                            celulaDep3.RemoveAllChildren<Paragraph>();
+
+                            Paragraph p4 = new Paragraph();
+                            Run r4 = new Run();
+                            RunProperties rp4 = new RunProperties();
+                            rp4.Append(new Color() { Val = "0000FF" });
+                            rp4.Append(new FontSize() { Val = "16" });
+                            r4.RunProperties = rp4;
+                            r4.AppendChild(new Text(composicaoContraprestacao["VALOR_DEPENDENTE_3"]));
+                            p4.AppendChild(r4);
+                            celulaDep3.AppendChild(p4);
+                            applied++;
+                            Console.WriteLine($"Preenchido DEPENDENTE 3: {composicaoContraprestacao["VALOR_DEPENDENTE_3"]}");
+                        }
+
+                        if (celulasValores.Count >= 5 && composicaoContraprestacao.ContainsKey("VALOR_DEPENDENTE_4"))
+                        {
+                            // DEPENDENTE 4
+                            var celulaDep4 = celulasValores[4];
+                            celulaDep4.RemoveAllChildren<Paragraph>();
+
+                            Paragraph p5 = new Paragraph();
+                            Run r5 = new Run();
+                            RunProperties rp5 = new RunProperties();
+                            rp5.Append(new Color() { Val = "0000FF" });
+                            rp5.Append(new FontSize() { Val = "16" });
+                            r5.RunProperties = rp5;
+                            r5.AppendChild(new Text(composicaoContraprestacao["VALOR_DEPENDENTE_4"]));
+                            p5.AppendChild(r5);
+                            celulaDep4.AppendChild(p5);
+                            applied++;
+                            Console.WriteLine($"Preenchido DEPENDENTE 4: {composicaoContraprestacao["VALOR_DEPENDENTE_4"]}");
+                        }
+
+                        if (celulasValores.Count >= 6 && composicaoContraprestacao.ContainsKey("VALOR_DEPENDENTE_5"))
+                        {
+                            // DEPENDENTE 5
+                            var celulaDep5 = celulasValores[5];
+                            celulaDep5.RemoveAllChildren<Paragraph>();
+
+                            Paragraph p6 = new Paragraph();
+                            Run r6 = new Run();
+                            RunProperties rp6 = new RunProperties();
+                            rp6.Append(new Color() { Val = "0000FF" });
+                            rp6.Append(new FontSize() { Val = "16" });
+                            r6.RunProperties = rp6;
+                            r6.AppendChild(new Text(composicaoContraprestacao["VALOR_DEPENDENTE_5"]));
+                            p6.AppendChild(r6);
+                            celulaDep5.AppendChild(p6);
+                            applied++;
+                            Console.WriteLine($"Preenchido DEPENDENTE 5: {composicaoContraprestacao["VALOR_DEPENDENTE_5"]}");
+                        }
+
+                        doc.MainDocumentPart.Document.Save();
+                        return applied;
+                    }
+                }
+            }
+
+            return applied;
+        }
+
+        // NOVA FUNÇÃO SEPARADA PARA CALCULAR E PREENCHER O TOTAL
+        public int FillTotalContraprestacao(string documentoPath, Dictionary<string, string> composicaoContraprestacao)
+        {
+            int applied = 0;
+
+            using (var doc = WordprocessingDocument.Open(documentoPath, true))
+            {
+                var body = doc.MainDocumentPart.Document.Body;
+
+                // 1. CALCULAR O TOTAL
+                decimal total = 0;
+
+                decimal ExtrairValor(string textoValor)
+                {
+                    if (string.IsNullOrWhiteSpace(textoValor))
+                        return 0;
+
+                    string limpo = textoValor.Replace("R$", "").Replace(" ", "").Replace(",", ".");
+                    if (decimal.TryParse(limpo, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal valor))
+                        return valor;
+                    return 0;
+                }
+
+                if (composicaoContraprestacao.ContainsKey("VALOR_TITULAR"))
+                    total += ExtrairValor(composicaoContraprestacao["VALOR_TITULAR"]);
+
+                for (int i = 1; i <= 5; i++)
+                {
+                    string key = $"VALOR_DEPENDENTE_{i}";
+                    if (composicaoContraprestacao.ContainsKey(key))
+                        total += ExtrairValor(composicaoContraprestacao[key]);
+                }
+
+                string totalFormatado = $"R$ {total.ToString("N2").Replace(".", ",")}";
+                Console.WriteLine($"Total calculado: {totalFormatado}");
+
+                // 2. PROCURAR PELA FRASE "mensalidades desta proposta"
+                var allParagraphs = body.Descendants<Paragraph>().ToList();
+                Paragraph paragrafoAlvo = null;
+
+                for (int i = 0; i < allParagraphs.Count; i++)
+                {
+                    var paragraph = allParagraphs[i];
+                    string paragraphText = string.Join("", paragraph.Descendants<Text>().Select(t => t.Text));
+                    string upperText = paragraphText.ToUpperInvariant();
+
+                    // Procurar pela frase "mensalidades desta proposta"
+                    if (upperText.Contains("MENSALIDADES") && upperText.Contains("DESTA") && upperText.Contains("PROPOSTA"))
+                    {
+                        Console.WriteLine($"Encontrou a frase na linha {i}: '{paragraphText}'");
+
+                        // AGORA VAMOS PARA O PRÓXIMO PARÁGRAFO (não o mesmo)
+                        if (i + 1 < allParagraphs.Count)
+                        {
+                            paragrafoAlvo = allParagraphs[i + 1];
+                            Console.WriteLine($"Próximo parágrafo (campo vazio) encontrado na linha {i + 1}");
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Não há próximo parágrafo após 'mensalidades desta proposta'");
+                            return 0;
+                        }
+                    }
+                }
+
+                // 3. SE ENCONTROU O PARÁGRAFO ALVO (campo vazio), PREENCHER
+                if (paragrafoAlvo != null)
+                {
+                    Console.WriteLine($"Preenchendo campo vazio...");
+
+                    // Limpar o campo existente (se houver conteúdo)
+                    paragrafoAlvo.RemoveAllChildren();
+
+                    // Criar novo Run com o valor formatado
+                    Run runValor = new Run();
+                    RunProperties rp = new RunProperties();
+                    rp.Append(new Color() { Val = "0000FF" });
+                    rp.Append(new FontSize() { Val = "16" });
+                    runValor.RunProperties = rp;
+                    runValor.AppendChild(new Text(totalFormatado));
+
+                    paragrafoAlvo.AppendChild(runValor);
+
+                    Console.WriteLine($"Campo preenchido com valor: {totalFormatado}");
+                    applied++;
+                }
+                else
+                {
+                    Console.WriteLine("Não encontrou 'mensalidades desta proposta' ou próximo parágrafo!");
+
+                    // Fallback: procurar pelo título e usar o próximo parágrafo
+                    for (int i = 0; i < allParagraphs.Count; i++)
+                    {
+                        var paragraph = allParagraphs[i];
+                        string paragraphText = string.Join("", paragraph.Descendants<Text>().Select(t => t.Text));
+                        string upperText = paragraphText.ToUpperInvariant();
+
+                        if (upperText.Contains("CONTRAPRESTAÇÃO") && upperText.Contains("PECUNIÁRIA") &&
+                            upperText.Contains("MENSAL") && upperText.Contains("TOTAL"))
+                        {
+                            Console.WriteLine($"Fallback: Encontrou título na linha {i}");
+
+                            if (i + 1 < allParagraphs.Count)
+                            {
+                                paragrafoAlvo = allParagraphs[i + 1];
+                                Console.WriteLine($"Usando próximo parágrafo (linha {i + 1}) como campo vazio");
+
+                                // Limpar e preencher
+                                paragrafoAlvo.RemoveAllChildren();
+
+                                Run runValor = new Run();
+                                RunProperties rp = new RunProperties();
+                                rp.Append(new Color() { Val = "0000FF" });
+                                rp.Append(new FontSize() { Val = "16" });
+                                runValor.RunProperties = rp;
+                                runValor.AppendChild(new Text(totalFormatado));
+
+                                paragrafoAlvo.AppendChild(runValor);
+
+                                Console.WriteLine($"Campo preenchido com valor: {totalFormatado}");
+                                applied++;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                doc.MainDocumentPart.Document.Save();
             }
 
             return applied;

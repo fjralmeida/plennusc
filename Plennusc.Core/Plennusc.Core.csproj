@@ -70,6 +70,12 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -140,6 +146,7 @@
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
+    <Compile Include="Models\ModelsGestao\modelsButYou\DadosAssociadoCompleto.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\DependentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\ProposalModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\companyMenuManagementSystemModels.cs" />
@@ -199,6 +206,7 @@
     <Compile Include="SqlQueries\SqlQueriesFinance\profileFinance\PessoaDAOFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesFinance\settingsFinance\PrivacySettingsFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\autenticacao\PermissaoQuery.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\butYouQueries\butYouQueriesAssociados.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\CompanyDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\UserCompanyQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\Demanda.cs" />
