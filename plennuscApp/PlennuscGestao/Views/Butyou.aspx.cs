@@ -88,6 +88,60 @@ namespace appWhatsapp.PlennuscGestao.Views
             };
         }
 
+        private Dictionary<string, string> ConverterDependenteParaDicionario(DadosAssociadoCompleto dependente)
+        {
+            // Determinar parentesco baseado na idade
+            string parentesco = DeterminarParentesco(dependente);
+
+            return new Dictionary<string, string>
+            {
+                { "NOME_COMPLETO", dependente.NomeCompleto },
+                { "DATA_NASCIMENTO", dependente.DataNascimento },
+                { "SEXO", dependente.Sexo == "MASCULINO" ? "M" :
+                          dependente.Sexo == "FEMININO" ? "F" : "OUTROS" },
+                { "ESTADO_CIVIL", dependente.EstadoCivil },
+                { "IDADE", dependente.Idade },
+                { "CPF", dependente.CpfTitular },
+                { "FILIACAO", dependente.Filiacao },
+                { "RG", dependente.Rg },
+                { "PARENTESCO", parentesco },
+                { "ORGAO_EXPEDIDOR", dependente.OrgaoExpedidor },
+                { "CARTAO_SUS", dependente.CartaoSus },
+                { "NUMERO_DECLARACAO_NASCIDO_VIVO", dependente.NumeroDeclaracaoNascidoVivo },
+                // Campos de endereço do dependente (pode ser o mesmo do titular)
+                { "ENDERECO", dependente.Endereco },
+                { "NUMERO", dependente.Numero },
+                { "COMPLEMENTO", dependente.Complemento },
+                { "CEP", dependente.Cep },
+                { "BAIRRO", dependente.Bairro },
+                { "CIDADE", dependente.Cidade },
+                { "UF", dependente.Uf },
+                { "EMAIL", dependente.Email },
+                { "TELEFONE_CELULAR", dependente.TelefoneCelular },
+                { "TELEFONE_FIXO", "" } // Se não tiver
+            };
+        }
+
+        private string DeterminarParentesco(DadosAssociadoCompleto dependente)
+        {
+            // Lógica para determinar parentesco baseado em idade e estado civil
+            if (int.TryParse(dependente.Idade, out int idade))
+            {
+                // Se for criança/ adolescente, provavelmente é FILHO
+                if (idade <= 18)
+                    return "FILHO";
+
+                // Se for adulto e casado, pode ser CÔNJUGE
+                if (dependente.EstadoCivil == "CASADO" && idade >= 18)
+                    return "CÔNJUGE";
+
+                // Outros casos
+                if (idade > 60)
+                    return "PAI/MAE";
+            }
+
+            return "OUTROS";
+        }
 
         protected void btnTestarPreenchimento_Click(object sender, EventArgs e)
         {
@@ -331,23 +385,26 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                // 1. Buscar associados do banco
+                // 1. Buscar todos os associados (titulares e dependentes)
                 var queriesService = new butYouQueriesAssociados(
                     System.Configuration.ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString);
 
-                var associados = queriesService.BuscarAssociadosCompletos();
+                var todosAssociados = queriesService.BuscarAssociadosCompletos();
 
-                if (associados == null || associados.Count == 0)
+                if (todosAssociados == null || todosAssociados.Count == 0)
                 {
                     lblErro.Text = "Nenhum associado encontrado no banco de dados.";
                     lblErro.Visible = true;
                     return;
                 }
 
-                lblMensagem.Text = $"Encontrados {associados.Count} associados. Processando...";
+                // 2. Agrupar titulares com seus dependentes
+                var gruposTitulares = AgruparTitularesComDependentes(todosAssociados);
+
+                lblMensagem.Text = $"Encontrados {gruposTitulares.Count} titulares (com dependentes). Processando...";
                 lblMensagem.Visible = true;
 
-                // 2. Para cada associado, criar um documento
+                // 3. Para cada grupo (titular + dependentes), criar um documento
                 int documentosCriados = 0;
                 string pastaDestino = Server.MapPath("~/public/uploadgestao/docs/dadosReaisYouBut/");
 
@@ -355,18 +412,35 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (!Directory.Exists(pastaDestino))
                     Directory.CreateDirectory(pastaDestino);
 
-                foreach (var associado in associados.Take(10)) // Limitar a 10 para teste
+                // Limitar a 5 grupos para teste
+                foreach (var grupo in gruposTitulares.Take(500))
                 {
                     try
                     {
                         string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/MAIS VOCE - PE - DOCX.docx");
-                        string outputPath = Path.Combine(pastaDestino,
-                            $"PROPOSTA_{associado.CodigoAssociado}_{DateTime.Now:yyyyMMddHHmmss}.docx");
 
-                        // Converter associado para dicionário
-                        var dadosTitular = ConverterAssociadoParaDicionario(associado);
+                        // Nome do arquivo
+                        string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
 
-                        // 3. Processar o documento
+                        string outputPath = Path.Combine(pastaDestino, nomeArquivo);
+
+                        // Converter titular para dicionário
+                        var dadosTitular = ConverterAssociadoParaDicionario(grupo.Titular);
+
+                        // 4. Converter dependentes para lista de dicionários
+                        var listaDependentes = new List<Dictionary<string, string>>();
+                        int dependenteNumero = 1;
+
+                        foreach (var dependente in grupo.Dependentes.Take(500)) // Máximo 5 dependentes por formulário
+                        {
+                            var dictDependente = ConverterDependenteParaDicionario(dependente);
+                            // Adicionar número do dependente (DEPENDENTE 1, DEPENDENTE 2, etc.)
+                            dictDependente.Add("NUMERO_DEPENDENTE", dependenteNumero.ToString());
+                            listaDependentes.Add(dictDependente);
+                            dependenteNumero++;
+                        }
+
+                        // 5. Processar o documento com o titular
                         int appliedTitular = _docxService.FillTitularBasico(
                             templatePath,
                             outputPath,
@@ -377,52 +451,53 @@ namespace appWhatsapp.PlennuscGestao.Views
                         GC.Collect();
                         GC.WaitForPendingFinalizers();
 
-                        // 4. Processar dependentes (vamos deixar vazio por enquanto)
-                        var dependentes = new List<Dictionary<string, string>>();
-                        int appliedDependentes = _docxService.FillDependentes(outputPath, outputPath, dependentes);
+                        // 6. Processar os dependentes
+                        int appliedDependentes = 0;
+                        if (listaDependentes.Count > 0)
+                        {
+                            appliedDependentes = _docxService.FillDependentes(outputPath, outputPath, listaDependentes);
+                        }
 
-                        // 5. Processar plano de coparticipação
+                        // 7. Processar plano de coparticipação
                         string tipoCoparticipacao = "PARCIAL"; // Pode ser ajustado
                         int appliedPlano = _docxService.FillPlanoCoparticipacao(outputPath, tipoCoparticipacao);
 
-                        // 6. Processar tabela de valores (dados fictícios por enquanto)
+                        // 8. Processar tabela de valores (dados fictícios por enquanto)
                         var composicaoContraprestacao = new Dictionary<string, string>
-                {
-                    { "VALOR_TITULAR", "R$ 450,00" },
-                    { "VALOR_DEPENDENTE_1", "R$ 360,00" },
-                    { "VALOR_DEPENDENTE_2", "R$ 370,00" },
-                    { "VALOR_DEPENDENTE_3", "R$ 380,00" },
-                    { "VALOR_DEPENDENTE_4", "R$ 390,00" },
-                    { "VALOR_DEPENDENTE_5", "R$ 320,00" }
-                };
+                        {
+                            { "VALOR_TITULAR", "R$ 450,00" },
+                            { "VALOR_DEPENDENTE_1", listaDependentes.Count >= 1 ? "R$ 360,00" : "" },
+                            { "VALOR_DEPENDENTE_2", listaDependentes.Count >= 2 ? "R$ 370,00" : "" },
+                            { "VALOR_DEPENDENTE_3", listaDependentes.Count >= 3 ? "R$ 380,00" : "" },
+                            { "VALOR_DEPENDENTE_4", listaDependentes.Count >= 4 ? "R$ 390,00" : "" },
+                            { "VALOR_DEPENDENTE_5", listaDependentes.Count >= 5 ? "R$ 320,00" : "" }
+                        };
 
                         int appliedValores = _docxService.FillTabelaValores(outputPath, composicaoContraprestacao);
 
-                        // 7. Calcular e preencher o total
+                        // 9. Calcular e preencher o total
                         int appliedTotal = _docxService.FillTotalContraprestacao(outputPath, composicaoContraprestacao);
 
                         documentosCriados++;
 
-                        lblMensagem.Text += $"<br/>Documento criado para {associado.NomeCompleto}";
+                        lblMensagem.Text += $"<br/>✓ Documento criado para {grupo.Titular.NomeCompleto} com {grupo.Dependentes.Count} dependente(s)";
 
                     }
-                    catch (Exception exAssociado)
+                    catch (Exception exTitular)
                     {
-                        lblErro.Text += $"<br/>Erro ao processar {associado.NomeCompleto}: {exAssociado.Message}";
+                        lblErro.Text += $"<br/>✗ Erro ao processar {grupo.Titular.NomeCompleto}: {exTitular.Message}";
                     }
                 }
 
-                lblMensagem.Text += $"<br/><br/>Processamento concluído! {documentosCriados} documentos criados na pasta {pastaDestino}";
+                lblMensagem.Text += $"<br/><br/>✅ Processamento concluído! {documentosCriados} documentos criados na pasta: {pastaDestino}";
 
-                // 8. Criar um ZIP com todos os documentos
+                // 10. Criar um ZIP com todos os documentos
                 string zipPath = Path.Combine(pastaDestino, $"PROPOSTAS_{DateTime.Now:yyyyMMddHHmmss}.zip");
-                // Certifique-se de que o projeto tem referência ao assembly System.IO.Compression.FileSystem.
-                // No Visual Studio, clique com o botão direito no projeto > Adicionar > Referência > Procure por "System.IO.Compression.FileSystem" e marque.
 
-                // O código abaixo permanece igual, pois o erro é apenas de referência/using:
-                System.IO.Compression.ZipFile.CreateFromDirectory(pastaDestino, zipPath);
+                // Usando o método alternativo que já criamos
+                CriarZipComArquivos(pastaDestino, zipPath);
 
-                // 9. Oferecer download do ZIP
+                // 11. Oferecer download do ZIP
                 Response.Clear();
                 Response.ContentType = "application/zip";
                 Response.AddHeader("Content-Disposition", $"attachment; filename=PROPOSTAS_COMPLETAS.zip");
@@ -435,6 +510,164 @@ namespace appWhatsapp.PlennuscGestao.Views
                 lblErro.Text = $"ERRO GERAL: {ex.Message}<br/><br/>Stack: {ex.StackTrace}";
                 lblErro.Visible = true;
             }
+        }
+
+        private List<GrupoTitularDependentes> AgruparTitularesComDependentes(List<DadosAssociadoCompleto> todosAssociados)
+        {
+            var grupos = new List<GrupoTitularDependentes>();
+
+            // 1. Primeiro, separar titulares
+            var titulares = todosAssociados
+                .Where(a => a.TipoAssociado == "T")
+                .ToList();
+
+            // 2. Para cada titular, criar um grupo
+            foreach (var titular in titulares)
+            {
+                var grupo = new GrupoTitularDependentes
+                {
+                    Titular = titular
+                };
+
+                // 3. Buscar dependentes deste titular
+                grupo.Dependentes = todosAssociados
+                    .Where(a => a.TipoAssociado == "D" && a.CodigoTitular == titular.CodigoAssociado)
+                    .ToList();
+
+                grupos.Add(grupo);
+            }
+
+            return grupos;
+        }
+
+        private void CriarZipComArquivos(string pastaOrigem, string arquivoZipDestino)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    // Adiciona todos os arquivos da pasta ao ZIP
+                    foreach (var file in Directory.GetFiles(pastaOrigem))
+                    {
+                        var entryName = Path.GetFileName(file);
+                        var entry = archive.CreateEntry(entryName);
+
+                        using (var entryStream = entry.Open())
+                        using (var fileStream = File.OpenRead(file))
+                        {
+                            fileStream.CopyTo(entryStream);
+                        }
+                    }
+                }
+
+                // Salva o ZIP no disco
+                using (var fileStream = new FileStream(arquivoZipDestino, FileMode.Create))
+                {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    memoryStream.CopyTo(fileStream);
+                }
+            }
+        }
+
+        private string GerarNomeArquivo(DadosAssociadoCompleto titular, int quantidadeDependentes)
+        {
+            // 1. Nome do titular (primeiro nome + sobrenome)
+            string nomeTitular = FormatacaoNomeTitular(titular.NomeCompleto);
+
+            // 2. CPF (apenas números)
+            string cpfNumeros = ExtrairApenasNumeros(titular.CpfTitular);
+
+            // 3. Indicador de dependentes
+            string indicadorDependentes = quantidadeDependentes > 0 ? "C_DEP" : "S_DEP";
+
+            // 4. Data/hora (opcional, para evitar conflitos)
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+            // Montar nome do arquivo
+            string nomeArquivo = $"{nomeTitular}_{cpfNumeros}_{indicadorDependentes}_{timestamp}.docx";
+
+            // Limpar caracteres inválidos
+            return RemoveCaracteresInvalidos(nomeArquivo);
+        }
+
+        private string FormatacaoNomeTitular(string nomeCompleto)
+        {
+            if (string.IsNullOrWhiteSpace(nomeCompleto))
+                return "SEM_NOME";
+
+            // Remover acentos e caracteres especiais
+            nomeCompleto = RemoverAcentos(nomeCompleto);
+
+            // Pegar apenas o primeiro e último nome (ou os 2 primeiros se nome composto)
+            var partes = nomeCompleto.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (partes.Length >= 2)
+            {
+                // Primeiro nome + último sobrenome
+                return $"{partes[0]}_{partes[partes.Length - 1]}";
+            }
+            else if (partes.Length == 1)
+            {
+                return partes[0];
+            }
+
+            return "SEM_NOME";
+        }
+
+        private string RemoverAcentos(string texto)
+        {
+            if (string.IsNullOrEmpty(texto))
+                return texto;
+
+            string comAcentos = "áàâãäéèêëíìîïóòôõöúùûüçÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇ";
+            string semAcentos = "aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC";
+
+            for (int i = 0; i < comAcentos.Length; i++)
+            {
+                texto = texto.Replace(comAcentos[i], semAcentos[i]);
+            }
+
+            return texto;
+        }
+
+        private string ExtrairApenasNumeros(string texto)
+        {
+            if (string.IsNullOrEmpty(texto))
+                return "00000000000";
+
+            // Extrair apenas números
+            return new string(texto.Where(char.IsDigit).ToArray());
+        }
+
+        private string RemoveCaracteresInvalidos(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return "arquivo_sem_nome.docx";
+
+            var invalidChars = Path.GetInvalidFileNameChars();
+
+            // Substituir caracteres inválidos por underscore
+            foreach (char c in invalidChars)
+            {
+                fileName = fileName.Replace(c, '_');
+            }
+
+            // Remover múltiplos underscores consecutivos
+            while (fileName.Contains("__"))
+            {
+                fileName = fileName.Replace("__", "_");
+            }
+
+            // Remover underscores no início ou fim
+            fileName = fileName.Trim('_');
+
+            // Garantir que não exceda o limite de caracteres (255 é seguro para maioria dos sistemas)
+            if (fileName.Length > 100)
+            {
+                fileName = fileName.Substring(0, 100);
+            }
+
+            return fileName;
         }
     }
 }

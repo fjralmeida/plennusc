@@ -37,6 +37,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                 P0.ORGAO_EMISSOR_RG, 
                 P0.CODIGO_CNS, 
                 P0.NUMERO_DECLARACAO_NASC_VIVO, 
+                P0.CODIGO_TITULAR,  -- ADICIONE ESTE
+                P0.TIPO_ASSOCIADO,  -- ADICIONE ESTE
                 FLOOR(DATEDIFF(DAY, P0.DATA_NASCIMENTO, GETDATE()) / 365.25) AS IDADE,
                 P1.ENDERECO,
                 NULL AS NUMERO,
@@ -68,13 +70,15 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                             NomeCompleto = reader["NOME_COMPLETO"]?.ToString() ?? "",
                             CpfTitular = FormatarCpf(reader["NUMERO_CPF"]?.ToString() ?? ""),
                             DataNascimento = reader["DATA_NASCIMENTO"] is DateTime dataNasc ?
-                                dataNasc.ToString("dd/MM/yyyy") : "",
+         dataNasc.ToString("dd/MM/yyyy") : "",
                             Sexo = reader["SEXO"]?.ToString() ?? "",
                             EstadoCivil = ConverterEstadoCivil(reader["CODIGO_ESTADO_CIVIL"]?.ToString() ?? ""),
                             Rg = reader["NUMERO_RG"]?.ToString() ?? "",
                             OrgaoExpedidor = reader["ORGAO_EMISSOR_RG"]?.ToString() ?? "",
                             CartaoSus = reader["CODIGO_CNS"]?.ToString() ?? "",
                             NumeroDeclaracaoNascidoVivo = reader["NUMERO_DECLARACAO_NASC_VIVO"]?.ToString() ?? "",
+                            CodigoTitular = reader["CODIGO_TITULAR"]?.ToString() ?? "",
+                            TipoAssociado = reader["TIPO_ASSOCIADO"]?.ToString() ?? "",
                             Idade = reader["IDADE"]?.ToString() ?? "",
                             Endereco = reader["ENDERECO"]?.ToString() ?? "",
                             Numero = reader["NUMERO"]?.ToString() ?? "",

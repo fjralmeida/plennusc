@@ -148,6 +148,7 @@
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\DadosAssociadoCompleto.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\DependentModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsButYou\GrupoTitularDependentes.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\ProposalModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\companyMenuManagementSystemModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanyModel.cs" />
