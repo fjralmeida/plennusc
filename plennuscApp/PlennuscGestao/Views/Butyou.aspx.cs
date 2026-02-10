@@ -406,14 +406,14 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 // 3. Para cada grupo (titular + dependentes), criar um documento
                 int documentosCriados = 0;
-                string pastaDestino = Server.MapPath("~/public/uploadgestao/docs/dadosReaisYouBut/");
+                string pastaDestino = @"\\Urano\vallorben_docs\DOC.PUBLICO\plennuc_ClickSing\";
 
                 // Criar pasta se não existir
                 if (!Directory.Exists(pastaDestino))
                     Directory.CreateDirectory(pastaDestino);
 
-                // Limitar a 5 grupos para teste
-                foreach (var grupo in gruposTitulares.Take(500))
+                // Limitar a 500 grupos para teste
+                foreach (var grupo in gruposTitulares.Take(1400))
                 {
                     try
                     {
@@ -421,7 +421,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
-
                         string outputPath = Path.Combine(pastaDestino, nomeArquivo);
 
                         // Converter titular para dicionário
@@ -431,7 +430,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                         var listaDependentes = new List<Dictionary<string, string>>();
                         int dependenteNumero = 1;
 
-                        foreach (var dependente in grupo.Dependentes.Take(500)) // Máximo 5 dependentes por formulário
+                        foreach (var dependente in grupo.Dependentes.Take(1400)) // Máximo 500 dependentes por formulário
                         {
                             var dictDependente = ConverterDependenteParaDicionario(dependente);
                             // Adicionar número do dependente (DEPENDENTE 1, DEPENDENTE 2, etc.)
@@ -464,14 +463,14 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                         // 8. Processar tabela de valores (dados fictícios por enquanto)
                         var composicaoContraprestacao = new Dictionary<string, string>
-                        {
-                            { "VALOR_TITULAR", "R$ 450,00" },
-                            { "VALOR_DEPENDENTE_1", listaDependentes.Count >= 1 ? "R$ 360,00" : "" },
-                            { "VALOR_DEPENDENTE_2", listaDependentes.Count >= 2 ? "R$ 370,00" : "" },
-                            { "VALOR_DEPENDENTE_3", listaDependentes.Count >= 3 ? "R$ 380,00" : "" },
-                            { "VALOR_DEPENDENTE_4", listaDependentes.Count >= 4 ? "R$ 390,00" : "" },
-                            { "VALOR_DEPENDENTE_5", listaDependentes.Count >= 5 ? "R$ 320,00" : "" }
-                        };
+                {
+                    { "VALOR_TITULAR", "R$ 450,00" },
+                    { "VALOR_DEPENDENTE_1", listaDependentes.Count >= 1 ? "R$ 360,00" : "" },
+                    { "VALOR_DEPENDENTE_2", listaDependentes.Count >= 2 ? "R$ 370,00" : "" },
+                    { "VALOR_DEPENDENTE_3", listaDependentes.Count >= 3 ? "R$ 380,00" : "" },
+                    { "VALOR_DEPENDENTE_4", listaDependentes.Count >= 4 ? "R$ 390,00" : "" },
+                    { "VALOR_DEPENDENTE_5", listaDependentes.Count >= 5 ? "R$ 320,00" : "" }
+                };
 
                         int appliedValores = _docxService.FillTabelaValores(outputPath, composicaoContraprestacao);
 
@@ -482,27 +481,25 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                         lblMensagem.Text += $"<br/>✓ Documento criado para {grupo.Titular.NomeCompleto} com {grupo.Dependentes.Count} dependente(s)";
 
+                        // Log adicional para depuração
+                        System.Diagnostics.Debug.WriteLine($"Documento criado: {outputPath}");
+
                     }
                     catch (Exception exTitular)
                     {
                         lblErro.Text += $"<br/>✗ Erro ao processar {grupo.Titular.NomeCompleto}: {exTitular.Message}";
+                        lblErro.Visible = true;
                     }
                 }
 
+                // 10. Mostrar mensagem final SEM criar ZIP
                 lblMensagem.Text += $"<br/><br/>✅ Processamento concluído! {documentosCriados} documentos criados na pasta: {pastaDestino}";
 
-                // 10. Criar um ZIP com todos os documentos
-                string zipPath = Path.Combine(pastaDestino, $"PROPOSTAS_{DateTime.Now:yyyyMMddHHmmss}.zip");
-
-                // Usando o método alternativo que já criamos
-                CriarZipComArquivos(pastaDestino, zipPath);
-
-                // 11. Oferecer download do ZIP
-                Response.Clear();
-                Response.ContentType = "application/zip";
-                Response.AddHeader("Content-Disposition", $"attachment; filename=PROPOSTAS_COMPLETAS.zip");
-                Response.TransmitFile(zipPath);
-                Response.End();
+                // Opcional: Adicionar link para abrir a pasta
+                if (documentosCriados > 0)
+                {
+                    lblMensagem.Text += $"<br/><a href='file:///{pastaDestino.Replace("\\", "/")}' target='_blank'>Abrir pasta de documentos</a>";
+                }
 
             }
             catch (Exception ex)
@@ -540,87 +537,91 @@ namespace appWhatsapp.PlennuscGestao.Views
             return grupos;
         }
 
-        private void CriarZipComArquivos(string pastaOrigem, string arquivoZipDestino)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    // Adiciona todos os arquivos da pasta ao ZIP
-                    foreach (var file in Directory.GetFiles(pastaOrigem))
-                    {
-                        var entryName = Path.GetFileName(file);
-                        var entry = archive.CreateEntry(entryName);
-
-                        using (var entryStream = entry.Open())
-                        using (var fileStream = File.OpenRead(file))
-                        {
-                            fileStream.CopyTo(entryStream);
-                        }
-                    }
-                }
-
-                // Salva o ZIP no disco
-                using (var fileStream = new FileStream(arquivoZipDestino, FileMode.Create))
-                {
-                    memoryStream.Seek(0, SeekOrigin.Begin);
-                    memoryStream.CopyTo(fileStream);
-                }
-            }
-        }
-
         private string GerarNomeArquivo(DadosAssociadoCompleto titular, int quantidadeDependentes)
         {
-            // 1. Nome do titular (primeiro nome + sobrenome)
-            string nomeTitular = FormatacaoNomeTitular(titular.NomeCompleto);
+            try
+            {
+                // 1. EMAIL - limpar e garantir
+                string email = LimparCampo(titular.Email?.Trim(), "sememail", false);
 
-            // 2. CPF (apenas números)
-            string cpfNumeros = ExtrairApenasNumeros(titular.CpfTitular);
+                // 2. NOME COMPLETO - substituir espaços por UNDERLINE ÚNICO
+                string nomeCompleto = FormatarNomeComUnderline(titular.NomeCompleto?.Trim());
 
-            // 3. Indicador de dependentes
-            string indicadorDependentes = quantidadeDependentes > 0 ? "C_DEP" : "S_DEP";
+                // 3. CPF - apenas números
+                string cpf = LimparCpf(titular.CpfTitular);
 
-            // 4. Data/hora (opcional, para evitar conflitos)
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                // 4. DATA - formato DDMMAAAA
+                string dataNascimento = ConverterDataParaDDMMAAAA(titular.DataNascimento);
 
-            // Montar nome do arquivo
-            string nomeArquivo = $"{nomeTitular}_{cpfNumeros}_{indicadorDependentes}_{timestamp}.docx";
+                // 5. MONTAR COM DOIS UNDERLINES entre campos
+                string nomeArquivo = $"{email}__{nomeCompleto}__{cpf}__{dataNascimento}.docx";
 
-            // Limpar caracteres inválidos
-            return RemoveCaracteresInvalidos(nomeArquivo);
+                return SanitizarNomeArquivo(nomeArquivo);
+            }
+            catch (Exception ex)
+            {
+                string cpfBackup = LimparCpf(titular.CpfTitular) ?? "00000000000";
+                return $"erro_geracao__{cpfBackup}__{DateTime.Now:HHmmss}.docx";
+            }
         }
 
-        private string FormatacaoNomeTitular(string nomeCompleto)
+        // MÉTODO NOVO: Formatar nome com UNDERLINE ÚNICO entre palavras
+        private string FormatarNomeComUnderline(string nomeCompleto)
         {
             if (string.IsNullOrWhiteSpace(nomeCompleto))
-                return "SEM_NOME";
+                return "sem_nome";
 
-            // Remover acentos e caracteres especiais
+            // 1. Remover acentos
             nomeCompleto = RemoverAcentos(nomeCompleto);
 
-            // Pegar apenas o primeiro e último nome (ou os 2 primeiros se nome composto)
-            var partes = nomeCompleto.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            // 2. Substituir múltiplos espaços por espaço único
+            nomeCompleto = System.Text.RegularExpressions.Regex.Replace(nomeCompleto, @"\s+", " ");
 
-            if (partes.Length >= 2)
+            // 3. Substituir espaços por UNDERLINE ÚNICO (_)
+            nomeCompleto = nomeCompleto.Replace(' ', '_');
+
+            // 4. Remover caracteres especiais (mantém letras, números e underline)
+            nomeCompleto = new string(nomeCompleto.Where(c =>
+                char.IsLetterOrDigit(c) || c == '_').ToArray());
+
+            // 5. Remover underlines consecutivos (caso houvesse múltiplos espaços)
+            while (nomeCompleto.Contains("__"))
             {
-                // Primeiro nome + último sobrenome
-                return $"{partes[0]}_{partes[partes.Length - 1]}";
-            }
-            else if (partes.Length == 1)
-            {
-                return partes[0];
+                nomeCompleto = nomeCompleto.Replace("__", "_");
             }
 
-            return "SEM_NOME";
+            // 6. Limitar tamanho
+            if (nomeCompleto.Length > 100)
+                nomeCompleto = nomeCompleto.Substring(0, 100);
+
+            return nomeCompleto;
         }
 
+        // MÉTODO NOVO: Limpar campo genérico
+        private string LimparCampo(string valor, string valorPadrao, bool permitirCaracteresEspeciais = false)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+                return valorPadrao;
+
+            valor = valor.Trim();
+
+            if (!permitirCaracteresEspeciais)
+            {
+                // Para email, removemos apenas acentos
+                valor = RemoverAcentos(valor);
+            }
+
+            return valor;
+        }
+
+        // Método já existente - ajustar se necessário
         private string RemoverAcentos(string texto)
         {
             if (string.IsNullOrEmpty(texto))
                 return texto;
 
-            string comAcentos = "áàâãäéèêëíìîïóòôõöúùûüçÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇ";
-            string semAcentos = "aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC";
+            string comAcentos = "áàâãäéèêëíìîïóòôõöúùûüçÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇñÑ";
+            string semAcentos = "aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUCnN";
 
             for (int i = 0; i < comAcentos.Length; i++)
             {
@@ -630,44 +631,100 @@ namespace appWhatsapp.PlennuscGestao.Views
             return texto;
         }
 
-        private string ExtrairApenasNumeros(string texto)
+        private string LimparCpf(string cpf)
         {
-            if (string.IsNullOrEmpty(texto))
+            if (string.IsNullOrWhiteSpace(cpf))
                 return "00000000000";
 
             // Extrair apenas números
-            return new string(texto.Where(char.IsDigit).ToArray());
+            string cpfNumeros = new string(cpf.Where(char.IsDigit).ToArray());
+
+            // Garantir 11 dígitos
+            if (cpfNumeros.Length != 11)
+            {
+                if (cpfNumeros.Length < 11)
+                    cpfNumeros = cpfNumeros.PadLeft(11, '0');
+                else if (cpfNumeros.Length > 11)
+                    cpfNumeros = cpfNumeros.Substring(0, 11);
+            }
+
+            return cpfNumeros;
         }
 
-        private string RemoveCaracteresInvalidos(string fileName)
+        private string ConverterDataParaDDMMAAAA(string dataNascimento)
         {
-            if (string.IsNullOrEmpty(fileName))
-                return "arquivo_sem_nome.docx";
-
-            var invalidChars = Path.GetInvalidFileNameChars();
-
-            // Substituir caracteres inválidos por underscore
-            foreach (char c in invalidChars)
+            try
             {
-                fileName = fileName.Replace(c, '_');
+                if (string.IsNullOrWhiteSpace(dataNascimento))
+                    return "00000000";
+
+                DateTime data;
+
+                // Tentar formatos comuns
+                if (DateTime.TryParseExact(dataNascimento, "dd/MM/yyyy",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out data))
+                {
+                    return data.ToString("ddMMyyyy");
+                }
+                else if (DateTime.TryParse(dataNascimento, out data))
+                {
+                    return data.ToString("ddMMyyyy");
+                }
+                else
+                {
+                    // Extrair apenas números
+                    string numeros = new string(dataNascimento.Where(char.IsDigit).ToArray());
+
+                    if (numeros.Length == 8)
+                        return numeros;
+
+                    return "00000000";
+                }
+            }
+            catch
+            {
+                return "00000000";
+            }
+        }
+
+        private string SanitizarNomeArquivo(string nomeArquivo)
+        {
+            if (string.IsNullOrWhiteSpace(nomeArquivo))
+                return "documento_sem_nome.docx";
+
+            // Caracteres inválidos para nome de arquivo
+            char[] caracteresInvalidos = Path.GetInvalidFileNameChars();
+
+            // Remover caracteres inválidos (mas manter @ e . para email)
+            foreach (char c in caracteresInvalidos)
+            {
+                if (c != '@' && c != '.') // Mantemos @ e . para email
+                {
+                    nomeArquivo = nomeArquivo.Replace(c, '_');
+                }
             }
 
-            // Remover múltiplos underscores consecutivos
-            while (fileName.Contains("__"))
+            // Garantir que temos DOIS underlines entre campos
+            // Regex para garantir o padrão: campo1__campo2__campo3__campo4.docx
+            nomeArquivo = System.Text.RegularExpressions.Regex.Replace(nomeArquivo, @"_{3,}", "__");
+
+            // Remover underlines no início e fim
+            nomeArquivo = nomeArquivo.Trim('_');
+
+            // Limitar tamanho
+            if (nomeArquivo.Length > 200)
             {
-                fileName = fileName.Replace("__", "_");
+                string extensao = Path.GetExtension(nomeArquivo);
+                string nomeSemExtensao = Path.GetFileNameWithoutExtension(nomeArquivo);
+
+                if (nomeSemExtensao.Length > 195)
+                    nomeSemExtensao = nomeSemExtensao.Substring(0, 195);
+
+                nomeArquivo = nomeSemExtensao + extensao;
             }
 
-            // Remover underscores no início ou fim
-            fileName = fileName.Trim('_');
-
-            // Garantir que não exceda o limite de caracteres (255 é seguro para maioria dos sistemas)
-            if (fileName.Length > 100)
-            {
-                fileName = fileName.Substring(0, 100);
-            }
-
-            return fileName;
+            return nomeArquivo;
         }
     }
 }
