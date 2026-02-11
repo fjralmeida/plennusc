@@ -457,32 +457,32 @@ namespace appWhatsapp.PlennuscGestao.Views
                             appliedDependentes = _docxService.FillDependentes(outputPath, outputPath, listaDependentes);
                         }
 
-                        // 7. Processar plano de coparticipação
-                        string tipoCoparticipacao = "PARCIAL"; // Pode ser ajustado
-                        int appliedPlano = _docxService.FillPlanoCoparticipacao(outputPath, tipoCoparticipacao);
+                //        // 7. Processar plano de coparticipação
+                //        string tipoCoparticipacao = "PARCIAL"; // Pode ser ajustado
+                //        int appliedPlano = _docxService.FillPlanoCoparticipacao(outputPath, tipoCoparticipacao);
 
-                        // 8. Processar tabela de valores (dados fictícios por enquanto)
-                        var composicaoContraprestacao = new Dictionary<string, string>
-                {
-                    { "VALOR_TITULAR", "R$ 450,00" },
-                    { "VALOR_DEPENDENTE_1", listaDependentes.Count >= 1 ? "R$ 360,00" : "" },
-                    { "VALOR_DEPENDENTE_2", listaDependentes.Count >= 2 ? "R$ 370,00" : "" },
-                    { "VALOR_DEPENDENTE_3", listaDependentes.Count >= 3 ? "R$ 380,00" : "" },
-                    { "VALOR_DEPENDENTE_4", listaDependentes.Count >= 4 ? "R$ 390,00" : "" },
-                    { "VALOR_DEPENDENTE_5", listaDependentes.Count >= 5 ? "R$ 320,00" : "" }
-                };
+                //        // 8. Processar tabela de valores (dados fictícios por enquanto)
+                //        var composicaoContraprestacao = new Dictionary<string, string>
+                //{
+                //    { "VALOR_TITULAR", "R$ 450,00" },
+                //    { "VALOR_DEPENDENTE_1", listaDependentes.Count >= 1 ? "R$ 360,00" : "" },
+                //    { "VALOR_DEPENDENTE_2", listaDependentes.Count >= 2 ? "R$ 370,00" : "" },
+                //    { "VALOR_DEPENDENTE_3", listaDependentes.Count >= 3 ? "R$ 380,00" : "" },
+                //    { "VALOR_DEPENDENTE_4", listaDependentes.Count >= 4 ? "R$ 390,00" : "" },
+                //    { "VALOR_DEPENDENTE_5", listaDependentes.Count >= 5 ? "R$ 320,00" : "" }
+                //};
 
-                        int appliedValores = _docxService.FillTabelaValores(outputPath, composicaoContraprestacao);
+                //        int appliedValores = _docxService.FillTabelaValores(outputPath, composicaoContraprestacao);
 
-                        // 9. Calcular e preencher o total
-                        int appliedTotal = _docxService.FillTotalContraprestacao(outputPath, composicaoContraprestacao);
+                //        // 9. Calcular e preencher o total
+                //        int appliedTotal = _docxService.FillTotalContraprestacao(outputPath, composicaoContraprestacao);
 
-                        documentosCriados++;
+                //        documentosCriados++;
 
-                        lblMensagem.Text += $"<br/>✓ Documento criado para {grupo.Titular.NomeCompleto} com {grupo.Dependentes.Count} dependente(s)";
+                //        lblMensagem.Text += $"<br/>✓ Documento criado para {grupo.Titular.NomeCompleto} com {grupo.Dependentes.Count} dependente(s)";
 
-                        // Log adicional para depuração
-                        System.Diagnostics.Debug.WriteLine($"Documento criado: {outputPath}");
+                //        // Log adicional para depuração
+                //        System.Diagnostics.Debug.WriteLine($"Documento criado: {outputPath}");
 
                     }
                     catch (Exception exTitular)

@@ -26,38 +26,77 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                 connection.Open();
 
                 string query = @"
-            SELECT 
-                P0.CODIGO_ASSOCIADO, 
-                REPLACE(P0.NOME_ASSOCIADO, '#', '') AS NOME_COMPLETO, 
-                P0.NUMERO_CPF, 
-                P0.DATA_NASCIMENTO, 
-                P0.SEXO, 
-                P0.CODIGO_ESTADO_CIVIL,
-                P0.NUMERO_RG, 
-                P0.ORGAO_EMISSOR_RG, 
-                P0.CODIGO_CNS, 
-                P0.NUMERO_DECLARACAO_NASC_VIVO, 
-                P0.CODIGO_TITULAR,  -- ADICIONE ESTE
-                P0.TIPO_ASSOCIADO,  -- ADICIONE ESTE
-                FLOOR(DATEDIFF(DAY, P0.DATA_NASCIMENTO, GETDATE()) / 365.25) AS IDADE,
-                P1.ENDERECO,
-                NULL AS NUMERO,
-                NULL AS COMPLEMENTO,
-                P1.CEP,
-                P1.BAIRRO,
-                P1.CIDADE,
-                P1.ESTADO AS UF,
-                ISNULL(P1.ENDERECO_EMAIL, P1.ENDERECO_ELETRONICO) AS EMAIL,
-                (SELECT TOP 1 NUMERO_TELEFONE 
-                 FROM PS1006 
-                 WHERE CODIGO_ASSOCIADO = P0.CODIGO_ASSOCIADO 
-                 ORDER BY NUMERO_TELEFONE) AS TELEFONE_CELULAR
-            FROM PS1000 P0
-            LEFT JOIN PS1001 P1 ON P0.CODIGO_ASSOCIADO = P1.CODIGO_ASSOCIADO
-            WHERE P0.CODIGO_GRUPO_CONTRATO = 2 
-                AND P0.DATA_EXCLUSAO IS NULL 
-                AND P0.CODIGO_MOTIVO_EXCLUSAO IS NULL
-            ORDER BY P0.CODIGO_ASSOCIADO";
+                SELECT 
+                    P0.CODIGO_ASSOCIADO, 
+                    REPLACE(P0.NOME_ASSOCIADO, '#', '') AS NOME_COMPLETO, 
+                    P0.DATA_ADMISSAO,
+                    P0.NUMERO_CPF, 
+                    P0.DATA_NASCIMENTO, 
+                    P0.SEXO, 
+                    P0.CODIGO_ESTADO_CIVIL,
+                    P0.NUMERO_RG, 
+                    P0.ORGAO_EMISSOR_RG, 
+                    P0.CODIGO_CNS, 
+                    P0.NUMERO_DECLARACAO_NASC_VIVO, 
+                    P0.CODIGO_TITULAR,
+                    P0.CODIGO_PLANO,
+                    P0.TIPO_ASSOCIADO,
+                    FLOOR(DATEDIFF(DAY, P0.DATA_NASCIMENTO, GETDATE()) / 365.25) AS IDADE,
+    
+                    PS1045.NOME_PARENTESCO,
+
+                    P1.ENDERECO,
+                    NULL AS NUMERO,
+                    NULL AS COMPLEMENTO,
+                    P1.CEP,
+                    P1.BAIRRO,
+                    P1.CIDADE,
+                    P1.ESTADO AS UF,
+    
+                    ISNULL(P1.ENDERECO_EMAIL, P1.ENDERECO_ELETRONICO) AS EMAIL,
+
+                    STUFF((
+                        SELECT DISTINCT ', ' + T.NUMERO_TELEFONE
+                        FROM PS1006 T
+                        WHERE T.CODIGO_ASSOCIADO = P0.CODIGO_ASSOCIADO
+                          AND T.NUMERO_TELEFONE IS NOT NULL
+                        FOR XML PATH('')
+                    ), 1, 2, '') AS TELEFONE_CELULAR,
+
+                    ESP0002.NOME_OPERADORA,
+                    ESP0002.NOME_GRUPO_CONTRATO,
+
+                    PS1030.NOME_PLANO_ABREVIADO,
+                    PS1032.NOME_TABELA, 
+                    PS1032.VALOR_PLANO
+
+                FROM PS1000 P0
+
+                LEFT JOIN PS1001 P1 
+                    ON P1.CODIGO_ASSOCIADO = P0.CODIGO_ASSOCIADO
+
+                LEFT JOIN PS1045 
+                    ON PS1045.CODIGO_PARENTESCO = P0.CODIGO_PARENTESCO
+
+                LEFT JOIN ESP0002 
+                    ON ESP0002.CODIGO_GRUPO_CONTRATO = P0.CODIGO_GRUPO_CONTRATO
+
+                LEFT JOIN PS1030 
+                    ON PS1030.CODIGO_PLANO = P0.CODIGO_PLANO
+
+                LEFT JOIN VW_FILTRO_BENEFICIARIOS_IDADE V 
+                    ON V.CODIGO_ASSOCIADO = P0.CODIGO_ASSOCIADO
+
+                LEFT JOIN PS1032 
+                    ON PS1032.CODIGO_TABELA_PRECO = P0.CODIGO_TABELA_PRECO
+                    AND V.IDADE BETWEEN PS1032.IDADE_MINIMA AND PS1032.IDADE_MAXIMA
+
+                WHERE 
+                    P0.CODIGO_GRUPO_CONTRATO = 2 
+                    AND P0.DATA_EXCLUSAO IS NULL 
+                    AND P0.CODIGO_MOTIVO_EXCLUSAO IS NULL
+
+                ORDER BY P0.CODIGO_ASSOCIADO;";
 
                 using (var command = new SqlCommand(query, connection))
                 using (var reader = command.ExecuteReader())
