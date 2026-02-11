@@ -127,6 +127,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                             Cidade = reader["CIDADE"]?.ToString() ?? "",
                             Uf = reader["UF"]?.ToString() ?? "",
                             Email = reader["EMAIL"]?.ToString() ?? "",
+                            ValorPlano = reader["VALOR_PLANO"] != DBNull.Value ? Convert.ToDecimal(reader["VALOR_PLANO"]) : (decimal?)null,
                             TelefoneCelular = reader["TELEFONE_CELULAR"]?.ToString() ?? ""
                         };
 

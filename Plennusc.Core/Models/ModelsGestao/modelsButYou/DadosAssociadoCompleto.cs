@@ -33,5 +33,6 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsButYou
         // ADICIONE ESTAS PROPRIEDADES:
         public string CodigoTitular { get; set; }
         public string TipoAssociado { get; set; }
+        public decimal? ValorPlano { get; set; }
     }
 }

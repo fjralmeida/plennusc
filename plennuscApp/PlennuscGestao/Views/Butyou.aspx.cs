@@ -6,7 +6,9 @@ using Plennusc.Core.Models.ModelsGestao.modelsButYou;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -15,7 +17,6 @@ using System.Web.UI.WebControls;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
 using TableCell = DocumentFormat.OpenXml.Wordprocessing.TableCell;
 using TableRow = DocumentFormat.OpenXml.Wordprocessing.TableRow;
-using System.IO.Compression;
 
 namespace appWhatsapp.PlennuscGestao.Views
 {
@@ -54,8 +55,8 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 // SEXO - o seu método ProcessarCampoSexo espera "M" ou "F"
                 // Precisamos converter "MASCULINO" para "M" e "FEMININO" para "F"
-                { "SEXO", associado.Sexo == "MASCULINO" ? "M" :
-                          associado.Sexo == "FEMININO" ? "F" : "OUTROS" },
+                { "SEXO", associado.Sexo == "M" ? "M" :
+                          associado.Sexo == "F" ? "F" : "OUTROS" },
 
                 // ESTADO CIVIL
                 { "ESTADO_CIVIL", associado.EstadoCivil },
@@ -97,8 +98,8 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 { "NOME_COMPLETO", dependente.NomeCompleto },
                 { "DATA_NASCIMENTO", dependente.DataNascimento },
-                { "SEXO", dependente.Sexo == "MASCULINO" ? "M" :
-                          dependente.Sexo == "FEMININO" ? "F" : "OUTROS" },
+                { "SEXO", dependente.Sexo == "M" ? "M" :
+                          dependente.Sexo == "F" ? "F" : "OUTROS" },
                 { "ESTADO_CIVIL", dependente.EstadoCivil },
                 { "IDADE", dependente.Idade },
                 { "CPF", dependente.CpfTitular },
@@ -457,32 +458,43 @@ namespace appWhatsapp.PlennuscGestao.Views
                             appliedDependentes = _docxService.FillDependentes(outputPath, outputPath, listaDependentes);
                         }
 
-                //        // 7. Processar plano de coparticipação
-                //        string tipoCoparticipacao = "PARCIAL"; // Pode ser ajustado
-                //        int appliedPlano = _docxService.FillPlanoCoparticipacao(outputPath, tipoCoparticipacao);
+                        //        // 7. Processar plano de coparticipação
+                        //        string tipoCoparticipacao = "PARCIAL"; // Pode ser ajustado
+                        //        int appliedPlano = _docxService.FillPlanoCoparticipacao(outputPath, tipoCoparticipacao);
 
-                //        // 8. Processar tabela de valores (dados fictícios por enquanto)
-                //        var composicaoContraprestacao = new Dictionary<string, string>
-                //{
-                //    { "VALOR_TITULAR", "R$ 450,00" },
-                //    { "VALOR_DEPENDENTE_1", listaDependentes.Count >= 1 ? "R$ 360,00" : "" },
-                //    { "VALOR_DEPENDENTE_2", listaDependentes.Count >= 2 ? "R$ 370,00" : "" },
-                //    { "VALOR_DEPENDENTE_3", listaDependentes.Count >= 3 ? "R$ 380,00" : "" },
-                //    { "VALOR_DEPENDENTE_4", listaDependentes.Count >= 4 ? "R$ 390,00" : "" },
-                //    { "VALOR_DEPENDENTE_5", listaDependentes.Count >= 5 ? "R$ 320,00" : "" }
-                //};
+                        // 8. Processar tabela de valores (dados fictícios por enquanto)
+                        // Composição de contraprestação com valores REAIS do banco
+                        var composicaoContraprestacao = new Dictionary<string, string>();
 
-                //        int appliedValores = _docxService.FillTabelaValores(outputPath, composicaoContraprestacao);
+                        // Valor do titular (se existir)
+                        if (grupo.Titular.ValorPlano.HasValue)
+                            composicaoContraprestacao["VALOR_TITULAR"] = grupo.Titular.ValorPlano.Value.ToString("C2", new CultureInfo("pt-BR"));
+                        else
+                            composicaoContraprestacao["VALOR_TITULAR"] = "";
 
-                //        // 9. Calcular e preencher o total
-                //        int appliedTotal = _docxService.FillTotalContraprestacao(outputPath, composicaoContraprestacao);
+                        // Valores dos dependentes
+                        int idx = 1;
+                        foreach (var dep in grupo.Dependentes.Take(5)) // Máximo 5 dependentes (ajuste se necessário)
+                        {
+                            string chave = $"VALOR_DEPENDENTE_{idx}";
+                            if (dep.ValorPlano.HasValue)
+                                composicaoContraprestacao[chave] = dep.ValorPlano.Value.ToString("C2", new CultureInfo("pt-BR"));
+                            else
+                                composicaoContraprestacao[chave] = "";
+                            idx++;
+                        }
 
-                //        documentosCriados++;
+                        int appliedValores = _docxService.FillTabelaValores(outputPath, composicaoContraprestacao);
 
-                //        lblMensagem.Text += $"<br/>✓ Documento criado para {grupo.Titular.NomeCompleto} com {grupo.Dependentes.Count} dependente(s)";
+                        // 9. Calcular e preencher o total
+                        int appliedTotal = _docxService.FillTotalContraprestacao(outputPath, composicaoContraprestacao);
 
-                //        // Log adicional para depuração
-                //        System.Diagnostics.Debug.WriteLine($"Documento criado: {outputPath}");
+                        documentosCriados++;
+
+                        //        lblMensagem.Text += $"<br/>✓ Documento criado para {grupo.Titular.NomeCompleto} com {grupo.Dependentes.Count} dependente(s)";
+
+                        //        // Log adicional para depuração
+                        //        System.Diagnostics.Debug.WriteLine($"Documento criado: {outputPath}");
 
                     }
                     catch (Exception exTitular)
