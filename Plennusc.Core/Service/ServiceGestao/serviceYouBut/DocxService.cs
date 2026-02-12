@@ -125,16 +125,24 @@ namespace appWhatsapp.PlennuscGestao.Services
                                     break;
                                 }
 
-                                // Verificar se é linha de VIGÊNCIA com checkboxes
                                 if (upperContent.Contains("VIGÊNCIA:") &&
-                                    !upperContent.Contains("INÍCIO") &&
-                                    !upperContent.Contains("INICIO"))
+                                     !upperContent.Contains("INÍCIO") &&
+                                     !upperContent.Contains("INICIO"))
                                 {
                                     encontrouVigencia = true;
 
-                                    for (int i = cellIndex + 1; i < cells.Count && i <= cellIndex + 3; i++)
+                                    // Dias na ordem em que aparecem: 1º = 01, 2º = 10, 3º = 20
+                                    string[] chaves = { "VENCIMENTO_DIA_01", "VENCIMENTO_DIA_10", "VENCIMENTO_DIA_20" };
+
+                                    for (int j = 0; j < 3; j++)
                                     {
-                                        applied += MarcarCheckboxNaCelula(cells[i]);
+                                        int celulaIndex = cellIndex + 1 + j;
+                                        if (celulaIndex < cells.Count &&
+                                            dados.ContainsKey(chaves[j]) &&
+                                            dados[chaves[j]] == "true")
+                                        {
+                                            applied += MarcarCheckboxNaCelula(cells[celulaIndex]);
+                                        }
                                     }
                                     break;
                                 }
@@ -390,55 +398,105 @@ namespace appWhatsapp.PlennuscGestao.Services
 
         private int MarcarCheckboxNaCelula(TableCell cell)
         {
-            var textos = cell.Descendants<Text>().ToList();
-            if (textos.Count == 0) return 0;
+            var paragraph = cell.Descendants<Paragraph>().FirstOrDefault();
+            if (paragraph == null) return 0;
 
-            string conteudoOriginal = string.Join("", textos.Select(t => t.Text));
+            var runs = paragraph.Descendants<Run>().ToList();
+            if (runs.Count == 0) return 0;
 
-            // Verificar se já tem checkbox marcado
-            if (conteudoOriginal.Contains("☒") || conteudoOriginal.Contains("✓") ||
-                conteudoOriginal.Contains("●") || conteudoOriginal.Contains("[X]") ||
-                conteudoOriginal.Contains("(X)"))
-                return 0;
+            string textoCompleto = string.Join("", runs.SelectMany(r => r.Descendants<Text>()).Select(t => t.Text));
+            bool jaMarcado = textoCompleto.Contains("☒") || textoCompleto.Contains("✓") ||
+                             textoCompleto.Contains("●") || textoCompleto.Contains("[X]") ||
+                             textoCompleto.Contains("(X)");
+
+            if (jaMarcado) return 0; // Já está marcado, não faz nada
 
             bool foiAlterado = false;
-            string novoConteudo = conteudoOriginal;
 
-            // Tentar substituir checkboxes não marcados por marcados
+            // 1️⃣ TENTAR SUBSTITUIR CHECKBOX NÃO MARCADO POR MARCADO
             foreach (var checkbox in CheckboxesMap)
             {
-                if (novoConteudo.Contains(checkbox.Key))
+                if (textoCompleto.Contains(checkbox.Key))
                 {
-                    novoConteudo = novoConteudo.Replace(checkbox.Key, checkbox.Value);
+                    // Substitui o símbolo no texto de TODOS os runs
+                    foreach (var run in runs)
+                    {
+                        foreach (var text in run.Descendants<Text>().ToList())
+                        {
+                            if (text.Text.Contains(checkbox.Key))
+                            {
+                                text.Text = text.Text.Replace(checkbox.Key, checkbox.Value);
+                            }
+                        }
+                    }
                     foiAlterado = true;
+                    break;
                 }
             }
 
-            // Se não encontrou nenhum checkbox, adicionar um no início
-            if (!foiAlterado && !string.IsNullOrWhiteSpace(novoConteudo))
+            // 2️⃣ SE NÃO ACHOU CHECKBOX, ADICIONA UM NOVO RUN NO INÍCIO
+            if (!foiAlterado)
             {
-                // Verificar se o conteúdo parece ser uma opção de dia
-                string upperConteudo = novoConteudo.ToUpperInvariant();
-                if (upperConteudo.Contains("DIA") || upperConteudo.Contains("(UM)") ||
-                    upperConteudo.Contains("(DEZ)") || upperConteudo.Contains("(VINTE)"))
+                string upper = textoCompleto.ToUpperInvariant();
+                if (upper.Contains("DIA") || upper.Contains("(UM)") ||
+                    upper.Contains("(DEZ)") || upper.Contains("(VINTE)"))
                 {
-                    novoConteudo = "☒ " + novoConteudo.TrimStart();
+                    // Cria run com checkbox marcado AZUL
+                    Run novoRun = new Run();
+                    RunProperties props = new RunProperties();
+                    props.Append(new FontSize() { Val = "16" });
+                    props.Append(new FontSizeComplexScript() { Val = "16" });
+                    props.Append(new Color() { Val = "0000FF" });
+                    novoRun.AppendChild(props);
+                    novoRun.Append(new Text("☒ "));
+
+                    paragraph.InsertBefore(novoRun, runs.First());
                     foiAlterado = true;
                 }
             }
 
             if (!foiAlterado) return 0;
 
-            // Limpar e atualizar
-            for (int i = 0; i < textos.Count; i++)
+            // 3️⃣ 🟦 APLICA COR AZUL E TAMANHO 16 A TODOS OS RUNS DA CÉLULA
+            foreach (var run in paragraph.Descendants<Run>())
             {
-                textos[i].Text = "";
+                RunProperties props = run.RunProperties;
+                if (props == null)
+                {
+                    props = new RunProperties();
+                    run.PrependChild(props);
+                }
+
+                // Ajusta tamanho
+                var fontSize = props.Descendants<FontSize>().FirstOrDefault();
+                if (fontSize == null)
+                {
+                    fontSize = new FontSize() { Val = "18" };
+                    props.Append(fontSize);
+                }
+                else fontSize.Val = "18";
+
+                var fontSizeCs = props.Descendants<FontSizeComplexScript>().FirstOrDefault();
+                if (fontSizeCs == null)
+                {
+                    fontSizeCs = new FontSizeComplexScript() { Val = "18" };
+                    props.Append(fontSizeCs);
+                }
+                else fontSizeCs.Val = "18";
+
+                // Aplica cor azul
+                var color = props.Descendants<Color>().FirstOrDefault();
+                if (color == null)
+                {
+                    color = new Color() { Val = "0000FF" };
+                    props.Append(color);
+                }
+                else color.Val = "0000FF";
             }
 
-            textos[0].Text = novoConteudo;
+            Console.WriteLine("✅ Célula formatada em AZUL (tamanho 16)");
             return 1;
         }
-
 
         private int ProcessarCampoVigencia(
             TableCell cell,
@@ -978,11 +1036,9 @@ namespace appWhatsapp.PlennuscGestao.Services
                 case "CASADO":
                     opcoes = "☐ SOLTEIRO   ☒ CASADO   ☐ OUTROS";
                     break;
-                case "OUTROS":
+                default: // QUALQUER OUTRO VALOR (OUTROS, DIVORCIADO, VIÚVO, etc.) → MARCA OUTROS
                     opcoes = "☐ SOLTEIRO   ☐ CASADO   ☒ OUTROS";
                     break;
-                default:
-                    return 0; // Valor não reconhecido
             }
 
             // Verificar se o conteúdo já está correto (com quebra de linha)

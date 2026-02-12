@@ -29,10 +29,12 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsButYou
         public string Email { get; set; }
         public string TelefoneCelular { get; set; }
         public string Filiacao { get; set; }
+        public int? DiaVencimentoPadrao { get; set; }
 
         // ADICIONE ESTAS PROPRIEDADES:
         public string CodigoTitular { get; set; }
         public string TipoAssociado { get; set; }
         public decimal? ValorPlano { get; set; }
+
     }
 }

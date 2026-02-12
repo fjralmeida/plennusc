@@ -33,15 +33,21 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private Dictionary<string, string> ConverterAssociadoParaDicionario(DadosAssociadoCompleto associado)
         {
+            int? diaVencimento = associado.DiaVencimentoPadrao; // pode ser nulo
+
+            // Data de vigência: sempre no mês 03/2026
+            string inicioVigencia = $"{diaVencimento:D2}/03/2026";
+
+
             return new Dictionary<string, string>
             {
-                // Vigência (você pode ajustar conforme necessário)
-                { "INICIO_VIGENCIA", DateTime.Now.ToString("dd/MM/yyyy") },
+                 // Vigência fixa em março/2026
+                { "INICIO_VIGENCIA", inicioVigencia },
         
-                // Opções de Vencimento
-                { "VENCIMENTO_DIA_01", "true" },
-                { "VENCIMENTO_DIA_10", "true" },
-                { "VENCIMENTO_DIA_20", "true" },
+                // Somente o dia correto fica true
+                { "VENCIMENTO_DIA_01", (diaVencimento == 1).ToString().ToLower() },
+                { "VENCIMENTO_DIA_10", (diaVencimento == 10).ToString().ToLower() },
+                { "VENCIMENTO_DIA_20", (diaVencimento == 20).ToString().ToLower() },
 
                 // Identificação
                 { "NOME_COMPLETO", associado.NomeCompleto },
@@ -386,10 +392,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                // 1. Buscar todos os associados (titulares e dependentes)
-                var queriesService = new butYouQueriesAssociados(
-                    System.Configuration.ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString);
 
+                // Connection string – busca UMA VEZ
+                string connectionString = System.Configuration.ConfigurationManager
+                    .ConnectionStrings["Alianca"].ConnectionString;
+
+                // Instância do service de consulta
+                var queriesService = new butYouQueriesAssociados(connectionString);
+
+                // 1. Buscar todos os associados (titulares e dependentes)
                 var todosAssociados = queriesService.BuscarAssociadosCompletos();
 
                 if (todosAssociados == null || todosAssociados.Count == 0)
@@ -418,7 +429,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/MAIS VOCE - PE - DOCX.docx");
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_MVCS_NE_AD_AL_ENF.docx");
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
@@ -488,6 +499,15 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                         // 9. Calcular e preencher o total
                         int appliedTotal = _docxService.FillTotalContraprestacao(outputPath, composicaoContraprestacao);
+
+                        // ✅ SÓ INSERE NO BANCO SE TUDO DEU CERTO
+                        // Titular
+                        queriesService.InserirRegistroProposta(grupo.Titular, "T", nomeArquivo);
+                        // Dependentes
+                        foreach (var dep in grupo.Dependentes)
+                        {
+                            queriesService.InserirRegistroProposta(dep, "D", nomeArquivo);
+                        }
 
                         documentosCriados++;
 
