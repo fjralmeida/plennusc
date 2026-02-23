@@ -418,7 +418,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 // 3. Para cada grupo (titular + dependentes), criar um documento
                 int documentosCriados = 0;
-                string pastaDestino = @"\\Urano\vallorben_docs\DOC.PUBLICO\plennuc_ClickSing\";
+                string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
 
                 // Criar pasta se não existir
                 if (!Directory.Exists(pastaDestino))
@@ -429,7 +429,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_MVCS_NE_AD_AL_ENF.docx");
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/MAIS_VOCE_NÃO_ESTIPULADO_ADESÃO_ANASERV_VSF_MIGRAÇÃO_COPART_TOTAL.docx");
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);

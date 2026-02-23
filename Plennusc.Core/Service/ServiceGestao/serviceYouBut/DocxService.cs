@@ -1855,16 +1855,13 @@ namespace appWhatsapp.PlennuscGestao.Services
 
                 // 1. CALCULAR O TOTAL
                 decimal total = 0;
-
                 decimal ExtrairValor(string textoValor)
                 {
-                    if (string.IsNullOrWhiteSpace(textoValor))
-                        return 0;
-
+                    if (string.IsNullOrWhiteSpace(textoValor)) return 0;
                     string limpo = textoValor.Replace("R$", "").Replace(" ", "").Replace(",", ".");
-                    if (decimal.TryParse(limpo, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal valor))
-                        return valor;
-                    return 0;
+                    decimal.TryParse(limpo, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out decimal valor);
+                    return valor;
                 }
 
                 if (composicaoContraprestacao.ContainsKey("VALOR_TITULAR"))
@@ -1878,101 +1875,57 @@ namespace appWhatsapp.PlennuscGestao.Services
                 }
 
                 string totalFormatado = $"R$ {total.ToString("N2").Replace(".", ",")}";
-                Console.WriteLine($"Total calculado: {totalFormatado}");
+                Console.WriteLine($"[INFO] Total calculado: {totalFormatado}");
 
-                // 2. PROCURAR PELA FRASE "mensalidades desta proposta"
+                // 2. LOCALIZAR O TEXTO LONGO
                 var allParagraphs = body.Descendants<Paragraph>().ToList();
-                Paragraph paragrafoAlvo = null;
+                int indiceTextoLongo = -1;
+
+                string textoLongoBuscado = "O valor indicado sofrerá alteração, caso haja reajuste anual do contrato coletivo por adesão ou mudança de faixa etária entre a data de assinatura desta Proposta e cobrança do primeiro boleto. A taxa de administração (devida no momento da adesão, cujo valor é diverso e inferior do valor mensal do(s) benefício(s) contratado(s), não se confunde, exclui, isenta ou substitui o pagamento da primeira ou demais mensalidades desta proposta.";
 
                 for (int i = 0; i < allParagraphs.Count; i++)
                 {
-                    var paragraph = allParagraphs[i];
-                    string paragraphText = string.Join("", paragraph.Descendants<Text>().Select(t => t.Text));
-                    string upperText = paragraphText.ToUpperInvariant();
-
-                    // Procurar pela frase "mensalidades desta proposta"
-                    if (upperText.Contains("MENSALIDADES") && upperText.Contains("DESTA") && upperText.Contains("PROPOSTA"))
+                    string texto = string.Join("", allParagraphs[i].Descendants<Text>().Select(t => t.Text));
+                    if (texto.Contains("taxa de administração") && texto.Contains("mensalidades desta proposta"))
                     {
-                        Console.WriteLine($"Encontrou a frase na linha {i}: '{paragraphText}'");
-
-                        // AGORA VAMOS PARA O PRÓXIMO PARÁGRAFO (não o mesmo)
-                        if (i + 1 < allParagraphs.Count)
-                        {
-                            paragrafoAlvo = allParagraphs[i + 1];
-                            Console.WriteLine($"Próximo parágrafo (campo vazio) encontrado na linha {i + 1}");
-                            break;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Não há próximo parágrafo após 'mensalidades desta proposta'");
-                            return 0;
-                        }
+                        indiceTextoLongo = i;
+                        Console.WriteLine($"[INFO] Texto longo encontrado no índice {i}");
+                        break;
                     }
                 }
 
-                // 3. SE ENCONTROU O PARÁGRAFO ALVO (campo vazio), PREENCHER
-                if (paragrafoAlvo != null)
+                if (indiceTextoLongo == -1)
                 {
-                    Console.WriteLine($"Preenchendo campo vazio...");
-
-                    // Limpar o campo existente (se houver conteúdo)
-                    paragrafoAlvo.RemoveAllChildren();
-
-                    // Criar novo Run com o valor formatado
-                    Run runValor = new Run();
-                    RunProperties rp = new RunProperties();
-                    rp.Append(new Color() { Val = "0000FF" });
-                    rp.Append(new FontSize() { Val = "16" });
-                    runValor.RunProperties = rp;
-                    runValor.AppendChild(new Text(totalFormatado));
-
-                    paragrafoAlvo.AppendChild(runValor);
-
-                    Console.WriteLine($"Campo preenchido com valor: {totalFormatado}");
-                    applied++;
-                }
-                else
-                {
-                    Console.WriteLine("Não encontrou 'mensalidades desta proposta' ou próximo parágrafo!");
-
-                    // Fallback: procurar pelo título e usar o próximo parágrafo
-                    for (int i = 0; i < allParagraphs.Count; i++)
-                    {
-                        var paragraph = allParagraphs[i];
-                        string paragraphText = string.Join("", paragraph.Descendants<Text>().Select(t => t.Text));
-                        string upperText = paragraphText.ToUpperInvariant();
-
-                        if (upperText.Contains("CONTRAPRESTAÇÃO") && upperText.Contains("PECUNIÁRIA") &&
-                            upperText.Contains("MENSAL") && upperText.Contains("TOTAL"))
-                        {
-                            Console.WriteLine($"Fallback: Encontrou título na linha {i}");
-
-                            if (i + 1 < allParagraphs.Count)
-                            {
-                                paragrafoAlvo = allParagraphs[i + 1];
-                                Console.WriteLine($"Usando próximo parágrafo (linha {i + 1}) como campo vazio");
-
-                                // Limpar e preencher
-                                paragrafoAlvo.RemoveAllChildren();
-
-                                Run runValor = new Run();
-                                RunProperties rp = new RunProperties();
-                                rp.Append(new Color() { Val = "0000FF" });
-                                rp.Append(new FontSize() { Val = "16" });
-                                runValor.RunProperties = rp;
-                                runValor.AppendChild(new Text(totalFormatado));
-
-                                paragrafoAlvo.AppendChild(runValor);
-
-                                Console.WriteLine($"Campo preenchido com valor: {totalFormatado}");
-                                applied++;
-                                break;
-                            }
-                        }
-                    }
+                    Console.WriteLine("[ERRO] Não encontrou o texto longo");
+                    return 0;
                 }
 
+                // 3. VERIFICAR SE EXISTE UM PRÓXIMO PARÁGRAFO (CAMPO EM BRANCO)
+                if (indiceTextoLongo + 1 >= allParagraphs.Count)
+                {
+                    Console.WriteLine("[ERRO] Não há próximo parágrafo após o texto longo");
+                    return 0;
+                }
+
+                Paragraph campoEmBranco = allParagraphs[indiceTextoLongo + 1];
+
+                // 4. LIMPAR O CAMPO EM BRANCO
+                campoEmBranco.RemoveAllChildren();
+
+                // 5. INSERIR O VALOR
+                Run runValor = new Run();
+                RunProperties rp = new RunProperties();
+                rp.Append(new Color() { Val = "0000FF" });
+                rp.Append(new FontSize() { Val = "16" });
+                runValor.RunProperties = rp;
+                runValor.AppendChild(new Text(totalFormatado));
+
+                campoEmBranco.AppendChild(runValor);
+
+                // 6. SALVAR
                 doc.MainDocumentPart.Document.Save();
+                Console.WriteLine($"[INFO] Valor inserido no campo em branco APÓS o texto longo: {totalFormatado}");
+                applied++;
             }
 
             return applied;
