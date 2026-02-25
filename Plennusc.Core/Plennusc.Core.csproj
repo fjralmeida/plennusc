@@ -146,6 +146,7 @@
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
+    <Compile Include="Models\ModelsGestao\modelsButYou\BeneficiarioEmpresa.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\DadosAssociadoCompleto.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\DependentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\GrupoTitularDependentes.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Service\ServiceGestao\sendMessage\ExcelReportService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />
+    <Compile Include="Service\ServiceGestao\serviceYouBut\EnterpriseDocx.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\ExcelService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />
     <Compile Include="Service\ServiceGestao\usuario\userSystemMenuManagementService.cs" />

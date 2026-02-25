@@ -266,6 +266,7 @@
     <Content Include="PlennuscGestao\Views\employeeEdit.aspx" />
     <Content Include="PlennuscGestao\Views\employeeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
+    <Content Include="PlennuscGestao\Views\enterpriseButYou.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
     <Content Include="PlennuscGestao\Views\linkSector.aspx" />
     <Content Include="PlennuscGestao\Views\listDemand.aspx" />
@@ -515,6 +516,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\employeePosition.aspx.designer.cs">
       <DependentUpon>employeePosition.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\enterpriseButYou.aspx.cs">
+      <DependentUpon>enterpriseButYou.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\enterpriseButYou.aspx.designer.cs">
+      <DependentUpon>enterpriseButYou.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\FixedMessageSending.aspx.cs">
       <DependentUpon>FixedMessageSending.aspx</DependentUpon>
