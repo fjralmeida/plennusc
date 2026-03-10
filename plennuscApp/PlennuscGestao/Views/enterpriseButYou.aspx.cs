@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Web.UI;
@@ -18,217 +19,130 @@ namespace appWhatsapp.PlennuscGestao.Views
 {
     public partial class enterpriseButYou : System.Web.UI.Page
     {
-        // USE APENAS EnterpriseDocx, NADA de DocxService
         private EnterpriseDocx _enterpriseDocx = new EnterpriseDocx();
         private DocxService _docxService = new DocxService();
         private ExcelService _excelService = new ExcelService();
 
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            //OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-        }
+        protected void Page_Load(object sender, EventArgs e) { }
+
         protected void propostaEmpresa_Click(object sender, EventArgs e)
         {
             try
             {
-                // ==================== DADOS FICTÍCIOS ====================
-                var dadosEmpresa = new Dictionary<string, string>
-        {
-            { "RAZAO_SOCIAL", "EMPRESA MODELO LTDA" },
-            { "NOME_FANTASIA", "MODELO SAÚDE" },
-            { "ENDERECO_EMPRESA", "AVENIDA PAULISTA, 1000" },
-            { "BAIRRO_EMPRESA", "BELA VISTA" },
-            { "CEP_EMPRESA", "01310-100" },
-            { "ESTADO_EMPRESA", "SP" },
-            { "CIDADE_EMPRESA", "SÃO PAULO" },
-            { "CNPJ", "12.345.678/0001-90" },
-            { "DATA_INSCRICAO_CNPJ", "01/01/2020" },
-            { "INSCRICAO_MUNICIPAL", "123456" },
-            { "INSCRICAO_ESTADUAL", "987654" },
-            { "EMAIL_EMPRESA", "contato@modelo.com.br" },
-            { "TELEFONE_EMPRESA", "(11) 3333-4444" }
-        };
-
-                // Titular 1 (João + 2 dependentes)
-                var dadosTitular1 = new Dictionary<string, string>
-        {
-            { "NOME_COMPLETO", "JOÃO DA SILVA" },
-            { "CPF_TITULAR", "111.222.333-44" },
-            { "DATA_NASCIMENTO", "10/05/1980" },
-            { "RG", "12.345.678-9" },
-            { "FILIACAO", "PAI: JOSÉ, MÃE: MARIA" },
-            { "IDADE", "45" },
-            { "SEXO", "M" },
-            { "ESTADO_CIVIL", "CASADO" },
-            { "ORGAO_EXPEDIDOR", "SSP/SP" },
-            { "CARTAO_SUS", "123456789012345" },
-            { "ENDERECO", "RUA A, 100" },
-            { "NUMERO", "100" },
-            { "COMPLEMENTO", "APTO 1" },
-            { "CEP", "01010-010" },
-            { "BAIRRO", "CENTRO" },
-            { "CIDADE", "SÃO PAULO" },
-            { "UF", "SP" },
-            { "EMAIL", "joao@email.com" },
-            { "TELEFONE_CELULAR", "(11) 99999-8888" }
-        };
-
-                var dependentes1 = new List<Dictionary<string, string>>
-        {
-            new Dictionary<string, string>
-            {
-                { "NOME_COMPLETO", "MARIA DA SILVA" },
-                { "DATA_NASCIMENTO", "15/08/1982" },
-                { "SEXO", "F" },
-                { "ESTADO_CIVIL", "CASADO" },
-                { "IDADE", "43" },
-                { "CPF", "222.333.444-55" },
-                { "FILIACAO", "PAI: ANTÔNIO, MÃE: JOANA" },
-                { "RG", "98.765.432-1" },
-                { "PARENTESCO", "CÔNJUGE" }
-            },
-            new Dictionary<string, string>
-            {
-                { "NOME_COMPLETO", "PEDRO DA SILVA" },
-                { "DATA_NASCIMENTO", "10/01/2010" },
-                { "SEXO", "M" },
-                { "ESTADO_CIVIL", "SOLTEIRO" },
-                { "IDADE", "15" },
-                { "CPF", "333.444.555-66" },
-                { "FILIACAO", "PAI: JOÃO, MÃE: MARIA" },
-                { "RG", "11.223.344-5" },
-                { "PARENTESCO", "FILHO" }
-            }
-        };
-
-                // Titular 2 (Maria + 1 dependente)
-                var dadosTitular2 = new Dictionary<string, string>
-        {
-            { "NOME_COMPLETO", "MARIA APARECIDA OLIVEIRA" },
-            { "CPF_TITULAR", "444.555.666-77" },
-            { "DATA_NASCIMENTO", "25/08/1985" },
-            { "RG", "55.666.777-8" },
-            { "FILIACAO", "PAI: JOÃO, MÃE: TEREZA" },
-            { "IDADE", "40" },
-            { "SEXO", "F" },
-            { "ESTADO_CIVIL", "DIVORCIADA" },
-            { "ORGAO_EXPEDIDOR", "SSP/SP" },
-            { "CARTAO_SUS", "999888777666555" },
-            { "ENDERECO", "RUA C, 300" },
-            { "NUMERO", "300" },
-            { "COMPLEMENTO", "" },
-            { "CEP", "03030-030" },
-            { "BAIRRO", "MOOCA" },
-            { "CIDADE", "SÃO PAULO" },
-            { "UF", "SP" },
-            { "EMAIL", "maria@email.com" },
-            { "TELEFONE_CELULAR", "(11) 98888-7777" }
-        };
-
-                var dependentes2 = new List<Dictionary<string, string>>
-        {
-            new Dictionary<string, string>
-            {
-                { "NOME_COMPLETO", "ANA OLIVEIRA" },
-                { "DATA_NASCIMENTO", "12/03/2015" },
-                { "SEXO", "F" },
-                { "ESTADO_CIVIL", "SOLTEIRO" },
-                { "IDADE", "10" },
-                { "CPF", "555.666.777-88" },
-                { "FILIACAO", "PAI: CARLOS, MÃE: MARIA" },
-                { "RG", "66.777.888-9" },
-                { "PARENTESCO", "FILHA" }
-            }
-        };
-
-                // Titular 3 (Pedro + 3 dependentes)
-                var dadosTitular3 = new Dictionary<string, string>
-        {
-            { "NOME_COMPLETO", "PEDRO HENRIQUE SANTOS" },
-            { "CPF_TITULAR", "666.777.888-99" },
-            { "DATA_NASCIMENTO", "02/02/1970" },
-            { "RG", "77.888.999-0" },
-            { "FILIACAO", "PAI: ANTÔNIO, MÃE: LUZIA" },
-            { "IDADE", "55" },
-            { "SEXO", "M" },
-            { "ESTADO_CIVIL", "CASADO" },
-            { "ORGAO_EXPEDIDOR", "SSP/SP" },
-            { "CARTAO_SUS", "888777666555444" },
-            { "ENDERECO", "RUA D, 400" },
-            { "NUMERO", "400" },
-            { "COMPLEMENTO", "CASA 10" },
-            { "CEP", "04040-040" },
-            { "BAIRRO", "SAÚDE" },
-            { "CIDADE", "SÃO PAULO" },
-            { "UF", "SP" },
-            { "EMAIL", "pedro@email.com" },
-            { "TELEFONE_CELULAR", "(11) 96666-5555" }
-        };
-
-                var dependentes3 = new List<Dictionary<string, string>>
-        {
-            new Dictionary<string, string>
-            {
-                { "NOME_COMPLETO", "LUCAS SANTOS" },
-                { "DATA_NASCIMENTO", "10/10/2000" },
-                { "SEXO", "M" },
-                { "ESTADO_CIVIL", "SOLTEIRO" },
-                { "IDADE", "25" },
-                { "CPF", "777.888.999-00" },
-                { "FILIACAO", "PAI: PEDRO, MÃE: JOANA" },
-                { "RG", "88.999.000-1" },
-                { "PARENTESCO", "FILHO" }
-            },
-            new Dictionary<string, string>
-            {
-                { "NOME_COMPLETO", "BEATRIZ SANTOS" },
-                { "DATA_NASCIMENTO", "05/05/2005" },
-                { "SEXO", "F" },
-                { "ESTADO_CIVIL", "SOLTEIRO" },
-                { "IDADE", "20" },
-                { "CPF", "888.999.000-11" },
-                { "FILIACAO", "PAI: PEDRO, MÃE: JOANA" },
-                { "RG", "99.000.111-2" },
-                { "PARENTESCO", "FILHA" }
-            },
-            new Dictionary<string, string>
-            {
-                { "NOME_COMPLETO", "GABRIEL SANTOS" },
-                { "DATA_NASCIMENTO", "20/12/2018" },
-                { "SEXO", "M" },
-                { "ESTADO_CIVIL", "SOLTEIRO" },
-                { "IDADE", "7" },
-                { "CPF", "999.000.111-22" },
-                { "FILIACAO", "PAI: PEDRO, MÃE: JOANA" },
-                { "RG", "00.111.222-3" },
-                { "PARENTESCO", "FILHO" }
-            }
-        };
-
-                // Lista de titulares com seus dependentes
-                var titulares = new List<Tuple<Dictionary<string, string>, List<Dictionary<string, string>>>>
-        {
-            Tuple.Create(dadosTitular1, dependentes1),
-            Tuple.Create(dadosTitular2, dependentes2),
-            Tuple.Create(dadosTitular3, dependentes3)
-        };
-
                 // ==================== CRIAÇÃO DO DOCUMENTO ====================
-                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/Proposta_MVCS_E_PME_VSF_PARCIAL.docx");
+                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/MAIS_VOCE_ESTIPULADO_PME_BA_MIGRAÇÃO_ENFERMARIA.docx");
                 string tempDir = Server.MapPath("~/temp/");
                 Directory.CreateDirectory(tempDir);
                 string outputPath = Path.Combine(tempDir, $"PROPOSTA_EMPRESA_{DateTime.Now:yyyyMMddHHmmss}.docx");
 
-                // Faz uma única cópia do template
                 File.Copy(templatePath, outputPath, true);
 
-                // ==================== PREENCHER DADOS DA EMPRESA ====================
-                _enterpriseDocx.FillDadosEmpresa(outputPath, dadosEmpresa);
+                // ==================== STRING DE CONEXÃO ====================
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
 
-                // Aguarda e limpa
-                System.Threading.Thread.Sleep(100);
+                // ==================== BUSCAR DADOS DA EMPRESA ====================
+                var empresaQueries = new enterpriseButYouQueries(connectionString);
+                var empresas = empresaQueries.BuscarDadosEmpresa();
+                var empresa = empresas.FirstOrDefault();
+
+                if (empresa == null)
+                    throw new Exception("Nenhuma empresa encontrada para os códigos informados.");
+
+                var dadosEmpresa = new Dictionary<string, string>
+        {
+            { "RAZAO_SOCIAL", empresa.RazaoSocial },
+            { "NOME_FANTASIA", empresa.NomeFantasia },
+            { "ENDERECO_EMPRESA", empresa.Endereco },
+            { "BAIRRO_EMPRESA", empresa.Bairro },
+            { "CEP_EMPRESA", empresa.Cep },
+            { "ESTADO_EMPRESA", empresa.Estado },
+            { "CIDADE_EMPRESA", empresa.Cidade },
+            { "CNPJ", empresa.Cnpj },
+            { "INSCRICAO_MUNICIPAL", empresa.InscricaoMunicipal },
+            { "INSCRICAO_ESTADUAL", empresa.InscricaoEstadual },
+            { "EMAIL_EMPRESA", empresa.Email },
+            { "INICIO_VIGENCIA", empresa.DataInicioVigencia?.ToString("dd/MM/yyyy") ?? "" }
+        };
+
+                _enterpriseDocx.FillDadosEmpresa(outputPath, dadosEmpresa);
+                Thread.Sleep(100);
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+
+                // ==================== BUSCAR ASSOCIADOS DA EMPRESA ====================
+                int codigoEmpresaInt = int.Parse(empresa.CodigoEmpresa);
+                var todosAssociados = empresaQueries.BuscarAssociadosPorEmpresa(codigoEmpresaInt);
+
+                // --- MONTAR A LISTA DE TITULARES COM SEUS DEPENDENTES E VALORES REAIS ---
+                var titulares = new List<Tuple<Dictionary<string, string>, List<Dictionary<string, string>>>>();
+
+                // Agrupar por código do titular (se não tiver, é o próprio)
+                var grupos = todosAssociados.GroupBy(a => string.IsNullOrEmpty(a.CodigoTitular) ? a.CodigoAssociado : a.CodigoTitular);
+
+                foreach (var grupo in grupos)
+                {
+                    var titular = grupo.FirstOrDefault(a => a.CodigoAssociado == grupo.Key);
+                    if (titular == null) continue;
+
+                    var dependentes = grupo.Where(a => a.CodigoAssociado != grupo.Key).ToList();
+
+                    // Dicionário do titular (inclui VALOR_PLANO)
+                    var dictTitular = new Dictionary<string, string>
+            {
+                { "NOME_COMPLETO", titular.NomeCompleto ?? "" },
+                { "CPF_TITULAR", titular.CpfTitular ?? "" },
+                { "DATA_NASCIMENTO", titular.DataNascimento ?? "" },
+                { "RG", titular.Rg ?? "" },
+                { "FILIACAO", "" },
+                { "IDADE", titular.Idade ?? "" },
+                { "SEXO", titular.Sexo ?? "" },
+                { "ESTADO_CIVIL", titular.EstadoCivil ?? "" },
+                { "ORGAO_EXPEDIDOR", titular.OrgaoExpedidor ?? "" },
+                { "CARTAO_SUS", titular.CartaoSus ?? "" },
+                { "ENDERECO", titular.Endereco ?? "" },
+                { "NUMERO", titular.Numero ?? "" },
+                { "COMPLEMENTO", titular.Complemento ?? "" },
+                { "CEP", titular.Cep ?? "" },
+                { "BAIRRO", titular.Bairro ?? "" },
+                { "CIDADE", titular.Cidade ?? "" },
+                { "UF", titular.Uf ?? "" },
+                { "EMAIL", titular.Email ?? "" },
+                { "TELEFONE_CELULAR", titular.TelefoneCelular ?? "" },
+                { "VALOR_PLANO", titular.ValorPlano?.ToString("C2") ?? "R$ 0,00" },
+                { "DIA_VENCIMENTO", titular.DiaVencimentoPadrao?.ToString() ?? "20" }
+            };
+
+                    // Lista de dicionários dos dependentes (inclui VALOR_PLANO)
+                    var dictDependentes = dependentes.Select(d => new Dictionary<string, string>
+            {
+                { "NOME_COMPLETO", d.NomeCompleto ?? "" },
+                { "DATA_NASCIMENTO", d.DataNascimento ?? "" },
+                { "SEXO", d.Sexo ?? "" },
+                { "ESTADO_CIVIL", d.EstadoCivil ?? "" },
+                { "IDADE", d.Idade ?? "" },
+                { "CPF", d.CpfTitular ?? "" },
+                { "FILIACAO", "" },
+                { "RG", d.Rg ?? "" },
+                { "ORGAO_EXPEDIDOR", d.OrgaoExpedidor ?? "" },
+                { "CARTAO_SUS", d.CartaoSus ?? "" },
+                { "PARENTESCO", d.NomeParentesco ?? "" },
+                { "ENDERECO", d.Endereco ?? "" },
+                { "NUMERO", d.Numero ?? "" },
+                { "COMPLEMENTO", d.Complemento ?? "" },
+                { "CEP", d.Cep ?? "" },
+                { "BAIRRO", d.Bairro ?? "" },
+                { "CIDADE", d.Cidade ?? "" },
+                { "UF", d.Uf ?? "" },
+                { "EMAIL", d.Email ?? "" },
+                { "TELEFONE_CELULAR", d.TelefoneCelular ?? "" },
+                { "VALOR_PLANO", d.ValorPlano?.ToString("C2") ?? "R$ 0,00" }
+            }).ToList();
+
+                    titulares.Add(Tuple.Create(dictTitular, dictDependentes));
+                }
+
+                //// Variável para guardar os dados do primeiro titular (para nome do arquivo)
+                //Dictionary<string, string> primeiroTitularDict = null;
 
                 // ==================== PROCESSAR CADA TITULAR ====================
                 for (int i = 0; i < titulares.Count; i++)
@@ -238,19 +152,42 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     if (i == 0)
                     {
-                        // Primeiro titular → bloco 0
-                        _enterpriseDocx.FillTitularBasico(outputPath, outputPath, dadosTitular, 0);
+                        //// Guarda os dados do primeiro titular para usar no nome do arquivo
+                        //primeiroTitularDict = new Dictionary<string, string>(dadosTitular);
+
+                        // PEGAR O DIA DA DATA DE ADMISSÃO DA EMPRESA
+                        int diaVenc = 1; // padrão
+                        if (empresa.DataInicioVigencia.HasValue)
+                        {
+                            diaVenc = empresa.DataInicioVigencia.Value.Day; // PEGA O DIA (20)
+                        }
+
+                        // FORMATAR DATA: dia = dia da empresa, mês = 03, ano = 2026
+                        string dataVigencia = $"{diaVenc:D2}/03/2026";
+
+                        var dadosVigencia = new Dictionary<string, string>
+                {
+                    { "INICIO_VIGENCIA", dataVigencia },
+                    { "VENCIMENTO_DIA_01", (diaVenc == 1).ToString().ToLower() },
+                    { "VENCIMENTO_DIA_10", (diaVenc == 10).ToString().ToLower() },
+                    { "VENCIMENTO_DIA_20", (diaVenc == 20).ToString().ToLower() }
+                };
+
+                        var dadosCompletos = new Dictionary<string, string>(dadosVigencia);
+                        foreach (var kv in dadosTitular)
+                            dadosCompletos[kv.Key] = kv.Value;
+
+                        _enterpriseDocx.FillTitularBasico(outputPath, outputPath, dadosCompletos, 0);
                         Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
 
                         if (dependentes.Count > 0)
                         {
-                            _enterpriseDocx.FillDependentes(outputPath, outputPath, dependentes, 0); // ← índice 0
+                            _enterpriseDocx.FillDependentes(outputPath, outputPath, dependentes, 0);
                             Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
                         }
                     }
                     else if (i == 1)
                     {
-                        // Segundo titular → bloco 1
                         _enterpriseDocx.FillTitularBasico(outputPath, outputPath, dadosTitular, 1);
                         Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
 
@@ -262,11 +199,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                     }
                     else
                     {
-                        // Terceiro em diante: duplica a página 2 e preenche o novo bloco
-                        _enterpriseDocx.DuplicarPaginaBeneficiario(outputPath);
+                        _enterpriseDocx.DuplicarPaginaBeneficiario(outputPath, templatePath);
                         Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
 
-                        // Após duplicar, o novo bloco terá índice i (pois agora há i+1 blocos)
                         _enterpriseDocx.FillTitularBasico(outputPath, outputPath, dadosTitular, i);
                         Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
 
@@ -276,20 +211,112 @@ namespace appWhatsapp.PlennuscGestao.Views
                             Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
                         }
                     }
+
+                    // ========== VALORES REAIS ==========
+                    var valores = new Dictionary<string, string>();
+                    valores["VALOR_TITULAR"] = dadosTitular["VALOR_PLANO"];
+                    for (int j = 0; j < dependentes.Count; j++)
+                    {
+                        valores[$"VALOR_DEPENDENTE_{j + 1}"] = dependentes[j]["VALOR_PLANO"];
+                    }
+
+                    _enterpriseDocx.FillTabelaValoresPorBloco(outputPath, valores, i);
+                    Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
+
+                    _enterpriseDocx.FillTotalContraprestacaoPorBloco(outputPath, valores, i);
+                    Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
                 }
 
-                // ==================== DOWNLOAD ====================
-                Response.Clear();
-                Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                Response.AddHeader("Content-Disposition", $"attachment; filename=PROPOSTA_EMPRESA_{DateTime.Now:yyyyMMdd}.docx");
-                Response.TransmitFile(outputPath);
-                Response.End();
+                // ========== GERAR NOME DO ARQUIVO COM NOME E EMAIL DO PRIMEIRO TITULAR ==========
+                // ========== GERAR NOME DO ARQUIVO COM NOME E EMAIL DA EMPRESA ==========
+                string nomeEmpresa = dadosEmpresa.ContainsKey("NOME_FANTASIA") && !string.IsNullOrWhiteSpace(dadosEmpresa["NOME_FANTASIA"])
+                    ? dadosEmpresa["NOME_FANTASIA"]
+                    : dadosEmpresa.ContainsKey("RAZAO_SOCIAL") ? dadosEmpresa["RAZAO_SOCIAL"] : "Empresa";
+                string emailEmpresa = dadosEmpresa.ContainsKey("EMAIL_EMPRESA") ? dadosEmpresa["EMAIL_EMPRESA"] : "sememail@empresa.com";
+
+                string nomeArquivo = GerarNomeArquivo(nomeEmpresa, emailEmpresa);
+
+                // ========== DEFINIR PASTA DE DESTINO ==========
+                string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
+                Directory.CreateDirectory(pastaDestino); // garante que a pasta existe
+
+                string caminhoDestino = Path.Combine(pastaDestino, nomeArquivo);
+
+                // Se já existir um arquivo com o mesmo nome, remove ou renomeia? Vamos remover para substituir
+                if (File.Exists(caminhoDestino))
+                    File.Delete(caminhoDestino);
+
+                // Move o arquivo da pasta temporária para a pasta de destino
+                File.Move(outputPath, caminhoDestino);
+
+                // ========== EXIBIR MENSAGEM DE SUCESSO ==========
+                lblErro.Text = $"Arquivo gerado com sucesso!<br/>Salvo em: {caminhoDestino}";
+                lblErro.ForeColor = System.Drawing.Color.Green;
+                lblErro.Visible = true;
+
+                // Opcional: link para abrir a pasta
+                string pastaUrl = "file:///" + pastaDestino.Replace("\\", "/");
+                lblErro.Text += $"<br/><a href='{pastaUrl}' target='_blank'>Abrir pasta de destino</a>";
             }
             catch (Exception ex)
             {
                 lblErro.Text = $"ERRO: {ex.Message}<br/>{ex.StackTrace}";
                 lblErro.Visible = true;
             }
+        }
+
+        // Métodos auxiliares para gerar nome do arquivo
+        private string GerarNomeArquivo(string nomeEmpresa, string email)
+        {
+            // Limpar nome da empresa: remover acentos, substituir não alfanuméricos por espaço, depois underscore
+            string nomeLimpo = RemoverAcentos(nomeEmpresa);
+            nomeLimpo = Regex.Replace(nomeLimpo, @"[^a-zA-Z0-9]", " ");
+            nomeLimpo = Regex.Replace(nomeLimpo, @"\s+", "_");
+            nomeLimpo = nomeLimpo.Trim('_');
+
+            // Email: não substituir @ e ., apenas remover caracteres proibidos em nomes de arquivo
+            char[] invalidos = Path.GetInvalidFileNameChars();
+            string emailLimpo = email;
+            foreach (char c in invalidos)
+            {
+                emailLimpo = emailLimpo.Replace(c, '_');
+            }
+            // Se quiser garantir que não haja espaços (emails não têm espaço, mas segurança)
+            emailLimpo = emailLimpo.Replace(' ', '_');
+
+            string nomeArquivo = $"{emailLimpo}__{nomeLimpo}.docx";
+
+            // Limitar tamanho
+            if (nomeArquivo.Length > 200)
+            {
+                nomeArquivo = nomeArquivo.Substring(0, 200);
+                if (!nomeArquivo.EndsWith(".docx"))
+                    nomeArquivo += ".docx";
+            }
+
+            return SanitizarNomeArquivo(nomeArquivo); // já temos esse método
+        }
+        private string RemoverAcentos(string texto)
+        {
+            if (string.IsNullOrEmpty(texto)) return texto;
+            string comAcentos = "áàâãäéèêëíìîïóòôõöúùûüçÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇ";
+            string semAcentos = "aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC";
+            for (int i = 0; i < comAcentos.Length; i++)
+            {
+                texto = texto.Replace(comAcentos[i], semAcentos[i]);
+            }
+            return texto;
+        }
+
+        private string SanitizarNomeArquivo(string nomeArquivo)
+        {
+            if (string.IsNullOrEmpty(nomeArquivo)) return "documento.docx";
+            char[] invalidos = Path.GetInvalidFileNameChars();
+            foreach (char c in invalidos)
+            {
+                nomeArquivo = nomeArquivo.Replace(c, '_');
+            }
+            return nomeArquivo;
         }
     }
 }

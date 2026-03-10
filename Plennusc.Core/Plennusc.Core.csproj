@@ -148,6 +148,7 @@
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\BeneficiarioEmpresa.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\DadosAssociadoCompleto.cs" />
+    <Compile Include="Models\ModelsGestao\modelsButYou\DadosEmpresaCompleto.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\DependentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\GrupoTitularDependentes.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\ProposalModel.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="SqlQueries\SqlQueriesFinance\settingsFinance\PrivacySettingsFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\autenticacao\PermissaoQuery.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\butYouQueries\butYouQueriesAssociados.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\butYouQueries\enterpriseButYouQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\CompanyDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\UserCompanyQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\Demanda.cs" />

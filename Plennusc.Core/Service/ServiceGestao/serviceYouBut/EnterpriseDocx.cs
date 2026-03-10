@@ -26,10 +26,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
         // ==================== MÉTODOS PÚBLICOS ====================
 
         public int FillTitularBasico(
-            string templatePath,
-            string outputPath,
-            Dictionary<string, string> dados,
-            int indiceBloco = 0)
+          string templatePath,
+          string outputPath,
+          Dictionary<string, string> dados,
+          int indiceBloco = 0)
         {
             if (templatePath != outputPath && !File.Exists(outputPath))
                 File.Copy(templatePath, outputPath, true);
@@ -66,13 +66,15 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                             if (upperContent.Contains("BENEFICIÁRIO TITULAR"))
                             {
                                 blocoAtual++;
-                                  emSecaoTitular = true;
+                                emSecaoTitular = true;
                                 processandoBloco = (blocoAtual == indiceBloco);
                                 break;
                             }
                         }
 
-                        if (!processandoBloco) continue;
+                        // Permite processar linhas antes do primeiro bloco apenas quando indiceBloco == 0
+                        if (!processandoBloco && !(blocoAtual == -1 && indiceBloco == 0))
+                            continue;
 
                         // Verificar se é linha de cabeçalho de seção
                         bool linhaEhCabecalho = false;
@@ -102,10 +104,11 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
                         if (linhaEhCabecalho) continue;
 
-                        // Fora da seção do titular (processa vigência apenas no bloco 0)
+                        // Fora da seção do titular – processa vigência apenas antes do primeiro bloco
                         if (!emSecaoTitular)
                         {
-                            if (blocoAtual == 0)
+                            // Só processa vigência se estivermos antes do primeiro bloco (blocoAtual == -1)
+                            if (blocoAtual == -1)
                             {
                                 bool encontrouVigencia = false;
                                 bool encontrouInicioVigencia = false;
@@ -150,10 +153,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                                 if (encontrouVigencia || encontrouInicioVigencia) continue;
                             }
 
-                            continue;
+                            continue; // pula linha se não for vigência
                         }
 
-                        // Dentro da seção do titular
+                        // Dentro da seção do titular – vigência interna (se houver)
                         bool encontrouVigenciaTitular = false;
                         for (int cellIndex = 0; cellIndex < cells.Count; cellIndex++)
                         {
@@ -179,7 +182,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
                         if (encontrouVigenciaTitular) continue;
 
-                        // Processar células normais
+                        // Processar células normais do titular
                         for (int cellIndex = 0; cellIndex < cells.Count; cellIndex++)
                         {
                             var cell = cells[cellIndex];
@@ -193,7 +196,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
             return applied;
         }
-
         public int FillDependentes(
             string templatePath,
             string outputPath,
@@ -321,10 +323,12 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
             if (upperContent.Contains("NOME COMPLETO"))
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosDep, "NOME_COMPLETO", "NOME COMPLETO");
-            else if (upperContent.Contains("CPF") && !upperContent.Contains("TITULAR"))
-                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosDep, "CPF", "CPF");
-            else if (upperContent.Contains("FILIAÇÃO") || upperContent.Contains("FILIACAO"))
-                applied += ProcessarCampoFiliacao(cell, cellTexts, cellContent, dadosDep);
+
+            else if (upperContent.Contains("CPF"))
+                applied += ProcessarCampoCpf(cell, cellTexts, cellContent, dadosDep, "CPF");
+
+            //else if (upperContent.Contains("FILIAÇÃO") || upperContent.Contains("FILIACAO"))
+            //    applied += ProcessarCampoFiliacao(cell, cellTexts, cellContent, dadosDep);
             else if (upperContent.Contains("DATA NASCIMENTO"))
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosDep, "DATA_NASCIMENTO", "DATA NASCIMENTO");
             else if (upperContent.Contains("IDADE"))
@@ -377,51 +381,69 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             return applied;
         }
 
-        public void DuplicarPaginaBeneficiario(string documentoPath)
+        public void DuplicarPaginaBeneficiario(string documentoPath, string templatePath)
         {
+            // 1. Extrair o bloco modelo (segundo bloco) do template original
+            List<OpenXmlElement> blocoModelo;
+            using (WordprocessingDocument templateDoc = WordprocessingDocument.Open(templatePath, false))
+            {
+                var templateBody = templateDoc.MainDocumentPart.Document.Body;
+                var templateElementos = templateBody.Elements().ToList();
+
+                var indicesModelo = new List<int>();
+                for (int i = 0; i < templateElementos.Count; i++)
+                {
+                    if (templateElementos[i].InnerText.ToUpperInvariant().Contains("BENEFICIÁRIO TITULAR"))
+                        indicesModelo.Add(i);
+                }
+                if (indicesModelo.Count < 2)
+                    throw new Exception("O template não contém dois blocos de beneficiário.");
+
+                int inicioModelo = indicesModelo[1]; // segundo bloco
+                int fimModelo = templateElementos.Count;
+
+                // O bloco termina antes do próximo "BENEFICIÁRIO TITULAR" ou antes do "RESUMO"
+                for (int i = inicioModelo + 1; i < templateElementos.Count; i++)
+                {
+                    if (templateElementos[i].InnerText.ToUpperInvariant().Contains("BENEFICIÁRIO TITULAR"))
+                    {
+                        fimModelo = i;
+                        break;
+                    }
+                }
+
+                blocoModelo = templateElementos.Skip(inicioModelo).Take(fimModelo - inicioModelo).ToList();
+            }
+
+            // 2. Inserir o clone no documento de saída, **ANTES** do resumo
             using (WordprocessingDocument doc = WordprocessingDocument.Open(documentoPath, true))
             {
                 var body = doc.MainDocumentPart.Document.Body;
                 var elementos = body.Elements().ToList();
 
-                var indicesBlocos = new List<int>();
+                // Encontrar o índice do resumo
+                int indiceResumo = -1;
                 for (int i = 0; i < elementos.Count; i++)
                 {
-                    if (elementos[i].InnerText.Contains("BENEFICIÁRIO TITULAR"))
+                    if (elementos[i].InnerText.ToUpperInvariant().Contains("RESUMO DAS CARACTERÍSTICAS"))
                     {
-                        indicesBlocos.Add(i);
-                    }
-                }
-
-                if (indicesBlocos.Count == 0)
-                    throw new Exception("Não foi possível localizar o bloco do beneficiário.");
-
-                int inicioBloco = indicesBlocos.Last();
-
-                int fimBloco = elementos.Count;
-                for (int i = inicioBloco + 1; i < elementos.Count; i++)
-                {
-                    if (elementos[i].InnerText.Contains("BENEFICIÁRIO TITULAR") ||
-                        elementos[i].InnerText.Contains("ADITIVO DE PRODUTO"))
-                    {
-                        fimBloco = i;
+                        indiceResumo = i;
                         break;
                     }
                 }
 
-                var blocoOriginal = elementos.Skip(inicioBloco).Take(fimBloco - inicioBloco).ToList();
-                var clones = new List<OpenXmlElement>();
+                if (indiceResumo == -1)
+                    throw new Exception("Não foi possível localizar o resumo no documento.");
 
-                foreach (var elem in blocoOriginal)
-                {
-                    clones.Add(elem.CloneNode(true));
-                }
+                // O elemento de referência é o último elemento antes do resumo
+                var refElemento = elementos[indiceResumo - 1];
 
-                var refElemento = elementos[fimBloco - 1];
-                foreach (var clone in clones)
+                // Inserir os clones do modelo antes do resumo
+                foreach (var elem in blocoModelo)
                 {
+                    var clone = elem.CloneNode(true);
                     body.InsertAfter(clone, refElemento);
-                    refElemento = clone;
+                    refElemento = clone; // atualiza a referência para o próximo clone
                 }
 
                 doc.MainDocumentPart.Document.Save();
@@ -450,10 +472,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "NOME_COMPLETO", "NOME COMPLETO");
             }
-            else if (upperContent.Contains("CPF") && upperContent.Contains("TITULAR"))
-            {
-                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "CPF_TITULAR", "CPF TITULAR");
-            }
+
+            else if (upperContent.Contains("CPF"))
+                applied += ProcessarCampoCpf(cell, cellTexts, cellContent, dados, "CPF_TITULAR");
+
             else if (upperContent.Contains("DATA") && upperContent.Contains("NASCIMENTO"))
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "DATA_NASCIMENTO", "DATA NASCIMENTO");
@@ -462,10 +484,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             {
                 applied += ProcessarCampoSimples(cell, cellTexts, cellContent, dados, "RG");
             }
-            else if (upperContent.Contains("FILIAÇÃO") || upperContent.Contains("FILIACAO"))
-            {
-                applied += ProcessarCampoFiliacao(cell, cellTexts, cellContent, dados);
-            }
+            //else if (upperContent.Contains("FILIAÇÃO") || upperContent.Contains("FILIACAO"))
+            //{
+            //    applied += ProcessarCampoFiliacao(cell, cellTexts, cellContent, dados);
+            //}
             else if (upperContent.Contains("IDADE") && !upperContent.Contains("CIDADE"))
             {
                 applied += ProcessarCampoIdade(cell, cellTexts, cellContent, dados);
@@ -514,10 +536,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "CIDADE", "CIDADE");
             }
-            else if (upperContent.Contains("UF"))
-            {
-                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "UF", "UF");
-            }
+            //else if (upperContent.Contains("UF"))
+            //{
+            //    applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "UF", "UF");
+            //}
             else if (upperContent.Contains("EMAIL"))
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "EMAIL", "EMAIL");
@@ -603,6 +625,93 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             }
 
             return applied;
+        }
+
+
+        private int ProcessarCampoCpf(
+       TableCell cell,
+       List<Text> textos,
+       string conteudoCelula,
+       Dictionary<string, string> dadosCpf,
+       string campoKey)
+        {
+            if (!dadosCpf.ContainsKey(campoKey) || textos.Count == 0)
+                return 0;
+
+            string valor = dadosCpf[campoKey];
+
+            // Tenta encontrar "CPF" ou "CPF TITULAR" no texto
+            int indexRotulo = -1;
+            string rotuloEncontrado = "";
+
+            if (campoKey == "CPF_TITULAR")
+            {
+                indexRotulo = conteudoCelula.IndexOf("CPF TITULAR", StringComparison.OrdinalIgnoreCase);
+                if (indexRotulo >= 0) rotuloEncontrado = "CPF TITULAR";
+            }
+
+            if (indexRotulo < 0)
+            {
+                indexRotulo = conteudoCelula.IndexOf("CPF", StringComparison.OrdinalIgnoreCase);
+                if (indexRotulo >= 0) rotuloEncontrado = "CPF";
+            }
+
+            // Se não achou, tenta com regex para pegar "CPF" mesmo com espaços
+            if (indexRotulo < 0)
+            {
+                Match match = Regex.Match(conteudoCelula, @"C\s*P\s*F", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    indexRotulo = match.Index;
+                    rotuloEncontrado = match.Value;
+                }
+            }
+
+            if (indexRotulo < 0) return 0;
+
+            int fimRotulo = indexRotulo + rotuloEncontrado.Length;
+            string parteAntes = conteudoCelula.Substring(0, fimRotulo);
+
+            // Limpa todos os textos
+            for (int i = 0; i < textos.Count; i++)
+                textos[i].Text = "";
+
+            // Coloca o rótulo no primeiro texto
+            textos[0].Text = parteAntes;
+
+            var parentRun = textos[0].Parent as Run;
+            if (parentRun != null)
+            {
+                // Adiciona quebra de linha após o rótulo
+                parentRun.AppendChild(new Break());
+
+                // Cria um novo Run com o valor em azul
+                Run boldRun = new Run();
+                RunProperties runProperties = new RunProperties();
+                runProperties.Append(new FontSize() { Val = "14" }); // Tamanho igual aos outros
+                runProperties.Append(new FontSizeComplexScript() { Val = "14" });
+                runProperties.Append(new Color() { Val = "0000FF" });
+                boldRun.AppendChild(runProperties);
+                boldRun.AppendChild(new Text(valor));
+
+                var parentParagraph = parentRun.Parent as Paragraph;
+                if (parentParagraph != null)
+                {
+                    parentParagraph.InsertAfter(boldRun, parentRun);
+                }
+                else
+                {
+                    // Fallback: se não achar o parágrafo, coloca na mesma linha com espaço
+                    textos[0].Text = parteAntes + " " + valor;
+                }
+            }
+            else
+            {
+                // Fallback: se não achar o Run, coloca na mesma linha
+                textos[0].Text = parteAntes + " " + valor;
+            }
+
+            return 1;
         }
 
         private int MarcarCheckboxNaCelula(TableCell cell)
@@ -761,12 +870,12 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
         }
 
         private int ProcessarCampoComRotuloCompleto(
-            TableCell cell,
-            List<Text> textos,
-            string conteudoCelula,
-            Dictionary<string, string> dados,
-            string campoKey,
-            string rotuloCompleto)
+      TableCell cell,
+      List<Text> textos,
+      string conteudoCelula,
+      Dictionary<string, string> dados,
+      string campoKey,
+      string rotuloCompleto)
         {
             if (!dados.ContainsKey(campoKey) || textos.Count == 0)
                 return 0;
@@ -780,6 +889,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 int fimRotulo = match.Index + match.Length;
                 string parteAntes = conteudoCelula.Substring(0, fimRotulo);
 
+                // Limpa todos os textos
                 for (int i = 0; i < textos.Count; i++)
                     textos[i].Text = "";
 
@@ -788,12 +898,13 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 var parentRun = textos[0].Parent as Run;
                 if (parentRun != null)
                 {
+                    // ADICIONA QUEBRA DE LINHA ANTES DO VALOR
                     parentRun.AppendChild(new Break());
 
                     Run boldRun = new Run();
                     RunProperties runProperties = new RunProperties();
-                    runProperties.Append(new FontSize() { Val = "16" });
-                    runProperties.Append(new FontSizeComplexScript() { Val = "16" });
+                    runProperties.Append(new FontSize() { Val = "12" });
+                    runProperties.Append(new FontSizeComplexScript() { Val = "12" });
                     runProperties.Append(new Color() { Val = "0000FF" });
                     boldRun.AppendChild(runProperties);
                     boldRun.AppendChild(new Text(valor));
@@ -818,63 +929,63 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
             return 0;
         }
+    //    private int ProcessarCampoFiliacao(
+    //TableCell cell,
+    //List<Text> textos,
+    //string conteudoCelula,
+    //Dictionary<string, string> dados)
+    //    {
+    //        if (!dados.ContainsKey("FILIACAO") || textos.Count == 0)
+    //            return 0;
 
-        private int ProcessarCampoFiliacao(
-            TableCell cell,
-            List<Text> textos,
-            string conteudoCelula,
-            Dictionary<string, string> dados)
-        {
-            if (!dados.ContainsKey("FILIACAO") || textos.Count == 0)
-                return 0;
+    //        string valor = dados["FILIACAO"];
+    //        string pattern = @"\b(FILIAÇÃO|FILIACAO)\b";
+    //        Match match = Regex.Match(conteudoCelula, pattern, RegexOptions.IgnoreCase);
 
-            string valor = dados["FILIACAO"];
-            string pattern = @"\b(FILIAÇÃO|FILIACAO)\b";
-            Match match = Regex.Match(conteudoCelula, pattern, RegexOptions.IgnoreCase);
+    //        if (match.Success)
+    //        {
+    //            int fimRotulo = match.Index + match.Length;
+    //            string parteAntes = conteudoCelula.Substring(0, fimRotulo);
 
-            if (match.Success)
-            {
-                int fimRotulo = match.Index + match.Length;
-                string parteAntes = conteudoCelula.Substring(0, fimRotulo);
+    //            for (int i = 0; i < textos.Count; i++)
+    //                textos[i].Text = "";
 
-                for (int i = 0; i < textos.Count; i++)
-                    textos[i].Text = "";
+    //            textos[0].Text = parteAntes;
 
-                textos[0].Text = parteAntes;
+    //            var parentRun = textos[0].Parent as Run;
+    //            if (parentRun != null)
+    //            {
+    //                // ADICIONA QUEBRA DE LINHA ANTES DO VALOR
+    //                parentRun.AppendChild(new Break());
 
-                var parentRun = textos[0].Parent as Run;
-                if (parentRun != null)
-                {
-                    parentRun.AppendChild(new Break());
+    //                Run boldRun = new Run();
+    //                RunProperties runProperties = new RunProperties();
+    //                runProperties.Append(new FontSize() { Val = "12" });
+    //                runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+    //                runProperties.Append(new Color() { Val = "0000FF" });
+    //                boldRun.AppendChild(runProperties);
+    //                boldRun.AppendChild(new Text(valor));
 
-                    Run boldRun = new Run();
-                    RunProperties runProperties = new RunProperties();
-                    runProperties.Append(new FontSize() { Val = "16" });
-                    runProperties.Append(new FontSizeComplexScript() { Val = "16" });
-                    runProperties.Append(new Color() { Val = "0000FF" });
-                    boldRun.AppendChild(runProperties);
-                    boldRun.AppendChild(new Text(valor));
+    //                var parentParagraph = parentRun.Parent as Paragraph;
+    //                if (parentParagraph != null)
+    //                {
+    //                    parentParagraph.InsertAfter(boldRun, parentRun);
+    //                }
+    //                else
+    //                {
+    //                    textos[0].Text = parteAntes + "\r\n" + valor;
+    //                }
+    //            }
+    //            else
+    //            {
+    //                textos[0].Text = parteAntes + "\r\n" + valor;
+    //            }
 
-                    var parentParagraph = parentRun.Parent as Paragraph;
-                    if (parentParagraph != null)
-                    {
-                        parentParagraph.InsertAfter(boldRun, parentRun);
-                    }
-                    else
-                    {
-                        textos[0].Text = parteAntes + "\r\n" + valor;
-                    }
-                }
-                else
-                {
-                    textos[0].Text = parteAntes + "\r\n" + valor;
-                }
+    //            return 1;
+    //        }
 
-                return 1;
-            }
-
-            return 0;
-        }
+    //        return 0;
+    //    }
 
         private int ProcessarCampoIdade(
             TableCell cell,
@@ -934,11 +1045,11 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
         }
 
         private int ProcessarCampoSimples(
-            TableCell cell,
-            List<Text> textos,
-            string conteudoCelula,
-            Dictionary<string, string> dados,
-            string campoKey)
+      TableCell cell,
+      List<Text> textos,
+      string conteudoCelula,
+      Dictionary<string, string> dados,
+      string campoKey)
         {
             if (!dados.ContainsKey(campoKey) || textos.Count == 0)
                 return 0;
@@ -1107,6 +1218,178 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             cell.AppendChild(newParagraph);
 
             return 1;
+        }
+
+        public int FillTabelaValoresPorBloco(string documentoPath, Dictionary<string, string> valores, int indiceBloco)
+        {
+            int applied = 0;
+            using (var doc = WordprocessingDocument.Open(documentoPath, true))
+            {
+                var body = doc.MainDocumentPart.Document.Body;
+                var tables = body.Descendants<Table>().ToList();
+
+                int blocoAtual = -1;
+                bool dentroBloco = false;
+                bool tabelaPreenchida = false;
+
+                foreach (var table in tables)
+                {
+                    var rows = table.Descendants<TableRow>().ToList();
+
+                    // Primeiro, verifica se esta tabela contém o cabeçalho de valores
+                    int linhaCabecalho = -1;
+                    for (int r = 0; r < rows.Count; r++)
+                    {
+                        var cells = rows[r].Descendants<TableCell>().ToList();
+                        if (cells.Count < 2) continue;
+
+                        bool temTitular = false;
+                        bool temDependente = false;
+                        foreach (var cell in cells)
+                        {
+                            string texto = string.Join("", cell.Descendants<Text>().Select(t => t.Text)).ToUpper();
+                            if (texto.Contains("TITULAR") && texto.Contains("(R")) temTitular = true;
+                            if (texto.Contains("DEPENDENTE") && texto.Contains("(R")) temDependente = true;
+                        }
+                        if (temTitular && temDependente)
+                        {
+                            linhaCabecalho = r;
+                            break;
+                        }
+                    }
+
+                    // Se não é a tabela de valores, verifica se há marcador de bloco
+                    if (linhaCabecalho == -1)
+                    {
+                        for (int r = 0; r < rows.Count; r++)
+                        {
+                            var cells = rows[r].Descendants<TableCell>().ToList();
+                            foreach (var cell in cells)
+                            {
+                                string texto = string.Join("", cell.Descendants<Text>().Select(t => t.Text)).ToUpper();
+                                if (texto.Contains("BENEFICIÁRIO TITULAR"))
+                                {
+                                    blocoAtual++;
+                                    dentroBloco = (blocoAtual == indiceBloco);
+                                    tabelaPreenchida = false; // novo bloco, ainda não preenchemos a tabela
+                                    break;
+                                }
+                            }
+                        }
+                        continue;
+                    }
+
+                    // Estamos na tabela de valores
+                    if (dentroBloco && !tabelaPreenchida)
+                    {
+                        if (linhaCabecalho + 1 < rows.Count)
+                        {
+                            var linhaValores = rows[linhaCabecalho + 1];
+                            var celulasValores = linhaValores.Descendants<TableCell>().ToList();
+
+                            for (int idx = 0; idx < celulasValores.Count; idx++)
+                            {
+                                string chave = idx == 0 ? "VALOR_TITULAR" : $"VALOR_DEPENDENTE_{idx}";
+                                if (valores.ContainsKey(chave))
+                                {
+                                    var celula = celulasValores[idx];
+                                    celula.RemoveAllChildren<Paragraph>();
+
+                                    Paragraph p = new Paragraph();
+                                    Run r = new Run();
+                                    RunProperties rp = new RunProperties();
+                                    rp.Append(new Color() { Val = "0000FF" });
+                                    rp.Append(new FontSize() { Val = "12" });
+                                    r.RunProperties = rp;
+                                    r.AppendChild(new Text(valores[chave]));
+                                    p.AppendChild(r);
+                                    celula.AppendChild(p);
+                                    applied++;
+                                }
+                            }
+                            tabelaPreenchida = true;
+                        }
+                    }
+                }
+                doc.MainDocumentPart.Document.Save();
+            }
+            return applied;
+        }
+
+        public int FillTotalContraprestacaoPorBloco(string documentoPath, Dictionary<string, string> valores, int indiceBloco)
+        {
+            int applied = 0;
+            using (var doc = WordprocessingDocument.Open(documentoPath, true))
+            {
+                var body = doc.MainDocumentPart.Document.Body;
+                var allParagraphs = body.Descendants<Paragraph>().ToList();
+
+                int blocoAtual = -1;
+                bool dentroBloco = false;
+                bool totalPreenchido = false;
+
+                for (int i = 0; i < allParagraphs.Count; i++)
+                {
+                    var p = allParagraphs[i];
+                    string texto = string.Join("", p.Descendants<Text>().Select(t => t.Text));
+
+                    // Detectar início de bloco
+                    if (texto.Contains("BENEFICIÁRIO TITULAR"))
+                    {
+                        blocoAtual++;
+                        dentroBloco = (blocoAtual == indiceBloco);
+                        totalPreenchido = false;
+                        continue;
+                    }
+
+                    if (!dentroBloco || totalPreenchido) continue;
+
+                    // Procurar o texto longo que antecede o campo de total
+                    if (texto.Contains("taxa de administração") && texto.Contains("mensalidades desta proposta"))
+                    {
+                        if (i + 1 < allParagraphs.Count)
+                        {
+                            Paragraph campo = allParagraphs[i + 1];
+                            campo.RemoveAllChildren<Paragraph>();
+
+                            // Calcular total
+                            decimal total = 0;
+                            decimal ExtrairValor(string txt)
+                            {
+                                if (string.IsNullOrWhiteSpace(txt)) return 0;
+                                string limpo = txt.Replace("R$", "").Replace(" ", "").Replace(",", ".");
+                                decimal.TryParse(limpo, System.Globalization.NumberStyles.Any,
+                                    System.Globalization.CultureInfo.InvariantCulture, out decimal val);
+                                return val;
+                            }
+
+                            if (valores.ContainsKey("VALOR_TITULAR"))
+                                total += ExtrairValor(valores["VALOR_TITULAR"]);
+                            for (int j = 1; j <= 5; j++)
+                            {
+                                string key = $"VALOR_DEPENDENTE_{j}";
+                                if (valores.ContainsKey(key))
+                                    total += ExtrairValor(valores[key]);
+                            }
+
+                            string totalFormatado = $"R$ {total.ToString("N2").Replace(".", ",")}";
+
+                            Run runValor = new Run();
+                            RunProperties rp = new RunProperties();
+                            rp.Append(new Color() { Val = "0000FF" });
+                            rp.Append(new FontSize() { Val = "12" });
+                            runValor.RunProperties = rp;
+                            runValor.AppendChild(new Text(totalFormatado));
+                            campo.AppendChild(runValor);
+
+                            totalPreenchido = true;
+                            applied++;
+                        }
+                    }
+                }
+                doc.MainDocumentPart.Document.Save();
+            }
+            return applied;
         }
     }
 }

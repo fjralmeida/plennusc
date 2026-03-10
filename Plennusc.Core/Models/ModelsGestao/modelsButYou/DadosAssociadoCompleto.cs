@@ -35,6 +35,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsButYou
         public string CodigoTitular { get; set; }
         public string TipoAssociado { get; set; }
         public decimal? ValorPlano { get; set; }
+        public string NomeParentesco { get; set; }
 
     }
 }
