@@ -540,9 +540,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             //{
             //    applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "UF", "UF");
             //}
-            else if (upperContent.Contains("EMAIL"))
+            else if (upperContent.Contains("E-MAIL"))
             {
-                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "EMAIL", "EMAIL");
+                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dados, "EMAIL", "E-MAIL");
             }
             else if (upperContent.Contains("TELEFONE") && upperContent.Contains("CELULAR"))
             {
@@ -599,14 +599,14 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "CIDADE_EMPRESA", "CIDADE");
             }
-            else if (upperContent.Contains("CNPJ"))
+            else if (upperContent.Trim() == "CNPJ" || upperContent.Trim() == "CNPJ:")
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "CNPJ", "CNPJ");
             }
-            else if (upperContent.Contains("DATA") && upperContent.Contains("INSCRIÇÃO") && upperContent.Contains("CNPJ"))
-            {
-                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "DATA_INSCRICAO_CNPJ", "DATA DE INSCRIÇÃO DO CNPJ");
-            }
+            //else if (upperContent.Contains("DATA") && upperContent.Contains("INSCRIÇÃO") && upperContent.Contains("CNPJ"))
+            //{
+            //    applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "DATA_INSCRICAO_CNPJ", "DATA DE INSCRIÇÃO DO CNPJ");
+            //}
             else if (upperContent.Contains("NÚMERO") && upperContent.Contains("INSCRIÇÃO") && upperContent.Contains("MUNICIPAL"))
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "INSCRICAO_MUNICIPAL", "NÚMERO DA INSCRIÇÃO MUNICIPAL");
@@ -615,9 +615,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             {
                 applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "INSCRICAO_ESTADUAL", "NÚMERO DA INSCRIÇÃO ESTADUAL");
             }
-            else if (upperContent.Contains("E-MAIL") || (upperContent.Contains("EMAIL") && !upperContent.Contains("EMPRESA")))
+            else if (upperContent.Contains("E-MAIL") || (upperContent.Contains("EMAIL")))
             {
-                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "EMAIL_EMPRESA", "E-MAIL");
+                applied += ProcessarCampoComRotuloCompleto(cell, cellTexts, cellContent, dadosEmpresa, "EMAIL", "E-MAIL");
             }
             else if (upperContent.Contains("TELEFONE") && !upperContent.Contains("CELULAR") && !upperContent.Contains("FIXO"))
             {

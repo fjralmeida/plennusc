@@ -27,7 +27,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
 
                 string query = @"
 
-                       SELECT 
+
+        SELECT 
                  P0.CODIGO_ASSOCIADO, 
                  REPLACE(P0.NOME_ASSOCIADO, '#', '') AS NOME_COMPLETO, 
                  P0.DATA_ADMISSAO,
@@ -106,11 +107,9 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                  AND P0.CODIGO_SITUACAO_ATENDIMENTO = 2
                  AND P0.CODIGO_MOTIVO_EXCLUSAO IS NULL
                  AND P0.NUMERO_CPF IN (
-                '00035820438'
-
-
+                 '03276894556'
             )
-            AND P0.CODIGO_EMPRESA = 3150
+            AND P0.CODIGO_EMPRESA = 400
 
             OR P0.CODIGO_TITULAR IN (
                 SELECT CODIGO_ASSOCIADO 
@@ -119,9 +118,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                 DATA_EXCLUSAO IS NULL 
                 AND CODIGO_MOTIVO_EXCLUSAO IS NULL
                 AND NUMERO_CPF IN (
-            '00035820438'
-
-            )
+                 '03276894556'
+            )                                        
             )
              ORDER BY P0.CODIGO_ASSOCIADO;
 
@@ -160,6 +158,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                                 Uf = reader["UF"]?.ToString() ?? "",
                                 Email = reader["EMAIL"]?.ToString() ?? "",
                                 ValorPlano = reader["VALOR_PLANO"] != DBNull.Value ? Convert.ToDecimal(reader["VALOR_PLANO"]) : (decimal?)null,
+                                DataInicioVigencia = reader["DATA_ADMISSAO"] as DateTime?,
                                 TelefoneCelular = reader["TELEFONE_CELULAR"]?.ToString() ?? "",
                                 NomeParentesco = reader["NOME_PARENTESCO"]?.ToString() ?? ""
                             };
@@ -178,27 +177,28 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
 
             string query = @"
              
+
 SELECT 
-    e.CODIGO_EMPRESA,
-    e.NOME_EMPRESA AS RAZAO_SOCIAL,
-    COALESCE(e.NOME_USUAL_FANTASIA, e.NOME_EMPRESA) AS NOME_FANTASIA,
-    e.NUMERO_CNPJ AS CNPJ,
-    e.NUMERO_INSC_ESTADUAL AS INSCRICAO_ESTADUAL,
-    e.NUMERO_INSC_MUNICIPAL AS INSCRICAO_MUNICIPAL,
-    e.DATA_ADMISSAO AS DATA_INICIO_VIGENCIA,
-    en.ENDERECO AS ENDERECO_EMPRESA,
-    en.BAIRRO AS BAIRRO_EMPRESA,
-    en.CIDADE AS CIDADE_EMPRESA,
-    en.CEP AS CEP_EMPRESA,
-    en.ESTADO AS ESTADO_EMPRESA,
-    en.ENDERECO_EMAIL AS EMAIL_EMPRESA
-FROM PS1010 e
-LEFT JOIN PS1001 en 
-    ON e.CODIGO_EMPRESA = en.CODIGO_EMPRESA 
-    AND (en.FLAG_COBRANCA = 'S' OR en.FLAG_COBRANCA IS NULL)
-WHERE e.CODIGO_EMPRESA IN (3150)
-    AND e.CODIGO_SITUACAO_ATENDIMENTO = 2
-    AND e.DATA_EXCLUSAO IS NULL;
+    g.CODIGO_GRUPO_PESSOAS,
+    g.CODIGO_GRUPO_PESSOAS,
+    g.NOME_GRUPO_PESSOAS AS RAZAO_SOCIAL,
+    g.NOME_GRUPO_PESSOAS AS NOME_FANTASIA, -- Se não tem campo fantasia, usa o mesmo
+    g.NUMERO_CNPJ AS CNPJ,
+    NULL AS INSCRICAO_ESTADUAL, -- PS1014 não tem esses campos
+    NULL AS INSCRICAO_MUNICIPAL,
+    g.ENDERECO AS ENDERECO_EMPRESA,
+    g.BAIRRO AS BAIRRO_EMPRESA,
+    g.CIDADE AS CIDADE_EMPRESA,
+    g.CEP AS CEP_EMPRESA,
+    g.ESTADO AS ESTADO_EMPRESA,
+    g.TELEFONE_01 AS TELEFONE_EMPRESA,
+    NULL AS EMAIL_EMPRESA, -- PS1014 não tem email
+    g.NOME_RESPONSAVEL,
+    g.QUANT_DIAS_ATENDIM
+FROM PS1014 g
+WHERE g.CODIGO_GRUPO_PESSOAS = 2542 
+    AND (g.DATA_EXCLUSAO IS NULL OR g.DATA_EXCLUSAO = '');
+
 
 ";
 
@@ -213,13 +213,12 @@ WHERE e.CODIGO_EMPRESA IN (3150)
                     {
                         var empresa = new DadosEmpresaCompleto
                         {
-                            CodigoEmpresa = reader["CODIGO_EMPRESA"]?.ToString() ?? "",
+                            CodigoEmpresa = reader["CODIGO_GRUPO_PESSOAS"]?.ToString() ?? "",
                             RazaoSocial = reader["RAZAO_SOCIAL"]?.ToString() ?? "",
                             NomeFantasia = reader["NOME_FANTASIA"]?.ToString() ?? "",
                             Cnpj = Formatador.FormatarCnpj(reader["CNPJ"]?.ToString() ?? ""),
                             InscricaoEstadual = reader["INSCRICAO_ESTADUAL"]?.ToString() ?? "",
                             InscricaoMunicipal = reader["INSCRICAO_MUNICIPAL"]?.ToString() ?? "",
-                            DataInicioVigencia = reader["DATA_INICIO_VIGENCIA"] as DateTime?,
                             Endereco = reader["ENDERECO_EMPRESA"]?.ToString() ?? "",
                             Bairro = reader["BAIRRO_EMPRESA"]?.ToString() ?? "",
                             Cidade = reader["CIDADE_EMPRESA"]?.ToString() ?? "",

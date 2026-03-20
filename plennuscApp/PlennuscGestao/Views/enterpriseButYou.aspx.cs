@@ -1,6 +1,7 @@
 ﻿using appWhatsapp.PlennuscGestao.Services;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using Microsoft.Ajax.Utilities;
 using Plennusc.Core.Models.ModelsGestao.modelsButYou;
 using Plennusc.Core.Service.ServiceGestao.serviceYouBut;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries;
@@ -60,8 +61,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             { "CNPJ", empresa.Cnpj },
             { "INSCRICAO_MUNICIPAL", empresa.InscricaoMunicipal },
             { "INSCRICAO_ESTADUAL", empresa.InscricaoEstadual },
-            { "EMAIL_EMPRESA", empresa.Email },
-            { "INICIO_VIGENCIA", empresa.DataInicioVigencia?.ToString("dd/MM/yyyy") ?? "" }
+            { "EMAIL_EMPRESA", empresa.Email }
         };
 
                 _enterpriseDocx.FillDadosEmpresa(outputPath, dadosEmpresa);
@@ -109,7 +109,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 { "EMAIL", titular.Email ?? "" },
                 { "TELEFONE_CELULAR", titular.TelefoneCelular ?? "" },
                 { "VALOR_PLANO", titular.ValorPlano?.ToString("C2") ?? "R$ 0,00" },
-                { "DIA_VENCIMENTO", titular.DiaVencimentoPadrao?.ToString() ?? "20" }
+                { "DIA_VENCIMENTO", titular.DiaVencimentoPadrao?.ToString() ?? "20" },
+                { "INICIO_VIGENCIA", titular.DataInicioVigencia?.ToString("dd/MM/yyyy") ?? "" }
             };
 
                     // Lista de dicionários dos dependentes (inclui VALOR_PLANO)
@@ -152,26 +153,29 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     if (i == 0)
                     {
-                        //// Guarda os dados do primeiro titular para usar no nome do arquivo
-                        //primeiroTitularDict = new Dictionary<string, string>(dadosTitular);
 
-                        // PEGAR O DIA DA DATA DE ADMISSÃO DA EMPRESA
                         int diaVenc = 1; // padrão
-                        if (empresa.DataInicioVigencia.HasValue)
+
+                        // Verificar se o titular tem DataInicioVigencia no dicionário
+                        if (dadosTitular.ContainsKey("INICIO_VIGENCIA") && !string.IsNullOrWhiteSpace(dadosTitular["INICIO_VIGENCIA"]))
                         {
-                            diaVenc = empresa.DataInicioVigencia.Value.Day; // PEGA O DIA (20)
+                            // Tenta converter a string para DateTime
+                            if (DateTime.TryParseExact(dadosTitular["INICIO_VIGENCIA"], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dataVigenciaTitular))
+                            {
+                                diaVenc = dataVigenciaTitular.Day; // PEGA O DIA DA DATA DO TITULAR
+                            }
                         }
 
-                        // FORMATAR DATA: dia = dia da empresa, mês = 03, ano = 2026
-                        string dataVigencia = $"{diaVenc:D2}/03/2026";
+                        // FORMATAR DATA: dia = dia do titular, mês = 03, ano = 2026
+                        string dataVigenciaFormatada = $"{diaVenc:D2}/03/2026";
 
                         var dadosVigencia = new Dictionary<string, string>
-                {
-                    { "INICIO_VIGENCIA", dataVigencia },
-                    { "VENCIMENTO_DIA_01", (diaVenc == 1).ToString().ToLower() },
-                    { "VENCIMENTO_DIA_10", (diaVenc == 10).ToString().ToLower() },
-                    { "VENCIMENTO_DIA_20", (diaVenc == 20).ToString().ToLower() }
-                };
+{
+    { "INICIO_VIGENCIA", dataVigenciaFormatada },
+    { "VENCIMENTO_DIA_01", (diaVenc == 1).ToString().ToLower() },
+    { "VENCIMENTO_DIA_10", (diaVenc == 10).ToString().ToLower() },
+    { "VENCIMENTO_DIA_20", (diaVenc == 20).ToString().ToLower() }
+};
 
                         var dadosCompletos = new Dictionary<string, string>(dadosVigencia);
                         foreach (var kv in dadosTitular)
@@ -227,12 +231,20 @@ namespace appWhatsapp.PlennuscGestao.Views
                     Thread.Sleep(100); GC.Collect(); GC.WaitForPendingFinalizers();
                 }
 
-                // ========== GERAR NOME DO ARQUIVO COM NOME E EMAIL DO PRIMEIRO TITULAR ==========
                 // ========== GERAR NOME DO ARQUIVO COM NOME E EMAIL DA EMPRESA ==========
-                string nomeEmpresa = dadosEmpresa.ContainsKey("NOME_FANTASIA") && !string.IsNullOrWhiteSpace(dadosEmpresa["NOME_FANTASIA"])
-                    ? dadosEmpresa["NOME_FANTASIA"]
-                    : dadosEmpresa.ContainsKey("RAZAO_SOCIAL") ? dadosEmpresa["RAZAO_SOCIAL"] : "Empresa";
-                string emailEmpresa = dadosEmpresa.ContainsKey("EMAIL_EMPRESA") ? dadosEmpresa["EMAIL_EMPRESA"] : "sememail@empresa.com";
+                // Pega o primeiro titular da lista (ou o que você quiser)
+                var primeiroTitular = titulares[0]; // ou use um índice específico
+
+                // Acessa o dicionário do titular (Item1 da tupla)
+                var dadosTitularArq = primeiroTitular.Item1;
+
+                // Agora sim pode acessar as chaves do dicionário
+                string nomeEmpresa = dadosTitularArq.ContainsKey("NOME_COMPLETO") && !string.IsNullOrWhiteSpace(dadosTitularArq["NOME_COMPLETO"])
+                    ? dadosTitularArq["NOME_COMPLETO"]
+                    : dadosTitularArq.ContainsKey("RAZAO_SOCIAL") ? dadosTitularArq["RAZAO_SOCIAL"] : "Empresa";
+
+                string emailEmpresa = dadosTitularArq.ContainsKey("EMAIL") ? dadosTitularArq["EMAIL"] : "sememail@empresa.com";
+
 
                 string nomeArquivo = GerarNomeArquivo(nomeEmpresa, emailEmpresa);
 

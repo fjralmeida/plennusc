@@ -36,6 +36,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsButYou
         public string TipoAssociado { get; set; }
         public decimal? ValorPlano { get; set; }
         public string NomeParentesco { get; set; }
+        public DateTime? DataInicioVigencia { get; set; }
 
     }
 }
