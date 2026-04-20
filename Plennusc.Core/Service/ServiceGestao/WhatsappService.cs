@@ -450,7 +450,7 @@ namespace appWhatsapp.Service
                   {
                     var jsonBody = $@"
                     {{
-                    ""media_hsm_configuration_id"": ""ddca9007-be23-4fcb-86c1-ccd8a24637fb"",
+                    ""media_hsm_configuration_id"": ""a4ec1a2e-ecd4-484e-b22e-d093b01a9df4"",
                             ""hsm_type"": ""media_hsm"",
                             ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121"",
                             ""system"": ""whatsapp_enterprise"",

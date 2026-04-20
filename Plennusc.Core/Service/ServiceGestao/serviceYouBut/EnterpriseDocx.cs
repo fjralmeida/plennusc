@@ -640,6 +640,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
             string valor = dadosCpf[campoKey];
 
+            if (string.IsNullOrWhiteSpace(valor))
+                return 0;
+
+
             // Tenta encontrar "CPF" ou "CPF TITULAR" no texto
             int indexRotulo = -1;
             string rotuloEncontrado = "";
@@ -819,6 +823,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 return 0;
 
             string valor = dados[campoKey];
+
+            if (string.IsNullOrWhiteSpace(valor))
+                return 0;
+
             string conteudoUpper = conteudoCelula.ToUpperInvariant();
 
             if (conteudoUpper.Contains("VIGÊNCIA") || conteudoUpper.Contains("INÍCIO"))
@@ -870,17 +878,21 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
         }
 
         private int ProcessarCampoComRotuloCompleto(
-      TableCell cell,
-      List<Text> textos,
-      string conteudoCelula,
-      Dictionary<string, string> dados,
-      string campoKey,
-      string rotuloCompleto)
+            TableCell cell,
+            List<Text> textos,
+            string conteudoCelula,
+            Dictionary<string, string> dados,
+            string campoKey,
+            string rotuloCompleto)
         {
             if (!dados.ContainsKey(campoKey) || textos.Count == 0)
                 return 0;
 
             string valor = dados[campoKey];
+            // Se o valor for vazio ou só espaços, não faz nada (evita quebra de linha vazia)
+            if (string.IsNullOrWhiteSpace(valor))
+                return 0;
+
             string pattern = Regex.Escape(rotuloCompleto).Replace("\\ ", "\\s*");
             Match match = Regex.Match(conteudoCelula, pattern, RegexOptions.IgnoreCase);
 
@@ -889,7 +901,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 int fimRotulo = match.Index + match.Length;
                 string parteAntes = conteudoCelula.Substring(0, fimRotulo);
 
-                // Limpa todos os textos
                 for (int i = 0; i < textos.Count; i++)
                     textos[i].Text = "";
 
@@ -898,7 +909,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 var parentRun = textos[0].Parent as Run;
                 if (parentRun != null)
                 {
-                    // ADICIONA QUEBRA DE LINHA ANTES DO VALOR
                     parentRun.AppendChild(new Break());
 
                     Run boldRun = new Run();
@@ -923,69 +933,67 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 {
                     textos[0].Text = parteAntes + "\r\n" + valor;
                 }
-
                 return 1;
             }
-
             return 0;
         }
-    //    private int ProcessarCampoFiliacao(
-    //TableCell cell,
-    //List<Text> textos,
-    //string conteudoCelula,
-    //Dictionary<string, string> dados)
-    //    {
-    //        if (!dados.ContainsKey("FILIACAO") || textos.Count == 0)
-    //            return 0;
+        //    private int ProcessarCampoFiliacao(
+        //TableCell cell,
+        //List<Text> textos,
+        //string conteudoCelula,
+        //Dictionary<string, string> dados)
+        //    {
+        //        if (!dados.ContainsKey("FILIACAO") || textos.Count == 0)
+        //            return 0;
 
-    //        string valor = dados["FILIACAO"];
-    //        string pattern = @"\b(FILIAÇÃO|FILIACAO)\b";
-    //        Match match = Regex.Match(conteudoCelula, pattern, RegexOptions.IgnoreCase);
+        //        string valor = dados["FILIACAO"];
+        //        string pattern = @"\b(FILIAÇÃO|FILIACAO)\b";
+        //        Match match = Regex.Match(conteudoCelula, pattern, RegexOptions.IgnoreCase);
 
-    //        if (match.Success)
-    //        {
-    //            int fimRotulo = match.Index + match.Length;
-    //            string parteAntes = conteudoCelula.Substring(0, fimRotulo);
+        //        if (match.Success)
+        //        {
+        //            int fimRotulo = match.Index + match.Length;
+        //            string parteAntes = conteudoCelula.Substring(0, fimRotulo);
 
-    //            for (int i = 0; i < textos.Count; i++)
-    //                textos[i].Text = "";
+        //            for (int i = 0; i < textos.Count; i++)
+        //                textos[i].Text = "";
 
-    //            textos[0].Text = parteAntes;
+        //            textos[0].Text = parteAntes;
 
-    //            var parentRun = textos[0].Parent as Run;
-    //            if (parentRun != null)
-    //            {
-    //                // ADICIONA QUEBRA DE LINHA ANTES DO VALOR
-    //                parentRun.AppendChild(new Break());
+        //            var parentRun = textos[0].Parent as Run;
+        //            if (parentRun != null)
+        //            {
+        //                // ADICIONA QUEBRA DE LINHA ANTES DO VALOR
+        //                parentRun.AppendChild(new Break());
 
-    //                Run boldRun = new Run();
-    //                RunProperties runProperties = new RunProperties();
-    //                runProperties.Append(new FontSize() { Val = "12" });
-    //                runProperties.Append(new FontSizeComplexScript() { Val = "12" });
-    //                runProperties.Append(new Color() { Val = "0000FF" });
-    //                boldRun.AppendChild(runProperties);
-    //                boldRun.AppendChild(new Text(valor));
+        //                Run boldRun = new Run();
+        //                RunProperties runProperties = new RunProperties();
+        //                runProperties.Append(new FontSize() { Val = "12" });
+        //                runProperties.Append(new FontSizeComplexScript() { Val = "12" });
+        //                runProperties.Append(new Color() { Val = "0000FF" });
+        //                boldRun.AppendChild(runProperties);
+        //                boldRun.AppendChild(new Text(valor));
 
-    //                var parentParagraph = parentRun.Parent as Paragraph;
-    //                if (parentParagraph != null)
-    //                {
-    //                    parentParagraph.InsertAfter(boldRun, parentRun);
-    //                }
-    //                else
-    //                {
-    //                    textos[0].Text = parteAntes + "\r\n" + valor;
-    //                }
-    //            }
-    //            else
-    //            {
-    //                textos[0].Text = parteAntes + "\r\n" + valor;
-    //            }
+        //                var parentParagraph = parentRun.Parent as Paragraph;
+        //                if (parentParagraph != null)
+        //                {
+        //                    parentParagraph.InsertAfter(boldRun, parentRun);
+        //                }
+        //                else
+        //                {
+        //                    textos[0].Text = parteAntes + "\r\n" + valor;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                textos[0].Text = parteAntes + "\r\n" + valor;
+        //            }
 
-    //            return 1;
-    //        }
+        //            return 1;
+        //        }
 
-    //        return 0;
-    //    }
+        //        return 0;
+        //    }
 
         private int ProcessarCampoIdade(
             TableCell cell,
@@ -997,6 +1005,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 return 0;
 
             string valor = dados["IDADE"];
+
+            if (string.IsNullOrWhiteSpace(valor))
+                return 0;
+
             string pattern = @"\bIDADE\b";
             Match match = Regex.Match(conteudoCelula, pattern, RegexOptions.IgnoreCase);
 
@@ -1055,6 +1067,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 return 0;
 
             string valor = dados[campoKey];
+
+            if (string.IsNullOrWhiteSpace(valor))
+                return 0;
+
             string pattern = @"\bRG\b(?![A-ZÀ-Ú]*ÃO)";
             Match match = Regex.Match(conteudoCelula, pattern, RegexOptions.IgnoreCase);
 
@@ -1387,6 +1403,95 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                         }
                     }
                 }
+                doc.MainDocumentPart.Document.Save();
+            }
+            return applied;
+        }
+        public int FillTermoAutorizacao(string docPath, string nomeServidor, string assinatura)
+        {
+            int applied = 0;
+            using (var doc = WordprocessingDocument.Open(docPath, true))
+            {
+                var body = doc.MainDocumentPart.Document.Body;
+                var paragraphs = body.Descendants<Paragraph>().ToList();
+
+                // 1. Preencher o nome do servidor (campo depois de "Eu,") com formatação azul
+                int indiceTermo = -1;
+                for (int i = 0; i < paragraphs.Count; i++)
+                {
+                    var para = paragraphs[i];
+                    string textoParagrafo = para.InnerText;
+                    if (textoParagrafo.Contains("Eu,") && textoParagrafo.Contains("servidor(a)"))
+                    {
+                        indiceTermo = i;
+                        // Concatena todo o texto do parágrafo
+                        var runs = para.Descendants<Run>().ToList();
+                        string fullText = string.Join("", runs.SelectMany(r => r.Descendants<Text>()).Select(t => t.Text));
+                        if (fullText.Contains("Eu,  ,"))
+                        {
+                            // Divide o texto em três partes: antes do nome, nome, depois do nome
+                            string antes = "Eu, ";
+                            string depois = "," + fullText.Substring(fullText.IndexOf("Eu,  ,") + "Eu,  ,".Length);
+
+                            para.RemoveAllChildren();
+
+                            // Parte fixa "Eu, " (normal)
+                            Run runAntes = new Run();
+                            runAntes.AppendChild(new Text(antes));
+                            para.AppendChild(runAntes);
+
+                            // Nome em azul
+                            Run runNome = new Run();
+                            RunProperties rpNome = new RunProperties();
+                            rpNome.Append(new Color() { Val = "0000FF" });
+                            rpNome.Append(new FontSize() { Val = "18" });
+                            runNome.RunProperties = rpNome;
+                            runNome.AppendChild(new Text(nomeServidor));
+                            para.AppendChild(runNome);
+
+                            // Resto do texto (vírgula e o que vem depois) normal
+                            Run runDepois = new Run();
+                            runDepois.AppendChild(new Text(depois));
+                            para.AppendChild(runDepois);
+
+                            applied++;
+                        }
+                        break;
+                    }
+                }
+
+                // 2. Preencher a Assinatura no termo com formatação azul
+                if (indiceTermo != -1)
+                {
+                    for (int i = indiceTermo + 1; i < paragraphs.Count; i++)
+                    {
+                        var para = paragraphs[i];
+                        string texto = para.InnerText.Trim();
+                        if (texto.Equals("Assinatura", StringComparison.OrdinalIgnoreCase) ||
+                            texto.Equals("Assinatura:", StringComparison.OrdinalIgnoreCase))
+                        {
+                            para.RemoveAllChildren();
+
+                            // Texto "Assinatura: " normal
+                            Run runLabel = new Run();
+                            runLabel.AppendChild(new Text("Assinatura: "));
+                            para.AppendChild(runLabel);
+
+                            // Nome da assinatura em azul
+                            Run runAss = new Run();
+                            RunProperties rpAss = new RunProperties();
+                            rpAss.Append(new Color() { Val = "0000FF" });
+                            rpAss.Append(new FontSize() { Val = "18" });
+                            runAss.RunProperties = rpAss;
+                            runAss.AppendChild(new Text(assinatura));
+                            para.AppendChild(runAss);
+
+                            applied++;
+                            break;
+                        }
+                    }
+                }
+
                 doc.MainDocumentPart.Document.Save();
             }
             return applied;

@@ -379,7 +379,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             // CASO 3: 9 dígitos (sem DDD) - adiciona DDD 31 e mantém o 9
             if (clean.Length == 9 && clean.StartsWith("9"))
             {
-                return "55" + "31" + clean;
+                return "55" + "87" + clean;
             }
 
             // CASO 4: 10 dígitos (DDD + número sem 9)

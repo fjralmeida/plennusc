@@ -36,19 +36,22 @@ namespace appWhatsapp.PlennuscGestao.Views
             int? diaVencimento = associado.DiaVencimentoPadrao; // pode ser nulo
 
             // Data de vigência: sempre no mês 03/2026
-            string inicioVigencia = $"{diaVencimento:D2}/03/2026";
+            int diaValido = diaVencimento.HasValue ?
+                (diaVencimento.Value == 25 ? 20 : diaVencimento.Value) :
+                20; // ou outro valor padrão caso seja nulo
 
+            // Usar diaValido aqui, não diaVencimento
+            string inicioVigencia = $"{diaValido:D2}/03/2026";
 
             return new Dictionary<string, string>
             {
-                 // Vigência fixa em março/2026
+                // Vigência fixa em março/2026
                 { "INICIO_VIGENCIA", inicioVigencia },
         
-                // Somente o dia correto fica true
-                { "VENCIMENTO_DIA_01", (diaVencimento == 1).ToString().ToLower() },
-                { "VENCIMENTO_DIA_10", (diaVencimento == 10).ToString().ToLower() },
-                { "VENCIMENTO_DIA_20", (diaVencimento == 20).ToString().ToLower() },
-
+                // Somente o dia correto fica true - usar diaValido também aqui
+                { "VENCIMENTO_DIA_01", (diaValido == 1).ToString().ToLower() },
+                { "VENCIMENTO_DIA_10", (diaValido == 10).ToString().ToLower() },
+                { "VENCIMENTO_DIA_20", (diaValido == 20).ToString().ToLower() },
                 // Identificação
                 { "NOME_COMPLETO", associado.NomeCompleto },
                 { "CPF_TITULAR", associado.CpfTitular },
@@ -429,7 +432,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/Proposta_NE_AD_AASP_BA_ENF_C_COPART.docx");
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/MAIS_VOCE_NAO_ESTIPULADO_ADESAO_AASP_VSF_MIGRACAO_COPART_PARCIAL.docx");
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
@@ -586,7 +589,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string dataNascimento = ConverterDataParaDDMMAAAA(titular.DataNascimento);
 
                 // 5. MONTAR COM DOIS UNDERLINES entre campos
-                string nomeArquivo = $"{email}__{nomeCompleto}__{cpf}__{dataNascimento}.docx";
+                string nomeArquivo = $"{email}__{nomeCompleto}.docx";
 
                 return SanitizarNomeArquivo(nomeArquivo);
             }

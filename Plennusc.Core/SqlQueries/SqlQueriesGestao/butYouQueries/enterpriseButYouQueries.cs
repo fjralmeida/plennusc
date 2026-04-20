@@ -28,7 +28,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                 string query = @"
 
 
-        SELECT 
+
+            SELECT 
                  P0.CODIGO_ASSOCIADO, 
                  REPLACE(P0.NOME_ASSOCIADO, '#', '') AS NOME_COMPLETO, 
                  P0.DATA_ADMISSAO,
@@ -107,9 +108,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                  AND P0.CODIGO_SITUACAO_ATENDIMENTO = 2
                  AND P0.CODIGO_MOTIVO_EXCLUSAO IS NULL
                  AND P0.NUMERO_CPF IN (
-                 '03276894556'
+'38906635591'
+
+
             )
-            AND P0.CODIGO_EMPRESA = 400
+            AND P0.CODIGO_EMPRESA = 3069
 
             OR P0.CODIGO_TITULAR IN (
                 SELECT CODIGO_ASSOCIADO 
@@ -118,7 +121,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
                 DATA_EXCLUSAO IS NULL 
                 AND CODIGO_MOTIVO_EXCLUSAO IS NULL
                 AND NUMERO_CPF IN (
-                 '03276894556'
+'38906635591'
+
             )                                        
             )
              ORDER BY P0.CODIGO_ASSOCIADO;
@@ -176,31 +180,15 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries
             var empresas = new List<DadosEmpresaCompleto>();
 
             string query = @"
-             
+        SELECT 
+            CODIGO_GRUPO_PESSOAS,
+            NOME_GRUPO_PESSOAS, 
+            ENDERECO,
+            NUMERO_CNPJ
+        FROM Ps1014 
+        WHERE CODIGO_GRUPO_PESSOAS = 2791
 
-SELECT 
-    g.CODIGO_GRUPO_PESSOAS,
-    g.CODIGO_GRUPO_PESSOAS,
-    g.NOME_GRUPO_PESSOAS AS RAZAO_SOCIAL,
-    g.NOME_GRUPO_PESSOAS AS NOME_FANTASIA, -- Se não tem campo fantasia, usa o mesmo
-    g.NUMERO_CNPJ AS CNPJ,
-    NULL AS INSCRICAO_ESTADUAL, -- PS1014 não tem esses campos
-    NULL AS INSCRICAO_MUNICIPAL,
-    g.ENDERECO AS ENDERECO_EMPRESA,
-    g.BAIRRO AS BAIRRO_EMPRESA,
-    g.CIDADE AS CIDADE_EMPRESA,
-    g.CEP AS CEP_EMPRESA,
-    g.ESTADO AS ESTADO_EMPRESA,
-    g.TELEFONE_01 AS TELEFONE_EMPRESA,
-    NULL AS EMAIL_EMPRESA, -- PS1014 não tem email
-    g.NOME_RESPONSAVEL,
-    g.QUANT_DIAS_ATENDIM
-FROM PS1014 g
-WHERE g.CODIGO_GRUPO_PESSOAS = 2542 
-    AND (g.DATA_EXCLUSAO IS NULL OR g.DATA_EXCLUSAO = '');
-
-
-";
+    ";
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -214,17 +202,10 @@ WHERE g.CODIGO_GRUPO_PESSOAS = 2542
                         var empresa = new DadosEmpresaCompleto
                         {
                             CodigoEmpresa = reader["CODIGO_GRUPO_PESSOAS"]?.ToString() ?? "",
-                            RazaoSocial = reader["RAZAO_SOCIAL"]?.ToString() ?? "",
-                            NomeFantasia = reader["NOME_FANTASIA"]?.ToString() ?? "",
-                            Cnpj = Formatador.FormatarCnpj(reader["CNPJ"]?.ToString() ?? ""),
-                            InscricaoEstadual = reader["INSCRICAO_ESTADUAL"]?.ToString() ?? "",
-                            InscricaoMunicipal = reader["INSCRICAO_MUNICIPAL"]?.ToString() ?? "",
-                            Endereco = reader["ENDERECO_EMPRESA"]?.ToString() ?? "",
-                            Bairro = reader["BAIRRO_EMPRESA"]?.ToString() ?? "",
-                            Cidade = reader["CIDADE_EMPRESA"]?.ToString() ?? "",
-                            Cep = reader["CEP_EMPRESA"]?.ToString() ?? "",
-                            Estado = reader["ESTADO_EMPRESA"]?.ToString() ?? "",
-                            Email = reader["EMAIL_EMPRESA"]?.ToString() ?? ""
+                            RazaoSocial = reader["NOME_GRUPO_PESSOAS"]?.ToString() ?? "",
+                            NomeFantasia = reader["NOME_GRUPO_PESSOAS"]?.ToString() ?? "",
+                            Cnpj = Formatador.FormatarCnpj(reader["NUMERO_CNPJ"]?.ToString() ?? ""),
+                            Endereco = reader["ENDERECO"]?.ToString() ?? "",
                         };
                         empresas.Add(empresa);
                     }
