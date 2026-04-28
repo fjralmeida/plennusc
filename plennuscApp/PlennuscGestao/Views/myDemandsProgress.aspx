@@ -59,6 +59,39 @@
 
     </script>
 
+    
+    <style>
+    /* PAGINAÇÃO - TESTE DIRETO */
+    tr.pagination-container a,
+    tr.pagination-container span {
+        display: inline-block !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        line-height: 36px !important;
+        padding: 0 8px !important;
+        margin: 0 4px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        border: 1px solid #dadce0 !important;
+        border-radius: 6px !important;
+        background-color: white !important;
+        color: #3c4043 !important;
+    }
+    tr.pagination-container a:hover {
+        background-color: #f1f3f4 !important;
+        border-color: #bdc1c6 !important;
+        transform: translateY(-1px) !important;
+    }
+    tr.pagination-container span {
+        background-color: #4cb07a !important;
+        border-color: #4cb07a !important;
+        color: white !important;
+    }
+</style>
+
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
         <div class="container-main">
@@ -219,7 +252,7 @@
                     </asp:TemplateField>
                 </Columns>
 
-                <PagerStyle CssClass="pagination-container" />
+<PagerStyle HorizontalAlign="Center" CssClass="pagination-container" />
                 <HeaderStyle CssClass="grid-header" />
             </asp:GridView>
 
