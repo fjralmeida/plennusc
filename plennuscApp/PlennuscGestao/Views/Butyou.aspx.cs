@@ -432,7 +432,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/MAIS_VOCE_NAO_ESTIPULADO_ADESAO_AASP_VSF_MIGRACAO_COPART_PARCIAL.docx");
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/MAIS_VOCE_ESTIPULADO_PME_BA_MIGRAÇÃO_ENFERMARIA.docx");
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
