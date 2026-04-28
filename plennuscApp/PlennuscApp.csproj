@@ -317,7 +317,6 @@
     <Content Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx" />
     <Content Include="public\uploadgestao\docs\ModeloDeInserçãoTabPreços - PS1032.xlsx" />
     <Content Include="public\uploadgestao\docs\ModeloDeAtualizaçãoTabelaPreços - PS1032.xlsx" />
-    <Content Include="public\uploadgestao\docs\messageSending\Mensagem automatica - Plano Anterior.csv" />
     <Content Include="public\uploadgestao\docs\messageSending\Modelo de mensagem - COMERCIAL - TEMPLETE.csv" />
     <Content Include="public\uploadgestao\docs\youBut\MAIS VOCE - PE - MIGRACAO - ANASERV.pdf" />
     <Content Include="public\uploadgestao\docs\youBut\MAIS VOCE - PE - DOCX.docx" />
