@@ -133,8 +133,9 @@ namespace appWhatsapp.PlennuscGestao.Views
             try
             {
                 int codigo = Convert.ToInt32(hdnCodigoExclusao.Value);
-                string descricao = hdnDescricaoExclusao.Value;
-                string view = hdnViewExclusao.Value;
+                // Decodifica os valores
+                string descricao = HttpUtility.UrlDecode(hdnDescricaoExclusao.Value);
+                string view = HttpUtility.UrlDecode(hdnViewExclusao.Value);
 
                 // Verifica se existem estruturas vinculadas a este tipo
                 if (_service.VerificarEstruturasVinculadas(codigo))

@@ -188,5 +188,25 @@
                 fecharModal();
             }
         });
+
+
+        function abrirModalExclusao(codigo, descricao, view) {
+            document.getElementById('modalCodigo').innerText = codigo;
+            document.getElementById('modalDescricao').innerText = descricao;
+            document.getElementById('modalView').innerText = view;
+
+            // Codifica os valores para evitar problemas de validação
+            var encodedDescricao = encodeURIComponent(descricao);
+            var encodedView = encodeURIComponent(view);
+
+            // Preenche os hidden fields
+            document.getElementById('<%= hdnCodigoExclusao.ClientID %>').value = codigo;
+            document.getElementById('<%= hdnDescricaoExclusao.ClientID %>').value = encodedDescricao;
+            document.getElementById('<%= hdnViewExclusao.ClientID %>').value = encodedView;
+
+            // Exibe o modal
+            document.getElementById('modalExclusao').style.display = 'flex';
+        }
+
     </script>
 </asp:Content>

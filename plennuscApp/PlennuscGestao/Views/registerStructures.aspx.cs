@@ -188,6 +188,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     var estruturas = serializer.Deserialize<List<subTypeDate>>(estruturasJson);
                     int estruturasSalvas = 0;
+                    int codPai = _service.BuscarPaiPorTipoEstrutura(codTipoEstrutura);
 
                     foreach (var estrutura in estruturas)
                     {
@@ -197,7 +198,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                             {
                                 CodTipoEstrutura = codTipoEstrutura,
                                 DescEstrutura = estrutura.nome.Trim(),
-                                CodEstruturaPai = null,
+                                CodEstruturaPai = codPai,
                                 Conf_IsDefault = false,
                                 ValorPadrao = estrutura.ordem
                             };

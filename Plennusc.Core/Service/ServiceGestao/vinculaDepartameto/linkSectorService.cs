@@ -157,5 +157,21 @@ namespace Plennusc.Core.Service.ServiceGestao.vinculaDepartameto
                 return count > 0;
             }
         }
+
+        public bool VincularSetorAoTipoEstrutura(int codSetor, int codTipoEstrutura)
+        {
+            var estruturas = GetEstruturasPorView(codTipoEstrutura);
+            if (estruturas == null || estruturas.Count == 0)
+                throw new Exception("Nenhuma estrutura encontrada para esta view.");
+
+            bool algumVinculo = false;
+            foreach (var estrutura in estruturas)
+            {
+                if (VincularSetor(codSetor, estrutura.CodEstrutura))
+                    algumVinculo = true;
+            }
+            return algumVinculo;
+        }
+
     }
 }

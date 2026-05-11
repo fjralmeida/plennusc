@@ -391,9 +391,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!int.TryParse(ddlTipoGrupo.SelectedValue, out var codGrupo) || codGrupo <= 0)
                 return;
 
-            ddlTipoDetalhe.DataSource = _svc.GetSubtiposDemanda(codGrupo);
-            ddlTipoDetalhe.DataValueField = "Value";
-            ddlTipoDetalhe.DataTextField = "Text";
+            // Usa o método que pesquisa APENAS por CodEstruturaPai, sem fixar CodTipoEstrutura=6
+            var subtipos = _svc.GetSubtiposPorCategoria(codGrupo);
+
+            ddlTipoDetalhe.DataSource = subtipos;
+            ddlTipoDetalhe.DataValueField = "CodEstrutura";
+            ddlTipoDetalhe.DataTextField = "DescEstrutura";
             ddlTipoDetalhe.DataBind();
 
             if (ddlTipoDetalhe.Items.Count > 0)
@@ -424,7 +427,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             try
             {
                 var categorias = _svc.GetCategoriasPorSetor(codSetor);
-
                 ddlTipoGrupo.DataSource = categorias;
                 ddlTipoGrupo.DataValueField = "CodEstrutura";
                 ddlTipoGrupo.DataTextField = "DescEstrutura";
@@ -433,10 +435,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 ddlTipoDetalhe.Items.Clear();
                 ddlTipoDetalhe.Items.Add(new ListItem("Selecione um subtipo", ""));
 
-                if (categorias.Count == 0)
-                {
-                    MostrarMensagem("Nenhuma categoria encontrada para este setor.", "info");
-                }
+                // Carrega os subtipos da categoria que ficou selecionada (primeira da lista)
+                BindSubtiposDoGrupo();
             }
             catch (Exception ex)
             {

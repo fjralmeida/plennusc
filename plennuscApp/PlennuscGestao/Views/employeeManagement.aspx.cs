@@ -720,7 +720,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                         }
 
                         // RG
-                        txtDocRG.Text = GetSafeString(dados, "RG");
+                        txtDocRG.Text = GetSafeString(dados, "DocRG");
 
                         // Dados Eleitorais
                         txtTitulo.Text = GetSafeString(dados, "TituloEleitor");
@@ -773,6 +773,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                         chkCadastraPonto.Checked = GetSafeBool(dados, "Conf_CadastraPonto");
                         chkAtivo.Checked = GetSafeBool(dados, "Conf_Ativo");
                         chkPermiteAcesso.Checked = GetSafeBool(dados, "Conf_PermiteAcesso");
+
+
+                        // Perfil Pessoa
+                        if (dados.ContainsKey("CodEstr_TipoPessoa") && dados["CodEstr_TipoPessoa"] != DBNull.Value)
+                        {
+                            string codTipoPessoa = dados["CodEstr_TipoPessoa"].ToString();
+                            ddlPerfilPessoa.SelectedValue = codTipoPessoa;
+                        }
 
                         // Armazena o ID do colaborador existente
                         if (dados.ContainsKey("CodPessoa") && dados["CodPessoa"] != DBNull.Value)

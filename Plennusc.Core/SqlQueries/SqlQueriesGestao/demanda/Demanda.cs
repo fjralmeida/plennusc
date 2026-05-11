@@ -651,6 +651,8 @@ ORDER BY d.DataDemanda DESC";
             INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
             WHERE d.CodDemanda = @CodDemanda";
 
+
+
         // ATUALIZE A CONSTANTE PARA INCLUIR O HISTÓRICO
         public const string RecusarDemanda = @"
             BEGIN TRANSACTION;

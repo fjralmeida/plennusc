@@ -112,6 +112,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.estruturaTipo
             FROM Estrutura 
             WHERE CodEstruturaPai = @CodEstruturaPai";
 
+        public const string ExcluirDependenciasSetor = @"
+    DELETE FROM SetorTipoDemanda 
+    WHERE CodEstr_TipoDemanda = @CodEstrutura";
+
         public const string ExcluirEstrutura = @"
             DELETE FROM Estrutura 
             WHERE CodEstrutura = @CodEstrutura";

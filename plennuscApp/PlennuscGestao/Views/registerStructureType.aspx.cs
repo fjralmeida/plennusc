@@ -83,7 +83,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (codigo > 0)
                 {
                     //// 2. CRIA O PAI NA ESTRUTURA SEPARADAMENTE
-                    //bool estruturaPaiCriada = _service.CriarEstruturaPai(codigo, tipoEstrutura);
+                    bool estruturaPaiCriada = _service.CriarEstruturaPai(codigo, tipoEstrutura);
 
                     bool viewCriada = _service.CriarView(nomeView, codigo);
 

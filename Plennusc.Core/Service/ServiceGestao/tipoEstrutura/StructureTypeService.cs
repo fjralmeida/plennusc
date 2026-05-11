@@ -436,14 +436,36 @@ namespace Plennusc.Core.Service.ServiceGestao.TipoEstrutura
         }
 
         //EXCLUIR ESTRUTURA
+        //EXCLUIR ESTRUTURA (MODIFICADO)
         public bool ExcluirEstrutura(int codEstrutura)
         {
             using (var con = Open())
-            using (var cmd = new SqlCommand(StructureTypeQueries.ExcluirEstrutura, con))
+            using (var transaction = con.BeginTransaction())
             {
-                cmd.Parameters.AddWithValue("@CodEstrutura", codEstrutura);
-                int affectedRows = cmd.ExecuteNonQuery();
-                return affectedRows > 0;
+                try
+                {
+                    // 1. EXCLUI DA TABELA SetorTipoDemanda PRIMEIRO
+                    string deleteDependencias = "DELETE FROM SetorTipoDemanda WHERE CodEstr_TipoDemanda = @CodEstrutura";
+                    using (var cmd = new SqlCommand(deleteDependencias, con, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@CodEstrutura", codEstrutura);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 2. DEPOIS EXCLUI A ESTRUTURA
+                    using (var cmd = new SqlCommand(StructureTypeQueries.ExcluirEstrutura, con, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@CodEstrutura", codEstrutura);
+                        int affectedRows = cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                        return affectedRows > 0;
+                    }
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 

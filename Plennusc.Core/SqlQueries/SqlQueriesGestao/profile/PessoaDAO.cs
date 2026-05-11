@@ -718,6 +718,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                     p.Conf_CadastraPonto,
                     p.Conf_Ativo,
                     p.PermiteAcesso AS Conf_PermiteAcesso,
+                    p.CodEstr_TipoPessoa,
                     c.CodCargo,
                     c.Nome as NomeCargo,
                     d.CodDepartamento,

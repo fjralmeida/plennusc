@@ -533,6 +533,21 @@ namespace Plennusc.Core.Service.ServiceGestao
             return list;
         }
 
+        public int? ObterCodTipoEstruturaPorSetor(int codSetor)
+        {
+            using (var con = Open())
+            using (var cmd = new SqlCommand(@"
+        SELECT TOP 1 e.CodTipoEstrutura
+        FROM SetorTipoDemanda std
+        INNER JOIN Estrutura e ON std.CodEstr_TipoDemanda = e.CodEstrutura
+        WHERE std.CodSetor = @CodSetor AND e.CodEstruturaPai IS NULL", con))
+            {
+                cmd.Parameters.AddWithValue("@CodSetor", codSetor);
+                var result = cmd.ExecuteScalar();
+                return result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
+            }
+        }
+
         public List<OptionItem> GetPrioridadesDemanda()
         {
             var list = new List<OptionItem>();
