@@ -720,16 +720,14 @@ namespace Plennusc.Core.Service.ServiceGestao
                     }
                     else // MEU SETOR
                     {
-                        sql.Append(" AND (d.CodSetorDestino = @CodSetor OR d.CodPessoaSolicitacao = @CodPessoa)");
+                        sql.Append(" AND d.CodSetorDestino = @CodSetor");
                         cmd.Parameters.AddWithValue("@CodSetor", filtro.CodSetor.Value);
-                        cmd.Parameters.AddWithValue("@CodPessoa", filtro.CodPessoa.Value);
                     }
                 }
                 else // DEFAULT
                 {
-                    sql.Append(" AND (d.CodSetorDestino = @CodSetor OR d.CodPessoaSolicitacao = @CodPessoa)");
+                    sql.Append(" AND d.CodSetorDestino = @CodSetor");
                     cmd.Parameters.AddWithValue("@CodSetor", filtro.CodSetor.Value);
-                    cmd.Parameters.AddWithValue("@CodPessoa", filtro.CodPessoa.Value);
                 }
 
                 // FILTRO POR STATUS

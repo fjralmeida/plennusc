@@ -496,7 +496,7 @@ ORDER BY
         public const string SelectNiveisImportancia = @"
             SELECT CodEstrutura AS Value, DescEstrutura AS Text
             FROM dbo.Estrutura 
-            WHERE CodTipoEstrutura = 12 
+            WHERE CodTipoEstrutura = 49 
             ORDER BY ISNULL(ValorPadrao, 999), DescEstrutura";
 
         // Listar demandas que estão aguardando aprovação e que o gestor logado é o aprovador

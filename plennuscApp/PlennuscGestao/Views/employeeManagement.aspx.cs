@@ -148,8 +148,8 @@ namespace appWhatsapp.PlennuscGestao.Views
             DataTable dt = daoPessoa.TipoEstrutura();
 
             ddlPerfilPessoa.DataSource = dt;
-            ddlPerfilPessoa.DataTextField = "DescEstrutura";
-            ddlPerfilPessoa.DataValueField = "CodEstrutura";
+            ddlPerfilPessoa.DataTextField = "DescPerfil";  
+            ddlPerfilPessoa.DataValueField = "CodPerfil";  
             ddlPerfilPessoa.DataBind();
             ddlPerfilPessoa.Items.Insert(0, new ListItem("Selecione", ""));
         }
