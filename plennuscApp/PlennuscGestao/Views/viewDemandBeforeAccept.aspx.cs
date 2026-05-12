@@ -169,7 +169,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnVoltar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("listDemand.aspx");
+            Response.Redirect("listDemand");
         }
 
         private string FormatTamanhoArquivo(long bytes)

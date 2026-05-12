@@ -400,7 +400,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             // MUDA STATUS PARA "CONCLUÍDA" (23) - DEMANDA FINALIZADA
             _service.AtualizarStatusComHistorico(CodDemanda, 23, CodPessoaAtual);
-            Response.Redirect("listDemand.aspx");
+            Response.RedirectToRoute("listDemand");
         }
 
         private void CarregarAnexos()
