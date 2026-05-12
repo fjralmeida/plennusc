@@ -246,7 +246,7 @@ body {
 /* Layout Principal */
 .main-layout {
     display: grid;
-    grid-template-columns: 1fr 350px;
+    grid-template-columns: 1fr 500px;
     gap: 24px;
 }
 
@@ -281,7 +281,7 @@ body {
 }
 /* Item de Acompanhamento Base */
 .accompaniment-item {
-    max-width: 70%;
+    max-width: 90%;
     padding: 8px 12px;
     border-radius: 7.5px;
     position: relative;

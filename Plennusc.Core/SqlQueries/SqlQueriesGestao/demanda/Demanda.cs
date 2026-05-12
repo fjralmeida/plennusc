@@ -233,7 +233,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.demanda
             FROM dbo.DemandaAcompanhamento da
             LEFT JOIN dbo.Pessoa p ON p.CodPessoa = da.CodPessoaAcompanhamento
             WHERE da.CodDemanda = @CodDemanda
-            ORDER BY da.DataAcompanhamento ASC";
+            ORDER BY da.DataAcompanhamento DESC";
 
         public const string InsertAcompanhamento = @"
             INSERT INTO dbo.DemandaAcompanhamento (CodDemanda, TextoAcompanhamento, CodPessoaAcompanhamento, DataAcompanhamento)
@@ -413,8 +413,6 @@ WHERE d.CodEstr_SituacaoDemanda = 17  -- Apenas status Aberta
       d.CodPessoaExecucao = @CodPessoa 
       -- OU demandas que você SOLICITOU (é o solicitante)
       OR d.CodPessoaSolicitacao = @CodPessoa
-      -- OU demandas sem executor atribuído
-      OR d.CodPessoaExecucao IS NULL
   )
 ORDER BY 
     d.CodEstr_NivelPrioridade DESC,

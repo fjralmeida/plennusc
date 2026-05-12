@@ -374,7 +374,7 @@
                 </div>
             </div>
 
-        <!-- Seção Lateral - ACOMPANHAMENTOS EXISTENTES -->
+
    <!-- Coluna da Direita (Acompanhamentos + Histórico) -->
     <div class="side-sections-container">
         <!-- Seção de Acompanhamentos -->

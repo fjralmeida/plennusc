@@ -104,9 +104,9 @@
         </div>
 
         <!-- Resultados -->
-        <div class="results-info">
+        <%--<div class="results-info">
             <asp:Label ID="lblResultados" runat="server"></asp:Label>
-        </div>
+        </div>--%>
 
         <div class="grid-container">
             <asp:GridView ID="gvDemandas" runat="server" CssClass="custom-grid"

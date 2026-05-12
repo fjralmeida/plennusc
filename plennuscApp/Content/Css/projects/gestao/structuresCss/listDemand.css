@@ -186,7 +186,6 @@ body {
 .grid-container {
     background: white;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
     overflow: hidden;
     overflow-x: auto;
 }
