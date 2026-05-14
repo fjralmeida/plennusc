@@ -855,66 +855,81 @@
 
             <!-- 📋 RESULTADOS -->
             <asp:Panel ID="PanelResultado" runat="server" CssClass="section-block" Visible="false">
-                <h5>Resultados</h5>
-                <div class="table-responsive">
-                    <asp:GridView
-                        ID="gvUsuarios"
-                        runat="server"
-                        CssClass="table table-modern"
-                        AutoGenerateColumns="False"
-                        GridLines="None"
-                        ShowHeaderWhenEmpty="False"
-                        EmptyDataText="Nenhum usuário encontrado."
-                        DataKeyNames="CodPessoa,CodDepartamento,CodCargo"
-                        OnRowDataBound="gvUsuarios_RowDataBound">
+               <%-- <h5>Resultados</h5>--%>
+                <div style="width:100%; overflow-x:auto; -webkit-overflow-scrolling: touch;">
+<asp:GridView
+    ID="gvUsuarios"
+    runat="server"
+    CssClass="table table-modern"
+    AutoGenerateColumns="False"
+    GridLines="None"
+    ShowHeaderWhenEmpty="False"
+    EmptyDataText="Nenhum usuário encontrado."
+    DataKeyNames="CodPessoa,CodDepartamento,CodCargo">
+    <HeaderStyle CssClass="table-custom-header" />
+    <Columns>
 
-                        <HeaderStyle CssClass="table-custom-header" />
-                        <Columns>
-                            <asp:BoundField DataField="CodPessoa" HeaderText="CodPessoa" />
-                            <asp:BoundField DataField="NomeCompleto" HeaderText="Nome">
-                                <ItemStyle CssClass="col-nome-nowrap" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="CPF" HeaderText="CPF" />
-                            <asp:BoundField DataField="Email" HeaderText="Email" />
-                            <asp:BoundField DataField="Telefone1" HeaderText="Telefone" />
+        <asp:BoundField DataField="NomeCompleto" HeaderText="Nome">
+            <ItemStyle CssClass="col-nome" />
+        </asp:BoundField>
 
-                            <asp:BoundField DataField="NomeDepartamento" HeaderText="Departamento" />
-                            <asp:BoundField DataField="NomeCargo" HeaderText="Cargo" />
+        <asp:BoundField DataField="CPF" HeaderText="CPF">
+            <ItemStyle CssClass="col-cpf" />
+        </asp:BoundField>
 
-                            <asp:BoundField DataField="Conf_Ativo" HeaderText="Ativo">
-                                <ItemStyle Width="80px" />
-                            </asp:BoundField>
+        <asp:BoundField DataField="Email" HeaderText="Email">
+            <ItemStyle CssClass="col-email" />
+        </asp:BoundField>
 
-                            <asp:TemplateField HeaderText="Editar">
-                                <ItemStyle Width="90px" HorizontalAlign="Center" />
-                                <ItemTemplate>
-                                    <asp:PlaceHolder ID="phEditar" runat="server">
-                                       <a class="btn-editar" href='<%# "employeeEdit?id=" + Eval("CodPessoa") %>'>
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </a>
-                                    </asp:PlaceHolder>
-                                </ItemTemplate>
-                            </asp:TemplateField>
+        <asp:BoundField DataField="Telefone1" HeaderText="Telefone">
+            <ItemStyle CssClass="col-telefone" />
+        </asp:BoundField>
 
-                            <asp:TemplateField HeaderText="Inativar">
-                                <ItemStyle Width="110px" HorizontalAlign="Center" />
-                                <ItemTemplate>
-                                    <asp:PlaceHolder ID="phInativar" runat="server">
-                                        <button type="button" class="btn-inativar"
-                                            data-codpessoa='<%# Eval("CodPessoa") %>'
-                                            data-nome='<%# System.Web.HttpUtility.HtmlEncode(Eval("NomeCompleto")) %>'
-                                            onclick="abrirModalInativarBtn(this)">
-                                            <i class="fa-solid fa-user-slash"></i>
-                                        </button>
-                                    </asp:PlaceHolder>
-                                </ItemTemplate>
-                            </asp:TemplateField>
+        <asp:BoundField DataField="NomeDepartamento" HeaderText="Departamento">
+            <ItemStyle CssClass="col-departamento" />
+        </asp:BoundField>
 
-                        </Columns>
-                    </asp:GridView>
+        <asp:BoundField DataField="NomeCargo" HeaderText="Cargo">
+            <ItemStyle CssClass="col-cargo" />
+        </asp:BoundField>
+
+<asp:TemplateField HeaderText="Ativo" ItemStyle-CssClass="col-ativo">
+    <ItemTemplate>
+        <i class="fa-solid <%# 
+            (Eval("Conf_Ativo") != null && 
+             (Eval("Conf_Ativo").ToString().Trim().ToUpper() == "TRUE" ||
+              Eval("Conf_Ativo").ToString().Trim().ToUpper() == "1" ||
+              Eval("Conf_Ativo").ToString().Trim().ToUpper() == "S" ||
+              Eval("Conf_Ativo").ToString().Trim().ToUpper() == "SIM")) 
+            ? "fa-check-circle text-success" 
+            : "fa-xmark-circle text-danger" 
+        %>"></i>
+    </ItemTemplate>
+</asp:TemplateField>
+
+        <asp:TemplateField HeaderText="Ações" ItemStyle-Width="80px">
+            <ItemStyle HorizontalAlign="Center" />
+            <ItemTemplate>
+                <a class="btn-editar" href='<%# "employeeEdit?id=" + Eval("CodPessoa") %>'>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+                <button type="button" class="btn-inativar"
+                    data-codpessoa='<%# Eval("CodPessoa") %>'
+                    data-nome='<%# System.Web.HttpUtility.HtmlEncode(Eval("NomeCompleto")) %>'
+                    onclick="abrirModalInativarBtn(this)">
+                    <i class="fa-solid fa-user-slash"></i>
+                </button>
+            </ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
+</asp:GridView>
                 </div>
 
-                <!-- Modal de Inativação -->
+
+            </asp:Panel>
+        </asp:Panel>
+
+                        <!-- Modal de Inativação -->
                 <div class="modal fade" id="modalInativarUsuario" tabindex="-1" aria-labelledby="modalInativarUsuarioLabel" aria-hidden="true">
                     <div class="modal-dialog modal-md modal-dialog-centered">
                         <div class="modal-content rounded-4 shadow">
@@ -944,7 +959,5 @@
                         </div>
                     </div>
                 </div>
-            </asp:Panel>
-        </asp:Panel>
     </div>
 </asp:Content>

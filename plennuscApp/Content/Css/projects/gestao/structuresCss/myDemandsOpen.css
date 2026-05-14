@@ -186,49 +186,45 @@ body {
     overflow-x: auto;
 }
 
+/* Grid sem cortes e sem scroll (em telas ≥ 1366px) */
 .custom-grid {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1200px;
-    table-layout: fixed; /* 🔥 IMPORTANTE: Força o layout fixo */
+    font-size: 14px;
+    /* Remove table-layout: fixed e min-width */
 }
 
     .custom-grid th,
     .custom-grid td {
-        white-space: nowrap; /* 🔥 Impede quebra de linha */
-        overflow: hidden; /* 🔥 Esconde overflow */
-        text-overflow: ellipsis; /* 🔥 Adiciona "..." */
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--gray-200);
         vertical-align: middle;
+        /* Não usa mais nowrap nem ellipsis global */
+        white-space: normal; /* Permite quebra de linha */
+        overflow: visible; /* Mostra todo o texto */
+        text-overflow: clip; /* Remove os "..." */
+        word-break: break-word; /* Quebra palavras longas */
     }
 
+    /* Cabeçalho do grid */
     .custom-grid th {
         background: var(--gray-50);
-        padding: 16px 12px;
-        text-align: left;
         font-weight: 600;
         color: var(--gray-700);
         border-bottom: 2px solid var(--gray-300);
         font-size: 13px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        white-space: nowrap;
+        white-space: nowrap; /* Apenas cabeçalhos podem ficar em uma linha */
     }
 
-    .custom-grid td {
-        padding: 14px 12px;
-        border-bottom: 1px solid var(--gray-200);
-        vertical-align: middle;
-        font-size: 14px;
-        line-height: 1.4;
-    }
-
-    .custom-grid tr:last-child td {
-        border-bottom: none;
-    }
-
-    .custom-grid tr:hover {
+    /* Linhas alternadas opcional */
+    .custom-grid tbody tr:nth-child(even) {
         background: var(--gray-50);
-        transition: var(--transition);
+    }
+
+    .custom-grid tbody tr:hover {
+        background: #f5f7fa;
     }
 
 
@@ -411,11 +407,6 @@ body {
     width: 80px;
 }
 
-.col-titulo {
-    width: 250px;
-    min-width: 200px;
-}
-
 .col-categoria {
     width: 150px;
 }
@@ -446,71 +437,104 @@ body {
 }
 
 /* LARGURAS ESPECÍFICAS PARA CADA COLUNA */
-.col-id {
-    width: 80px;
-    min-width: 80px;
-}
-
-.col-titulo {
-    width: 250px;
-    min-width: 200px;
-    max-width: 250px;
-}
-
-.col-solicitante {
-    width: 180px;
+/* Colunas que DEVEM quebrar (longas) */
+.col-titulo,
+.col-solicitante,
+.col-categoria {
+    white-space: normal !important;
+    max-width: 300px;
     min-width: 150px;
+    word-break: break-word;
+}
+
+/* Colunas que DEVEM ficar em uma linha (curtas) */
+.col-id,
+.col-data-abertura,
+.col-importancia,
+.col-prioridade,
+.col-prazo,
+.col-status,
+.col-aceite,
+.col-acoes {
+    white-space: nowrap !important;
+    width: auto; /* Deixa o conteúdo definir a largura */
+    min-width: 70px; /* Mínimo para não espremer demais */
+    max-width: 140px; /* Evita que fique muito largo */
+}
+
+/* Ajuste específico para ID (muito curto) */
+.col-id {
+    min-width: 60px;
+    max-width: 80px;
+    text-align: center;
+}
+
+/* Coluna de aceite – pode precisar de mais espaço */
+.col-aceite {
+    min-width: 120px;
     max-width: 180px;
 }
 
-.col-data-abertura {
-    width: 120px;
-    min-width: 100px;
-    max-width: 120px;
+/* Botões de ação – alinhamento */
+.btn-action {
+    white-space: nowrap;
 }
 
-.col-categoria {
-    width: 150px;
-    min-width: 120px;
-    max-width: 150px;
+/* Garantir que badges e outros elementos não quebrem indevidamente */
+.badge {
+    white-space: nowrap;
 }
 
-.col-importancia {
-    width: 100px;
-    min-width: 90px;
-    max-width: 100px;
+/* Paginação – manter centralizada */
+.pagination-container {
+    background: white;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: center;
+    padding: 16px;
 }
 
-.col-prioridade {
-    width: 100px;
-    min-width: 90px;
-    max-width: 100px;
+.custom-grid .pager table {
+    margin: 0 auto;
 }
 
-.col-prazo {
-    width: 100px;
-    min-width: 90px;
-    max-width: 100px;
+.custom-grid .pager a,
+.custom-grid .pager span {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    margin: 0 2px;
+    text-decoration: none;
+    color: var(--gray-700);
+    display: inline-block;
+    font-size: 13px;
 }
 
-.col-status {
-    width: 120px;
-    min-width: 100px;
-    max-width: 120px;
+    .custom-grid .pager a:hover {
+        background: var(--gray-100);
+    }
+
+.custom-grid .pager span {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
 }
 
-.col-aceite {
-    width: 140px;
-    min-width: 120px;
-    max-width: 140px;
-}
+/* Responsividade – em telas muito pequenas um scroll leve é aceitável */
+@media (max-width: 992px) {
+    .grid-container {
+        overflow-x: auto; /* Scroll apenas quando necessário */
+        -webkit-overflow-scrolling: touch;
+    }
 
-.col-acoes {
-    width: 100px;
-    min-width: 80px;
-    max-width: 100px;
-}
+    .custom-grid {
+        min-width: 800px; /* Valor mínimo, mas quebra de linha ajuda */
+    }
 
+    .col-titulo {
+        max-width: 200px;
+    }
+}
 /* GARANTIR QUE BADGES E BOTÕES NÃO QUEBREM */
 .badge,
 .btn-action,

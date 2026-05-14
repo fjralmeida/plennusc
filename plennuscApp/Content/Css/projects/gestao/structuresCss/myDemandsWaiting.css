@@ -54,7 +54,7 @@ body {
 }
 
 .title-icon {
-    background: var(--warning);
+    background: var(--primary);
     color: white;
     width: 44px;
     height: 44px;
@@ -64,325 +64,23 @@ body {
     justify-content: center;
 }
 
-/* Resultados */
-.results-info {
-    font-size: 14px;
-    color: var(--gray-600);
-    margin-bottom: 16px;
-    padding: 8px 0;
-}
-
-/* Tabela */
-.grid-container {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    overflow-x: auto;
-}
-
-.custom-grid {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 1200px;
-    table-layout: fixed; /* 🔥 Força largura fixa */
-}
-
-    .custom-grid th,
-    .custom-grid td {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-    }
-
-    .custom-grid th {
-        background: var(--gray-50);
-        padding: 16px 12px;
-        text-align: left;
-        font-weight: 600;
-        color: var(--gray-700);
-        border-bottom: 2px solid var(--gray-300);
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .custom-grid td {
-        padding: 14px 12px;
-        border-bottom: 1px solid var(--gray-200);
-        vertical-align: middle;
-        font-size: 14px;
-        line-height: 1.4;
-    }
-
-    .custom-grid tr:last-child td {
-        border-bottom: none;
-    }
-
-    .custom-grid tr:hover {
-        background: var(--gray-50);
-        transition: var(--transition);
-    }
-
-/* BADGES */
-.badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    text-align: center;
-    min-width: 80px;
-    white-space: nowrap;
-}
-
-/* CORES DAS BADGES */
-.importancia-baixa, .importancia-baixo,
-.prioridade-normal,
-.prioridade-com-prazo,
-.prazo-dentro-prazo,
-.status-aberta, .status-aberto {
-    background: #e8f5e9 !important;
-    color: #2e7d32 !important;
-    border: 1px solid #c8e6c9 !important;
-}
-
-.prioridade-baixa, .prioridade-baixo,
-.status-em-andamento, .status-andamento, .status-em_andamento,
-.prazo-proximo {
-    background: #e3f2fd !important;
-    color: #1565c0 !important;
-    border: 1px solid #bbdefb !important;
-}
-
-.importancia-media, .importancia-média, .importancia-medio, .importancia-médio,
-.prioridade-media, .prioridade-média, .prioridade-medio, .prioridade-médio,
-.prazo-hoje,
-.status-concluída, .status-concluida, .status-concluido, .status-concluído,
-.status-aguardando-aprovacao {
-    background: #fff3e0 !important;
-    color: #ef6c00 !important;
-    border: 1px solid #ffe0b2 !important;
-}
-
-.importancia-alta, .importancia-alto,
-.prioridade-alta, .prioridade-alto,
-.prazo-atrasado {
-    background: #ffebee !important;
-    color: #c62828 !important;
-    border: 1px solid #ffcdd2 !important;
-}
-
-.importancia-critica, .importancia-crítica, .importancia-critico, .importancia-crítico,
-.prioridade-critica, .prioridade-crítica, .prioridade-critico, .prioridade-crítico {
-    background: #f3e5f5 !important;
-    color: #7b1fa2 !important;
-    border: 1px solid #e1bee7 !important;
-    font-weight: 700 !important;
-}
-
-.prazo-sem-data,
-.status-fechada, .status-fechado,
-.prioridade-nao-definida {
-    background: #f5f5f5 !important;
-    color: #616161 !important;
-    border: 1px solid #e0e0e0 !important;
-    font-style: italic !important;
-}
-
-/* Botão de Aprovar */
-.btn-aprovar {
+.btn-primary {
     background: var(--success);
     border: none;
     color: white;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 12px;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    text-decoration: none;
-    cursor: pointer;
-    min-width: 120px;
-    white-space: nowrap;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-    .btn-aprovar:hover {
-        background: var(--success-hover);
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        text-decoration: none;
-        color: white;
-    }
-
-    .btn-aprovar i {
-        font-size: 14px;
-    }
-
-/* Botões de ação */
-.btn-action {
-    background: white;
-    border: 1px solid var(--gray-300);
-    color: var(--gray-700);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
     font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 4px;
     transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    text-decoration: none;
-    white-space: nowrap;
-    margin: 2px;
-}
-
-    .btn-action:hover {
-        background: var(--primary);
-        border-color: var(--primary);
-        color: white;
-        transform: translateY(-1px);
-        text-decoration: none;
-    }
-
-/* Informação de Executor */
-.aceite-info {
-    font-size: 10px;
-    color: var(--gray-700);
-    line-height: 1.2;
-    text-align: center;
-    padding: 6px 4px;
-    background: #f8f9fa;
-    border-radius: 4px;
-    border-left: 3px solid var(--success);
-    display: block;
-    max-width: 140px;
-    word-wrap: break-word;
-    white-space: normal;
-}
-
-    .aceite-info strong {
-        display: block;
-        color: var(--gray-800);
-        font-size: 10px;
-        font-weight: 600;
-        margin-bottom: 2px;
-    }
-
-/* Alinhamentos */
-.text-center {
-    text-align: center !important;
-}
-
-.text-left {
-    text-align: left !important;
-}
-
-.text-right {
-    text-align: right !important;
-}
-
-/* Colunas */
-.col-id {
-    width: 80px;
-}
-
-.col-titulo {
-    width: 250px;
-    min-width: 200px;
-}
-
-.col-categoria {
-    width: 150px;
-}
-
-.col-solicitante,
-.col-categoria {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.col-id,
-.col-data-abertura,
-.col-importancia,
-.col-prioridade,
-.col-prazo,
-.col-status,
-.col-aceite,
-.col-acoes {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.col-acoes {
-    width: 160px; /* largura fixa suficiente */
-    min-width: 150px;
-    text-align: center; /* centraliza */
-    white-space: normal; /* permite quebra */
-}
-
-    .col-acoes .btn-aprovar,
-    .col-acoes .btn-action {
-        display: block; /* cada botão ocupa 1 linha */
-        width: 100%; /* ocupa toda a largura da célula */
-        margin: 4px 0; /* espaçamento vertical */
-    }
-
-/* Paginação */
-.pagination-container {
-    background: white;
-    border-top: 1px solid var(--gray-200);
     display: flex;
-    justify-content: center;
-    padding: 16px;
+    align-items: center;
+    gap: 8px;
 }
 
-.custom-grid .pager table {
-    margin: 0 auto;
-}
-
-.custom-grid .pager td {
-    padding: 4px;
-    border: none;
-}
-
-.custom-grid .pager a,
-.custom-grid .pager span {
-    padding: 8px 12px;
-    border: 1px solid var(--gray-300);
-    border-radius: 4px;
-    margin: 0 2px;
-    text-decoration: none;
-    color: var(--gray-700);
-    display: inline-block;
-    font-size: 13px;
-}
-
-    .custom-grid .pager a:hover {
-        background: var(--gray-100);
+    .btn-primary:hover {
+        background: var(--success-hover);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
-
-.custom-grid .pager span {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-.text-muted {
-    color: var(--gray-500) !important;
-    font-style: italic;
-    font-size: 12px;
-}
-
 
 /* Filtros */
 .filters-card {
@@ -471,10 +169,431 @@ body {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
+/* Resultados */
+.results-info {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin-bottom: 16px;
+    padding: 8px 0;
+}
 
+/* Tabela */
+.grid-container {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+/* =========================================
+   GRID PADRÃO - SEM CORTE E SEM SCROLL
+   (aplicado a gvMinhasDemandas e gvDemandasAberto)
+   ========================================= */
+
+.custom-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    /* REMOVA table-layout: fixed e min-width: 1200px */
+    table-layout: auto;
+    min-width: 0;
+}
+
+    .custom-grid th,
+    .custom-grid td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--gray-200);
+        vertical-align: middle;
+        /* Permite quebra de linha e remove cortes */
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        word-break: break-word;
+    }
+
+    .custom-grid th {
+        background: var(--gray-50);
+        font-weight: 600;
+        color: var(--gray-700);
+        border-bottom: 2px solid var(--gray-300);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap; /* cabeçalhos não quebram */
+    }
+
+    .custom-grid tbody tr:nth-child(even) {
+        background: var(--gray-50);
+    }
+
+    .custom-grid tbody tr:hover {
+        background: #f5f7fa;
+    }
+
+/* BADGES - PADRÃO CONSISTENTE */
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: center;
+    min-width: 80px;
+    white-space: nowrap;
+}
+
+/* 🟢 VERDE - BAIXO/NORMAL/DENTRO DO PRAZO */
+.importancia-baixa, .importancia-baixo,
+.prioridade-normal,
+.prioridade-com-prazo,
+.prazo-dentro-prazo,
+.status-aberta, .status-aberto {
+    background: #e8f5e9 !important;
+    color: #2e7d32 !important;
+    border: 1px solid #c8e6c9 !important;
+}
+
+/* 🔵 AZUL - BAIXA PRIORIDADE/EM ANDAMENTO */
+.prioridade-baixa, .prioridade-baixo,
+.status-em-andamento, .status-andamento, .status-em_andamento,
+.prazo-proximo {
+    background: #e3f2fd !important;
+    color: #1565c0 !important;
+    border: 1px solid #bbdefb !important;
+}
+
+/* 🟠 LARANJA - MÉDIA/PROXIMIDADE */
+.importancia-media, .importancia-média, .importancia-medio, .importancia-médio,
+.prioridade-media, .prioridade-média, .prioridade-medio, .prioridade-médio,
+.prazo-hoje,
+.status-concluída, .status-concluida, .status-concluido, .status-concluído {
+    background: #fff3e0 !important;
+    color: #ef6c00 !important;
+    border: 1px solid #ffe0b2 !important;
+}
+
+/* 🔴 VERMELHO - ALTO/ATRASADO/URGENTE */
+.importancia-alta, .importancia-alto,
+.prioridade-alta, .prioridade-alto,
+.prazo-atrasado, .prioridade-com-prazo {
+    background: #ffebee !important;
+    color: #c62828 !important;
+    border: 1px solid #ffcdd2 !important;
+}
+
+/* 🟣 ROXO - CRÍTICO/MUITO URGENTE */
+.importancia-critica, .importancia-crítica, .importancia-critico, .importancia-crítico,
+.prioridade-critica, .prioridade-crítica, .prioridade-critico, .prioridade-crítico {
+    background: #f3e5f5 !important;
+    color: #7b1fa2 !important;
+    border: 1px solid #e1bee7 !important;
+    font-weight: 700 !important;
+}
+
+/* ⚪ CINZA - SEM DEFINIÇÃO/FECHADO */
+.prazo-sem-data,
+.status-fechada, .status-fechado,
+.prioridade-nao-definida {
+    background: #f5f5f5 !important;
+    color: #616161 !important;
+    border: 1px solid #e0e0e0 !important;
+    font-style: italic !important;
+}
+
+/* FALLBACK PARA VALORES DESCONHECIDOS */
+.badge:not([class*="status-"]):not([class*="prioridade-"]):not([class*="importancia-"]):not([class*="prazo-"]) {
+    background: #f1f3f4 !important;
+    color: #5f6368 !important;
+    border: 1px solid #dadce0 !important;
+}
+
+/* Botão de Aceite */
+.btn-aceitar {
+    background: var(--success);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    min-width: 120px;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+    .btn-aceitar:hover {
+        background: var(--success-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-aceitar i {
+        font-size: 14px;
+    }
+
+/* Informação de Aceite */
+.aceite-info {
+    font-size: 10px;
+    color: var(--gray-700);
+    line-height: 1.2;
+    text-align: center;
+    padding: 6px 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid var(--success);
+    display: block;
+    max-width: 140px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+    .aceite-info strong {
+        display: block;
+        color: var(--gray-800);
+        font-size: 10px;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+/* 🔥 ADICIONE ESTE ESTILO PARA APROVAÇÃO */
+.aprovacao-info {
+    font-size: 10px;
+    color: var(--gray-700);
+    line-height: 1.2;
+    text-align: center;
+    padding: 6px 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary); /* Azul para aprovação */
+    display: block;
+    max-width: 140px;
+    word-wrap: break-word;
+    white-space: normal;
+    margin-bottom: 4px; /* Espaço entre as linhas */
+}
+
+    .aprovacao-info strong {
+        display: block;
+        color: var(--gray-800);
+        font-size: 10px;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+/* Botões de ação */
+.btn-action {
+    background: white;
+    border: 1px solid var(--gray-300);
+    color: var(--gray-700);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+    .btn-action:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+/* Alinhamentos */
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+/* Colunas específicas */
+.col-id {
+    width: 80px;
+}
+
+.col-categoria {
+    width: 150px;
+}
+
+.col-subtipo {
+    width: 150px;
+}
+
+.col-solicitante,
+.col-categoria {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* COLUNAS CENTRALIZADAS - mantém uma linha */
+.col-id,
+.col-data-abertura,
+.col-importancia,
+.col-prioridade,
+.col-prazo,
+.col-status,
+.col-aceite,
+.col-acoes {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+/* Colunas longas que DEVEM quebrar linha */
+.col-titulo,
+.col-solicitante,
+.col-categoria {
+    white-space: normal !important;
+    max-width: 300px;
+    min-width: 150px;
+    word-break: break-word;
+}
+
+/* Colunas curtas que DEVEM ficar em uma linha */
+.col-id,
+.col-data-abertura,
+.col-importancia,
+.col-prioridade,
+.col-prazo,
+.col-status,
+.col-aceite,
+.col-acoes {
+    white-space: nowrap !important;
+    width: auto;
+    min-width: 70px;
+    max-width: 140px;
+}
+
+/* Ajustes específicos */
+.col-id {
+    min-width: 60px;
+    max-width: 80px;
+    text-align: center;
+}
+
+.col-aceite {
+    min-width: 140px;
+    max-width: 200px;
+}
+
+.col-acoes {
+    min-width: 80px;
+    max-width: 100px;
+}
+
+/* Garantir que badges e botões não quebrem indevidamente */
+.badge,
+.btn-action,
+.btn-aceitar {
+    white-space: nowrap;
+}
+
+/* Paginação – manter igual */
+.pagination-container {
+    background: white;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+}
+
+.custom-grid .pager table {
+    margin: 0 auto;
+}
+
+.custom-grid .pager a,
+.custom-grid .pager span {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    margin: 0 2px;
+    text-decoration: none;
+    color: var(--gray-700);
+    display: inline-block;
+    font-size: 13px;
+}
+
+    .custom-grid .pager a:hover {
+        background: var(--gray-100);
+    }
+
+.custom-grid .pager span {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Responsividade – apenas um pequeno scroll em telas muito pequenas */
+@media (max-width: 992px) {
+    .grid-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .custom-grid {
+        min-width: 800px;
+    }
+
+    .col-titulo {
+        max-width: 200px;
+    }
+}
+/* Informação de Aprovação - AGORA IGUAL AO ACEITE */
+.aprovacao-info {
+    font-size: 10px;
+    color: var(--gray-700);
+    line-height: 1.2;
+    text-align: center;
+    padding: 6px 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary); /* Azul para aprovação */
+    display: block;
+    max-width: 140px;
+    word-wrap: break-word;
+    white-space: normal;
+    margin-bottom: 4px;
+}
+
+    .aprovacao-info strong {
+        display: block;
+        color: var(--gray-800);
+        font-size: 10px;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
 
 /* Responsividade */
 @media (max-width: 1024px) {
+    .filter-section {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
     .container-main {
         padding: 0 12px;
     }
@@ -486,26 +605,27 @@ body {
         align-items: flex-start;
     }
 
+    .filter-section {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
     .custom-grid th,
     .custom-grid td {
         padding: 12px 8px;
+    }
+
+    .btn-filter {
+        margin-top: 0;
     }
 
     .badge {
         min-width: 70px;
         padding: 4px 8px;
         font-size: 10px;
-    }
-
-    .col-acoes {
-        width: 150px;
-        min-width: 140px;
-        text-align: center; /* 👉 mobile centraliza */
-    }
-
-    .btn-aprovar, .btn-action {
-        min-width: 100px;
-        padding: 6px 10px;
-        font-size: 11px;
     }
 }

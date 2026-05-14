@@ -37,23 +37,35 @@ html, body {
     max-width: 1900px;
     margin: 0 auto 40px;
 }
-
+/* Container do grid com mesma aparência dos filtros */
 .section-block {
-    margin-bottom: 40px;
+    padding: 22px 24px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-shadow: 0 6px 14px rgba(0,0,0,.06);
+    margin-top: 20px;
 }
 
+    /* Título opcional */
     .section-block h5 {
-        border-left: 5px solid #c06ed4;
-        padding-left: 12px;
-        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         font-weight: 600;
-        color: #353030;
-        margin-top: 20px;
-        border-left: 5px solid #c06ed4;
-        padding-left: 12px;
+        color: #1f2937;
+        margin: 0 0 14px 0;
     }
 
+        .section-block h5::before {
+            content: "";
+            width: 6px;
+            height: 18px;
+            border-radius: 3px;
+            background: #4CB07A;
+        }
 /* ====== Grid flex simplificado ====== */
+
 .row.g-3 {
     display: flex;
     flex-wrap: wrap;
@@ -453,86 +465,88 @@ input[type="checkbox"] {
     }
 }
 
-/* =======================
-   Grid moderno
-======================= */
-. /* 🔓 Aumenta a largura do container principal desta página */
-.container.py-4 {
-    max-width: 1600px !important; /* ajuste p/ 1500, 1700 etc. */
-}
-
-/* Em telas bem grandes dá mais folga ainda (opcional) */
-@media (min-width: 1800px) {
-    .container.py-4 {
-        max-width: 1720px !important;
-    }
-}
-
-/* 🧱 Painel ocupa toda a largura do container */
-.form-panel {
-    width: 100%;
-}
-
-/* 🧭 Grid mais largo (sem espremer colunas) */
+/* Grid sem scroll indevido */
 .table-modern {
     width: 100%;
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: var(--radius);
-    overflow: hidden; /* cantos arredondados no header */
-    box-shadow: var(--shadow);
-    font-size: .96rem;
-    min-width: 1400px; /* base do grid — ajuste se quiser */
+    background: #ffffff;
+    border-collapse: collapse;
+    font-size: 0.9rem;
 }
 
-    /* Cabeçalho e células */
     .table-modern thead th {
         background: #f6f8fb;
         color: #4b5563;
         font-weight: 600;
-        padding: 16px 18px;
-        border-bottom: 1px solid var(--panel-border);
-    }
-
-    .table-modern td {
-        padding: 16px 18px;
-        border-top: 1px solid var(--panel-border);
-        vertical-align: middle;
-    }
-
-    .table-modern tbody tr:hover {
-        background: #f9fdfb;
-    }
-
-    /* Nome NÃO quebra linha (email pode quebrar) */
-    .table-modern th,
-    .table-modern td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e5e7eb;
         white-space: nowrap;
     }
 
-        .table-modern td:nth-child(5) {
-            white-space: normal;
-        }
-    /* E-mail */
-
-    /* Botão editar com área maior */
-    .table-modern .btn-editar {
-        background: var(--brand);
-        color: #fff;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 999px;
+    .table-modern td {
+        padding: 10px 12px;
+        border-top: 1px solid #e5e7eb;
+        vertical-align: middle;
     }
 
-        .table-modern .btn-editar:hover {
-            background: #3A9E68;
+    /* Colunas que quebram */
+    .table-modern .col-nome,
+    .table-modern .col-email,
+    .table-modern .col-departamento,
+    .table-modern .col-cargo {
+        white-space: normal;
+        max-width: 160px;
+        word-break: break-word;
+    }
+
+    .table-modern .col-cpf,
+    .table-modern .col-telefone {
+        white-space: nowrap;
+        width: 110px;
+    }
+
+    .table-modern .col-ativo {
+        width: 40px;
+        text-align: center;
+    }
+
+    /* Botões de ação compactos – sem fundo, apenas ícone */
+    .table-modern .btn-editar,
+    .table-modern .btn-inativar {
+        background: transparent !important;
+        border: none;
+        padding: 4px 6px;
+        font-size: 1.1rem;
+        transition: color 0.2s ease;
+        border-radius: 0; /* remove qualquer arredondamento antigo */
+    }
+
+    /* Cores dos ícones */
+    .table-modern .btn-editar {
+        color: #4CB07A; /* verde só no ícone, sem fundo */
+    }
+    .table-modern .btn-inativar {
+        all: unset;
+        color: #d9534f !important;
+        font-size: 1.1rem !important;
+        padding: 4px 6px !important;
+        cursor: pointer;
+    }
+/*
+        .table-modern .btn-inativar:hover {
+            color: #c9302c !important;
+        }*/
+
+        /* Remove qualquer herança de link/botão */
+        .table-modern .btn-editar:focus,
+        .table-modern .btn-inativar:focus {
+            outline: none !important;
+            box-shadow: none !important;
         }
 
-/* Respiro acima do grid */
-#<%= PanelResultado.ClientID % > {
-    margin-top: 16px;
-}
-
+    /* Alternância de linhas opcional */
+    .table-modern tbody tr:nth-child(even) {
+        background: #fafbfc;
+    }
 
 /* ===========================================
    WIZARD SIMPLES PARA CADASTRO

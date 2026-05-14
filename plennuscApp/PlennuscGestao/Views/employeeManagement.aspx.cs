@@ -926,5 +926,16 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             return int.Parse(cpf[10].ToString()) == digito2;
         }
+
+        protected string FormataArquivo(object valor)
+        {
+            if(valor == null) return "fa-xmark-circle text-danger";
+
+            string texto = valor.ToString().Trim().ToUpper();
+
+            bool ativo = texto == "TRUE" || texto == "1" || texto == "S" || texto == "SIM" || texto == "T";
+
+            return ativo ? "fa-check-circle text-success" : "fa-xmark-circle text-danger";
+        }
     }
 }
