@@ -549,12 +549,9 @@
                         </asp:Panel>
                     </div>
                     <div class="col-md-6">
-                        <label>RG *</label>
-                        <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtDocRG" 
-                            ErrorMessage="Campo obrigatório" CssClass="text-danger" Display="Dynamic" 
-                            ValidationGroup="Cadastro" />
-                    </div>
+    <label>RG</label>
+    <asp:TextBox ID="txtDocRG" runat="server" CssClass="form-control" />
+</div>
                 </div>
             </div>
         </div>
