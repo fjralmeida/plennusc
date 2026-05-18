@@ -113,7 +113,8 @@
                 AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
                 OnPageIndexChanging="gvDemandas_PageIndexChanging"
                 OnRowCommand="gvDemandas_RowCommand"
-                OnRowDataBound="gvDemandas_RowDataBound">
+                OnRowDataBound="gvDemandas_RowDataBound"
+                 EmptyDataText="Nenhuma demanda encontrada para o setor.">
 
                 <Columns>
                     <asp:BoundField DataField="CodDemanda" HeaderText="ID"

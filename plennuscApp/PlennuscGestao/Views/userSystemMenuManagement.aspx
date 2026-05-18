@@ -123,6 +123,15 @@
                      <asp:Literal ID="litInfoUsuarios" runat="server" Text="Mostrando todos os usuários" />
                  </small>
             </div>
+
+                    <div class="row">
+            <div class="col-12" style="display: flex; justify-content: end;">
+                <asp:Button ID="btnSalvarVinculos" runat="server" Text="Salvar Vínculos" 
+                    CssClass="btn btn-primary" OnClick="btnSalvarVinculos_Click" 
+                    Enabled="false" />
+            </div>
+        </div>
+
         </div>
 
         <!-- 2. Sistemas×Empresas Disponíveis COM PAINEL -->
@@ -144,13 +153,5 @@
         <asp:Panel ID="pnlMultiplosMenus" runat="server" Visible="false">
             <!-- Esta Panel será preenchida dinamicamente com várias seções -->
         </asp:Panel>
-        
-      <div class="row">
-            <div class="col-12" style="display: flex; justify-content: end;">
-                <asp:Button ID="btnSalvarVinculos" runat="server" Text="Salvar Vínculos" 
-                    CssClass="btn btn-primary" OnClick="btnSalvarVinculos_Click" 
-                    Enabled="false" />
-            </div>
-        </div>
     </div>
 </asp:Content>
