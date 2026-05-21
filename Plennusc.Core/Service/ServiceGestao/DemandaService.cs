@@ -1783,5 +1783,26 @@ namespace Plennusc.Core.Service.ServiceGestao
                 return count > 0;
             }
         }
+
+        public bool EhGestorDoSetor(int codPessoa, int codSetor)
+        {
+            return VerificarSeEGestor(codPessoa, codSetor);
+        }
+
+        public List<OptionItem> GetPessoasDoSetor(int codSetor)
+        {
+            var list = new List<OptionItem>();
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.PessoasDoSetor, con))
+            {
+                cmd.Parameters.AddWithValue("@CodSetor", codSetor);
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                        list.Add(new OptionItem { Value = rd.GetInt32(0), Text = rd.GetString(1) });
+                }
+            }
+            return list;
+        }
     }
 }

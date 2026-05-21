@@ -22,6 +22,17 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private int CodPessoaAtual => Convert.ToInt32(Session["CodPessoa"] ?? 0);
 
+        private bool UsuarioEhGestorDoSetorSelecionado
+        {
+            get
+            {
+                if (!int.TryParse(ddlOrigem.SelectedValue, out int codOrigem))
+                    return false;
+                return _svc.EhGestorDoSetor(CodPessoaAtual, codOrigem);
+            }
+        }
+
+
         private int? CodDepartamentoAtual =>
             Session["CodDepartamento"] == null ? (int?)null : Convert.ToInt32(Session["CodDepartamento"]);
 
@@ -97,6 +108,24 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             BindGrupos();
+        }
+
+        private void CarregarSolicitantes()
+        {
+            if (UsuarioEhGestorDoSetorSelecionado)
+            {
+                int codOrigem = int.Parse(ddlOrigem.SelectedValue);
+                var pessoas = _svc.GetPessoasDoSetor(codOrigem);
+                ddlSolicitante.DataSource = pessoas;
+                ddlSolicitante.DataBind();
+                ddlSolicitante.Items.Insert(0, new ListItem("Selecione o solicitante", ""));
+                divSolicitante.Visible = true;
+            }
+            else
+            {
+                divSolicitante.Visible = false;
+                ddlSolicitante.Items.Clear();
+            }
         }
 
         protected void ddlPrioridade_SelectedIndexChanged(object sender, EventArgs e)
@@ -382,6 +411,13 @@ namespace appWhatsapp.PlennuscGestao.Views
                 ddlTipoGrupo.SelectedIndex = 0;
 
             BindSubtiposDoGrupo();
+
+            CarregarSolicitantes();
+        }
+
+        protected void ddlOrigem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CarregarSolicitantes();
         }
 
         private void BindSubtiposDoGrupo()
@@ -607,6 +643,22 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
+
+            int codSolicitante = CodPessoaAtual;
+
+            if (UsuarioEhGestorDoSetorSelecionado)
+            {
+                if (UsuarioEhGestorDoSetorSelecionado && !string.IsNullOrEmpty(ddlSolicitante.SelectedValue))
+                {
+                    codSolicitante = int.Parse(ddlSolicitante.SelectedValue);
+                }
+                else
+                {
+                    MostrarMensagem("Selecione o solicitante.", "warning");
+                    return;
+                }
+            }
+
             if (!ValidarLimitePrioridade())
                 return;
 
@@ -681,7 +733,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             var dto = new DemandaCreate
             {
-                CodPessoaSolicitacao = CodPessoaAtual,
+                CodPessoaSolicitacao = codSolicitante,
                 CodSetorOrigem = int.Parse(ddlOrigem.SelectedValue),
                 CodSetorDestino = int.Parse(ddlDestino.SelectedValue),
                 CodEstr_TipoDemanda = codTipoDemanda,

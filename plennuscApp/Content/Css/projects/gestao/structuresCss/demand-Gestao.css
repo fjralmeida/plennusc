@@ -414,3 +414,24 @@ textarea.form-control {
         background: var(--danger);
         color: white;
     }
+
+/* ===== AVISO DO SOLICITANTE ===== */
+.solicitante-hint {
+    background: #e3f2fd; /* azul bem claro */
+    border: 1px solid #bbdefb; /* borda azul suave */
+    border-radius: var(--border-radius);
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #1565c0; /* azul escuro para contraste */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.4;
+}
+
+    .solicitante-hint i {
+        font-size: 16px;
+        color: #1565c0;
+        flex-shrink: 0;
+    }

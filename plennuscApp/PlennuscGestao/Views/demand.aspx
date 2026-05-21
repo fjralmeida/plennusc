@@ -198,16 +198,30 @@ function rolarParaPrimeiroCampoInvalido(validationGroup) {
 
    <%-- Setor de Origem --%>
    <div class="form-field">
-       <asp:DropDownList 
-           Visible="false"
-           ID="ddlOrigem" 
-           runat="server" 
-           CssClass="form-select" 
-           Required="true">
-           <asp:ListItem Value="">Selecione o setor...</asp:ListItem>
-           <asp:ListItem Value="Tecnologia">Tecnologia</asp:ListItem>
-       </asp:DropDownList>
+      <asp:DropDownList 
+        Visible="false" 
+        ID="ddlOrigem" 
+        runat="server" 
+        CssClass="form-select" 
+        AutoPostBack="True"
+        OnSelectedIndexChanged="ddlOrigem_SelectedIndexChanged"
+        Required="true">
+        <asp:ListItem Value="">Selecione o setor...</asp:ListItem>
+        <asp:ListItem Value="Tecnologia">Tecnologia</asp:ListItem>
+    </asp:DropDownList>
    </div>
+
+     <div id="divSolicitante" runat="server" visible="false" style="margin-top:15px;">
+        <label for="ddlSolicitante" class="form-label">Solicitante:</label>
+        <asp:DropDownList ID="ddlSolicitante" runat="server" 
+            DataValueField="Value" DataTextField="Text" 
+            CssClass="form-select">
+        </asp:DropDownList>
+        <div class="solicitante-hint">
+            <i class="bi bi-info-circle-fill"></i>
+            Caso não selecione um solicitante, a demanda será aberta em seu nome.
+        </div>
+    </div>
 
     <div class="container-main">
         <div class="header-card">

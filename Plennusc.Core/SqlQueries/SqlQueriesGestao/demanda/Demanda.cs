@@ -628,6 +628,12 @@ ORDER BY d.DataDemanda DESC";
             AND Conf_PermiteAcesso = 1 
             AND Conf_Ativo = 1";
 
+        public const string PessoasDoSetor = @"
+    SELECT p.CodPessoa, CONCAT(p.Nome, ' ', ISNULL(p.Sobrenome,'')) AS NomeCompleto
+    FROM dbo.Pessoa p
+    WHERE p.CodDepartamento = @CodSetor
+    ORDER BY NomeCompleto";
+
         public const string GetDemandaPorCodigo = @"
             SELECT 
                 d.CodDemanda,
