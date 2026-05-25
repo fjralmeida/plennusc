@@ -644,21 +644,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
 
+            // Solicitante padrão: o próprio usuário logado
             int codSolicitante = CodPessoaAtual;
 
-            if (UsuarioEhGestorDoSetorSelecionado)
+            // Se for gestor e tiver escolhido alguém, usa essa pessoa
+            if (UsuarioEhGestorDoSetorSelecionado && !string.IsNullOrEmpty(ddlSolicitante.SelectedValue))
             {
-                if (UsuarioEhGestorDoSetorSelecionado && !string.IsNullOrEmpty(ddlSolicitante.SelectedValue))
-                {
-                    codSolicitante = int.Parse(ddlSolicitante.SelectedValue);
-                }
-                else
-                {
-                    MostrarMensagem("Selecione o solicitante.", "warning");
-                    return;
-                }
+                codSolicitante = int.Parse(ddlSolicitante.SelectedValue);
             }
-
+            // Se não entrou no if (seja porque não é gestor ou porque não escolheu ninguém)
             if (!ValidarLimitePrioridade())
                 return;
 

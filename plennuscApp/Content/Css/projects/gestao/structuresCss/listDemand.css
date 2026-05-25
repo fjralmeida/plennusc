@@ -247,6 +247,7 @@ body {
 
 /* 🟢 VERDE - BAIXO/NORMAL/DENTRO DO PRAZO */
 .importancia-baixa, .importancia-baixo,
+.importancia-normal, /* ← ADICIONADO AQUI */
 .prioridade-normal,
 .prioridade-com-prazo,
 .prazo-dentro-prazo,

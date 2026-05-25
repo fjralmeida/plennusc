@@ -231,6 +231,7 @@ body {
         background: #f5f7fa;
     }
 
+
 /* BADGES - PADRÃO CONSISTENTE */
 .badge {
     display: inline-block;
@@ -247,6 +248,7 @@ body {
 
 /* 🟢 VERDE - BAIXO/NORMAL/DENTRO DO PRAZO */
 .importancia-baixa, .importancia-baixo,
+.importancia-normal, /* ← ADICIONADO AQUI */
 .prioridade-normal,
 .prioridade-com-prazo,
 .prazo-dentro-prazo,

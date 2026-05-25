@@ -182,7 +182,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnNovaDemanda_Click(object sender, EventArgs e)
         {
-            Response.Redirect("demand.aspx");
+            Response.Redirect("demand");
         }
 
         protected string GetClassePrazo(object dataPrazo) 
