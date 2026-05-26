@@ -130,7 +130,7 @@ namespace appWhatsapp.Views
                 switch (codSistemaSelecionado)
                 {
                     case "1": // Gestão
-                        Response.Redirect("~/PlennuscGestao/Views/homeManagement.aspx");
+                        Response.Redirect("~/gestao");
                         break;
 
                     case "2": // Finance

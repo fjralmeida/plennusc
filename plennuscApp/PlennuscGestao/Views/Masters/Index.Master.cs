@@ -92,7 +92,10 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 "employeeedit",
                 "viewdemandbeforeaccept",
                 "detaildemand",
-                "usercompanyregistration"
+                "usercompanyregistration",
+                "shell",
+                "gestao"
+
             };
 
             if (paginasOcultas.Contains(nomeObjeto.ToLower()))
@@ -168,7 +171,9 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 "employeeedit",
                 "viewdemandbeforeaccept",
                 "detaildemand",
-                "usercompanyregistration"
+                "usercompanyregistration",
+                "shell",
+                "gestao"
             };
 
             foreach (DataRow subMenu in subMenus)

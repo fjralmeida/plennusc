@@ -114,9 +114,12 @@
                 </nav>
 
                 <!-- Main Content -->
-                <div class="flex-grow-1 p-4 overflow-auto">
-                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
-                </div>
+<div class="flex-grow-1 overflow-auto" style="height:100%;">
+    <iframe id="mainFrame" name="mainFrame"
+            src="<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>"
+            style="width:100%; height:100%; border:none;">
+    </iframe>
+</div>
             </div>
         </div>
     </form>
@@ -143,6 +146,10 @@
             document.querySelectorAll('nav.sidebar a[href]').forEach(a => {
                 try {
                     const h = a.getAttribute('href').trim();
+
+                    if (h && !h.startsWith('#')) {
+                        a.setAttribute('target', 'mainFrame');
+                    }
 
                     // ignora âncoras, rotas já absolutas, urls externas, hashes, mailto, tel
                     if (!h || h.startsWith('#') || h.startsWith('mailto:') || h.startsWith('tel:') ||

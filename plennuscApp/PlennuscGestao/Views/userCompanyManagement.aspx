@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="userCompanyManagement.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.userCompanyManagement" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="userCompanyManagement.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.userCompanyManagement" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../../Content/Css/projects/gestao/structuresCss/user-company-management.css" rel="stylesheet" />

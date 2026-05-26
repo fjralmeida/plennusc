@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Envio Fixo CSV" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="FixedMessageSending.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.FixedMessageSending" Async="true" %>
+﻿<%@ Page Title="Envio Fixo CSV" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="FixedMessageSending.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.FixedMessageSending" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
            <title>Enviar Mensagem Padrão</title>

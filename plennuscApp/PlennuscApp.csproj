@@ -288,6 +288,7 @@
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\profile.aspx" />
+    <Content Include="PlennuscGestao\Views\shell.aspx" />
     <Content Include="PlennuscGestao\Views\structureType.aspx" />
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
     <Content Include="PlennuscGestao\Views\TempleteMensagem.aspx" />
@@ -317,6 +318,7 @@
     <Content Include="PlennuscMedic\Views\viewDemandBeforeAcceptMedic.aspx" />
     <Content Include="public\uploadgestao\docs\ModeloDeInserçãoTabPreços - PS1032.xlsx" />
     <Content Include="public\uploadgestao\docs\ModeloDeAtualizaçãoTabelaPreços - PS1032.xlsx" />
+    <Content Include="PlennuscGestao\Views\Masters\IndexFrame.Master" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="PlennuscMedic\Views\interviewIa.aspx" />
     <Content Include="PlennuscMedic\Views\medicalInterview.aspx" />
@@ -555,6 +557,13 @@
     <Compile Include="PlennuscGestao\Views\listStructureTypes.aspx.designer.cs">
       <DependentUpon>listStructureTypes.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscGestao\Views\Masters\IndexFrame.Master.cs">
+      <DependentUpon>IndexFrame.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\Masters\IndexFrame.Master.designer.cs">
+      <DependentUpon>IndexFrame.Master</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscGestao\Views\menusManagement.aspx.cs">
       <DependentUpon>menusManagement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -673,6 +682,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\profile.aspx.designer.cs">
       <DependentUpon>profile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\shell.aspx.cs">
+      <DependentUpon>shell.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\shell.aspx.designer.cs">
+      <DependentUpon>shell.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\structureType.aspx.cs">
       <DependentUpon>structureType.aspx</DependentUpon>

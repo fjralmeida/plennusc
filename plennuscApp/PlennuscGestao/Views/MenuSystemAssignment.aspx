@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="MenuSystemAssignment.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.MenuSystemAssignment" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="MenuSystemAssignment.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.MenuSystemAssignment" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
     <link href="../../Content/Css/projects/gestao/structuresCss/menu/Munu-System-Assignment.css" rel="stylesheet" />

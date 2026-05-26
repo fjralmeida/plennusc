@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="employeeEdit.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.employeeEdit" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="employeeEdit.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.employeeEdit" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

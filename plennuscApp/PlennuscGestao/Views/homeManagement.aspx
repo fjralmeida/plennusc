@@ -1,7 +1,7 @@
 ﻿<%@ Page
     Title=""
     Language="C#"
-    MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master"
+    MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master"
     AutoEventWireup="true"
     CodeBehind="homeManagement.aspx.cs"
     Inherits="PlennuscGestao.Views.HomeGestao" %>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Importar CSV Planium" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="csvImportPlanium.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.csvImportPlanuim" Async="true" %>
+﻿<%@ Page Title="Importar CSV Planium" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="csvImportPlanium.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.csvImportPlanuim" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">

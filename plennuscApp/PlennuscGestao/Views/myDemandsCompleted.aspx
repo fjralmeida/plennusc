@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="myDemandsCompleted.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.myDemandsCompleted" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="myDemandsCompleted.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.myDemandsCompleted" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
          <title>Demandas concluídas</title>

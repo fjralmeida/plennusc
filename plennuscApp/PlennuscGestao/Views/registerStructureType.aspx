@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="registerStructureType.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.registerStructureType" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="registerStructureType.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.registerStructureType" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 

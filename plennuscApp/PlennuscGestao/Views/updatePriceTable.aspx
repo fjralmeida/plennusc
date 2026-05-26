@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="updatePriceTable.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.updatePriceTable" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="updatePriceTable.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.updatePriceTable" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 

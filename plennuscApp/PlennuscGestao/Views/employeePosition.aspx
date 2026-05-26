@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="employeePosition.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.employeePosition" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="employeePosition.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.employeePosition" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
         <title>Cargos</title>

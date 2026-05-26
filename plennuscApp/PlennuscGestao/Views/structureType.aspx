@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="structureType.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.structureType" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="structureType.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.structureType" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <title>Estruturas por Setor</title>
     <!-- Importação do Bootstrap Icons -->

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Gerador de Propostas" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/Index.Master" AutoEventWireup="true" CodeBehind="Butyou.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.Butyou" %>
+﻿<%@ Page Title="Gerador de Propostas" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="Butyou.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.Butyou" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
