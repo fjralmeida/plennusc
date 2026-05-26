@@ -35,6 +35,8 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string PapelUsuario { get; set; }
 
         public int CodEstr_SituacaoDemanda { get; set; }
+
+        public int CodPessoaSolicitacao { get; set; }
     }
 }
 

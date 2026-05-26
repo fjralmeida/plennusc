@@ -399,7 +399,8 @@ SELECT
     d.CodEstr_NivelImportancia AS CodImportancia,
     d.CodPessoaExecucao,
     d.DataAceitacao,
-    pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao
+    pexec.Nome + ' ' + ISNULL(pexec.Sobrenome, '') AS NomePessoaExecucao,
+    d.CodPessoaSolicitacao  
 FROM dbo.Demanda d
 INNER JOIN dbo.Pessoa p ON d.CodPessoaSolicitacao = p.CodPessoa
 INNER JOIN dbo.Estrutura s ON d.CodEstr_SituacaoDemanda = s.CodEstrutura
@@ -407,11 +408,9 @@ INNER JOIN dbo.Estrutura cat ON d.CodEstr_TipoDemanda = cat.CodEstrutura
 LEFT JOIN dbo.Estrutura pri ON d.CodEstr_NivelPrioridade = pri.CodEstrutura
 LEFT JOIN dbo.Estrutura imp ON d.CodEstr_NivelImportancia = imp.CodEstrutura
 LEFT JOIN dbo.Pessoa pexec ON d.CodPessoaExecucao = pexec.CodPessoa
-WHERE d.CodEstr_SituacaoDemanda = 17  -- Apenas status Aberta
+WHERE d.CodEstr_SituacaoDemanda = 17
   AND (
-      -- Demandas que você ACEITOU (é o executor)
       d.CodPessoaExecucao = @CodPessoa 
-      -- OU demandas que você SOLICITOU (é o solicitante)
       OR d.CodPessoaSolicitacao = @CodPessoa
   )
 ORDER BY 

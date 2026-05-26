@@ -1355,6 +1355,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                         int oCodPessoaExecucao = reader.GetOrdinal("CodPessoaExecucao");
                         int oDataAceitacao = reader.GetOrdinal("DataAceitacao");
                         int oNomePessoaExecucao = reader.GetOrdinal("NomePessoaExecucao");
+                        int oCodPessoaSolicitacao = reader.GetOrdinal("CodPessoaSolicitacao");
+
 
                         var di = new DemandaInfo
                         {
@@ -1379,6 +1381,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                             CodPessoaExecucao = reader.IsDBNull(oCodPessoaExecucao) ? (int?)null : reader.GetInt32(oCodPessoaExecucao),
                             DataAceitacao = reader.IsDBNull(oDataAceitacao) ? (DateTime?)null : reader.GetDateTime(oDataAceitacao),
                             NomePessoaExecucao = reader.IsDBNull(oNomePessoaExecucao) ? null : reader.GetString(oNomePessoaExecucao),
+                            CodPessoaSolicitacao = reader.IsDBNull(oCodPessoaSolicitacao) ? 0 : reader.GetInt32(oCodPessoaSolicitacao),
                         };
 
                         demandas.Add(di);

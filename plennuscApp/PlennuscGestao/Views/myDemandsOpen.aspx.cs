@@ -151,6 +151,28 @@ namespace appWhatsapp.PlennuscGestao.Views
             BindGrid();
         }
 
+        //protected void gvDemandasAberto_RowDataBound(object sender, GridViewRowEventArgs e)
+        //{
+        //    if (e.Row.RowType == DataControlRowType.DataRow)
+        //    {
+        //        Label lblAceiteInfo = (Label)e.Row.FindControl("lblAceiteInfo");
+        //        LinkButton btnAceitar = (LinkButton)e.Row.FindControl("btnAceitar");
+
+        //        var dto = e.Row.DataItem as dynamic;
+
+        //        if (dto.CodPessoaExecucao != null && dto.CodPessoaExecucao > 0)
+        //        {
+        //            if (lblAceiteInfo != null) lblAceiteInfo.Visible = true;
+        //            if (btnAceitar != null) btnAceitar.Visible = false;
+        //        }
+        //        else
+        //        {
+        //            if (lblAceiteInfo != null) lblAceiteInfo.Visible = false;
+        //            if (btnAceitar != null) btnAceitar.Visible = true;
+        //        }
+        //    }
+        //}
+
         protected void gvDemandasAberto_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -158,17 +180,23 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Label lblAceiteInfo = (Label)e.Row.FindControl("lblAceiteInfo");
                 LinkButton btnAceitar = (LinkButton)e.Row.FindControl("btnAceitar");
 
-                var dto = e.Row.DataItem as dynamic;
+                // CORREÇÃO: usar DemandaInfo (que agora tem CodPessoaSolicitacao)
+                var dto = (DemandaInfo)e.Row.DataItem;
 
-                if (dto.CodPessoaExecucao != null && dto.CodPessoaExecucao > 0)
+                int codPessoaLogada = Convert.ToInt32(Session["CodPessoa"]);
+
+                bool demandaAceita = dto.CodPessoaExecucao.HasValue && dto.CodPessoaExecucao > 0;
+                bool foiCriadaPorMim = dto.CodPessoaSolicitacao == codPessoaLogada;
+
+                if (demandaAceita)
                 {
-                    if (lblAceiteInfo != null) lblAceiteInfo.Visible = true;
-                    if (btnAceitar != null) btnAceitar.Visible = false;
+                    lblAceiteInfo.Visible = true;
+                    btnAceitar.Visible = false;
                 }
                 else
                 {
-                    if (lblAceiteInfo != null) lblAceiteInfo.Visible = false;
-                    if (btnAceitar != null) btnAceitar.Visible = true;
+                    lblAceiteInfo.Visible = false;
+                    btnAceitar.Visible = !foiCriadaPorMim; // esconde se foi criada pelo usuário logado
                 }
             }
         }
