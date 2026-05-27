@@ -11,7 +11,13 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            // Se não veio do iframe (acessou direto), redireciona para a shell
+            if (!IsPostBack && Request.Headers["Sec-Fetch-Dest"] != "iframe")
+            {
+                string paginaAtual = Request.Url.PathAndQuery;
+                Response.Redirect("/gestao?p=" + Uri.EscapeDataString(paginaAtual));
+                return;
+            }
         }
     }
 }

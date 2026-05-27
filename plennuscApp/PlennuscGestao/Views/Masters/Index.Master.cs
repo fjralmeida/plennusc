@@ -94,7 +94,8 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 "detaildemand",
                 "usercompanyregistration",
                 "shell",
-                "gestao"
+                "gestao",
+                "main"
 
             };
 
@@ -173,7 +174,8 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 "detaildemand",
                 "usercompanyregistration",
                 "shell",
-                "gestao"
+                "gestao",
+                "main"
             };
 
             foreach (DataRow subMenu in subMenus)
