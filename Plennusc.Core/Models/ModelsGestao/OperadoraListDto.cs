@@ -8,9 +8,9 @@ namespace Plennusc.Core.Models.ModelsGestao
 {
     public class OperadoraListDto
     {
-        public int CodOperadora { get; set; }
+        public int CodigoOperadora { get; set; }
         public string RegistroAns { get; set; }
-        public string Cnpj { get; set; }
+        public string Numero_CNPJ { get; set; }
         public string RazaoSocial { get; set; }
         public string NomeComercial { get; set; }
     }

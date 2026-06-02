@@ -25,8 +25,8 @@ namespace appWhatsapp.PlennuscGestao.Views
             var filtro = new OperadoraFiltro
             {
                 NomeOperadora = txtOperadora.Text.Trim(),
-                RegistroAns = txtRegistroAns.Text.Trim(),
-                Cnpj = txtCnpj.Text.Trim()
+                RegistroANS = txtRegistroAns.Text.Trim(),
+                Numero_CNPJ = txtCnpj.Text.Trim()
             };
 
             var lista = _svc.ListarOperadoras(filtro);
@@ -53,6 +53,11 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void btnNovaOperadora_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/novaOperadora");
+        }
+
+        protected void gvOperadoras_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            // extensão futura
         }
     }
 }

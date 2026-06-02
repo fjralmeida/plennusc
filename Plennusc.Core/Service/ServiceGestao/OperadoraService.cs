@@ -33,9 +33,9 @@ namespace Plennusc.Core.Service.ServiceGestao
 
                 var sql = new StringBuilder(@"
                     SELECT
-                        o.CodOperadora,
-                        o.RegistroAns,
-                        o.CNPJ,
+                        o.CodigoOperadora,
+                        o.RegistroANS,
+                        o.Numero_CNPJ,
                         o.RazaoSocial,
                         o.NomeComercial
                     FROM dbo.API_Venda_Operadora o
@@ -47,16 +47,16 @@ namespace Plennusc.Core.Service.ServiceGestao
                     cmd.Parameters.AddWithValue("@NomeOperadora", "%" + filtro.NomeOperadora.Trim() + "%");
                 }
 
-                if (!string.IsNullOrWhiteSpace(filtro?.RegistroAns))
+                if (!string.IsNullOrWhiteSpace(filtro?.RegistroANS))
                 {
-                    sql.Append(" AND o.RegistroAns LIKE @RegistroAns");
-                    cmd.Parameters.AddWithValue("@RegistroAns", "%" + filtro.RegistroAns.Trim() + "%");
+                    sql.Append(" AND CAST(o.RegistroANS AS VARCHAR) LIKE @RegistroANS");
+                    cmd.Parameters.AddWithValue("@RegistroANS", "%" + filtro.RegistroANS.Trim() + "%");
                 }
 
-                if (!string.IsNullOrWhiteSpace(filtro?.Cnpj))
+                if (!string.IsNullOrWhiteSpace(filtro?.Numero_CNPJ))
                 {
-                    sql.Append(" AND o.CNPJ LIKE @Cnpj");
-                    cmd.Parameters.AddWithValue("@Cnpj", "%" + filtro.Cnpj.Trim() + "%");
+                    sql.Append(" AND o.Numero_CNPJ LIKE @Numero_CNPJ");
+                    cmd.Parameters.AddWithValue("@Numero_CNPJ", "%" + filtro.Numero_CNPJ.Trim() + "%");
                 }
 
                 sql.Append(" ORDER BY o.NomeComercial");
@@ -68,9 +68,9 @@ namespace Plennusc.Core.Service.ServiceGestao
                     {
                         lista.Add(new OperadoraListDto
                         {
-                            CodOperadora = rd.GetInt32(rd.GetOrdinal("CodOperadora")),
-                            RegistroAns = rd.IsDBNull(rd.GetOrdinal("RegistroAns")) ? null : rd.GetString(rd.GetOrdinal("RegistroAns")),
-                            Cnpj = rd.IsDBNull(rd.GetOrdinal("CNPJ")) ? null : rd.GetString(rd.GetOrdinal("CNPJ")),
+                            CodigoOperadora = rd.GetInt32(rd.GetOrdinal("CodigoOperadora")),
+                            RegistroAns = rd.IsDBNull(rd.GetOrdinal("RegistroANS")) ? null : rd.GetInt32(rd.GetOrdinal("RegistroANS")).ToString(),
+                            Numero_CNPJ = rd.IsDBNull(rd.GetOrdinal("Numero_CNPJ")) ? null : rd.GetString(rd.GetOrdinal("Numero_CNPJ")),
                             RazaoSocial = rd.IsDBNull(rd.GetOrdinal("RazaoSocial")) ? null : rd.GetString(rd.GetOrdinal("RazaoSocial")),
                             NomeComercial = rd.IsDBNull(rd.GetOrdinal("NomeComercial")) ? null : rd.GetString(rd.GetOrdinal("NomeComercial"))
                         });

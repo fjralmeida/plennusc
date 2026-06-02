@@ -102,15 +102,15 @@
                 EmptyDataText="Nenhuma operadora encontrada no cadastro.">
 
                 <Columns>
-                    <asp:BoundField DataField="CodOperadora" HeaderText="ID"
+                    <asp:BoundField DataField="CodigoOperadora" HeaderText="ID"
                         ItemStyle-CssClass="text-center col-id"
                         HeaderStyle-CssClass="text-center" />
 
-                    <asp:BoundField DataField="RegistroAns" HeaderText="Registro ANS"
+                    <asp:BoundField DataField="RegistroANS" HeaderText="Registro ANS"
                         ItemStyle-CssClass="text-left col-registroans"
                         HeaderStyle-CssClass="text-left" />
 
-                    <asp:BoundField DataField="Cnpj" HeaderText="CNPJ"
+                    <asp:BoundField DataField="Numero_CNPJ" HeaderText="CNPJ"
                         ItemStyle-CssClass="text-left col-cnpj"
                         HeaderStyle-CssClass="text-left" />
 
@@ -128,7 +128,7 @@
                         <ItemTemplate>
                             <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
                                 CommandName="Ver"
-                                CommandArgument='<%# Eval("CodOperadora") %>'>
+                                CommandArgument='<%# Eval("CodigoOperadora") %>'>
                                 <i class="bi bi-eye"></i> Ver
                             </asp:LinkButton>
                         </ItemTemplate>

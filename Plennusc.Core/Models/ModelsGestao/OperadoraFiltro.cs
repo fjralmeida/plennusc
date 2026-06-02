@@ -9,7 +9,7 @@ namespace Plennusc.Core.Models.ModelsGestao
     public class OperadoraFiltro
     {
         public string NomeOperadora { get; set; }
-        public string RegistroAns { get; set; }
-        public string Cnpj { get; set; }
+        public string RegistroANS { get; set; }
+        public string Numero_CNPJ { get; set; }
     }
 }
