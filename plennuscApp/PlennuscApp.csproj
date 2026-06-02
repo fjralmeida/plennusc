@@ -280,6 +280,7 @@
     <Content Include="PlennuscGestao\Views\myDemandsProgress.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsRefused.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsWaiting.aspx" />
+    <Content Include="PlennuscGestao\Views\operatorRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\priceTable.aspx" />
     <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
     <Content Include="PlennuscGestao\Views\registerStructures.aspx" />
@@ -619,6 +620,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\myDemandsWaiting.aspx.designer.cs">
       <DependentUpon>myDemandsWaiting.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\operatorRegistration.aspx.cs">
+      <DependentUpon>operatorRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\operatorRegistration.aspx.designer.cs">
+      <DependentUpon>operatorRegistration.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\priceTable.aspx.cs">
       <DependentUpon>priceTable.aspx</DependentUpon>
