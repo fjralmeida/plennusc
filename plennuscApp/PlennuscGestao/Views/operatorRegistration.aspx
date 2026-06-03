@@ -122,17 +122,26 @@
                         ItemStyle-CssClass="text-left col-nomecomercial"
                         HeaderStyle-CssClass="text-left" />
 
-                    <asp:TemplateField HeaderText="Ações"
-                        ItemStyle-CssClass="text-center col-acoes"
-                        HeaderStyle-CssClass="text-center">
+
+                      <%-- Criar os botões de editar e excluir 
+                    
+                    <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="col-acoes">
                         <ItemTemplate>
-                            <asp:LinkButton ID="lnkVer" runat="server" CssClass="btn-action"
-                                CommandName="Ver"
-                                CommandArgument='<%# Eval("CodigoOperadora") %>'>
-                                <i class="bi bi-eye"></i> Ver
+                            <asp:LinkButton ID="btnEditar" runat="server"
+                                CssClass="btn btn-sm btn-outline-primary btn-editar me-2"
+                                CommandArgument='<%# Eval("CodOperadora") %>'
+                                OnClick="btnEditar_Click"
+                                ToolTip="Editar">
+                                <i class="fas fa-edit"></i>
                             </asp:LinkButton>
+                            <asp:Button ID="btnExcluir" runat="server" Text="Excluir" 
+                                CssClass="btn btn-sm btn-outline-danger btn-excluir-departamento" 
+                                CommandArgument='<%# Eval("CodOperadora") %>'
+                                OnClick="btnExcluir_Click"
+                                OnClientClick="return confirm('Tem certeza que deseja excluir este departamento?');" />
                         </ItemTemplate>
-                    </asp:TemplateField>
+                    </asp:TemplateField> --%>
+
                 </Columns>
 
                 <PagerStyle HorizontalAlign="Center" CssClass="pagination-container" />
