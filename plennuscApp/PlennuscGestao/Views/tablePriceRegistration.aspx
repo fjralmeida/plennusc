@@ -113,24 +113,6 @@
                     ItemStyle-CssClass="text-center col-faixabeneficiarios"
                     HeaderStyle-CssClass="text-center" />
 
-                <asp:TemplateField HeaderText="Exibir Venda"
-                    ItemStyle-CssClass="text-center col-exibirvenda"
-                    HeaderStyle-CssClass="text-center">
-                    <ItemTemplate>
-                            <%# ((bool)Eval("Conf_ExibirVenda")) ? "Sim" : "Não" %>
-                        </span>
-                    </ItemTemplate>
-                </asp:TemplateField>
-
-                
-                <asp:BoundField DataField="DataInicioVenda" HeaderText="Data Início Venda"
-                    ItemStyle-CssClass="text-center col-datainiciovenda"
-                    HeaderStyle-CssClass="text-center" />
-
-                <asp:BoundField DataField="DataFimVenda" HeaderText="Data Fim Venda"
-                    ItemStyle-CssClass="text-center col-datafimvenda"
-                    HeaderStyle-CssClass="text-center" />
-
                 <asp:BoundField DataField="Faixa0" HeaderText="Faixa 0"
                     ItemStyle-CssClass="text-center col-faixa0"
                     HeaderStyle-CssClass="text-center" />
@@ -170,6 +152,30 @@
                 <asp:BoundField DataField="Faixa9" HeaderText="Faixa 9"
                     ItemStyle-CssClass="text-center col-faixa9"
                     HeaderStyle-CssClass="text-center" />
+
+                <asp:BoundField DataField="DataInicioVenda" HeaderText="Data Início Venda"
+                    ItemStyle-CssClass="text-center col-datainiciovenda"
+                    HeaderStyle-CssClass="text-center" />
+
+                <asp:TemplateField HeaderText="Data Fim Venda"
+                   ItemStyle-CssClass="text-center col-datafimvenda"
+                       HeaderStyle-CssClass="text-center">
+                    <ItemTemplate>
+                        <%# Eval("DataFimVenda") == DBNull.Value || Eval("DataFimVenda") == null
+                            ? "Indeterminado"
+                            : ((DateTime)Eval("DataFimVenda")).ToString("dd/MM/yyyy HH:mm:ss") %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                <asp:TemplateField HeaderText="Exibir Venda"
+                    ItemStyle-CssClass="text-center col-exibirvenda"
+                    HeaderStyle-CssClass="text-center">
+                    <ItemTemplate>
+                        <%# Eval("DataFimVenda") == DBNull.Value || Eval("DataFimVenda") == null
+                            || (DateTime)Eval("DataFimVenda") > DateTime.Now
+                            ? "Sim" : "Não" %>
+                    </ItemTemplate>
+                </asp:TemplateField>
 
             </Columns>
 
