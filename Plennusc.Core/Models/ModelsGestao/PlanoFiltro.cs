@@ -12,8 +12,5 @@ namespace Plennusc.Core.Models.ModelsGestao
         public string Segmentacao { get; set; }
         public string Abrangencia { get; set; }
         public string Coparticipacao { get; set; }
-        public string Acomodacao { get; set; }
-        public string Promocional { get; set; }
-        public string ConfAtivo { get; set; }
     }
 }

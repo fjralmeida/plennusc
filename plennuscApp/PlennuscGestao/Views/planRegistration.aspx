@@ -92,25 +92,6 @@
                         placeholder="Com ou sem"></asp:TextBox>
                 </div>
 
-                <div class="filter-item">
-                    <label class="form-label">Acomodação</label>
-                    <asp:TextBox ID="txtAcomodacao" runat="server" CssClass="form-control"
-                        placeholder="Individual, coletivo ou sem acomodação"></asp:TextBox>
-                </div>
-
-                 <div class="filter-item">
-                    <label class="form-label">Promocional</label>
-                    <asp:TextBox ID="txtPromocional" runat="server" CssClass="form-control"
-                     placeholder="Plano promocional"></asp:TextBox>
-                 </div>
-
-                
-                 <div class="filter-item">
-                    <label class="form-label">Status</label>
-                    <asp:TextBox ID="txtConfAtivo" runat="server" CssClass="form-control"
-                     placeholder="Ativo ou inativo"></asp:TextBox>
-                 </div>
-
                 <div class="btn-filter-container">
                     <asp:Button ID="btnFiltrar" runat="server" CssClass="btn-filter"
                         Text="Aplicar Filtros" OnClick="btnFiltrar_Click" />
@@ -134,48 +115,53 @@
                         HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="CodigoProduto" HeaderText="Código Produto"
-                        ItemStyle-CssClass="text-left col-codigoproduto"
-                        HeaderStyle-CssClass="text-left" />
+                        ItemStyle-CssClass="text-center col-codigoproduto"
+                        HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="Num_CNPJ_Operadora" HeaderText="CNPJ Operadora"
                         ItemStyle-CssClass="text-left col-cnpj"
                         HeaderStyle-CssClass="text-left" />
 
                     <asp:BoundField DataField="TipoContratacao" HeaderText="Tipo Contratação"
-                        ItemStyle-CssClass="text-left col-tipocontratacao"
-                        HeaderStyle-CssClass="text-left" />
+                        ItemStyle-CssClass="text-center col-tipocontratacao"
+                        HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="NomePlanoComercial" HeaderText="Nome Plano"
                         ItemStyle-CssClass="text-left col-nomecomercial"
                         HeaderStyle-CssClass="text-left" />
 
                     <asp:BoundField DataField="Segmentacao" HeaderText="Segmentação"
-                        ItemStyle-CssClass="text-left col-segmentacao"
-                        HeaderStyle-CssClass="text-left" />
+                        ItemStyle-CssClass="text-center col-segmentacao"
+                        HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="Abrangencia" HeaderText="Abrangência"
-                        ItemStyle-CssClass="text-left col-abrangencia"
-                        HeaderStyle-CssClass="text-left" />
+                        ItemStyle-CssClass="text-center col-abrangencia"
+                        HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="Coparticipacao" HeaderText="Coparticipação"
-                        ItemStyle-CssClass="text-left col-coparticipacao"
-                        HeaderStyle-CssClass="text-left" />
+                        ItemStyle-CssClass="text-center col-coparticipacao"
+                        HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="Acomodacao" HeaderText="Acomodação"
-                       ItemStyle-CssClass="text-left col-acomodacao"
-                       HeaderStyle-CssClass="text-left" />
+                       ItemStyle-CssClass="text-center col-acomodacao"
+                       HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="DecSau" HeaderText="Declaração de Saúde"
-                       ItemStyle-CssClass="text-left col-decsau"
-                       HeaderStyle-CssClass="text-left" />
+                       ItemStyle-CssClass="text-center col-decsau"
+                       HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="Promocional" HeaderText="Promocional"
-                       ItemStyle-CssClass="text-left col-promocional"
-                       HeaderStyle-CssClass="text-left" />
+                       ItemStyle-CssClass="text-center col-promocional"
+                       HeaderStyle-CssClass="text-center" />
 
-                    <asp:BoundField DataField="Conf_Ativo" HeaderText="Ativo ou Inativo"
-                       ItemStyle-CssClass="text-left col-confativo"
-                       HeaderStyle-CssClass="text-left" />
+                    <asp:TemplateField HeaderText="Ativo ou Inativo"
+                        ItemStyle-CssClass="text-center col-confativo"
+                        HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
+                                <%# ((bool)Eval("Conf_Ativo")) ? "Ativo" : "Inativo" %>
+                            </span>
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
 
                       <%-- Criar os botões de editar e excluir 

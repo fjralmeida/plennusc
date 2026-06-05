@@ -28,9 +28,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Segmentacao = txtSegmentacao.Text.Trim(),
                 Abrangencia = txtAbrangencia.Text.Trim(),
                 Coparticipacao = txtCoparticipacao.Text.Trim(),
-                Acomodacao = txtAcomodacao.Text.Trim(),
-                Promocional = txtPromocional.Text.Trim(),
-                ConfAtivo = txtConfAtivo.Text.Trim()
             };
 
             var lista = _svc.ListarPlanos(filtro);
@@ -59,7 +56,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             Response.Redirect("~/novoPlano");
         }
 
-        protected void gvOperadoras_RowDataBound(object sender, GridViewRowEventArgs e)
+        protected void gvPlanos_RowDataBound(object sender, GridViewRowEventArgs e)
         {
 
         }
