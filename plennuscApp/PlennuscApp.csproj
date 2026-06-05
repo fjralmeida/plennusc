@@ -300,6 +300,7 @@
     <Content Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx" />
     <Content Include="PlennuscGestao\Views\viewShippingHistory.aspx" />
     <Content Include="PlennuscGestao\Views\planRegistration.aspx" />
+    <Content Include="PlennuscGestao\Views\tablePriceRegistration.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
     <Content Include="PlennuscMedic\Views\demandMedic.aspx" />
     <Content Include="PlennuscMedic\Views\detailDemandMedic.aspx" />
@@ -767,6 +768,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\planRegistration.aspx.designer.cs">
       <DependentUpon>planRegistration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\tablePriceRegistration.aspx.cs">
+      <DependentUpon>tablePriceRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\tablePriceRegistration.aspx.designer.cs">
+      <DependentUpon>tablePriceRegistration.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx.cs">
       <DependentUpon>csvImportPlaniumMedic.aspx</DependentUpon>

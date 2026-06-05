@@ -74,6 +74,7 @@ namespace appWhatsapp
             // ✅ Rota de parametrização venda
             routes.MapPageRoute("operatorRegistration", "operatorRegistration", "~/PlennuscGestao/Views/operatorRegistration.aspx");
             routes.MapPageRoute("planRegistration", "planRegistration", "~/PlennuscGestao/Views/planRegistration.aspx");
+            routes.MapPageRoute("tablePriceRegistration", "tablePriceRegistration", "~/PlennuscGestao/Views/tablePriceRegistration.aspx");
 
             #endregion
 
