@@ -914,6 +914,7 @@
       <DependentUpon>viewDemandBeforeAcceptMedic.aspx</DependentUpon>
     </Compile>
     <Compile Include="Utils\DatabaseHelper.cs" />
+    <Compile Include="Utils\Helpers.cs" />
     <Compile Include="Utils\MenuAuthorization.cs" />
     <Compile Include="ViewsApp\erro.aspx.cs">
       <DependentUpon>erro.aspx</DependentUpon>

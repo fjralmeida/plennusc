@@ -33,6 +33,11 @@
                     OnClick="btnPreencherComDadosReais_Click" 
                     CssClass="btn btn-primary" />
           
+
+         <asp:Button ID="btnPreencherComDadosCsv" runat="server" 
+             Text="Preencher com Dados Reais CSV" 
+             OnClick="btnPreencherComDadosCsv_Click" 
+             CssClass="btn btn-primary" />
         </div>
         
         <!-- MENSAGENS -->
