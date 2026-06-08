@@ -27,13 +27,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             var filtro = new PrecoFiltro
             {
-                CodigoPlano = string.IsNullOrWhiteSpace(txtCodigoPlano.Text)
-                    ? (int?)null
-                    : int.Parse(txtCodigoPlano.Text.Trim()),
-
-                CodigoProduto = string.IsNullOrWhiteSpace(txtCodigoProduto.Text)
-                    ? (int?)null
-                    : int.Parse(txtCodigoProduto.Text.Trim())
+                NomePlanoComercial = txtNomePlanoComercial.Text.Trim()
             };
 
             var lista = _svc.ListarPrecos(filtro);

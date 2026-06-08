@@ -10,8 +10,7 @@ namespace Plennusc.Core.Models.ModelsGestao
     {
 
             public int CodigoTabelaPreco { get; set; }
-            public int CodigoPlano { get; set; }
-            public int CodigoProduto { get; set; }
+            public string NomePlanoComercial { get; set; }
             public int FaixaBeneficiarios { get; set; }
             public DateTime DataInicioVenda { get; set; }
             public DateTime? DataFimVenda { get; set; }  

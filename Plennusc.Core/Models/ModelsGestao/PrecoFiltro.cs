@@ -8,8 +8,7 @@ namespace Plennusc.Core.Models.ModelsGestao
 {
     public class PrecoFiltro
     {
-        public int? CodigoPlano { get; set; }
-        public int? CodigoProduto { get; set; }
+        public string NomePlanoComercial { get; set; }
 
     }
 }

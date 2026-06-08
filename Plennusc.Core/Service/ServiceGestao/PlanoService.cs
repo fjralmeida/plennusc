@@ -75,7 +75,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                     cmd.Parameters.AddWithValue("@Coparticipacao", "%" + filtro.Coparticipacao.Trim() + "%");
                 }
 
-                sql.Append(" ORDER BY p.NomePlanoComercial");
+                sql.Append(" ORDER BY p.CodigoPlano");
                 cmd.CommandText = sql.ToString();
 
                 using (var rd = cmd.ExecuteReader())

@@ -70,14 +70,8 @@
 
                  <div class="filter-item">
                      <label class="form-label">Plano</label>
-                     <asp:TextBox ID="txtCodigoPlano" runat="server" CssClass="form-control"
+                     <asp:TextBox ID="txtNomePlanoComercial" runat="server" CssClass="form-control"
                          placeholder="Nome do plano"></asp:TextBox>
-                 </div>
-
-                 <div class="filter-item">
-                     <label class="form-label">Produto</label>
-                     <asp:TextBox ID="txtCodigoProduto" runat="server" CssClass="form-control"
-                         placeholder="Nome do produto"></asp:TextBox>
                  </div>
 
                   <div class="btn-filter-container">
@@ -101,12 +95,8 @@
                     ItemStyle-CssClass="text-center col-codigotabelapreco"
                     HeaderStyle-CssClass="text-center" />
 
-                <asp:BoundField DataField="CodigoPlano" HeaderText="Código Plano"
-                    ItemStyle-CssClass="text-center col-codigoproduto"
-                    HeaderStyle-CssClass="text-center" />
-
-                <asp:BoundField DataField="CodigoProduto" HeaderText="Código Produto"
-                    ItemStyle-CssClass="text-center col-codigoproduto"
+                <asp:BoundField DataField="NomePlanoComercial" HeaderText="Nome Plano Comercial"
+                    ItemStyle-CssClass="text-left col-nomeplanocomercial"
                     HeaderStyle-CssClass="text-center" />
 
                 <asp:BoundField DataField="FaixaBeneficiarios" HeaderText="Faixa Beneficiários"

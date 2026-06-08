@@ -34,37 +34,34 @@ namespace Plennusc.Core.Service.ServiceGestao
                 cmd.Connection = con;
 
                 var sql = new StringBuilder(@"
-            SELECT
-                tp.CodigoTabelaPreco,
-                tp.CodigoPlano,
-                tp.CodigoProduto,
-                tp.FaixaBeneficiarios,
-                tp.DataInicioVenda,
-                tp.DataFimVenda,
-                tp.Faixa0,
-                tp.Faixa1,
-                tp.Faixa2,
-                tp.Faixa3,
-                tp.Faixa4,
-                tp.Faixa5,
-                tp.Faixa6,
-                tp.Faixa7,
-                tp.Faixa8,
-                tp.Faixa9,
-                tp.Conf_ExibirVenda
-            FROM dbo.API_Venda_TabelaPreco tp
-            WHERE 1 = 1");
+                SELECT
+                    tp.CodigoTabelaPreco,
+                    tp.CodigoProduto,
+                    p.NomePlanoComercial, 
+                    tp.FaixaBeneficiarios,
+                    tp.DataInicioVenda,
+                    tp.DataFimVenda,
+                    tp.Faixa0,
+                    tp.Faixa1,
+                    tp.Faixa2,
+                    tp.Faixa3,
+                    tp.Faixa4,
+                    tp.Faixa5,
+                    tp.Faixa6,
+                    tp.Faixa7,
+                    tp.Faixa8,
+                    tp.Faixa9,
+                    tp.Conf_ExibirVenda
+                FROM dbo.API_Venda_TabelaPreco tp
+                INNER JOIN dbo.API_Venda_Plano p 
+                    ON tp.CodigoPlano = p.CodigoPlano
+                WHERE (1=1)" 
+                );
 
-                if (filtro?.CodigoPlano > 0)
+                if (!string.IsNullOrWhiteSpace(filtro?.NomePlanoComercial))
                 {
-                    sql.Append(" AND tp.CodigoPlano = @CodigoPlano");
-                    cmd.Parameters.AddWithValue("@CodigoPlano", filtro.CodigoPlano);
-                }
-
-                if (filtro?.CodigoProduto > 0)
-                {
-                    sql.Append(" AND tp.CodigoProduto = @CodigoProduto");
-                    cmd.Parameters.AddWithValue("@CodigoProduto", filtro.CodigoProduto);
+                    sql.Append(" AND p.NomePlanoComercial LIKE @NomePlanoComercial");
+                    cmd.Parameters.AddWithValue("@NomePlanoComercial", "%" + filtro.NomePlanoComercial.Trim() + "%");
                 }
 
                 sql.Append(" ORDER BY tp.CodigoTabelaPreco");
@@ -77,8 +74,7 @@ namespace Plennusc.Core.Service.ServiceGestao
                         lista.Add(new PrecoListDto
                         {
                             CodigoTabelaPreco = rd.GetInt32(rd.GetOrdinal("CodigoTabelaPreco")),
-                            CodigoPlano = rd.GetInt32(rd.GetOrdinal("CodigoPlano")),
-                            CodigoProduto = rd.GetInt32(rd.GetOrdinal("CodigoProduto")),
+                            NomePlanoComercial = rd.IsDBNull(rd.GetOrdinal("NomePlanoComercial")) ? null : rd.GetString(rd.GetOrdinal("NomePlanoComercial")),
                             FaixaBeneficiarios = rd.GetInt32(rd.GetOrdinal("FaixaBeneficiarios")),
                             DataInicioVenda = rd.GetDateTime(rd.GetOrdinal("DataInicioVenda")),
                             DataFimVenda = rd.IsDBNull(rd.GetOrdinal("DataFimVenda")) ? (DateTime?)null : rd.GetDateTime(rd.GetOrdinal("DataFimVenda")),
