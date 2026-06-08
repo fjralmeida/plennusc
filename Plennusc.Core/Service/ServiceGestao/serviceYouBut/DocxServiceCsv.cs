@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
@@ -1801,15 +1802,13 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             {
                 var body = doc.MainDocumentPart.Document.Body;
                 var paragraphs = body.Descendants<Paragraph>().ToList();
-
                 var mapeamento = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { "NOME COMPLETO",      "NOME_COMPLETO" },
             { "DATA DE NASCIMENTO", "DATA_NASCIMENTO" },
             { "CPF",                "CPF_TITULAR" },
-            { "RG",                 "RG" },
             { "E-MAIL",             "EMAIL" },
-            { "TELEFONE CELULAR",     "TELEFONE_CELULAR" }
+            { "TELEFONE CELULAR",   "TELEFONE_CELULAR" }
         };
 
                 bool dentroDaSecao = false;
@@ -1819,14 +1818,12 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                     string textoPara = string.Join("", para.Descendants<Text>().Select(t => t.Text)).Trim();
                     if (string.IsNullOrWhiteSpace(textoPara)) continue;
 
-                    // ✅ Ativa seção
-                    if (textoPara.Contains("DADOS DO ASSOCIADO") || textoPara.Contains("FICHA DE FILIAÇÃO"))
+                    if (textoPara.Contains("Dados do Associados") || textoPara.Contains("FICHA DE ASSOCIATIVA"))
                     {
                         dentroDaSecao = true;
                         continue;
                     }
 
-                    // ✅ Desativa seção
                     if (dentroDaSecao && textoPara.Contains("DISPOSIÇÕES GERAIS"))
                     {
                         dentroDaSecao = false;
@@ -1835,7 +1832,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
                     if (!dentroDaSecao) continue;
 
-                    // ✅ Mesma lógica que estava preenchendo o nome
                     foreach (var kvp in mapeamento)
                     {
                         string rotulo = kvp.Key;
@@ -1849,20 +1845,39 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                             string valor = dados[chave];
                             if (textoPara.Contains(valor)) continue;
 
+                            // Preserva formatação original do rótulo
+                            var runsOriginais = para.Descendants<Run>().ToList();
+                            RunProperties estiloRotuloOriginal = null;
+                            if (runsOriginais.Count > 0)
+                            {
+                                var primeiroRun = runsOriginais[0];
+                                if (primeiroRun.RunProperties != null)
+                                    estiloRotuloOriginal = (RunProperties)primeiroRun.RunProperties.CloneNode(true);
+                                else
+                                    estiloRotuloOriginal = new RunProperties();
+                            }
+
                             para.RemoveAllChildren();
 
+                            var paraProps = para.ParagraphProperties?.CloneNode(true);
+                            if (paraProps != null) para.AppendChild(paraProps);
+
+                            // Rótulo com estilo original
                             Run runRotulo = new Run();
+                            if (estiloRotuloOriginal != null)
+                                runRotulo.RunProperties = estiloRotuloOriginal;
                             runRotulo.AppendChild(new Text(rotulo));
                             runRotulo.AppendChild(new Break());
 
+                            // Valor com azul, negrito e tamanho menor
                             Run runValor = new Run();
-                            RunProperties props = new RunProperties();
-                            props.Append(new Bold());
-                            props.Append(new Color() { Val = "0000FF" });
-                            props.Append(new FontSize() { Val = "22" });
-                            props.Append(new FontSizeComplexScript() { Val = "22" });
-                            runValor.RunProperties = props;
-                            runValor.AppendChild(new Text(valor));
+                            RunProperties propsValor = new RunProperties();
+                            propsValor.Append(new Color() { Val = "0000FF" });
+                            // ↓↓↓ Diminui a fonte do valor preenchido ↓↓↓
+                            propsValor.Append(new FontSize() { Val = "18" });
+                            propsValor.Append(new FontSizeComplexScript() { Val = "18" });
+                            runValor.RunProperties = propsValor;
+                            runValor.AppendChild(new Text(valor) { Space = SpaceProcessingModeValues.Preserve });
 
                             para.AppendChild(runRotulo);
                             para.AppendChild(runValor);

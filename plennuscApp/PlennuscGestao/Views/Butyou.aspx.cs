@@ -568,9 +568,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 // Associa dependentes que tenham o mesmo Email ou Telefone do titular
                 var dependentesDoTitular = dependentes
-                    .Where(d => (titular.Email?.Trim() == d.Email?.Trim()) ||
-                                (titular.TelefoneCelular?.Trim() == d.TelefoneCelular?.Trim()))
-                    .ToList();
+                    .Where(d => (titular.Email?.Trim() == d.Email?.Trim())).ToList();
 
                 // Se ainda não achou e o titular tiver um código único (ex: CPF), usa esse código (mas não tem no CSV)
                 // Caso contrário, fica vazio
@@ -823,7 +821,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_ABRAEST.docx");
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_ANAVA.docx");
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
