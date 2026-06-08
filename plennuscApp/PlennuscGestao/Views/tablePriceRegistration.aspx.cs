@@ -1,5 +1,5 @@
 ﻿using Plennusc.Core.Models.ModelsGestao;
-using Plennusc.Core.Service.ServiceGestao;
+using Plennusc.Core.Service.ServiceGestao.planiumApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;

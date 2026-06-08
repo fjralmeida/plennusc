@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace Plennusc.Core.Service.ServiceGestao
+namespace Plennusc.Core.Service.ServiceGestao.planiumApi
 {
     public class OperadoraService
     {

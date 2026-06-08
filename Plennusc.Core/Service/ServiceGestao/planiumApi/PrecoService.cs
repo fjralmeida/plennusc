@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Plennusc.Core.Service.ServiceGestao
+namespace Plennusc.Core.Service.ServiceGestao.planiumApi
 {
     public class PrecoService
     {

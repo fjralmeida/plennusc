@@ -96,7 +96,7 @@
                     HeaderStyle-CssClass="text-center" />
 
                 <asp:BoundField DataField="NomePlanoComercial" HeaderText="Nome Plano Comercial"
-                    ItemStyle-CssClass="text-left col-nomeplanocomercial"
+                    ItemStyle-CssClass="text-center col-nomeplanocomercial"
                     HeaderStyle-CssClass="text-center" />
 
                 <asp:BoundField DataField="FaixaBeneficiarios" HeaderText="Faixa Beneficiários"
