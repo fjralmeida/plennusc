@@ -257,6 +257,7 @@
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
     <Content Include="PlennuscGestao\Views\Butyou.aspx" />
+    <Content Include="PlennuscGestao\Views\commercializationRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx" />
     <Content Include="PlennuscGestao\Views\companyRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\csvImportPlanium.aspx" />
@@ -280,6 +281,7 @@
     <Content Include="PlennuscGestao\Views\myDemandsProgress.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsRefused.aspx" />
     <Content Include="PlennuscGestao\Views\myDemandsWaiting.aspx" />
+    <Content Include="PlennuscGestao\Views\operatorRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\priceTable.aspx" />
     <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
     <Content Include="PlennuscGestao\Views\registerStructures.aspx" />
@@ -298,6 +300,8 @@
     <Content Include="PlennuscGestao\Views\userSystemMenuManagement.aspx" />
     <Content Include="PlennuscGestao\Views\viewDemandBeforeAccept.aspx" />
     <Content Include="PlennuscGestao\Views\viewShippingHistory.aspx" />
+    <Content Include="PlennuscGestao\Views\planRegistration.aspx" />
+    <Content Include="PlennuscGestao\Views\tablePriceRegistration.aspx" />
     <Content Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx" />
     <Content Include="PlennuscMedic\Views\demandMedic.aspx" />
     <Content Include="PlennuscMedic\Views\detailDemandMedic.aspx" />
@@ -451,6 +455,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\Butyou.aspx.designer.cs">
       <DependentUpon>Butyou.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\commercializationRegistration.aspx.cs">
+      <DependentUpon>commercializationRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\commercializationRegistration.aspx.designer.cs">
+      <DependentUpon>commercializationRegistration.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx.cs">
       <DependentUpon>companyMenuManagementSystem.aspx</DependentUpon>
@@ -620,6 +631,13 @@
     <Compile Include="PlennuscGestao\Views\myDemandsWaiting.aspx.designer.cs">
       <DependentUpon>myDemandsWaiting.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlennuscGestao\Views\operatorRegistration.aspx.cs">
+      <DependentUpon>operatorRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\operatorRegistration.aspx.designer.cs">
+      <DependentUpon>operatorRegistration.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PlennuscGestao\Views\priceTable.aspx.cs">
       <DependentUpon>priceTable.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -751,6 +769,20 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\viewShippingHistory.aspx.designer.cs">
       <DependentUpon>viewShippingHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\planRegistration.aspx.cs">
+      <DependentUpon>planRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\planRegistration.aspx.designer.cs">
+      <DependentUpon>planRegistration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\tablePriceRegistration.aspx.cs">
+      <DependentUpon>tablePriceRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\tablePriceRegistration.aspx.designer.cs">
+      <DependentUpon>tablePriceRegistration.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscMedic\Views\csvImportPlaniumMedic.aspx.cs">
       <DependentUpon>csvImportPlaniumMedic.aspx</DependentUpon>

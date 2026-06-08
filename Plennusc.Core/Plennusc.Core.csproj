@@ -129,6 +129,8 @@
     <Compile Include="Mappers\MappersGestao\TablePriceMapper.cs" />
     <Compile Include="Models\ModelsGestao\AcompanhamentoDto.cs" />
     <Compile Include="Models\ModelsGestao\AnexoInfo.cs" />
+    <Compile Include="Models\ModelsGestao\ComercializacaoFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\ComercializacaoListDto.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagem.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemCsv.cs" />
     <Compile Include="Models\ModelsGestao\DadosMensagemPME.cs" />
@@ -178,7 +180,13 @@
     <Compile Include="Models\ModelsGestao\modelsStructure\subTypeDate.cs" />
     <Compile Include="Models\ModelsGestao\modelsUser\UsuarioSistemaEmpresaMenu.cs" />
     <Compile Include="Models\ModelsGestao\modelsUser\VinculoUsuarioRequest.cs" />
+    <Compile Include="Models\ModelsGestao\OperadoraFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\OperadoraListDto.cs" />
     <Compile Include="Models\ModelsGestao\OptionItem.cs" />
+    <Compile Include="Models\ModelsGestao\PlanoFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\PlanoListDto.cs" />
+    <Compile Include="Models\ModelsGestao\PrecoFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\PrecoListDto.cs" />
     <Compile Include="Models\ModelsGestao\RespostaDto.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
     <Compile Include="Models\ModelsSysPlatform\SysPlatformModel.cs" />
@@ -194,8 +202,12 @@
     <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
     <Compile Include="Service\ServiceGestao\menu\menusManagementService.cs" />
     <Compile Include="Service\ServiceGestao\menu\MenuSystemService.cs" />
+    <Compile Include="Service\ServiceGestao\planiumApi\ComercializacaoService.cs" />
+    <Compile Include="Service\ServiceGestao\planiumApi\OperadoraService.cs" />
+    <Compile Include="Service\ServiceGestao\planiumApi\PlanoService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
+    <Compile Include="Service\ServiceGestao\planiumApi\PrecoService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\ExcelReportService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />

@@ -70,6 +70,13 @@ namespace appWhatsapp
             routes.MapPageRoute("vincularEmpresasUsuario", "vincularEmpresasUsuario", "~/PlennuscGestao/Views/userCompanyRegistration.aspx");
 
             routes.MapPageRoute("shellGestao", "gestao", "~/PlennuscGestao/Views/shell.aspx");
+
+            // ✅ Rota de parametrização venda
+            routes.MapPageRoute("operatorRegistration", "operatorRegistration", "~/PlennuscGestao/Views/operatorRegistration.aspx");
+            routes.MapPageRoute("planRegistration", "planRegistration", "~/PlennuscGestao/Views/planRegistration.aspx");
+            routes.MapPageRoute("tablePriceRegistration", "tablePriceRegistration", "~/PlennuscGestao/Views/tablePriceRegistration.aspx");
+            routes.MapPageRoute("commercializationRegistration", "commercializationRegistration", "~/PlennuscGestao/Views/commercializationRegistration.aspx");
+
             #endregion
 
 
