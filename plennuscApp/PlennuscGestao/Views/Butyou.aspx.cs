@@ -1,8 +1,11 @@
 ﻿using appWhatsapp.PlennuscGestao.Services;
+using appWhatsapp.Utils;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using OfficeOpenXml;
 using Plennusc.Core.Models.ModelsGestao.modelsButYou;
+using Plennusc.Core.Service.ServiceGestao.serviceYouBut;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries;
 using System;
 using System.Collections.Generic;
@@ -24,6 +27,7 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
         private DocxService _docxService = new DocxService();
         private ExcelService _excelService = new ExcelService();
+        private DocxServiceCsv docxServiceCsv = new DocxServiceCsv();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -33,30 +37,30 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private Dictionary<string, string> ConverterAssociadoParaDicionario(DadosAssociadoCompleto associado)
         {
-            int? diaVencimento = associado.DiaVencimentoPadrao; // pode ser nulo
+            //int? diaVencimento = associado.DiaVencimentoPadrao; // pode ser nulo
 
-            // Data de vigência: sempre no mês 03/2026
-            int diaValido = diaVencimento.HasValue ?
-                (diaVencimento.Value == 25 ? 20 : diaVencimento.Value) :
-                20; // ou outro valor padrão caso seja nulo
+            //// Data de vigência: sempre no mês 03/2026
+            //int diaValido = diaVencimento.HasValue ?
+            //    (diaVencimento.Value == 25 ? 20 : diaVencimento.Value) :
+            //    20; // ou outro valor padrão caso seja nulo
 
-            // Usar diaValido aqui, não diaVencimento
-            string inicioVigencia = $"{diaValido:D2}/03/2026";
+            //// Usar diaValido aqui, não diaVencimento
+            //string inicioVigencia = $"{diaValido:D2}/03/2026";
 
             return new Dictionary<string, string>
             {
-                // Vigência fixa em março/2026
-                { "INICIO_VIGENCIA", inicioVigencia },
+                //// Vigência fixa em março/2026
+                //{ "INICIO_VIGENCIA", inicioVigencia },
         
-                // Somente o dia correto fica true - usar diaValido também aqui
-                { "VENCIMENTO_DIA_01", (diaValido == 1).ToString().ToLower() },
-                { "VENCIMENTO_DIA_10", (diaValido == 10).ToString().ToLower() },
-                { "VENCIMENTO_DIA_20", (diaValido == 20).ToString().ToLower() },
+                //// Somente o dia correto fica true - usar diaValido também aqui
+                //{ "VENCIMENTO_DIA_01", (diaValido == 1).ToString().ToLower() },
+                //{ "VENCIMENTO_DIA_10", (diaValido == 10).ToString().ToLower() },
+                //{ "VENCIMENTO_DIA_20", (diaValido == 20).ToString().ToLower() },
                 // Identificação
                 { "NOME_COMPLETO", associado.NomeCompleto },
                 { "CPF_TITULAR", associado.CpfTitular },
                 { "DATA_NASCIMENTO", associado.DataNascimento },
-                { "RG", associado.Rg },
+                { "RG", associado.Rg ?? ""},
 
                 // FILIAÇÃO E IDADE (nota: Filiacao não está na sua classe, você precisa adicionar)
                 { "FILIACAO", "" }, // Você precisa adicionar esta propriedade na classe
@@ -64,37 +68,37 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 // SEXO - o seu método ProcessarCampoSexo espera "M" ou "F"
                 // Precisamos converter "MASCULINO" para "M" e "FEMININO" para "F"
-                { "SEXO", associado.Sexo == "M" ? "M" :
-                          associado.Sexo == "F" ? "F" : "OUTROS" },
+                { "SEXO", associado.Sexo == "MASCULINO" ? "M" :
+                          associado.Sexo == "FEMININO" ? "F" : "OUTROS" },
 
                 // ESTADO CIVIL
                 { "ESTADO_CIVIL", associado.EstadoCivil },
 
                 // Novos campos
-                { "ORGAO_EXPEDIDOR", associado.OrgaoExpedidor },
-                { "CARTAO_SUS", associado.CartaoSus },
-                { "NUMERO_DECLARACAO_NASCIDO_VIVO", associado.NumeroDeclaracaoNascidoVivo },
+                { "ORGAO_EXPEDIDOR", associado.OrgaoExpedidor ?? ""},
+                { "CARTAO_SUS", associado.CartaoSus ?? "" },
+                { "NUMERO_DECLARACAO_NASCIDO_VIVO", associado.NumeroDeclaracaoNascidoVivo ?? ""},
 
                 // Responsável financeiro (assumindo que é o próprio titular)
                 { "RESPONSAVEL_FINANCEIRO", associado.NomeCompleto },
                 { "CPF_RESPONSAVEL_FINANCEIRO", associado.CpfTitular },
 
                 // Endereço
-                { "ENDERECO", associado.Endereco },
-                { "NUMERO", associado.Numero },
-                { "COMPLEMENTO", associado.Complemento },
-                { "CEP", associado.Cep },
-                { "BAIRRO", associado.Bairro },
-                { "CIDADE", associado.Cidade },
-                { "UF", associado.Uf },
+                { "ENDERECO", associado.Endereco ?? "" },
+                { "NUMERO", associado.Numero ?? "" },
+                { "COMPLEMENTO", associado.Complemento ?? "" },
+                { "CEP", associado.Cep ?? "" },
+                { "BAIRRO", associado.Bairro ?? ""},
+                { "CIDADE", associado.Cidade ?? "" },
+                { "UF", associado.Uf ?? "" },
 
                 // Contato
                 { "EMAIL", associado.Email },
                 { "TELEFONE_CELULAR", associado.TelefoneCelular },
                 { "TELEFONE_FIXO", "" }, // Não temos na consulta
 
-                // Tipo de coparticipação (PARCIAL, TOTAL ou SEM COPARTICIPAÇÃO)
-                { "PLANO_COPARTICIPACAO", "PARCIAL" }
+                { "PLANO_DESCRICAO", associado.DescricaoPlano ?? associado.Plano ?? "" },
+                { "PLANO_COPARTICIPACAO", associado.TipoCoparticipacao ?? "PARCIAL" }
             };
         }
 
@@ -544,29 +548,36 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        private List<GrupoTitularDependentes> AgruparTitularesComDependentes(List<DadosAssociadoCompleto> todosAssociados)
+        private List<GrupoTitularDependentes> AgruparTitularesComDependentes(List<DadosAssociadoCompleto> todos)
         {
             var grupos = new List<GrupoTitularDependentes>();
 
-            // 1. Primeiro, separar titulares
-            var titulares = todosAssociados
-                .Where(a => a.TipoAssociado == "T")
-                .ToList();
+            // Normaliza tipo
+            foreach (var a in todos)
+            {
+                if (a.TipoAssociado?.Trim().StartsWith("T", StringComparison.OrdinalIgnoreCase) == true)
+                    a.TipoAssociado = "T";
+                else if (a.TipoAssociado?.Trim().StartsWith("D", StringComparison.OrdinalIgnoreCase) == true)
+                    a.TipoAssociado = "D";
+            }
 
-            // 2. Para cada titular, criar um grupo
+            var titulares = todos.Where(a => a.TipoAssociado == "T").ToList();
+            var dependentes = todos.Where(a => a.TipoAssociado == "D").ToList();
+
             foreach (var titular in titulares)
             {
-                var grupo = new GrupoTitularDependentes
+                // Associa dependentes que tenham o mesmo Email ou Telefone do titular
+                var dependentesDoTitular = dependentes
+                    .Where(d => (titular.Email?.Trim() == d.Email?.Trim())).ToList();
+
+                // Se ainda não achou e o titular tiver um código único (ex: CPF), usa esse código (mas não tem no CSV)
+                // Caso contrário, fica vazio
+
+                grupos.Add(new GrupoTitularDependentes
                 {
-                    Titular = titular
-                };
-
-                // 3. Buscar dependentes deste titular
-                grupo.Dependentes = todosAssociados
-                    .Where(a => a.TipoAssociado == "D" && a.CodigoTitular == titular.CodigoAssociado)
-                    .ToList();
-
-                grupos.Add(grupo);
+                    Titular = titular,
+                    Dependentes = dependentesDoTitular
+                });
             }
 
             return grupos;
@@ -576,8 +587,8 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                // 1. EMAIL - limpar e garantir
-                string email = LimparCampo(titular.Email?.Trim(), "sememail", false);
+                //// 1. EMAIL - limpar e garantir
+                //string email = LimparCampo(titular.Email?.Trim(), "sememail", false);
 
                 // 2. NOME COMPLETO - substituir espaços por UNDERLINE ÚNICO
                 string nomeCompleto = FormatarNomeComUnderline(titular.NomeCompleto?.Trim());
@@ -589,7 +600,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string dataNascimento = ConverterDataParaDDMMAAAA(titular.DataNascimento);
 
                 // 5. MONTAR COM DOIS UNDERLINES entre campos
-                string nomeArquivo = $"{email}__{nomeCompleto}.docx";
+                string nomeArquivo = $"{cpf}__{nomeCompleto}.docx";
 
                 return SanitizarNomeArquivo(nomeArquivo);
             }
@@ -760,6 +771,422 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             return nomeArquivo;
+        }
+
+        protected void btnPreencherComDadosCsv_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                // DEPOIS — busca do arquivo Excel/CSV
+                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\AASP.csv";
+                // ou: string caminhoArquivo = Server.MapPath("~/public/uploadgestao/docs/importacao/associados.csv
+                var importService = new ImportacaoAssociadosService();
+                List<DadosAssociadoCompleto> todosAssociados;
+
+                try
+                {
+                    todosAssociados = importService.ImportarArquivo(caminhoArquivo);
+                }
+                catch (Exception exImport)
+                {
+                    lblErro.Text = $"Erro ao ler arquivo: {exImport.Message}";
+                    lblErro.Visible = true;
+                    return;
+                }
+
+                if (todosAssociados == null || todosAssociados.Count == 0)
+                {
+                    lblErro.Text = "Nenhum associado encontrado no arquivo.";
+                    lblErro.Visible = true;
+                    return;
+                }
+
+                // 2. Agrupar titulares com seus dependentes
+                var gruposTitulares = AgruparTitularesComDependentes(todosAssociados);
+
+                lblMensagem.Text = $"Encontrados {gruposTitulares.Count} titulares (com dependentes). Processando...";
+                lblMensagem.Visible = true;
+
+                // 3. Para cada grupo (titular + dependentes), criar um documento
+                int documentosCriados = 0;
+                string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
+
+                // Criar pasta se não existir
+                if (!Directory.Exists(pastaDestino))
+                    Directory.CreateDirectory(pastaDestino);
+
+                // Limitar a 500 grupos para teste
+                foreach (var grupo in gruposTitulares.Take(1400))
+                {
+                    try
+                    {
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_ANAVA.docx");
+
+                        // Nome do arquivo
+                        string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
+                        string outputPath = Path.Combine(pastaDestino, nomeArquivo);
+
+                        // Converter titular para dicionário
+                        var dadosTitular = ConverterAssociadoParaDicionario(grupo.Titular);
+
+                        // 4. Converter dependentes para lista de dicionários
+                        var listaDependentes = new List<Dictionary<string, string>>();
+                        int dependenteNumero = 1;
+
+                        foreach (var dependente in grupo.Dependentes.Take(1400)) // Máximo 500 dependentes por formulário
+                        {
+                            var dictDependente = ConverterDependenteParaDicionario(dependente);
+                            // Adicionar número do dependente (DEPENDENTE 1, DEPENDENTE 2, etc.)
+                            dictDependente.Add("NUMERO_DEPENDENTE", dependenteNumero.ToString());
+                            listaDependentes.Add(dictDependente);
+                            dependenteNumero++;
+                        }
+
+                        // 5. Processar o documento com o titular
+                        int appliedTitular = docxServiceCsv.FillTitularBasico(
+                            templatePath,
+                            outputPath,
+                            dadosTitular);
+
+                        // AGUARDAR um pouco
+                        System.Threading.Thread.Sleep(100);
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+
+                        //// 5b. Preencher os campos da seção "DADOS DO ASSOCIADO" (parágrafos soltos)
+                        int appliedAssociado = docxServiceCsv.PreencherCamposDadosAssociado(outputPath, dadosTitular);
+
+                        // AGUARDAR um pouco
+                        System.Threading.Thread.Sleep(100);
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+
+                        // 6. Processar os dependentes
+                        int appliedDependentes = 0;
+                        if (listaDependentes.Count > 0)
+                        {
+                            appliedDependentes = docxServiceCsv.FillDependentes(outputPath, outputPath, listaDependentes);
+                        }
+
+                        //        // 7. Processar plano de coparticipação
+                        //        string tipoCoparticipacao = "PARCIAL"; // Pode ser ajustado
+                        //        int appliedPlano = _docxService.FillPlanoCoparticipacao(outputPath, tipoCoparticipacao);
+
+                        // 7. Processar plano de coparticipação
+                        string codigoPlano = grupo.Titular.Plano;   // ex: "12A"
+                        int appliedPlano = docxServiceCsv.FillPlanoCoparticipacao(outputPath, codigoPlano);
+
+                        // 8. Processar tabela de valores (dados fictícios por enquanto)
+                        // Composição de contraprestação com valores REAIS do banco
+                        var composicaoContraprestacao = new Dictionary<string, string>();
+
+                        // Valor do titular (se existir)
+                        if (grupo.Titular.ValorPlano.HasValue)
+                            composicaoContraprestacao["VALOR_TITULAR"] = grupo.Titular.ValorPlano.Value.ToString("C2", new CultureInfo("pt-BR"));
+                        else
+                            composicaoContraprestacao["VALOR_TITULAR"] = "";
+
+                        // Valores dos dependentes
+                        int idx = 1;
+                        foreach (var dep in grupo.Dependentes.Take(5)) // Máximo 5 dependentes (ajuste se necessário)
+                        {
+                            string chave = $"VALOR_DEPENDENTE_{idx}";
+                            if (dep.ValorPlano.HasValue)
+                                composicaoContraprestacao[chave] = dep.ValorPlano.Value.ToString("C2", new CultureInfo("pt-BR"));
+                            else
+                                composicaoContraprestacao[chave] = "";
+                            idx++;
+                        }
+
+                        //int appliedValores = docxServiceCsv.FillTabelaValores(outputPath, composicaoContraprestacao);
+
+                        //// 9. Calcular e preencher o total  
+                        //int appliedTotal = _docxService.FillTotalContraprestacao(outputPath, composicaoContraprestacao);
+
+                        // ✅ SÓ INSERE NO BANCO SE TUDO DEU CERTO
+                        // Titular
+                        //queriesService.InserirRegistroProposta(grupo.Titular, "T", nomeArquivo);
+                        //// Dependentes
+                        //foreach (var dep in grupo.Dependentes)
+                        //{
+                        //    queriesService.InserirRegistroProposta(dep, "D", nomeArquivo);
+                        //}
+
+                        documentosCriados++;
+
+                        //        lblMensagem.Text += $"<br/>✓ Documento criado para {grupo.Titular.NomeCompleto} com {grupo.Dependentes.Count} dependente(s)";
+
+                        //        // Log adicional para depuração
+                        //        System.Diagnostics.Debug.WriteLine($"Documento criado: {outputPath}");
+
+                    }
+                    catch (Exception exTitular)
+                    {
+                        lblErro.Text += $"<br/>✗ Erro ao processar {grupo.Titular.NomeCompleto}: {exTitular.Message}";
+                        lblErro.Visible = true;
+                    }
+                }
+
+                // 10. Mostrar mensagem final SEM criar ZIP
+                lblMensagem.Text += $"<br/><br/>✅ Processamento concluído! {documentosCriados} documentos criados na pasta: {pastaDestino}";
+
+                // Opcional: Adicionar link para abrir a pasta
+                if (documentosCriados > 0)
+                {
+                    lblMensagem.Text += $"<br/><a href='file:///{pastaDestino.Replace("\\", "/")}' target='_blank'>Abrir pasta de documentos</a>";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                lblErro.Text = $"ERRO GERAL: {ex.Message}<br/><br/>Stack: {ex.StackTrace}";
+                lblErro.Visible = true;
+            }
+        }
+
+
+        public class ImportacaoAssociadosService : Helpers
+        {
+            //MAPEANDO: NOME DA COLUNA NO ARQUIVO
+            //FLEXIVEL: ACEITA VARIAÇÕES DE NOME
+
+            private static readonly Dictionary<string, string> MapColunas = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                // ── Colunas REAIS do seu CSV ──────────────────────────────────────
+                { "Nome",                           "NomeCompleto" },
+                { "C.P.F.",                         "CpfTitular" },
+                { "Nascimento",                     "DataNascimento" },
+                { "Idade",                          "Idade" },
+                { "Sexo",                           "Sexo" },
+                { "R.G.",                           "Rg" },
+                { "Cartão nacional de saúde(SUS)",  "CartaoSus" },
+                { "E-Mail",                         "Email" },
+                { "Telefone (Benef)",               "TelefoneCelular" },
+                { "Data de Inclusão",               "DataInicioVigencia" },
+                { "Categoria",                      "TipoAssociado" },   // T ou D virá daqui
+                { "Locação",                        "CodigoTitular" },   // agrupa titular+dependentes
+                { "Plano",                          "Plano" },
+                { "Registro do plano na ANS",       "CodigoAssociado" }, // ou ajuste se tiver código próprio
+                { "Tabela de preços",               "ValorPlano" },
+            };
+
+            //ENTRADA PRICIPAR  - DETECTA O TIPO PELO NOME DO ARQUIVO
+            public List<DadosAssociadoCompleto> ImportarArquivo(string caminhoArquivo)
+            {
+                if (!File.Exists(caminhoArquivo))
+                    throw new FileNotFoundException($"Arquivo não encontrado: {caminhoArquivo}");
+
+                string extensao = Path.GetExtension(caminhoArquivo).ToLower();
+
+                switch (extensao)
+                {
+                    case ".xlsx":
+                    case ".xls": return ImportarExcel(caminhoArquivo);
+                    case ".csv": return ImportarCsv(caminhoArquivo);
+                    default:
+                        throw new NotSupportedException($"Extensão '{extensao}' não suportada.");
+                }
+            }
+
+            //LEITURA DO EXCEL (.XLSX)
+            public List<DadosAssociadoCompleto> ImportarExcel(string caminhoArquivo)
+            {
+                var lista = new List<DadosAssociadoCompleto>();
+
+                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+                using (var package = new ExcelPackage(new FileInfo(caminhoArquivo)))
+                {
+                    var sheet = package.Workbook.Worksheets.FirstOrDefault();
+                    if (sheet == null || sheet.Dimension == null)
+                        throw new Exception("Planilha vazia ou sem dados.");
+
+                    int totalLinhas = sheet.Dimension.End.Row;
+                    int totalColunas = sheet.Dimension.End.Column;
+
+                    var mapa = MapearColunas(sheet, totalColunas);
+
+                    for (int row = 2; row <= totalLinhas; row++)
+                    {
+                        // ObterCelula vem do Helpers via herança ✅
+                        if (string.IsNullOrWhiteSpace(ObterCelula(sheet, row, mapa, "NomeCompleto")))
+                            continue;
+
+                        var assoc = MapearLinha(mapa, col => ObterCelula(sheet, row, col));
+                        lista.Add(assoc);
+                    }
+                }
+
+                return lista;
+            }
+
+            public List<DadosAssociadoCompleto> ImportarCsv(string caminhoArquivo, char separador = ';')
+            {
+                var lista = new List<DadosAssociadoCompleto>();
+                var linhas = File.ReadAllLines(caminhoArquivo, Encoding.UTF8);
+
+                if (linhas.Length < 2)
+                    throw new Exception("CSV vazio ou sem dados.");
+
+                var cabecalho = linhas[0].Split(separador);
+                var mapa = MapearColunasCsv(cabecalho);
+
+                // Auto-detecta separador
+                if (mapa.Count == 0)
+                {
+                    separador = separador == ';' ? ',' : ';';
+                    cabecalho = linhas[0].Split(separador);
+                    mapa = MapearColunasCsv(cabecalho);
+                }
+
+                for (int i = 1; i < linhas.Length; i++)
+                {
+                    if (string.IsNullOrWhiteSpace(linhas[i])) continue;
+
+                    // SplitCsvLinha vem do Helpers via herança ✅
+                    var colunas = SplitCsvLinha(linhas[i], separador);
+
+                    // ObterValorCsv vem do Helpers via herança ✅
+                    if (string.IsNullOrWhiteSpace(ObterValorCsv(colunas, mapa, "NomeCompleto")))
+                        continue;
+
+                    var assoc = MapearLinha(mapa, colIdx =>
+                        colIdx >= 0 && colIdx < colunas.Length ? colunas[colIdx] : "");
+
+                    lista.Add(assoc);
+                }
+
+                return lista;
+            }
+
+            private Dictionary<string, int> MapearColunas(ExcelWorksheet sheet, int totalColunas)
+            {
+                var mapa = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+                for (int col = 1; col <= totalColunas; col++)
+                {
+                    string header = sheet.Cells[1, col].Text?.Trim();
+                    if (string.IsNullOrEmpty(header)) continue;
+
+                    if (MapColunas.TryGetValue(header, out string propriedade))
+                        mapa[propriedade] = col;
+                }
+
+                return mapa;
+            }
+
+            private Dictionary<string, int> MapearColunasCsv(string[] cabecalho)
+            {
+                var mapa = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+                for (int i = 0; i < cabecalho.Length; i++)
+                {
+                    string header = cabecalho[i].Trim().Trim('"');
+                    if (string.IsNullOrEmpty(header)) continue;
+
+                    if (MapColunas.TryGetValue(header, out string propriedade))
+                        mapa[propriedade] = i;
+                }
+
+                return mapa;
+            }
+
+
+            // MAPEAMENTO DE UMA LINHA → DadosAssociadoCompleto
+            private DadosAssociadoCompleto MapearLinha(Dictionary<string, int> mapa, Func<int, string> obterValor)
+            {
+                string Get(string prop)
+                {
+                    if (mapa.TryGetValue(prop, out int idx))
+                        return obterValor(idx)?.Trim() ?? "";
+                    return "";
+                }
+
+                decimal? GetDecimal(string prop)
+                {
+                    string raw = Get(prop).Replace("R$", "").Replace(".", "").Replace(",", ".").Trim();
+                    return decimal.TryParse(raw, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal v)
+                        ? v : (decimal?)null;
+                }
+
+                int? GetInt(string prop)
+                {
+                    string val = Get(prop);
+                    if (string.IsNullOrWhiteSpace(val)) return null;
+                    return int.TryParse(val, out int v) ? v : (int?)null;
+                }
+
+                DateTime? GetDate(string prop)
+                {
+                    string raw = Get(prop);
+                    if (string.IsNullOrWhiteSpace(raw)) return null;
+                    return DateTime.TryParseExact(raw,
+                        new[] { "dd/MM/yyyy", "yyyy-MM-dd", "MM/dd/yyyy" },
+                        CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime d)
+                        ? d : (DateTime?)null;
+                }
+
+                // 1. CRIA o objeto associado
+                var associado = new DadosAssociadoCompleto
+                {
+                    CodigoAssociado = Get("CodigoAssociado"),
+                    NomeCompleto = Get("NomeCompleto"),
+                    CpfTitular = Get("CpfTitular"),
+                    DataNascimento = Get("DataNascimento"),
+                    Sexo = Get("Sexo"),
+                    EstadoCivil = Get("EstadoCivil"),
+                    Rg = Get("Rg"),
+                    OrgaoExpedidor = Get("OrgaoExpedidor"),
+                    CartaoSus = Get("CartaoSus"),
+                    NumeroDeclaracaoNascidoVivo = Get("NumeroDeclaracaoNascidoVivo"),
+                    Idade = Get("Idade"),
+                    Endereco = Get("Endereco"),
+                    Numero = Get("Numero"),
+                    Complemento = Get("Complemento"),
+                    Cep = Get("Cep"),
+                    Bairro = Get("Bairro"),
+                    Cidade = Get("Cidade"),
+                    Uf = Get("Uf"),
+                    Email = Get("Email"),
+                    TelefoneCelular = Get("TelefoneCelular"),
+                    Filiacao = Get("Filiacao"),
+                    DiaVencimentoPadrao = GetInt("DiaVencimentoPadrao"),
+                    CodigoTitular = Get("CodigoTitular"),
+                    TipoAssociado = Get("TipoAssociado"),
+                    ValorPlano = GetDecimal("ValorPlano"),
+                    NomeParentesco = Get("NomeParentesco"),
+                    DataInicioVigencia = GetDate("DataInicioVigencia"),
+                    Plano = Get("Plano"),
+                };
+
+                // 2. AGORA sim, converte o código do plano em descrição e coparticipação
+                if (!string.IsNullOrWhiteSpace(associado.Plano))
+                {
+                    switch (associado.Plano.Trim().ToUpper())
+                    {
+                        case "12E": associado.DescricaoPlano = "ADESAO RP COPART ENFERMARIA"; associado.TipoCoparticipacao = "PARCIAL"; break;
+                        case "29E": associado.DescricaoPlano = "OURO ADESAO I -E -R1"; associado.TipoCoparticipacao = "PARCIAL"; break;
+                        case "13E": associado.DescricaoPlano = "ADESAO S/OB COPART ENFERMARIA"; associado.TipoCoparticipacao = "PARCIAL"; break;
+                        case "12A": associado.DescricaoPlano = "ADESAO RP COPART APARTAMENTO"; associado.TipoCoparticipacao = "PARCIAL"; break;
+                        case "43E": associado.DescricaoPlano = "ADESAO RP C/OB COPART CONSUL/EXAM/TERAP"; associado.TipoCoparticipacao = "COMPLETA"; break;
+                        case "29A": associado.DescricaoPlano = "OURO ADESAO I -A -R1"; associado.TipoCoparticipacao = "PARCIAL"; break;
+                        case "41E": associado.DescricaoPlano = "OURO ADESAO C/OB COP CONSUL/EXAM/TERAP"; associado.TipoCoparticipacao = "COMPLETA"; break;
+                        case "42E": associado.DescricaoPlano = "ADESAO S/OB COP CONSUL/EXAM/TERAP"; associado.TipoCoparticipacao = "COMPLETA"; break;
+                        case "13A": associado.DescricaoPlano = "ADESAO S/OB COPART APARTAMENTO"; associado.TipoCoparticipacao = "PARCIAL"; break;
+                        case "43A": associado.DescricaoPlano = "ADESAO RP C/OB COPART CONSUL/EXAM/TERAP"; associado.TipoCoparticipacao = "COMPLETA"; break;
+                        default: associado.DescricaoPlano = associado.Plano; associado.TipoCoparticipacao = "PARCIAL"; break;
+                    }
+                }
+                else
+                {
+                    associado.DescricaoPlano = "";
+                    associado.TipoCoparticipacao = "Parcial";
+                }
+
+                // 3. Retorna o associado com os campos extras preenchidos
+                return associado;
+            }
         }
     }
 }

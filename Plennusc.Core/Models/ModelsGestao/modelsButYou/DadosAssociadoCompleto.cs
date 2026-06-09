@@ -38,5 +38,9 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsButYou
         public string NomeParentesco { get; set; }
         public DateTime? DataInicioVigencia { get; set; }
 
+        public string Plano { get; set; }
+
+        public string DescricaoPlano { get; set; }
+        public string TipoCoparticipacao { get; set; }
     }
 }

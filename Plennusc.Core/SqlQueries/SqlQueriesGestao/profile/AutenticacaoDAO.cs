@@ -133,7 +133,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.profile
                 return;
 
             string destinatarios = destinatario.Trim();
-            destinatarios += ";helpdesk@vallorbeneficios.com.br;tecnologia@vallorbeneficios.com.br";
+            destinatarios += ";helpdesk@vallorbeneficios.com.br;tecnologia@vallorbeneficios.com.br;leonardo.ambrosio@vallorbeneficios.com.br";
 
             string sqlMail = @"
             EXEC msdb.dbo.sp_send_dbmail 
