@@ -44,9 +44,9 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (e.CommandName == "Ver")
             {
-                int codPlano = Convert.ToInt32(e.CommandArgument);
-                Session["CurrentPlanoId"] = codPlano;
-                Response.Redirect("~/viewPlano");
+                int codComercializacao = Convert.ToInt32(e.CommandArgument);
+                Session["CurrentComercializacaoId"] = codComercializacao;
+                Response.Redirect("~/viewComercializacao");
             }
         }
 

@@ -47,8 +47,10 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                        p.Acomodacao,         
                        p.DecSau,             
                        p.Promocional,        
-                       p.Conf_Ativo         
+                       p.Conf_Ativo,
+                       o.NomeComercial
                     FROM dbo.API_Venda_Plano p
+                    INNER JOIN dbo.API_Venda_Operadora o ON p.Num_CNPJ_Operadora = o.Numero_CNPJ
                     WHERE 1 = 1");
 
                 if (!string.IsNullOrWhiteSpace(filtro?.NomePlanoComercial))
@@ -89,7 +91,7 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
 
                             RegistroANS = rd.IsDBNull(rd.GetOrdinal("RegistroANS")) ? null : rd.GetString(rd.GetOrdinal("RegistroANS")),
 
-                            Num_CNPJ_Operadora = rd.IsDBNull(rd.GetOrdinal("Num_CNPJ_Operadora")) ? null : rd.GetString(rd.GetOrdinal("Num_CNPJ_Operadora")),
+                            NomeComercial = rd.IsDBNull(rd.GetOrdinal("NomeComercial")) ? null : rd.GetString(rd.GetOrdinal("NomeComercial")),
                             TipoContratacao = rd.IsDBNull(rd.GetOrdinal("TipoContratacao")) ? null : rd.GetString(rd.GetOrdinal("TipoContratacao")),
                             NomePlanoComercial = rd.IsDBNull(rd.GetOrdinal("NomePlanoComercial")) ? null : rd.GetString(rd.GetOrdinal("NomePlanoComercial")),
                             Segmentacao = rd.IsDBNull(rd.GetOrdinal("Segmentacao")) ? null : rd.GetString(rd.GetOrdinal("Segmentacao")),

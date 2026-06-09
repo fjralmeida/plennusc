@@ -45,15 +45,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (e.CommandName == "Ver")
             {
-                int codPlano = Convert.ToInt32(e.CommandArgument);
-                Session["CurrentPlanoId"] = codPlano;
-                Response.Redirect("~/viewPlano");
+                int codTabelaPreco = Convert.ToInt32(e.CommandArgument);
+                Session["CurrentPlanoId"] = codTabelaPreco;
+                Response.Redirect("~/viewTabelaPreco");
             }
         }
 
         protected void btnNovoPreco_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/novoPlano");
+            Response.Redirect("~/novoPreco");
         }
 
         protected void gvPrecos_RowDataBound(object sender, GridViewRowEventArgs e)

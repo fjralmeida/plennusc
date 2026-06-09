@@ -145,6 +145,8 @@
     <Compile Include="Models\ModelsGestao\DemandaFiltro.cs" />
     <Compile Include="Models\ModelsGestao\DemandaInfo.cs" />
     <Compile Include="Models\ModelsGestao\DemandaListDto.cs" />
+    <Compile Include="Models\ModelsGestao\EntidadeFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\EntidadeListDto.cs" />
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
@@ -203,6 +205,7 @@
     <Compile Include="Service\ServiceGestao\menu\menusManagementService.cs" />
     <Compile Include="Service\ServiceGestao\menu\MenuSystemService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\ComercializacaoService.cs" />
+    <Compile Include="Service\ServiceGestao\planiumApi\EntidadeService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\OperadoraService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\PlanoService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />

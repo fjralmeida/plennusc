@@ -77,7 +77,7 @@
                 <div class="filter-item">
                     <label class="form-label">Segmentação</label>
                     <asp:TextBox ID="txtSegmentacao" runat="server" CssClass="form-control"
-                        placeholder="A, H, O, OB"></asp:TextBox>
+                        placeholder="A, H, O, OB, AHCO"></asp:TextBox>
                 </div>
 
                 <div class="filter-item">
@@ -118,8 +118,8 @@
                         ItemStyle-CssClass="text-center col-codigoproduto"
                         HeaderStyle-CssClass="text-center" />
 
-                    <asp:BoundField DataField="Num_CNPJ_Operadora" HeaderText="CNPJ Operadora"
-                        ItemStyle-CssClass="text-left col-cnpj"
+                    <asp:BoundField DataField="NomeComercial" HeaderText="Nome Operadora"
+                        ItemStyle-CssClass="text-left col-nomecomercial"
                         HeaderStyle-CssClass="text-left" />
 
                     <asp:BoundField DataField="TipoContratacao" HeaderText="Tipo Contratação"
@@ -128,7 +128,7 @@
 
                     <asp:BoundField DataField="NomePlanoComercial" HeaderText="Nome Plano"
                         ItemStyle-CssClass="text-left col-nomecomercial"
-                        HeaderStyle-CssClass="text-left" />
+                        HeaderStyle-CssClass="text-center" />
 
                     <asp:BoundField DataField="Segmentacao" HeaderText="Segmentação"
                         ItemStyle-CssClass="text-center col-segmentacao"
@@ -154,12 +154,11 @@
                        ItemStyle-CssClass="text-center col-promocional"
                        HeaderStyle-CssClass="text-center" />
 
-                    <asp:TemplateField HeaderText="Ativo ou Inativo"
+                    <asp:TemplateField HeaderText="Status"
                         ItemStyle-CssClass="text-center col-confativo"
                         HeaderStyle-CssClass="text-center">
                         <ItemTemplate>
                                 <%# ((bool)Eval("Conf_Ativo")) ? "Ativo" : "Inativo" %>
-                            </span>
                         </ItemTemplate>
                     </asp:TemplateField>
 

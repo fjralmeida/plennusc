@@ -1,12 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" 
     MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" 
     AutoEventWireup="true" 
-    CodeBehind="commercializationRegistration.aspx.cs" 
-    Inherits="appWhatsapp.PlennuscGestao.Views.commercializationRegistration" %>
+    CodeBehind="entityRegistration.aspx.cs" 
+    Inherits="appWhatsapp.PlennuscGestao.Views.entityRegistration" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
-    <title>Lista de comercialização</title>
+    <title>Lista de entidades</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -53,10 +53,10 @@
                 <span class="title-icon">
                     <i class="bi bi-building me-2"></i>
                 </span>
-                Lista de Comercialização
+                Lista de Entidades
             </h1>
-            <asp:Button ID="btnNovaComercializacao" runat="server" CssClass="btn-primary"
-                Text="Nova Comercialização" OnClick="btnNovaComercializacao_Click" />
+            <asp:Button ID="btnNovaEntidade" runat="server" CssClass="btn-primary"
+                Text="Nova Entidade" OnClick="btnNovaEntidade_Click" />
         </div>
 
              <!-- Filtros -->
@@ -68,15 +68,15 @@
                  <div class="filter-section">
 
                      <div class="filter-item">
-                         <label class="form-label">Estado</label>
-                         <asp:TextBox ID="txtEstado" runat="server" CssClass="form-control"
-                             placeholder="Nome do estado"></asp:TextBox>
+                         <label class="form-label">Entidade</label>
+                         <asp:TextBox ID="txtEntidade" runat="server" CssClass="form-control"
+                             placeholder="Nome da entidade"></asp:TextBox>
                      </div>
 
                      <div class="filter-item">
-                         <label class="form-label">Cidade</label>
-                         <asp:TextBox ID="txtCidade" runat="server" CssClass="form-control"
-                             placeholder="Nome da cidade"></asp:TextBox>
+                         <label class="form-label">CNPJ</label>
+                         <asp:TextBox ID="txtCnpj" runat="server" CssClass="form-control"
+                             placeholder="CNPJ"></asp:TextBox>
                      </div>
 
                       <div class="btn-filter-container">
@@ -88,50 +88,33 @@
              </div>
 
             <div class="grid-container">
-                <asp:GridView ID="gvComercializacao" runat="server" CssClass="custom-grid"
+                <asp:GridView ID="gvEntidade" runat="server" CssClass="custom-grid"
                     AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-                    OnPageIndexChanging="gvComercializacao_PageIndexChanging"
-                    OnRowCommand="gvComercializacao_RowCommand"
-                    OnRowDataBound="gvComercializacao_RowDataBound"
-                    EmptyDataText="Nenhum local de comercialização encontrado no cadastro.">
+                    OnPageIndexChanging="gvEntidade_PageIndexChanging"
+                    OnRowCommand="gvEntidade_RowCommand"
+                    OnRowDataBound="gvEntidade_RowDataBound"
+                    EmptyDataText="Nenhuma entidade encontrada no cadastro.">
 
                 <Columns>
-                    <asp:BoundField DataField="CodigoComercializacaoMunicipio" HeaderText="ID"
-                        ItemStyle-CssClass="text-center col-codigocomercializacaomunicipio"
+                    <asp:BoundField DataField="CodigoEntidade" HeaderText="ID"
+                        ItemStyle-CssClass="text-center col-codigoentidade"
                         HeaderStyle-CssClass="text-center" />
 
-                    <asp:BoundField DataField="CodigoCidade" HeaderText="Código IBGE Cidade"
-                        ItemStyle-CssClass="text-center col-codigocidade"
-                        HeaderStyle-CssClass="text-center" />
+                    <asp:BoundField DataField="RazaoSocial" HeaderText="Razão Social"
+                        ItemStyle-CssClass="text-left col-razaosocial"
+                        HeaderStyle-CssClass="text-left" />
 
-                    <asp:BoundField DataField="NomeEstado" HeaderText="Sigla Estado"
-                        ItemStyle-CssClass="text-center col-nomeestado"
-                        HeaderStyle-CssClass="text-center" />
+                    <asp:BoundField DataField="Numero_CNPJ" HeaderText="CNPJ"
+                        ItemStyle-CssClass="text-left col-cnpj"
+                        HeaderStyle-CssClass="text-left" />
 
-                    <asp:BoundField DataField="NomePlano" HeaderText="Nome Plano"
-                        ItemStyle-CssClass="text-center col-nomeplano"
-                        HeaderStyle-CssClass="text-center" />
-
-                     <asp:BoundField DataField="NomeCidade" HeaderText="Nome Cidade"
-                         ItemStyle-CssClass="text-center col-nomecidade"
-                         HeaderStyle-CssClass="text-center" />
-
-                     <asp:TemplateField HeaderText="Ativo ou Inativo"
-                         ItemStyle-CssClass="text-center col-confativo"
-                         HeaderStyle-CssClass="text-center">
+                     <asp:TemplateField HeaderText="Status"
+                         ItemStyle-CssClass="text-left col-confativo"
+                         HeaderStyle-CssClass="text-left">
                          <ItemTemplate>
                                  <%# ((bool)Eval("Conf_Ativo")) ? "Ativo" : "Inativo" %>
                          </ItemTemplate>
                      </asp:TemplateField>
-
-                    <asp:TemplateField HeaderText="Exibir"
-                       ItemStyle-CssClass="text-center col-exibir"
-                           HeaderStyle-CssClass="text-center">
-                        <ItemTemplate>
-                                <%# ((bool)Eval("Conf_Exibir")) ? "Sim" : "Não" %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-
                 </Columns>
 
                 <PagerStyle HorizontalAlign="Center" CssClass="pagination-container" />
