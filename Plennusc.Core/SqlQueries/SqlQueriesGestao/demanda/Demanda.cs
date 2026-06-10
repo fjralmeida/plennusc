@@ -673,5 +673,13 @@ ORDER BY d.DataDemanda DESC";
     
             COMMIT TRANSACTION;";
 
+        public const string BuscarContagemDemandasPorPessoa = @"
+            SELECT 
+                CodEstr_SituacaoDemanda,
+                COUNT(*) AS Total
+            FROM Demanda
+            WHERE CodPessoaSolicitacao = @CodPessoa
+            GROUP BY CodEstr_SituacaoDemanda";
+
     }
 }

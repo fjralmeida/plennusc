@@ -48,6 +48,10 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 if (Session["EstruturaMenus"] == null)
                     return;
 
+                // ✅ BUSCA CONTAGENS ANTES DE MONTAR O MENU
+                if (Session["ContagemDemandas"] == null)
+                    Session["ContagemDemandas"] = BuscarContagemDemandas();
+
                 DataTable dtMenus = Session["EstruturaMenus"] as DataTable;
                 phMenuDinamico.Controls.Clear();
 
@@ -197,8 +201,6 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             return container;
         }
 
-
-        // ✅ CRIA MENU SIMPLES (LINK DIRETO)
         private HtmlGenericControl CriarMenuSimples(DataRow menu)
         {
             string nomeDisplay = menu["NomeDisplay"].ToString();
@@ -208,33 +210,55 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
 
             var link = new HtmlGenericControl("a");
 
-            // ✅ PADRÃO CORRETO: Usa ResolveUrl para garantir o caminho absoluto
             if (!string.IsNullOrEmpty(httpRouter))
-            {
                 link.Attributes["href"] = httpRouter;
-            }
             else
-            {
-                // ✅ CORREÇÃO: Usa ResolveUrl para criar URL absoluta
                 link.Attributes["href"] = ResolveUrl($"~/{nomeObjeto}");
-            }
 
             link.Attributes["title"] = menu["CaptionObjeto"]?.ToString() ?? nomeDisplay;
-            link.Attributes["class"] = "d-flex align-items-center"; // ✅ ADICIONA FLEX PARA ALINHAR ÍCONE E TEXTO
+            link.Attributes["class"] = "d-flex align-items-center";
 
-            // ✅ ÍCONE E TEXTO - CORRIGIDO
+            // ✅ ÍCONE
             var icon = new HtmlGenericControl("i");
             icon.Attributes["class"] = icone;
             link.Controls.Add(icon);
 
+            // ✅ TEXTO
             var span = new HtmlGenericControl("span");
             span.Attributes["class"] = "label";
             span.InnerText = nomeDisplay;
             link.Controls.Add(span);
 
+            // ✅ BADGE — cor por status
+            var coresBadge = new Dictionary<string, string>
+    {
+        { "mydemandsopen",      "badge-menu badge-yellow"  },
+        { "mydemandsprogress",  "badge-menu badge-blue"    },
+        { "mydemandswaiting",   "badge-menu badge-orange"  },
+        { "mydemandsrefused",   "badge-menu badge-red"     },
+        { "mydemandscompleted", "badge-menu badge-green"   }
+    };
+
+            string nomeObjetoLower = nomeObjeto.ToLower();
+
+            if (coresBadge.ContainsKey(nomeObjetoLower))
+            {
+                var contagem = Session["ContagemDemandas"] as Dictionary<string, int>;
+                int total = (contagem != null && contagem.ContainsKey(nomeObjetoLower))
+                            ? contagem[nomeObjetoLower]
+                            : 0;
+
+                if (total > 0)
+                {
+                    var badge = new HtmlGenericControl("span");
+                    badge.Attributes["class"] = coresBadge[nomeObjetoLower];
+                    badge.InnerText = total.ToString();
+                    link.Controls.Add(badge);
+                }
+            }
+
             return link;
         }
-
         // ✅ DEFINE ÍCONE BASEADO NO TIPO DE MENU - CORRIGIDO SEM REPETIÇÕES
         private string ObterIcone(DataRow menu)
         {
@@ -501,6 +525,46 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 lblNomeSistema.Text = dtEmpresa.Rows[0]["NomeDisplay"].ToString();
             }
         }
+
+        private Dictionary<string, int> BuscarContagemDemandas()
+        {
+                    var resultado = new Dictionary<string, int>
+            {
+                { "mydemandsopen",     0 },
+                { "mydemandsprogress", 0 },
+                { "mydemandswaiting",  0 },
+                { "mydemandsrefused",  0 },
+                { "mydemandscompleted",0 }
+            };
+
+                    try
+                    {
+                        if (Session["CodPessoa"] == null) return resultado;
+                        int codPessoa = Convert.ToInt32(Session["CodPessoa"]);
+
+                        var demandaService = new DemandaService("Plennus");
+                        var contagem = demandaService.BuscarContagemDemandas(codPessoa);
+
+                        // Mapeie os códigos conforme sua tabela Estrutura
+                        var mapa = new Dictionary<int, string>
+                {
+                    { 17, "mydemandsopen"      },
+                    { 18, "mydemandsprogress"  },
+                    { 19, "mydemandswaiting"   }, // ⚠️ confirme o código
+                    { 20, "mydemandsrefused"   }, // ⚠️ confirme o código
+                    { 23, "mydemandscompleted" }
+                };
+
+                        foreach (var par in mapa)
+                        {
+                            if (contagem.ContainsKey(par.Key))
+                                resultado[par.Value] = contagem[par.Key];
+                        }
+                    }
+                    catch { /* log silencioso */ }
+
+                    return resultado;
+                }
 
         protected void LogoutUsuario(object sender, EventArgs e)
         {
