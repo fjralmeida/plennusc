@@ -217,6 +217,7 @@
     <Compile Include="Service\ServiceGestao\sendMessage\ExcelReportService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />
+    <Compile Include="Service\ServiceGestao\serviceYouBut\DocxServiceCsv.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\EnterpriseDocx.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\ExcelService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />

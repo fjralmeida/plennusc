@@ -77,6 +77,7 @@ namespace appWhatsapp
             routes.MapPageRoute("tablePriceRegistration", "tablePriceRegistration", "~/PlennuscGestao/Views/tablePriceRegistration.aspx");
             routes.MapPageRoute("commercializationRegistration", "commercializationRegistration", "~/PlennuscGestao/Views/commercializationRegistration.aspx");
             routes.MapPageRoute("entityRegistration", "entityRegistration", "~/PlennuscGestao/Views/entityRegistration.aspx");
+            routes.MapPageRoute("careerRegistration", "careerRegistration", "~/PlennuscGestao/Views/careerRegistration.aspx");
 
             #endregion
 
