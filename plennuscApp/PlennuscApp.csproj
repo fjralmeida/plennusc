@@ -257,6 +257,7 @@
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
     <Content Include="PlennuscGestao\Views\Butyou.aspx" />
+    <Content Include="PlennuscGestao\Views\careerRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\commercializationRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx" />
     <Content Include="PlennuscGestao\Views\companyRegistration.aspx" />
@@ -456,6 +457,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\Butyou.aspx.designer.cs">
       <DependentUpon>Butyou.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\careerRegistration.aspx.cs">
+      <DependentUpon>careerRegistration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\careerRegistration.aspx.designer.cs">
+      <DependentUpon>careerRegistration.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\commercializationRegistration.aspx.cs">
       <DependentUpon>commercializationRegistration.aspx</DependentUpon>
@@ -954,7 +962,6 @@
       <DependentUpon>viewDemandBeforeAcceptMedic.aspx</DependentUpon>
     </Compile>
     <Compile Include="Utils\DatabaseHelper.cs" />
-    <Compile Include="Utils\Helpers.cs" />
     <Compile Include="Utils\MenuAuthorization.cs" />
     <Compile Include="ViewsApp\erro.aspx.cs">
       <DependentUpon>erro.aspx</DependentUpon>

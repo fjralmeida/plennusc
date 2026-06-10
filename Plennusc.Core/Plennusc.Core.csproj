@@ -189,6 +189,8 @@
     <Compile Include="Models\ModelsGestao\PlanoListDto.cs" />
     <Compile Include="Models\ModelsGestao\PrecoFiltro.cs" />
     <Compile Include="Models\ModelsGestao\PrecoListDto.cs" />
+    <Compile Include="Models\ModelsGestao\ProfissaoFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\ProfissaoListDto.cs" />
     <Compile Include="Models\ModelsGestao\RespostaDto.cs" />
     <Compile Include="Models\ModelsMedic\DadosMensagensCsvPlaniumMedic.cs" />
     <Compile Include="Models\ModelsSysPlatform\SysPlatformModel.cs" />
@@ -211,10 +213,10 @@
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\PrecoService.cs" />
+    <Compile Include="Service\ServiceGestao\planiumApi\ProfissaoService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\ExcelReportService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />
-    <Compile Include="Service\ServiceGestao\serviceYouBut\DocxServiceCsv.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\EnterpriseDocx.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\ExcelService.cs" />
     <Compile Include="Service\ServiceGestao\tipoEstrutura\StructureTypeService.cs" />
