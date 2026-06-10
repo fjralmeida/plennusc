@@ -1807,5 +1807,28 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
             return list;
         }
+
+        public Dictionary<int, int> BuscarContagemDemandas(int codPessoa)
+        {
+            var contagem = new Dictionary<int, int>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.BuscarContagemDemandasPorPessoa, con))
+            {
+                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+
+                using (var dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        int situacao = Convert.ToInt32(dr["CodEstr_SituacaoDemanda"]);
+                        int total = Convert.ToInt32(dr["Total"]);
+                        contagem[situacao] = total;
+                    }
+                }
+            }
+
+            return contagem;
+        }
     }
 }
