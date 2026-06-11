@@ -200,40 +200,60 @@
         })();
     </script>
 
-      <script>
-          (function () {
-              var wrapper = document.getElementById('notifWrapper');
-              var dropdown = document.getElementById('notifDropdown');
-              var bell = document.getElementById('btnNotif');
+   <script>
+       (function () {
+           var wrapper = document.getElementById('notifWrapper');
+           var dropdown = document.getElementById('notifDropdown');
+           var bell = document.getElementById('btnNotif');
+           var closeTimer = null;
 
-              // Debug: verifique no console se encontrou os elementos
-              console.log('wrapper:', wrapper, 'dropdown:', dropdown, 'bell:', bell);
+           if (!wrapper || !dropdown) return;
 
-              if (!wrapper || !dropdown) return;
+           function openDropdown() {
+               clearTimeout(closeTimer);
+               dropdown.classList.add('open');
+           }
 
-              wrapper.addEventListener('mouseenter', function () {
-                  dropdown.classList.add('open');
-                  console.log('mouseenter - abriu dropdown'); // confirmação
-              });
-              wrapper.addEventListener('mouseleave', function () {
-                  dropdown.classList.remove('open');
-                  console.log('mouseleave - fechou dropdown');
-              });
+           function closeDropdown() {
+               // Pequeno delay de 200ms para permitir que o mouse chegue ao dropdown
+               closeTimer = setTimeout(function () {
+                   dropdown.classList.remove('open');
+               }, 200);
+           }
 
-              if (bell) {
-                  bell.addEventListener('click', function (e) {
-                      e.stopPropagation();
-                      dropdown.classList.toggle('open');
-                  });
-              }
+           // Abre ao entrar no wrapper (sino + dropdown)
+           wrapper.addEventListener('mouseenter', openDropdown);
 
-              document.addEventListener('click', function (e) {
-                  if (!wrapper.contains(e.target)) {
-                      dropdown.classList.remove('open');
-                  }
-              });
-          })();
-      </script>
+           // Quando o mouse sai do wrapper, agenda fechamento
+           wrapper.addEventListener('mouseleave', closeDropdown);
+
+           // Se o mouse entrar no dropdown (que está dentro do wrapper), cancela fechamento
+           dropdown.addEventListener('mouseenter', function () {
+               clearTimeout(closeTimer);
+               dropdown.classList.add('open');
+           });
+
+           // Se o mouse sair do dropdown, agenda fechamento
+           dropdown.addEventListener('mouseleave', closeDropdown);
+
+           // Clique no sino alterna
+           if (bell) {
+               bell.addEventListener('click', function (e) {
+                   e.stopPropagation();
+                   clearTimeout(closeTimer);
+                   dropdown.classList.toggle('open');
+               });
+           }
+
+           // Fecha ao clicar fora (segurança)
+           document.addEventListener('click', function (e) {
+               if (!wrapper.contains(e.target)) {
+                   clearTimeout(closeTimer);
+                   dropdown.classList.remove('open');
+               }
+           });
+       })();
+   </script>
 
     <!-- Fix para links relativos: transforma hrefs "page.aspx" em absolutos -->
     <script>
