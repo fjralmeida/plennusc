@@ -145,8 +145,12 @@
     <Compile Include="Models\ModelsGestao\DemandaFiltro.cs" />
     <Compile Include="Models\ModelsGestao\DemandaInfo.cs" />
     <Compile Include="Models\ModelsGestao\DemandaListDto.cs" />
+<<<<<<< HEAD
     <Compile Include="Models\ModelsGestao\EntidadeFiltro.cs" />
     <Compile Include="Models\ModelsGestao\EntidadeListDto.cs" />
+=======
+    <Compile Include="Models\ModelsGestao\DemandaNotificacaoDto.cs" />
+>>>>>>> dd5ad39282fe88afc01562987892b224924249d8
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
