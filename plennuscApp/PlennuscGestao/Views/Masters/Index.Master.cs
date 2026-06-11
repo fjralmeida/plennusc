@@ -1,5 +1,6 @@
 ﻿using appWhatsapp.SqlQueries;
 using appWhatsapp.ViewsApp;
+using Plennusc.Core.Models.ModelsGestao;
 using Plennusc.Core.Service.ServiceGestao;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
@@ -13,6 +14,10 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
 {
     public partial class Index : System.Web.UI.MasterPage
     {
+        // Propriedades públicas para o .master acessar
+        public int TotalDemandasNaoAceitas { get; private set; }
+        public List<DemandaNotificacaoDto> DemandasNotificacao { get; private set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             // 1. VERIFICA SE ESTÁ LOGADO (SEM ISPOSTBACK)
@@ -32,11 +37,30 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             // 3. ✅ GERA MENU DINÂMICO DO BANCO (SEM ISPOSTBACK)
             GerarMenuDinamico();
 
+            CarregarNotificacoesDemandas();
+
             // 5. CONFIGURA USUÁRIO (SÓ NA PRIMEIRA VEZ)
             if (!IsPostBack)
             {
                 ConfigurarUsuario();
                 VerificarPermissoesEspecificas();
+            }
+        }
+        private void CarregarNotificacoesDemandas()
+        {
+            try
+            {
+                if (Session["CodDepartamento"] == null) return;
+                int codSetor = Convert.ToInt32(Session["CodDepartamento"]);
+
+                var svc = new DemandaService("Plennus");
+                DemandasNotificacao = svc.GetDemandasNaoAceitas(codSetor);
+                TotalDemandasNaoAceitas = DemandasNotificacao?.Count ?? 0;
+            }
+            catch
+            {
+                DemandasNotificacao = new List<DemandaNotificacaoDto>();
+                TotalDemandasNaoAceitas = 0;
             }
         }
 
@@ -571,6 +595,28 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             Session.Clear();
             Session.Abandon();
             Response.Redirect("~/ViewsApp/SignIn.aspx", true);
+        }
+
+        public string ObterCssNivelPrioridade(string descPrioridade)
+        {
+            if (string.IsNullOrEmpty(descPrioridade))
+                return "normal";
+
+            string p = descPrioridade;
+
+            if (p.IndexOf("URGENTE", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "urgente";
+            if (p.IndexOf("ALTA", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "alta";
+            if (p.IndexOf("NORMAL", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "normal";
+            if (p.IndexOf("MÉDIA", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                p.IndexOf("MEDIA", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "media";
+            if (p.IndexOf("BAIXA", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "baixa";
+
+            return "normal";
         }
     }
 }

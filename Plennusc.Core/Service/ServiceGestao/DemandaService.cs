@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Edm.Validation;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Data.Edm.Validation;
 using Microsoft.Data.OData.Query.SemanticAst;
 using Plennusc.Core.Mappers.MappersGestao;
 using Plennusc.Core.Models.ModelsGestao;
@@ -1829,6 +1830,36 @@ namespace Plennusc.Core.Service.ServiceGestao
             }
 
             return contagem;
+        }
+
+        public List<DemandaNotificacaoDto> GetDemandasNaoAceitas(int codSetor)
+        {
+            var lista = new List<DemandaNotificacaoDto>();
+
+            using (var con = Open())
+            using (var cmd = new SqlCommand(Demanda.DemandasNaoAceitasPorSetor, con))
+            {
+                cmd.Parameters.AddWithValue("@CodSetor", codSetor);
+
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        lista.Add(new DemandaNotificacaoDto
+                        {
+                            CodDemanda = rd.GetInt32(0),
+                            Titulo = rd.GetString(1),
+                            DataDemanda = rd.GetDateTime(2),
+                            DataPrazo = rd.IsDBNull(3) ? (DateTime?)null : rd.GetDateTime(3),
+                            Prioridade = rd.GetString(4),
+                            CodPrioridade = rd.GetInt32(5),
+                            Solicitante = rd.GetString(6)
+                        });
+                    }
+                }
+            }
+
+            return lista;
         }
     }
 }

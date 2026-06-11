@@ -20,14 +20,13 @@
 
     <link href="../../../Content/Css/projects/gestao/structuresCss/indexGestao.css" rel="stylesheet" />
 
+    <!-- ========== SCRIPTS UNIFICADOS ========== -->
     <script>
-        // Função para abrir/fechar menu
+        // 1. MENU DO USUÁRIO (mantido como estava)
         function toggleUserMenu() {
             const menu = document.getElementById('userDropdown');
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
-
-        // Fecha menu clicando fora
         document.addEventListener('click', function (e) {
             const avatar = document.querySelector('.user-avatar');
             const menu = document.getElementById('userDropdown');
@@ -36,7 +35,6 @@
             }
         });
     </script>
-
 
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
@@ -58,6 +56,66 @@
                         </span>
                         <asp:TextBox ID="txtBusca" runat="server" TextMode="SingleLine" ClientIDMode="Static"
                             CssClass="form-control border-start-0" placeholder="Buscar..." />
+                    </div>
+                </div>
+
+                 <!-- SINO DE NOTIFICAÇÕES (CORRIGIDO) -->
+                <div class="notif-wrapper" id="notifWrapper">
+
+                    <!-- Botão sino – sem onclick inline -->
+                    <button type="button" class="notif-bell" id="btnNotif">
+                        <i class="bi bi-bell-fill"></i>
+                        <% if (TotalDemandasNaoAceitas > 0) { %>
+                            <span class="notif-badge notif-badge-visible">
+                                <%= TotalDemandasNaoAceitas > 9 ? "9+" : TotalDemandasNaoAceitas.ToString() %>
+                            </span>
+                        <% } %>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <span><i class="bi bi-bell me-2"></i>Demandas sem aceite</span>
+                            <a href="<%= ResolveUrl("~/PlennuscGestao/Views/listDemand.aspx") %>?frame=1"
+                               onclick="document.getElementById('mainFrame').src=this.href; return false;"
+                               class="notif-ver-todas">Ver todas</a>
+                        </div>
+
+                        <div class="notif-list">
+                            <% if (DemandasNotificacao == null || DemandasNotificacao.Count == 0) { %>
+                                <!-- CORREÇÃO: mensagem e ícone -->
+                                <div class="notif-empty">
+                                    <i class="bi bi-inbox"></i>
+                                    <span>Não existe demanda para aceitar</span>
+                                </div>
+                            <% } else {
+                                    foreach (var d in DemandasNotificacao) {
+                                        string cssNivel = ObterCssNivelPrioridade(d.Prioridade);
+                                        string labelPrioridade = d.Prioridade; %>
+
+                                <div class="notif-item <%= cssNivel %>" 
+                                     onclick="abrirDemanda('<%= ResolveUrl("~/PlennuscGestao/Views/listDemand.aspx") %>')">
+                                    <div class="notif-item-header">
+                                        <span class="notif-prioridade-tag prioridade-<%= cssNivel %>">
+                                            <%= labelPrioridade %>
+                                        </span>
+                                        <span class="notif-data">
+                                            <%= d.DataDemanda.ToString("dd/MM HH:mm") %>
+                                        </span>
+                                    </div>
+                                    <div class="notif-titulo"><%= Server.HtmlEncode(d.Titulo) %></div>
+                                    <div class="notif-solicitante">
+                                        <i class="bi bi-person-fill me-1"></i><%= Server.HtmlEncode(d.Solicitante) %>
+                                        <% if (d.DataPrazo.HasValue) { %>
+                                            &nbsp;·&nbsp;<i class="bi bi-calendar-event me-1"></i>
+                                            Prazo: <%= d.DataPrazo.Value.ToString("dd/MM/yyyy") %>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                            <%   } 
+                               } %>
+                        </div>
                     </div>
                 </div>
 
@@ -141,6 +199,41 @@
             }
         })();
     </script>
+
+      <script>
+          (function () {
+              var wrapper = document.getElementById('notifWrapper');
+              var dropdown = document.getElementById('notifDropdown');
+              var bell = document.getElementById('btnNotif');
+
+              // Debug: verifique no console se encontrou os elementos
+              console.log('wrapper:', wrapper, 'dropdown:', dropdown, 'bell:', bell);
+
+              if (!wrapper || !dropdown) return;
+
+              wrapper.addEventListener('mouseenter', function () {
+                  dropdown.classList.add('open');
+                  console.log('mouseenter - abriu dropdown'); // confirmação
+              });
+              wrapper.addEventListener('mouseleave', function () {
+                  dropdown.classList.remove('open');
+                  console.log('mouseleave - fechou dropdown');
+              });
+
+              if (bell) {
+                  bell.addEventListener('click', function (e) {
+                      e.stopPropagation();
+                      dropdown.classList.toggle('open');
+                  });
+              }
+
+              document.addEventListener('click', function (e) {
+                  if (!wrapper.contains(e.target)) {
+                      dropdown.classList.remove('open');
+                  }
+              });
+          })();
+      </script>
 
     <!-- Fix para links relativos: transforma hrefs "page.aspx" em absolutos -->
     <script>

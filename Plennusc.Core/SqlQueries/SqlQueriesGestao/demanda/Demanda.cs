@@ -681,5 +681,22 @@ ORDER BY d.DataDemanda DESC";
             WHERE CodPessoaSolicitacao = @CodPessoa
             GROUP BY CodEstr_SituacaoDemanda";
 
+
+        public const string DemandasNaoAceitasPorSetor = @"
+    SELECT TOP 20
+        d.CodDemanda,
+        d.Titulo,
+        d.DataDemanda,
+        d.DataPrazoMaximo,
+        ep.DescEstrutura  AS Prioridade,
+        d.CodEstr_NivelPrioridade,
+        p.Nome + ' ' + ISNULL(p.Sobrenome,'') AS Solicitante
+    FROM dbo.Demanda d
+    INNER JOIN dbo.Estrutura ep ON d.CodEstr_NivelPrioridade = ep.CodEstrutura
+    INNER JOIN dbo.Pessoa p    ON d.CodPessoaSolicitacao = p.CodPessoa
+    WHERE d.CodSetorDestino    = @CodSetor
+      AND d.CodPessoaExecucao IS NULL
+      AND d.CodEstr_SituacaoDemanda NOT IN (20, 23) 
+    ORDER BY d.CodEstr_NivelPrioridade DESC, d.DataDemanda ASC";
     }
 }
