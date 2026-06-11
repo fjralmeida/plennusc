@@ -32,34 +32,35 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                 cmd.Connection = con;
 
                 var sql = new StringBuilder(@"
-                    SELECT
-                        o.CodigoOperadora,
-                        o.RegistroANS,
-                        o.Numero_CNPJ,
-                        o.RazaoSocial,
-                        o.NomeComercial
-                    FROM dbo.API_Venda_Operadora o
-                    WHERE 1 = 1");
+                SELECT
+                    oper.CodigoOperadora,
+                    oper.NomeComercial,
+                    oper.RegistroANS,
+                    oper.Numero_CNPJ,
+                    oper.RazaoSocial,
+                    oper.NomeComercial
+                FROM dbo.API_Venda_Operadora oper
+                WHERE 1 = 1");
 
                 if (!string.IsNullOrWhiteSpace(filtro?.NomeOperadora))
                 {
-                    sql.Append(" AND o.NomeComercial LIKE @NomeOperadora");
+                    sql.Append(" AND oper.NomeComercial LIKE @NomeOperadora");
                     cmd.Parameters.AddWithValue("@NomeOperadora", "%" + filtro.NomeOperadora.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(filtro?.RegistroANS))
                 {
-                    sql.Append(" AND CAST(o.RegistroANS AS VARCHAR) LIKE @RegistroANS");
+                    sql.Append(" AND CAST(oper.RegistroANS AS VARCHAR) LIKE @RegistroANS");
                     cmd.Parameters.AddWithValue("@RegistroANS", "%" + filtro.RegistroANS.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(filtro?.Numero_CNPJ))
                 {
-                    sql.Append(" AND o.Numero_CNPJ LIKE @Numero_CNPJ");
+                    sql.Append(" AND oper.Numero_CNPJ LIKE @Numero_CNPJ");
                     cmd.Parameters.AddWithValue("@Numero_CNPJ", "%" + filtro.Numero_CNPJ.Trim() + "%");
                 }
 
-                sql.Append(" ORDER BY o.NomeComercial");
+                sql.Append(" ORDER BY oper.CodigoOperadora");
                 cmd.CommandText = sql.ToString();
 
                 using (var rd = cmd.ExecuteReader())

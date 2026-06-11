@@ -41,11 +41,9 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                         ent.Numero_CNPJ,
                         ent.Conf_Ativo
                     FROM dbo.API_Venda_Entidade ent
-                    WHERE
-                        ent.Informacoes_log_e IS NULL
+                    WHERE 1 = 1
                 ");
-
-                // Aplicar filtros corretamente
+                
                 if (!string.IsNullOrWhiteSpace(filtro?.NomeEntidade))
                 {
                     sql.Append(" AND ent.RazaoSocial LIKE @RazaoSocial");
@@ -58,7 +56,6 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                     cmd.Parameters.AddWithValue("@Numero_CNPJ", "%" + filtro.Numero_CNPJ.Trim() + "%");
                 }
 
-                // Ordenação final
                 sql.Append(" ORDER BY ent.CodigoEntidade ASC");
 
                 cmd.CommandText = sql.ToString();

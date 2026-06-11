@@ -33,42 +33,39 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                 cmd.Connection = con;
 
                 var sql = new StringBuilder(@"
-                    SELECT
-                        cm.CodigoComercializacaoMunicipio,
-                        c.CodIBGE AS CodigoIBGE,                          
-                        c.Descricao AS NomeCidade,                        
-                        e.Sigla AS SiglaEstado,                           
-                        p.NomePlanoComercial,
-                        cm.Conf_Ativo,
-                        cm.Conf_Exibir
-                    FROM dbo.API_Venda_ComercializacaoMunicipio cm
-                    INNER JOIN dbo.Cidade c ON c.CodigoCidade = cm.CodigoCidade
-                    INNER JOIN dbo.Estado e ON e.CodigoEstado = c.CodigoEstado   
-                    INNER JOIN dbo.API_Venda_Plano p ON p.CodigoPlano = cm.CodigoPlano
-                    WHERE cm.Informacoes_log_e IS NULL   
-                ");
+                SELECT
+                        commun.CodigoComercializacaoMunicipio,
+                        cid.CodIBGE AS CodigoIBGE,                          
+                        cid.Descricao AS NomeCidade,                        
+                        est.Sigla AS SiglaEstado,                           
+                        pla.NomePlanoComercial,
+                        commun.Conf_Ativo,
+                        commun.Conf_Exibir
+                    FROM dbo.API_Venda_ComercializacaoMunicipio commun
+                    INNER JOIN dbo.Cidade cid ON cid.CodigoCidade = commun.CodigoCidade
+                    INNER JOIN dbo.Estado est ON est.CodigoEstado = cid.CodigoEstado   
+                    INNER JOIN dbo.API_Venda_Plano pla ON pla.CodigoPlano = commun.CodigoPlano
+                WHERE 1 = 1");
 
-                // Aplicar filtros corretamente
                 if (!string.IsNullOrWhiteSpace(filtro?.SiglaEstado))
                 {
-                    sql.Append(" AND e.Sigla LIKE @SiglaEstado");
+                    sql.Append(" AND est.Sigla LIKE @SiglaEstado");
                     cmd.Parameters.AddWithValue("@SiglaEstado", "%" + filtro.SiglaEstado.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(filtro?.NomeCidade))
                 {
-                    sql.Append(" AND c.Descricao LIKE @NomeCidade");
+                    sql.Append(" AND cid.Descricao LIKE @NomeCidade");
                     cmd.Parameters.AddWithValue("@NomeCidade", "%" + filtro.NomeCidade.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(filtro?.NomePlanoComercial))
                 {
-                    sql.Append(" AND p.NomePlanoComercial LIKE @NomePlanoComercial");
+                    sql.Append(" AND pla.NomePlanoComercial LIKE @NomePlanoComercial");
                     cmd.Parameters.AddWithValue("@NomePlanoComercial", "%" + filtro.NomePlanoComercial.Trim() + "%");
                 }
 
-                // Ordenação final
-                sql.Append(" ORDER BY cm.CodigoComercializacaoMunicipio DESC");
+                sql.Append(" ORDER BY commun.CodigoComercializacaoMunicipio DESC");
 
                 cmd.CommandText = sql.ToString();
 

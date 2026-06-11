@@ -35,15 +35,14 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                 cmd.Connection = con;
 
                 var sql = new StringBuilder(@"
-                   SELECT
+                   SELECT 
                         prof.CodigoProfissao,
-                        prof.Nome
-                    FROM dbo.API_Venda_Profissao prof
-                    WHERE
-                        ent.Informacoes_log_e IS NULL
+                        prof.Nome,
+                        prof.CodCBO
+                   FROM API_Venda_Profissao prof
+                   WHERE 1 = 1
                 ");
 
-                // Aplicar filtros corretamente
                 if (!string.IsNullOrWhiteSpace(filtro?.NomeProfissao))
                 {
                     sql.Append(" AND prof.Nome LIKE @NomeProfissao");
@@ -51,7 +50,6 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                 }
 
 
-                // Ordenação final
                 sql.Append(" ORDER BY prof.CodigoProfissao ASC");
 
                 cmd.CommandText = sql.ToString();

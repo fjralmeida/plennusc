@@ -34,37 +34,36 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                 cmd.Connection = con;
 
                 var sql = new StringBuilder(@"
-                SELECT
-                    tp.CodigoTabelaPreco,
-                    tp.CodigoProduto,
-                    p.NomePlanoComercial, 
-                    tp.FaixaBeneficiarios,
-                    tp.DataInicioVenda,
-                    tp.DataFimVenda,
-                    tp.Faixa0,
-                    tp.Faixa1,
-                    tp.Faixa2,
-                    tp.Faixa3,
-                    tp.Faixa4,
-                    tp.Faixa5,
-                    tp.Faixa6,
-                    tp.Faixa7,
-                    tp.Faixa8,
-                    tp.Faixa9,
-                    tp.Conf_ExibirVenda
-                FROM dbo.API_Venda_TabelaPreco tp
-                INNER JOIN dbo.API_Venda_Plano p 
-                    ON tp.CodigoPlano = p.CodigoPlano
-                WHERE (1=1)" 
+                    SELECT
+                        pre.CodigoTabelaPreco,
+                        pla.NomePlanoComercial, 
+                        pre.FaixaBeneficiarios,
+                        pre.DataInicioVenda,
+                        pre.DataFimVenda,
+                        pre.Faixa0,
+                        pre.Faixa1,
+                        pre.Faixa2,
+                        pre.Faixa3,
+                        pre.Faixa4,
+                        pre.Faixa5,
+                        pre.Faixa6,
+                        pre.Faixa7,
+                        pre.Faixa8,
+                        pre.Faixa9,
+                        pre.Conf_ExibirVenda
+                FROM dbo.API_Venda_TabelaPreco pre
+                INNER JOIN dbo.API_Venda_Plano pla 
+                ON pre.CodigoPlano = pla.CodigoPlano
+                WHERE (1=1)"
                 );
 
                 if (!string.IsNullOrWhiteSpace(filtro?.NomePlanoComercial))
                 {
-                    sql.Append(" AND p.NomePlanoComercial LIKE @NomePlanoComercial");
+                    sql.Append(" AND pla.NomePlanoComercial LIKE @NomePlanoComercial");
                     cmd.Parameters.AddWithValue("@NomePlanoComercial", "%" + filtro.NomePlanoComercial.Trim() + "%");
                 }
 
-                sql.Append(" ORDER BY tp.CodigoTabelaPreco");
+                sql.Append(" ORDER BY pre.CodigoTabelaPreco");
                 cmd.CommandText = sql.ToString();
 
                 using (var rd = cmd.ExecuteReader())

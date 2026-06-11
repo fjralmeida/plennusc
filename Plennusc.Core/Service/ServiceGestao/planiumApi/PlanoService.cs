@@ -35,49 +35,49 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
 
                 var sql = new StringBuilder(@"
                     SELECT
-                       p.CodigoPlano,
-                       p.CodigoProduto,      
-                       p.RegistroANS,        
-                       p.Num_CNPJ_Operadora, 
-                       p.TipoContratacao,    
-                       p.NomePlanoComercial, 
-                       p.Segmentacao,        
-                       p.Abrangencia,        
-                       p.Coparticipacao,    
-                       p.Acomodacao,         
-                       p.DecSau,             
-                       p.Promocional,        
-                       p.Conf_Ativo,
-                       o.NomeComercial
-                    FROM dbo.API_Venda_Plano p
-                    INNER JOIN dbo.API_Venda_Operadora o ON p.Num_CNPJ_Operadora = o.Numero_CNPJ
+                        pla.CodigoPlano,
+                        pla.CodigoProduto,      
+                        pla.RegistroANS,        
+                        pla.Num_CNPJ_Operadora, 
+                        pla.TipoContratacao,    
+                        pla.NomePlanoComercial, 
+                        pla.Segmentacao,        
+                        pla.Abrangencia,        
+                        pla.Coparticipacao,    
+                        pla.Acomodacao,         
+                        pla.DecSau,             
+                        pla.Promocional,        
+                        pla.Conf_Ativo,
+                        oper.NomeComercial
+                    FROM dbo.API_Venda_Plano pla
+                    INNER JOIN dbo.API_Venda_Operadora oper ON pla.Num_CNPJ_Operadora = oper.Numero_CNPJ
                     WHERE 1 = 1");
 
                 if (!string.IsNullOrWhiteSpace(filtro?.NomePlanoComercial))
                 {
-                    sql.Append(" AND p.NomePlanoComercial LIKE @NomePlanoComercial");
+                    sql.Append(" AND pla.NomePlanoComercial LIKE @NomePlanoComercial");
                     cmd.Parameters.AddWithValue("@NomePlanoComercial", "%" + filtro.NomePlanoComercial.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(filtro?.Segmentacao))
                 {
-                    sql.Append(" AND p.Segmentacao LIKE @Segmentacao");
+                    sql.Append(" AND pla.Segmentacao LIKE @Segmentacao");
                     cmd.Parameters.AddWithValue("@Segmentacao", "%" + filtro.Segmentacao.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(filtro?.Abrangencia))
                 {
-                    sql.Append(" AND p.Abrangencia LIKE @Abrangencia");
+                    sql.Append(" AND pla.Abrangencia LIKE @Abrangencia");
                     cmd.Parameters.AddWithValue("@Abrangencia", "%" + filtro.Abrangencia.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(filtro?.Coparticipacao))
                 {
-                    sql.Append(" AND p.Coparticipacao LIKE @Coparticipacao");
+                    sql.Append(" AND pla.Coparticipacao LIKE @Coparticipacao");
                     cmd.Parameters.AddWithValue("@Coparticipacao", "%" + filtro.Coparticipacao.Trim() + "%");
                 }
 
-                sql.Append(" ORDER BY p.CodigoPlano");
+                sql.Append(" ORDER BY pla.CodigoPlano");
                 cmd.CommandText = sql.ToString();
 
                 using (var rd = cmd.ExecuteReader())
