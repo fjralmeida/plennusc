@@ -674,13 +674,15 @@ ORDER BY d.DataDemanda DESC";
             COMMIT TRANSACTION;";
 
         public const string BuscarContagemDemandasPorPessoa = @"
-            SELECT 
-                CodEstr_SituacaoDemanda,
-                COUNT(*) AS Total
-            FROM Demanda
-            WHERE CodPessoaSolicitacao = @CodPessoa
-            GROUP BY CodEstr_SituacaoDemanda";
-
+    SELECT 
+        CodEstr_SituacaoDemanda,
+        COUNT(*) AS Total
+    FROM Demanda
+    WHERE 
+        CodPessoaSolicitacao = @CodPessoa
+        OR (CodPessoaExecucao = @CodPessoa AND CodEstr_SituacaoDemanda IN (17, 18, 20, 23))
+        OR (CodPessoaAprovacao = @CodPessoa AND CodEstr_SituacaoDemanda = 65)
+    GROUP BY CodEstr_SituacaoDemanda";
 
         public const string DemandasNaoAceitasPorSetor = @"
     SELECT TOP 20

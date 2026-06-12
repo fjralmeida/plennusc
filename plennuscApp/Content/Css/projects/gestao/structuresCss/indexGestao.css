@@ -811,7 +811,7 @@ a[data-bs-toggle="collapse"][aria-expanded="true"] .toggle-icon {
     /* deixa a linha toda “clicável” com área confortável */
     .sidebar a.menu-head,
     .sidebar .submenu a {
-        padding: 10px 12px;
+        padding: 10px;
         border-radius: 8px;
     }
 

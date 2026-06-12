@@ -73,8 +73,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                     return;
 
                 // ✅ BUSCA CONTAGENS ANTES DE MONTAR O MENU
-                if (Session["ContagemDemandas"] == null)
-                    Session["ContagemDemandas"] = BuscarContagemDemandas();
+                Session["ContagemDemandas"] = BuscarContagemDemandas(); // sempre atualiza
 
                 DataTable dtMenus = Session["EstruturaMenus"] as DataTable;
                 phMenuDinamico.Controls.Clear();
@@ -569,17 +568,17 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                         var demandaService = new DemandaService("Plennus");
                         var contagem = demandaService.BuscarContagemDemandas(codPessoa);
 
-                        // Mapeie os códigos conforme sua tabela Estrutura
-                        var mapa = new Dictionary<int, string>
-                {
-                    { 17, "mydemandsopen"      },
-                    { 18, "mydemandsprogress"  },
-                    { 19, "mydemandswaiting"   }, // ⚠️ confirme o código
-                    { 20, "mydemandsrefused"   }, // ⚠️ confirme o código
-                    { 23, "mydemandscompleted" }
-                };
+                // Mapeie os códigos conforme sua tabela Estrutura
+                var mapa = new Dictionary<int, string>
+                    {
+                        { 17, "mydemandsopen"      },  // Em Aberto
+                        { 18, "mydemandsprogress"  },  // Em Andamento
+                        { 65, "mydemandswaiting"   },  // Aguardando Aprovação (código 65, NÃO 19)
+                        { 20, "mydemandsrefused"   },  // Recusada
+                        { 23, "mydemandscompleted" }   // Concluída
+                    };
 
-                        foreach (var par in mapa)
+                foreach (var par in mapa)
                         {
                             if (contagem.ContainsKey(par.Key))
                                 resultado[par.Value] = contagem[par.Key];
