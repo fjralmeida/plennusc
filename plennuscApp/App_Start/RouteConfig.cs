@@ -52,6 +52,8 @@ namespace appWhatsapp
             // ✅ Tabela de preços
             routes.MapPageRoute("priceTable", "priceTable", "~/PlennuscGestao/Views/priceTable.aspx");
             routes.MapPageRoute("updatePriceTable", "updatePriceTable", "~/PlennuscGestao/Views/updatePriceTable.aspx");
+
+            // ✅ Migrações
             routes.MapPageRoute("butyou", "Butyou", "~/PlennuscGestao/Views/Butyou.aspx");
             routes.MapPageRoute("enterpriseButYou", "enterpriseButYou", "~/PlennuscGestao/Views/enterpriseButYou.aspx");
 

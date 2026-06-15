@@ -53,7 +53,7 @@
                 <span class="title-icon">
                     <i class="bi bi-building me-2"></i>
                 </span>
-                Lista de Operadoras
+                Cadastro de Operadora
             </h1>
             <asp:Button ID="btnNovaOperadora" runat="server" CssClass="btn-primary"
                 Text="Nova Operadora" OnClick="btnNovaOperadora_Click" />

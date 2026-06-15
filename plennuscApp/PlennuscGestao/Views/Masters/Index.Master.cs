@@ -309,6 +309,28 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeDisplay.Contains("sistemas × empresa"))
                 return "bi bi-link-45deg me-2";
 
+            // ✅ MIGRAÇÕES (case-insensitive)
+            if (nomeObjeto?.IndexOf("Migrações", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                nomeDisplay?.IndexOf("Migrações", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "bi bi-arrow-left-right me-2";
+            }
+            // ✅ Butyou (subitem)
+            if (nomeObjeto?.IndexOf("Butyou", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                nomeDisplay?.IndexOf("Butyou", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "bi bi-person-badge me-2";  // ou bi bi-person, bi bi-arrow-right
+            }
+
+            // ✅ ButYou Enterprise
+            if (nomeObjeto?.IndexOf("enterpriseButYou", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                nomeDisplay?.IndexOf("ButYou Enterprise", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "bi bi-building me-2";  // prédio = enterprise
+            }
+
+
+
             // ✅ PREÇOS
             if (nomeObjeto.Contains("menuprecos") || nomeDisplay.Contains("preço") || nomeDisplay.Contains("precos"))
                 return "bi bi-currency-dollar me-2";
