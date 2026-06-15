@@ -241,6 +241,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\profile.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\register-structure-type.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\register-Structures.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\RegistrationOperador\operatorRegistration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendCompanyMessage.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageBeneficiary.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendMessage\ViewShippingHistory.css" />

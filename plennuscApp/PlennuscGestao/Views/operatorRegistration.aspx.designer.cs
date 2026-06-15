@@ -15,6 +15,51 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
+        /// Controle pnlMensagem.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlMensagem;
+
+        /// <summary>
+        /// Controle lblMensagem.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMensagem;
+
+        /// <summary>
+        /// Controle pnlAviso.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAviso;
+
+        /// <summary>
+        /// Controle lblQtdPendentes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdPendentes;
+
+        /// <summary>
+        /// Controle btnVerPendentes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnVerPendentes;
+
+        /// <summary>
         /// Controle btnNovaOperadora.
         /// </summary>
         /// <remarks>
@@ -67,5 +112,32 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvOperadoras;
+
+        /// <summary>
+        /// Controle lblUsuarioConfirmacao.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblUsuarioConfirmacao;
+
+        /// <summary>
+        /// Controle rptPendentes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptPendentes;
+
+        /// <summary>
+        /// Controle btnConfirmarSync.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnConfirmarSync;
     }
 }

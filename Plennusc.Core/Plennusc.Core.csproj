@@ -173,6 +173,8 @@
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuNode.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\menusManagementModels.cs" />
+    <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraListDto.cs" />
+    <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraSyncDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsSendMessage\DetailedSubmissionResult.cs" />
     <Compile Include="Models\ModelsGestao\modelsSistema\SistemaModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\OptionItemStructure.cs" />
@@ -181,7 +183,7 @@
     <Compile Include="Models\ModelsGestao\modelsStructure\subTypeDate.cs" />
     <Compile Include="Models\ModelsGestao\modelsUser\UsuarioSistemaEmpresaMenu.cs" />
     <Compile Include="Models\ModelsGestao\modelsUser\VinculoUsuarioRequest.cs" />
-    <Compile Include="Models\ModelsGestao\OperadoraFiltro.cs" />
+    <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraFiltro.cs" />
     <Compile Include="Models\ModelsGestao\OperadoraListDto.cs" />
     <Compile Include="Models\ModelsGestao\OptionItem.cs" />
     <Compile Include="Models\ModelsGestao\PlanoFiltro.cs" />
@@ -239,6 +241,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\menu\menusManagementQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\NotaFiscalUtil.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\OperadoraUtil.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\operatorRegistration\operatorRegistrationQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\position\EmpPosition.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\price\TablePrice.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\AutenticacaoDAO.cs" />

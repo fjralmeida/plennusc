@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Plennusc.Core.Models.ModelsGestao
+namespace Plennusc.Core.Models.ModelsGestao.modelsOperator
 {
     public class OperadoraFiltro
     {
