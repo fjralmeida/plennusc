@@ -11,7 +11,92 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="../../Content/Css/projects/gestao/structuresCss/RegistrationOperador/operatorRegistration.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    function getCheckboxesLinhas() {
+        var tabela = document.querySelector('.table-pendentes tbody');
+        if (!tabela) return [];
+        return tabela.querySelectorAll('input[type="checkbox"]');
+    }
+
+    function atualizarContadorSelecionadas() {
+        var checks = getCheckboxesLinhas();
+        if (checks.length === 0) return;
+
+        var marcados = 0;
+        for (var i = 0; i < checks.length; i++) {
+            if (checks[i].checked) marcados++;
+        }
+
+        var span = document.getElementById('<%= lblQtdSelecionadas.ClientID %>');
+    if (span) span.innerText = marcados;
+
+    var chkTodos = document.getElementById('chkSelecionarTodos');
+    if (chkTodos) {
+        chkTodos.checked = (marcados === checks.length && checks.length > 0);
+    }
+
+        var btnConfirmar = document.getElementById('<%= btnConfirmarSync.ClientID %>');
+        if (btnConfirmar) {
+            btnConfirmar.disabled = (marcados === 0);
+            btnConfirmar.style.opacity = (marcados === 0) ? '0.5' : '1';
+            btnConfirmar.style.cursor = (marcados === 0) ? 'not-allowed' : 'pointer';
+        }
+    }
+
+    function toggleSelecionarTodos() {
+        var chkTodos = document.getElementById('chkSelecionarTodos');
+        if (!chkTodos) return;
+
+        var estado = chkTodos.checked;
+        var checks = getCheckboxesLinhas();
+        for (var i = 0; i < checks.length; i++) {
+            checks[i].checked = estado;
+        }
+        atualizarContadorSelecionadas();
+    }
+
+    function confirmarImportacao() {
+        var checks = getCheckboxesLinhas();
+        var marcados = 0;
+        for (var i = 0; i < checks.length; i++) {
+            if (checks[i].checked) marcados++;
+        }
+        if (marcados === 0) {
+            alert('Selecione pelo menos uma operadora para importar.');
+            return false;
+        }
+        return confirm('Confirma a importação das ' + marcados + ' operadora(s) selecionada(s)?');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var chkTodos = document.getElementById('chkSelecionarTodos');
+        if (chkTodos) {
+            chkTodos.addEventListener('change', toggleSelecionarTodos);
+            chkTodos.addEventListener('click', toggleSelecionarTodos);
+        }
+
+        var tabela = document.querySelector('.table-pendentes tbody');
+        if (tabela) {
+            tabela.addEventListener('click', function (e) {
+                if (e.target && e.target.type === 'checkbox') {
+                    atualizarContadorSelecionadas();
+                }
+            });
+        }
+    });
+
+    function abrirModalSync() {
+        var modalEl = document.getElementById('modalSyncOperadoras');
+        if (!modalEl) return;
+        var modal = new bootstrap.Modal(modalEl);
+        modal.show();
+        setTimeout(atualizarContadorSelecionadas, 300);
+    }
+</script>
+
 </asp:Content>
+
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-main">
@@ -22,9 +107,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </asp:Panel>
 
-        <%-- ══════════════════════════════════════════════════════════════════
-             BANNER — visível apenas quando há operadoras pendentes
-        ══════════════════════════════════════════════════════════════════ --%>
         <asp:Panel ID="pnlAviso" runat="server" Visible="false" CssClass="banner-sync">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span class="msg">
@@ -38,6 +120,101 @@
                 Text="Ver pendentes"
                 OnClick="btnVerPendentes_Click" />
         </asp:Panel>
+
+        <%-- ═══════════════════════════════════════════════════════════
+             MODAL DE SINCRONIZAÇÃO
+        ═══════════════════════════════════════════════════════════ --%>
+        <div class="modal fade" id="modalSyncOperadoras" tabindex="-1"
+             aria-labelledby="modalSyncLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-sync-header">
+                        <h5 class="modal-title" id="modalSyncLabel">
+                            <i class="bi bi-arrow-repeat me-2"></i>
+                            Operadoras pendentes de sincronização
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="modal-usuario-info">
+                            <i class="bi bi-person-check me-1"></i>
+                            Confirmação será registrada por:
+                            <strong><asp:Label ID="lblUsuarioConfirmacao" runat="server"></asp:Label></strong>
+                            em <strong><%: DateTime.Now.ToString("dd/MM/yyyy HH:mm") %></strong>
+                        </div>
+
+                        <p class="text-muted mb-3" style="font-size:13px;">
+                            As operadoras abaixo existem no sistema de origem (Aliança) mas
+                            ainda <strong>não foram importadas</strong> para esta base.
+                            Marque as que deseja importar — todas vêm selecionadas por padrão.
+                        </p>
+
+                        <%-- Barra de seleção / contador — AQUI ESTAVA FALTANDO O CHECKBOX MASTER --%>
+                        <div class="barra-selecao">
+                            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0;">
+                                <input type="checkbox" id="chkSelecionarTodos" checked
+                                       style="width:16px; height:16px; cursor:pointer;" />
+                                Selecionar todos
+                            </label>
+                            <span>
+                                <strong><asp:Label ID="lblQtdSelecionadas" runat="server">0</asp:Label></strong>
+                                operadora(s) selecionada(s)
+                            </span>
+                        </div>
+
+                        <table class="table table-bordered table-hover table-pendentes">
+                            <thead>
+                                <tr>
+                                    <th class="col-check"></th>
+                                    <th>CNPJ</th>
+                                    <th>Registro ANS</th>
+                                    <th>Razão Social</th>
+                                    <th>Nome Comercial</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <asp:Repeater ID="rptPendentes" runat="server">
+                                    <ItemTemplate>
+                                        <tr>
+                                            <td class="col-check">
+                                                <asp:HiddenField ID="hdnCodigoGrupo" runat="server"
+                                                    Value='<%# Eval("CodigoGrupo") %>' />
+                                                <asp:CheckBox ID="chkSelecionar" runat="server"
+                                                    Checked="true"
+                                                    CssClass="chk-linha-pendente" />
+                                            </td>
+                                            <td><%# Eval("Numero_CNPJ") %></td>
+                                            <td><%# Eval("RegistroANS") %></td>
+                                            <td><%# Eval("RazaoSocial") %></td>
+                                            <td>
+                                                <%# Eval("NomeComercial") %>
+                                                <span class="badge-novo ms-1">NOVO</span>
+                                            </td>
+                                        </tr>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+
+                        <asp:Button ID="btnConfirmarSync" runat="server"
+                            CssClass="btn btn-success"
+                            Text="✔ Confirmar e importar selecionadas"
+                            OnClick="btnConfirmarSync_Click"
+                            OnClientClick="return confirmarImportacao();" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
         <%-- ── Header ── --%>
         <div class="page-header">
@@ -88,7 +265,6 @@
         <%-- ── Grid ── --%>
         <div class="grid-container">
 
-            <%-- Legenda visual --%>
             <div class="legenda-novo mb-2">
                 <span></span> Operadora inserida nas últimas 24h
             </div>
@@ -129,83 +305,4 @@
 
     </div>
 
-    <%-- ══════════════════════════════════════════════════════════════════
-         MODAL DE SINCRONIZAÇÃO
-    ══════════════════════════════════════════════════════════════════ --%>
-    <div class="modal fade" id="modalSyncOperadoras" tabindex="-1"
-         aria-labelledby="modalSyncLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-
-                <div class="modal-header modal-sync-header">
-                    <h5 class="modal-title" id="modalSyncLabel">
-                        <i class="bi bi-arrow-repeat me-2"></i>
-                        Operadoras pendentes de sincronização
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <%-- Info do usuário que irá confirmar --%>
-                    <div class="modal-usuario-info">
-                        <i class="bi bi-person-check me-1"></i>
-                        Confirmação será registrada por:
-                        <strong><asp:Label ID="lblUsuarioConfirmacao" runat="server"></asp:Label></strong>
-                        em <strong><%: DateTime.Now.ToString("dd/MM/yyyy HH:mm") %></strong>
-                    </div>
-
-                    <p class="text-muted mb-3" style="font-size:13px;">
-                        As operadoras abaixo existem no sistema de origem (Aliança) mas
-                        ainda <strong>não foram importadas</strong> para esta base.
-                        Ao confirmar, elas serão gravadas com a data/hora atual em
-                        <code>Informacoes_log_i</code> e ficarão destacadas em laranja por 24h.
-                    </p>
-
-                    <table class="table table-bordered table-hover table-pendentes">
-                        <thead>
-                            <tr>
-                                <th style="width:40px">#</th>
-                                <th>CNPJ</th>
-                                <th>Registro ANS</th>
-                                <th>Razão Social</th>
-                                <th>Nome Comercial</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <asp:Repeater ID="rptPendentes" runat="server">
-                                <ItemTemplate>
-                                    <tr>
-                                        <td class="text-center text-muted"><%# Container.ItemIndex + 1 %></td>
-                                        <td><%# Eval("Numero_CNPJ") %></td>
-                                        <td><%# Eval("RegistroANS") %></td>
-                                        <td><%# Eval("RazaoSocial") %></td>
-                                        <td>
-                                            <%# Eval("NomeComercial") %>
-                                            <span class="badge-novo ms-1">NOVO</span>
-                                        </td>
-                                    </tr>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </tbody>
-                    </table>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Cancelar</button>
-
-                    <asp:Button ID="btnConfirmarSync" runat="server"
-                        CssClass="btn btn-success"
-                        Text="✔ Confirmar e importar"
-                        OnClick="btnConfirmarSync_Click"
-                        OnClientClick="return confirm('Confirma a importação de todas as operadoras listadas?');" />
-                </div>
-
-            </div>
-        </div>
-    </div>
-
 </asp:Content>
-

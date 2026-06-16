@@ -2,6 +2,7 @@
 using Plennusc.Core.Service.ServiceGestao.planiumApi;       // OperadoraService
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -62,7 +63,8 @@ namespace appWhatsapp.PlennuscGestao.Views
         }
 
         // ─────────────────────────────────────────────────────────────────────
-        // Botão "Ver pendentes" → popula repeater e abre modal
+        // Botão "Ver pendentes" → popula repeater (com checkbox) e abre modal
+        // Está dentro de um UpdatePanel — não recarrega a página inteira.
         // ─────────────────────────────────────────────────────────────────────
 
         protected void btnVerPendentes_Click(object sender, EventArgs e)
@@ -84,53 +86,86 @@ namespace appWhatsapp.PlennuscGestao.Views
                     ? $"CodPessoa {codPessoa}"
                     : nomePessoa;
 
+                // Todas vêm marcadas por padrão — usuário desmarca o que não quer
                 rptPendentes.DataSource = pendentes;
                 rptPendentes.DataBind();
 
-                // Força o script a executar após o render completo
-                string script = @"
-                    setTimeout(function() {
-                        var modalEl = document.getElementById('modalSyncOperadoras');
-                        if (modalEl) {
-                            var modal = new bootstrap.Modal(modalEl);
-                            modal.show();
-                        } else {
-                            console.error('Modal não encontrado');
-                        }
-                    }, 100);
-                ";
-                ScriptManager.RegisterStartupScript(this, GetType(), "AbrirModalSync", script, true);
+                lblQtdSelecionadas.Text = pendentes.Count.ToString();
+
+                ClientScript.RegisterStartupScript(
+                 this.GetType(), "AbrirModalSync",
+                 @"document.addEventListener('DOMContentLoaded', function(){ 
+                    var modalEl = document.getElementById('modalSyncOperadoras');
+                    var modal = new bootstrap.Modal(modalEl);
+                    modal.show();
+                    setTimeout(function(){ atualizarContadorSelecionadas(); }, 200);
+                });",
+                 true);
             }
         }
 
         // ─────────────────────────────────────────────────────────────────────
-        // Confirmar sincronização → INSERT + Informacoes_log_i + CodPessoa
+        // Confirmar sincronização → grava SÓ as operadoras com checkbox marcado
         // ─────────────────────────────────────────────────────────────────────
 
         protected void btnConfirmarSync_Click(object sender, EventArgs e)
         {
-            var pendentes = Session[SESSION_PENDENTES] as List<OperadoraSyncDto>;
+            var todasPendentes = Session[SESSION_PENDENTES] as List<OperadoraSyncDto>;
 
-            if (pendentes == null || pendentes.Count == 0)
+            if (todasPendentes == null || todasPendentes.Count == 0)
             {
                 MostrarAlerta("Nenhuma operadora pendente encontrada.", "warning");
                 return;
             }
 
+            // Lê os CodigoGrupo marcados no repeater (cada linha tem um checkbox + hidden)
+            var codigosSelecionados = ObterCodigosSelecionadosNoRepeater();
+
+            if (codigosSelecionados.Count == 0)
+            {
+                MostrarAlerta("Selecione ao menos uma operadora para importar.", "warning");
+
+                // Reabre o modal já que o usuário não selecionou nada
+                ClientScript.RegisterStartupScript(
+                  this.GetType(), "ReabrirModalSync",
+                  "document.addEventListener('DOMContentLoaded', function(){ new bootstrap.Modal(document.getElementById('modalSyncOperadoras')).show(); });",
+                  true);
+                return;
+            }
+
+            var selecionadas = todasPendentes
+                .Where(p => codigosSelecionados.Contains(p.CodigoGrupo))
+                .ToList();
+
             try
             {
                 int codPessoa = ObterCodPessoa();
 
-                _svc.ConfirmarSincronizacao(pendentes, codPessoa);
+                _svc.ConfirmarSincronizacao(selecionadas, codPessoa);
 
-                Session.Remove(SESSION_PENDENTES);
-                pnlAviso.Visible = false;
+                // Remove da lista de pendentes só as que foram importadas;
+                // o que ficou de fora continua pendente para uma próxima confirmação
+                var restantes = todasPendentes
+                    .Where(p => !codigosSelecionados.Contains(p.CodigoGrupo))
+                    .ToList();
 
-                MostrarAlerta($"{pendentes.Count} operadora(s) sincronizada(s) com sucesso!", "success");
+                if (restantes.Count > 0)
+                {
+                    Session[SESSION_PENDENTES] = restantes;
+                    pnlAviso.Visible = true;
+                    lblQtdPendentes.Text = restantes.Count.ToString();
+                }
+                else
+                {
+                    Session.Remove(SESSION_PENDENTES);
+                    pnlAviso.Visible = false;
+                }
 
-                ScriptManager.RegisterStartupScript(
-                    this, GetType(), "FecharModal",
-                    "bootstrap.Modal.getInstance(document.getElementById('modalSyncOperadoras'))?.hide();",
+                MostrarAlerta($"{selecionadas.Count} operadora(s) sincronizada(s) com sucesso!", "success");
+
+                ClientScript.RegisterStartupScript(
+                    this.GetType(), "FecharModal",
+                    "document.addEventListener('DOMContentLoaded', function(){ var m = bootstrap.Modal.getInstance(document.getElementById('modalSyncOperadoras')); if(m) m.hide(); });",
                     true);
 
                 BindGrid();
@@ -140,6 +175,35 @@ namespace appWhatsapp.PlennuscGestao.Views
                 MostrarAlerta("Erro ao sincronizar: " + ex.Message, "danger");
             }
         }
+
+        /// <summary>
+        /// Percorre o repeater e retorna os CodigoGrupo cujas checkboxes
+        /// foram mantidas marcadas pelo usuário no momento do postback.
+        /// </summary>
+        private HashSet<int> ObterCodigosSelecionadosNoRepeater()
+        {
+            var selecionados = new HashSet<int>();
+
+            foreach (RepeaterItem item in rptPendentes.Items)
+            {
+                var chk = item.FindControl("chkSelecionar") as CheckBox;
+                var hidden = item.FindControl("hdnCodigoGrupo") as HiddenField;
+
+                if (chk != null && chk.Checked && hidden != null
+                    && int.TryParse(hidden.Value, out int codigoGrupo))
+                {
+                    selecionados.Add(codigoGrupo);
+                }
+            }
+
+            return selecionados;
+        }
+
+        /// <summary>
+        /// Chamado via __doPostBack a partir do JS (checkbox "selecionar todos"
+        /// e contador de selecionados são feitos no client-side; aqui é só leitura
+        /// no postback de confirmação — não precisa de handler de evento extra).
+        /// </summary>
 
         // ─────────────────────────────────────────────────────────────────────
         // Grid
@@ -176,9 +240,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        /// <summary>
-        /// Pinta linha em laranja claro se inserida nas últimas 24h via Informacoes_log_i.
-        /// </summary>
         protected void gvOperadoras_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType != DataControlRowType.DataRow) return;
@@ -201,9 +262,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         // Utilitários
         // ─────────────────────────────────────────────────────────────────────
 
-        /// <summary>
-        /// CodPessoa do usuário logado — ajuste a chave conforme sua autenticação.
-        /// </summary>
         private int ObterCodPessoa()
         {
             return Session["CodPessoa"] != null
