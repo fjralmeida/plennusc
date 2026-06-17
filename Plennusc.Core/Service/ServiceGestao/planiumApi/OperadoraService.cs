@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 
 namespace Plennusc.Core.Service.ServiceGestao.planiumApi
@@ -155,6 +156,12 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
         {
             if (pendentes == null || pendentes.Count == 0) return;
 
+            // Proteção extra: nunca insere operadora com ANS inválido,
+            // mesmo que tenha chegado até aqui por algum bug no front-end.
+            var validas = pendentes.Where(p => p.AnsValido).ToList();
+
+            if (validas.Count == 0) return;
+
             var agora = DateTime.Now;
 
             using (var con = OpenPlennus())
@@ -162,11 +169,11 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
             {
                 try
                 {
-                    foreach (var op in pendentes)
+                    foreach (var op in validas)
                     {
                         using (var cmd = new SqlCommand(OperatorRegistrationQueries.InserirOperadora, con, tran))
                         {
-                            cmd.Parameters.AddWithValue("@RegistroANS", (object)op.RegistroANS ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@RegistroANS", int.Parse(op.RegistroANS.Trim()));
                             cmd.Parameters.AddWithValue("@Numero_CNPJ", (object)op.Numero_CNPJ ?? DBNull.Value);
                             cmd.Parameters.AddWithValue("@RazaoSocial", (object)op.RazaoSocial ?? DBNull.Value);
                             cmd.Parameters.AddWithValue("@NomeComercial", (object)op.NomeComercial ?? DBNull.Value);
@@ -190,12 +197,12 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
         // PESSOA — nome do usuário logado para exibição no modal
         // ─────────────────────────────────────────────────────────────────────
 
-        public string BuscarNomePessoa(int codPessoa)
+        public string BuscarNomePessoaPorAutenticacao(int codAutenticacaoAcesso)
         {
             using (var con = OpenPlennus())
-            using (var cmd = new SqlCommand(OperatorRegistrationQueries.BuscarNomePessoa, con))
+            using (var cmd = new SqlCommand(OperatorRegistrationQueries.BuscarNomePessoaPorAutenticacao, con))
             {
-                cmd.Parameters.AddWithValue("@CodPessoa", codPessoa);
+                cmd.Parameters.AddWithValue("@CodAutenticacaoAcesso", codAutenticacaoAcesso);
 
                 using (var rd = cmd.ExecuteReader())
                 {

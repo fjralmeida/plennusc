@@ -95,12 +95,13 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
         // Parâmetro: @CodPessoa
         // ─────────────────────────────────────────────────────────────────────
 
-        public const string BuscarNomePessoa = @"
+        public const string BuscarNomePessoaPorAutenticacao = @"
             SELECT
                 p.CodPessoa,
                 LTRIM(RTRIM(p.Nome)) + ' ' + LTRIM(RTRIM(p.Sobrenome)) AS NomeCompleto,
                 LTRIM(RTRIM(ISNULL(p.Apelido, '')))                     AS Apelido
-            FROM dbo.Pessoa p
-            WHERE p.CodPessoa = @CodPessoa";
+            FROM dbo.AutenticacaoAcesso a
+            INNER JOIN dbo.Pessoa p ON p.CodPessoa = a.CodPessoa
+            WHERE a.CodAutenticacaoAcesso = @CodAutenticacaoAcesso";
     }
 }

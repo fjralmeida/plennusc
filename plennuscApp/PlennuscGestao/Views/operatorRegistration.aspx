@@ -13,15 +13,28 @@
     <link href="../../Content/Css/projects/gestao/structuresCss/RegistrationOperador/operatorRegistration.css" rel="stylesheet" />
 
 <script type="text/javascript">
+    // Retorna SOMENTE os checkboxes habilitados (ANS válido)
     function getCheckboxesLinhas() {
         var tabela = document.querySelector('.table-pendentes tbody');
         if (!tabela) return [];
-        return tabela.querySelectorAll('input[type="checkbox"]');
+        return tabela.querySelectorAll('input[type="checkbox"]:not(:disabled)');
     }
 
     function atualizarContadorSelecionadas() {
         var checks = getCheckboxesLinhas();
-        if (checks.length === 0) return;
+        if (checks.length === 0) {
+            // Nenhum checkbox habilitado — desabilita tudo
+            var span0 = document.getElementById('<%= lblQtdSelecionadas.ClientID %>');
+            if (span0) span0.innerText = '0';
+
+            var btnConfirmar0 = document.getElementById('<%= btnConfirmarSync.ClientID %>');
+            if (btnConfirmar0) {
+                btnConfirmar0.disabled = true;
+                btnConfirmar0.style.opacity = '0.5';
+                btnConfirmar0.style.cursor = 'not-allowed';
+            }
+            return;
+        }
 
         var marcados = 0;
         for (var i = 0; i < checks.length; i++) {
@@ -29,12 +42,12 @@
         }
 
         var span = document.getElementById('<%= lblQtdSelecionadas.ClientID %>');
-    if (span) span.innerText = marcados;
+        if (span) span.innerText = marcados;
 
-    var chkTodos = document.getElementById('chkSelecionarTodos');
-    if (chkTodos) {
-        chkTodos.checked = (marcados === checks.length && checks.length > 0);
-    }
+        var chkTodos = document.getElementById('chkSelecionarTodos');
+        if (chkTodos) {
+            chkTodos.checked = (marcados === checks.length && checks.length > 0);
+        }
 
         var btnConfirmar = document.getElementById('<%= btnConfirmarSync.ClientID %>');
         if (btnConfirmar) {
@@ -49,7 +62,7 @@
         if (!chkTodos) return;
 
         var estado = chkTodos.checked;
-        var checks = getCheckboxesLinhas();
+        var checks = getCheckboxesLinhas(); // já vem só os habilitados
         for (var i = 0; i < checks.length; i++) {
             checks[i].checked = estado;
         }
@@ -79,7 +92,7 @@
         var tabela = document.querySelector('.table-pendentes tbody');
         if (tabela) {
             tabela.addEventListener('click', function (e) {
-                if (e.target && e.target.type === 'checkbox') {
+                if (e.target && e.target.type === 'checkbox' && !e.target.disabled) {
                     atualizarContadorSelecionadas();
                 }
             });
@@ -178,20 +191,27 @@
                             <tbody>
                                 <asp:Repeater ID="rptPendentes" runat="server">
                                     <ItemTemplate>
-                                        <tr>
+                                        <tr class='<%# (bool)Eval("AnsValido") ? "" : "linha-ans-invalido" %>'>
                                             <td class="col-check">
                                                 <asp:HiddenField ID="hdnCodigoGrupo" runat="server"
                                                     Value='<%# Eval("CodigoGrupo") %>' />
                                                 <asp:CheckBox ID="chkSelecionar" runat="server"
-                                                    Checked="true"
+                                                    Checked='<%# (bool)Eval("AnsValido") %>'
+                                                    Enabled='<%# (bool)Eval("AnsValido") %>'
                                                     CssClass="chk-linha-pendente" />
                                             </td>
                                             <td><%# Eval("Numero_CNPJ") %></td>
-                                            <td><%# Eval("RegistroANS") %></td>
+                                            <td>
+                                                <%# Eval("RegistroANS") ?? "—" %>
+                                                <%# (bool)Eval("AnsValido") ? "" : "<i class='bi bi-exclamation-triangle-fill text-danger ms-1' title='Registro ANS inválido'></i>" %>
+                                            </td>
                                             <td><%# Eval("RazaoSocial") %></td>
                                             <td>
                                                 <%# Eval("NomeComercial") %>
                                                 <span class="badge-novo ms-1">NOVO</span>
+                                                <%# (bool)Eval("AnsValido")
+                                                    ? ""
+                                                    : "<div class='text-danger' style='font-size:11px; margin-top:4px;'><i class='bi bi-exclamation-circle'></i> Registro ANS inválido — corrija na origem antes de importar</div>" %>
                                             </td>
                                         </tr>
                                     </ItemTemplate>
@@ -268,7 +288,7 @@
             <div class="legenda-novo mb-2">
                 <span></span> Operadora inserida nas últimas 24h
             </div>
-
+            
             <asp:GridView ID="gvOperadoras" runat="server" CssClass="custom-grid"
                 AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
                 OnPageIndexChanging="gvOperadoras_PageIndexChanging"

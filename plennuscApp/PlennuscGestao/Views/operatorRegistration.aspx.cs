@@ -79,11 +79,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (pendentes != null && pendentes.Count > 0)
             {
-                int codPessoa = ObterCodPessoa();
-                string nomePessoa = _svc.BuscarNomePessoa(codPessoa);
+                int codAutenticacaoAcesso = ObterCodAutenticacaoAcesso();
+                string nomePessoa = _svc.BuscarNomePessoaPorAutenticacao(codAutenticacaoAcesso);
 
                 lblUsuarioConfirmacao.Text = string.IsNullOrWhiteSpace(nomePessoa)
-                    ? $"CodPessoa {codPessoa}"
+                    ? $"Usuário {codAutenticacaoAcesso}"
                     : nomePessoa;
 
                 // Todas vêm marcadas por padrão — usuário desmarca o que não quer
@@ -134,14 +134,13 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             var selecionadas = todasPendentes
-                .Where(p => codigosSelecionados.Contains(p.CodigoGrupo))
+                .Where(p => codigosSelecionados.Contains(p.CodigoGrupo) && p.AnsValido)
                 .ToList();
 
             try
             {
-                int codPessoa = ObterCodPessoa();
-
-                _svc.ConfirmarSincronizacao(selecionadas, codPessoa);
+                int codAutenticacaoAcesso = ObterCodAutenticacaoAcesso();
+                _svc.ConfirmarSincronizacao(selecionadas, codAutenticacaoAcesso);
 
                 // Remove da lista de pendentes só as que foram importadas;
                 // o que ficou de fora continua pendente para uma próxima confirmação
@@ -262,11 +261,12 @@ namespace appWhatsapp.PlennuscGestao.Views
         // Utilitários
         // ─────────────────────────────────────────────────────────────────────
 
-        private int ObterCodPessoa()
+        private int ObterCodAutenticacaoAcesso()
         {
-            return Session["CodPessoa"] != null
-                ? Convert.ToInt32(Session["CodPessoa"])
-                : 1;
+            if (Session["CodUsuario"] == null)
+                throw new InvalidOperationException("Usuário não está logado (Session[\"CodUsuario\"] ausente).");
+
+            return Convert.ToInt32(Session["CodUsuario"]);
         }
 
         private void MostrarAlerta(string mensagem, string tipo = "info")
