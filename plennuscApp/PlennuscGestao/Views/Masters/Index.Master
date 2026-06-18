@@ -180,7 +180,7 @@
                 <!-- Main Content -->
 <div class="flex-grow-1 overflow-auto" style="height:100%;">
 <iframe id="mainFrame" name="mainFrame"
-        src="<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>?frame=1"
+        src="<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>"
         style="width:100%; height:100%; border:none;">
 </iframe>
 </div>
@@ -454,29 +454,39 @@
 
     <!-- Navegar limpando estado dos menus -->
     <script>
-        function limparMenuESeguir(url) {
-            localStorage.removeItem('openMenuIds');
-            const sep = url.includes('?') ? '&' : '?';
-            document.getElementById('mainFrame').src = url + sep + 'frame=1';
-        }
+        document.getElementById('mainFrame').addEventListener('load', function () {
+            try {
+                var iframeTitle = this.contentDocument.title;
+                var iframeSrc = this.contentWindow.location.pathname;
 
+                if (iframeTitle) document.title = iframeTitle;
+
+                sessionStorage.setItem('currentPage', iframeSrc);
+
+                if (iframeSrc && iframeSrc !== '/gestao') {
+                    history.pushState(null, iframeTitle, iframeSrc);
+                }
+            } catch (e) { }
+        });
 
         (function () {
             var params = new URLSearchParams(window.location.search);
             var pagina = params.get('p');
-            if (pagina) {
-                var sep = pagina.includes('?') ? '&' : '?';
-                document.getElementById('mainFrame').src = pagina + sep + 'frame=1';
-                history.replaceState(null, '', '/gestao');
+
+            console.log('pagina lida do ?p=:', pagina);
+
+            if (!pagina) {
+                pagina = sessionStorage.getItem('currentPage');
+                console.log('pagina do sessionStorage:', pagina);
+            }
+
+            if (pagina && pagina !== '/gestao' && pagina !== '/homeManagement') {
+                var src = pagina + (pagina.includes('?') ? '&' : '?') + 'frame=1';
+                console.log('setando iframe.src para:', src);
+                document.getElementById('mainFrame').src = src;
+                history.replaceState(null, '', pagina);
             }
         })();
-
-        document.getElementById('mainFrame').addEventListener('load', function () {
-            try {
-                var iframeTitle = this.contentDocument.title;
-                if (iframeTitle) document.title = iframeTitle;
-            } catch (e) { }
-        });
     </script>
 
     <!-- Busca na sidebar (sem interferir nos cabeçalhos/ícones) -->

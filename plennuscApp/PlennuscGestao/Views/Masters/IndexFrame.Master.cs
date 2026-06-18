@@ -13,21 +13,13 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
         {
             if (IsPostBack) return;
 
-            // Aceita se tem frame=1
-            if (Request.QueryString["frame"] == "1") return;
+            string secFetchDest = Request.Headers["Sec-Fetch-Dest"] ?? "";
 
-            // Aceita qualquer redirect interno (mesmo domínio/host)
-            string refererHost = Request.UrlReferrer?.Host ?? "";
-            string currentHost = Request.Url.Host;
-            if (!string.IsNullOrEmpty(refererHost) && refererHost == currentHost) return;
+            // Se veio de dentro do iframe, passa direto
+            if (secFetchDest == "iframe") return;
 
-            // F5 ou acesso direto — redireciona para o shell passando a página atual
+            // Se é document (F5, link direto, nova aba) — redireciona pra shell
             string paginaAtual = Request.Url.PathAndQuery;
-
-            // Remove ?frame=1 se já existir para não duplicar
-            paginaAtual = System.Text.RegularExpressions.Regex.Replace(
-                paginaAtual, @"[?&]frame=1", "");
-
             Response.Redirect("/gestao?p=" + Uri.EscapeDataString(paginaAtual), true);
         }
     }

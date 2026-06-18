@@ -6,6 +6,7 @@ using Plennusc.Core.SqlQueries.SqlQueriesGestao.profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -20,6 +21,12 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            // Marca que esta sessão está dentro da shell
+            HttpCookie cookie = new HttpCookie("InShell", "1");
+            cookie.Path = "/";
+            Response.Cookies.Add(cookie);
+
             // 1. VERIFICA SE ESTÁ LOGADO (SEM ISPOSTBACK)
             if (Session["CodUsuario"] == null)
             {
