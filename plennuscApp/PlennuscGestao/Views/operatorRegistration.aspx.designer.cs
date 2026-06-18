@@ -69,6 +69,24 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Label lblUsuarioConfirmacao;
 
         /// <summary>
+        /// Controle lblQtdAbaNovas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdAbaNovas;
+
+        /// <summary>
+        /// Controle lblQtdAbaAlteracoes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdAbaAlteracoes;
+
+        /// <summary>
         /// Controle lblQtdSelecionadas.
         /// </summary>
         /// <remarks>
@@ -87,6 +105,24 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Repeater rptPendentes;
 
         /// <summary>
+        /// Controle lblQtdSelecionadasUpdate.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdSelecionadasUpdate;
+
+        /// <summary>
+        /// Controle rptAlteracoesUpdate.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptAlteracoesUpdate;
+
+        /// <summary>
         /// Controle btnConfirmarSync.
         /// </summary>
         /// <remarks>
@@ -96,13 +132,13 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Button btnConfirmarSync;
 
         /// <summary>
-        /// Controle btnNovaOperadora.
+        /// Controle btnConfirmarUpdate.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNovaOperadora;
+        protected global::System.Web.UI.WebControls.Button btnConfirmarUpdate;
 
         /// <summary>
         /// Controle txtOperadora.

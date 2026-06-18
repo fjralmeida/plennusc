@@ -224,5 +224,101 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
 
             return string.Empty;
         }
+
+        public List<OperadoraAlteracoesDto> BuscarOperadorasComAlteracoes()
+        {
+            var existentesPlennus = new Dictionary<string, OperadoraAlteracoesDto>(StringComparer.OrdinalIgnoreCase);
+
+            using (var con = OpenPlennus())
+            using (var cmd = new SqlCommand(OperatorRegistrationQueries.BuscarOperadorasExistentesPlennus, con))
+            using (var rd = cmd.ExecuteReader())
+            {
+                while (rd.Read())
+                {
+                    var cnpj = rd.GetString(rd.GetOrdinal("Numero_CNPJ")).Trim();
+
+                    existentesPlennus[cnpj] = new OperadoraAlteracoesDto
+                    {
+                        CodigoOperadora = rd.GetInt32(rd.GetOrdinal("CodigoOperadora")),
+                        Numero_CNPJ = cnpj,
+                        RegistroANS_Atual = rd.IsDBNull(rd.GetOrdinal("RegistroANS")) ? null : rd.GetInt32(rd.GetOrdinal("RegistroANS")).ToString(),
+                        RazaoSocial_Atual = rd.IsDBNull(rd.GetOrdinal("RazaoSocial")) ? null : rd.GetString(rd.GetOrdinal("RazaoSocial")),
+                        NomeComercial_Atual = rd.IsDBNull(rd.GetOrdinal("NomeComercial")) ? null : rd.GetString(rd.GetOrdinal("NomeComercial"))
+                    };
+                }
+            }
+
+            var divergentes = new List<OperadoraAlteracoesDto>();
+
+            using (var con = OpenAlianca())
+            using (var cmd = new SqlCommand(OperatorRegistrationQueries.BuscarTodasOperadorasAlianca, con))
+            using (var rd = cmd.ExecuteReader())
+            {
+                while (rd.Read())
+                {
+                    var cnpj = rd.IsDBNull(rd.GetOrdinal("Numero_CNPJ"))
+                        ? null
+                        : rd.GetString(rd.GetOrdinal("Numero_CNPJ")).Trim();
+
+                    if (string.IsNullOrWhiteSpace(cnpj) || !existentesPlennus.ContainsKey(cnpj))
+                        continue;
+
+                    var dto = existentesPlennus[cnpj];
+
+                    dto.RegistroANS_Novo = rd.IsDBNull(rd.GetOrdinal("RegistroANS")) ? null : rd.GetString(rd.GetOrdinal("RegistroANS"));
+                    dto.RazaoSocial_Novo = rd.IsDBNull(rd.GetOrdinal("RazaoSocial")) ? null : rd.GetString(rd.GetOrdinal("RazaoSocial"));
+                    dto.NomeComercial_Novo = rd.IsDBNull(rd.GetOrdinal("NomeComercial")) ? null : rd.GetString(rd.GetOrdinal("NomeComercial"));
+
+                    if (dto.TemDivergenciaValida)
+                        divergentes.Add(dto);
+                }
+            }
+
+            return divergentes;
+        }
+
+        public void ConfirmarAlteracoes(List<OperadoraAlteracoesDto> alteracoes, int codAutenticacaoAcesso)
+        {
+            if (alteracoes == null || alteracoes.Count == 0) return;
+
+            var agora = DateTime.Now;
+
+            using (var con = OpenPlennus())
+            using (var tran = con.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var alt in alteracoes)
+                    {
+                        string setAns = alt.DivergeAns ? "RegistroANS = @RegistroANS," : "";
+                        var sql = OperatorRegistrationQueries.AtualizarOperadoraDinamica.Replace("{SET_ANS}", setAns);
+
+                        using (var cmd = new SqlCommand(sql, con, tran))
+                        {
+                            cmd.Parameters.AddWithValue("@RazaoSocial",
+                                (object)(alt.DivergeRazaoSocial ? alt.RazaoSocial_Novo : alt.RazaoSocial_Atual) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@NomeComercial",
+                                (object)(alt.DivergeNomeComercial ? alt.NomeComercial_Novo : alt.NomeComercial_Atual) ?? DBNull.Value);
+
+                            if (alt.DivergeAns)
+                                cmd.Parameters.AddWithValue("@RegistroANS", int.Parse(alt.RegistroANS_Novo.Trim()));
+
+                            cmd.Parameters.AddWithValue("@CodPessoaAlteracao", codAutenticacaoAcesso);
+                            cmd.Parameters.AddWithValue("@DataLog", agora);
+                            cmd.Parameters.AddWithValue("@Numero_CNPJ", alt.Numero_CNPJ);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    tran.Commit();
+                }
+                catch
+                {
+                    tran.Rollback();
+                    throw;
+                }
+            }
+        }
     }
 }

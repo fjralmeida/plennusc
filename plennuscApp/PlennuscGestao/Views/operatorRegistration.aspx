@@ -13,7 +13,10 @@
     <link href="../../Content/Css/projects/gestao/structuresCss/RegistrationOperador/operatorRegistration.css" rel="stylesheet" />
 
 <script type="text/javascript">
-    // Retorna SOMENTE os checkboxes habilitados (ANS válido)
+    // ============================================================
+    //  FUNÇÕES PARA A ABA DE NOVAS (INSERÇÃO) - JÁ FUNCIONA
+    // ============================================================
+
     function getCheckboxesLinhas() {
         var tabela = document.querySelector('.table-pendentes tbody');
         if (!tabela) return [];
@@ -23,7 +26,6 @@
     function atualizarContadorSelecionadas() {
         var checks = getCheckboxesLinhas();
         if (checks.length === 0) {
-            // Nenhum checkbox habilitado — desabilita tudo
             var span0 = document.getElementById('<%= lblQtdSelecionadas.ClientID %>');
             if (span0) span0.innerText = '0';
 
@@ -62,7 +64,7 @@
         if (!chkTodos) return;
 
         var estado = chkTodos.checked;
-        var checks = getCheckboxesLinhas(); // já vem só os habilitados
+        var checks = getCheckboxesLinhas();
         for (var i = 0; i < checks.length; i++) {
             checks[i].checked = estado;
         }
@@ -82,13 +84,134 @@
         return confirm('Confirma a importação das ' + marcados + ' operadora(s) selecionada(s)?');
     }
 
+    // ============================================================
+    //  FUNÇÕES PARA A ABA DE ALTERAÇÕES (ATUALIZAÇÃO) - IGUAL À DE CIMA
+    // ============================================================
+
+    function getCheckboxesUpdate() {
+        var tabela = document.querySelector('#panelAlteracoes .table-pendentes tbody');
+        if (!tabela) return [];
+        return tabela.querySelectorAll('input[type="checkbox"]:not(:disabled)');
+    }
+
+    function atualizarContadorUpdate() {
+        var checks = getCheckboxesUpdate();
+        if (checks.length === 0) {
+            var span0 = document.getElementById('<%= lblQtdSelecionadasUpdate.ClientID %>');
+            if (span0) span0.innerText = '0';
+
+            var btnConfirmar0 = document.getElementById('<%= btnConfirmarUpdate.ClientID %>');
+            if (btnConfirmar0) {
+                btnConfirmar0.disabled = true;
+                btnConfirmar0.style.opacity = '0.5';
+                btnConfirmar0.style.cursor = 'not-allowed';
+            }
+            return;
+        }
+
+        var marcados = 0;
+        for (var i = 0; i < checks.length; i++) {
+            if (checks[i].checked) marcados++;
+        }
+
+        var span = document.getElementById('<%= lblQtdSelecionadasUpdate.ClientID %>');
+        if (span) span.innerText = marcados;
+
+        var chkTodos = document.getElementById('chkSelecionarTodosUpdate');
+        if (chkTodos) {
+            chkTodos.checked = (marcados === checks.length && checks.length > 0);
+        }
+
+        var btn = document.getElementById('<%= btnConfirmarUpdate.ClientID %>');
+        if (btn) {
+            btn.disabled = (marcados === 0);
+            btn.style.opacity = (marcados === 0) ? '0.5' : '1';
+            btn.style.cursor = (marcados === 0) ? 'not-allowed' : 'pointer';
+        }
+    }
+
+    function toggleSelecionarTodosUpdate() {
+        var chkTodos = document.getElementById('chkSelecionarTodosUpdate');
+        if (!chkTodos) return;
+
+        var estado = chkTodos.checked;
+        var checks = getCheckboxesUpdate();
+        for (var i = 0; i < checks.length; i++) {
+            checks[i].checked = estado;
+        }
+        atualizarContadorUpdate();
+    }
+
+    function confirmarAtualizacaoUpdate() {
+        var checks = getCheckboxesUpdate();
+        var marcados = 0;
+        for (var i = 0; i < checks.length; i++) {
+            if (checks[i].checked) marcados++;
+        }
+        if (marcados === 0) {
+            alert('Selecione pelo menos uma operadora para atualizar.');
+            return false;
+        }
+        return confirm('Confirma a atualização das ' + marcados + ' operadora(s) selecionada(s)?');
+    }
+
+    // ============================================================
+    //  FUNÇÕES GERAIS
+    // ============================================================
+
+    function trocarAbaSync(aba) {
+        document.getElementById('tabBtnNovas').classList.remove('active');
+        document.getElementById('tabBtnAlteracoes').classList.remove('active');
+        document.getElementById('panelNovas').classList.remove('active');
+        document.getElementById('panelAlteracoes').classList.remove('active');
+
+        var btnNovas = document.getElementById('<%= btnConfirmarSync.ClientID %>');
+        var btnUpdate = document.getElementById('<%= btnConfirmarUpdate.ClientID %>');
+
+        if (aba === 'novas') {
+            document.getElementById('tabBtnNovas').classList.add('active');
+            document.getElementById('panelNovas').classList.add('active');
+            if (btnNovas) btnNovas.style.display = 'inline-block';
+            if (btnUpdate) btnUpdate.style.display = 'none';
+            setTimeout(atualizarContadorSelecionadas, 50);
+        } else {
+            document.getElementById('tabBtnAlteracoes').classList.add('active');
+            document.getElementById('panelAlteracoes').classList.add('active');
+            if (btnNovas) btnNovas.style.display = 'none';
+            if (btnUpdate) btnUpdate.style.display = 'inline-block';
+            setTimeout(atualizarContadorUpdate, 50);
+        }
+    }
+
+    function abrirModalSync() {
+        var modalEl = document.getElementById('modalSyncOperadoras');
+        if (!modalEl) return;
+        var modal = new bootstrap.Modal(modalEl);
+        modal.show();
+        setTimeout(function () {
+            var panelNovas = document.getElementById('panelNovas');
+            var panelAlteracoes = document.getElementById('panelAlteracoes');
+            if (panelNovas && panelNovas.classList.contains('active')) {
+                atualizarContadorSelecionadas();
+            } else if (panelAlteracoes && panelAlteracoes.classList.contains('active')) {
+                atualizarContadorUpdate();
+            } else {
+                atualizarContadorSelecionadas(); // fallback
+            }
+        }, 300);
+    }
+
+    // ============================================================
+    //  INICIALIZAÇÃO
+    // ============================================================
+
     document.addEventListener('DOMContentLoaded', function () {
+        // ---- Checkbox "Selecionar todos" para NOVAS ----
         var chkTodos = document.getElementById('chkSelecionarTodos');
         if (chkTodos) {
             chkTodos.addEventListener('change', toggleSelecionarTodos);
             chkTodos.addEventListener('click', toggleSelecionarTodos);
         }
-
         var tabela = document.querySelector('.table-pendentes tbody');
         if (tabela) {
             tabela.addEventListener('click', function (e) {
@@ -97,15 +220,32 @@
                 }
             });
         }
+
+        // ---- Checkbox "Selecionar todos" para ALTERAÇÕES ----
+        var chkTodosUpdate = document.getElementById('chkSelecionarTodosUpdate');
+        if (chkTodosUpdate) {
+            chkTodosUpdate.addEventListener('change', toggleSelecionarTodosUpdate);
+            chkTodosUpdate.addEventListener('click', toggleSelecionarTodosUpdate);
+        }
+        var tabelaUpdate = document.querySelector('#panelAlteracoes .table-pendentes tbody');
+        if (tabelaUpdate) {
+            tabelaUpdate.addEventListener('click', function (e) {
+                if (e.target && e.target.type === 'checkbox' && !e.target.disabled) {
+                    atualizarContadorUpdate();
+                }
+            });
+        }
+
+        // ---- Inicializa contador conforme aba ativa ----
+        var panelNovas = document.getElementById('panelNovas');
+        var panelAlteracoes = document.getElementById('panelAlteracoes');
+        if (panelNovas && panelNovas.classList.contains('active')) {
+            atualizarContadorSelecionadas();
+        } else if (panelAlteracoes && panelAlteracoes.classList.contains('active')) {
+            atualizarContadorUpdate();
+        }
     });
 
-    function abrirModalSync() {
-        var modalEl = document.getElementById('modalSyncOperadoras');
-        if (!modalEl) return;
-        var modal = new bootstrap.Modal(modalEl);
-        modal.show();
-        setTimeout(atualizarContadorSelecionadas, 300);
-    }
 </script>
 
 </asp:Content>
@@ -150,87 +290,170 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
 
-                    <div class="modal-body">
+                <div class="modal-body">
 
-                        <div class="modal-usuario-info">
-                            <i class="bi bi-person-check me-1"></i>
-                            Confirmação será registrada por:
-                            <strong><asp:Label ID="lblUsuarioConfirmacao" runat="server"></asp:Label></strong>
-                            em <strong><%: DateTime.Now.ToString("dd/MM/yyyy HH:mm") %></strong>
-                        </div>
+    <div class="modal-usuario-info">
+        <i class="bi bi-person-check me-1"></i>
+        Confirmação será registrada por:
+        <strong><asp:Label ID="lblUsuarioConfirmacao" runat="server"></asp:Label></strong>
+        em <strong><%: DateTime.Now.ToString("dd/MM/yyyy HH:mm") %></strong>
+    </div>
 
-                        <p class="text-muted mb-3" style="font-size:13px;">
-                            As operadoras abaixo existem no sistema de origem (Aliança) mas
-                            ainda <strong>não foram importadas</strong> para esta base.
-                            Marque as que deseja importar — todas vêm selecionadas por padrão.
-                        </p>
+    <div class="tabs-sync">
+        <button type="button" class="tab-sync-btn active" id="tabBtnNovas" onclick="trocarAbaSync('novas')">
+            <i class="bi bi-plus-circle"></i>
+            Novas
+            <span class="tab-sync-count"><asp:Label ID="lblQtdAbaNovas" runat="server">0</asp:Label></span>
+        </button>
+        <button type="button" class="tab-sync-btn tab-alteracoes" id="tabBtnAlteracoes" onclick="trocarAbaSync('alteracoes')">
+            <i class="bi bi-arrow-repeat"></i>
+            Alterações
+            <span class="tab-sync-count"><asp:Label ID="lblQtdAbaAlteracoes" runat="server">0</asp:Label></span>
+        </button>
+    </div>
 
-                        <%-- Barra de seleção / contador — AQUI ESTAVA FALTANDO O CHECKBOX MASTER --%>
-                        <div class="barra-selecao">
-                            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0;">
-                                <input type="checkbox" id="chkSelecionarTodos" checked
-                                       style="width:16px; height:16px; cursor:pointer;" />
-                                Selecionar todos
-                            </label>
-                            <span>
-                                <strong><asp:Label ID="lblQtdSelecionadas" runat="server">0</asp:Label></strong>
-                                operadora(s) selecionada(s)
-                            </span>
-                        </div>
+    <%-- ═══ PAINEL: NOVAS ═══ --%>
+    <div class="tab-sync-panel active" id="panelNovas">
 
-                        <table class="table table-bordered table-hover table-pendentes">
-                            <thead>
-                                <tr>
-                                    <th class="col-check"></th>
-                                    <th>CNPJ</th>
-                                    <th>Registro ANS</th>
-                                    <th>Razão Social</th>
-                                    <th>Nome Comercial</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <asp:Repeater ID="rptPendentes" runat="server">
-                                    <ItemTemplate>
-                                        <tr class='<%# (bool)Eval("AnsValido") ? "" : "linha-ans-invalido" %>'>
-                                            <td class="col-check">
-                                                <asp:HiddenField ID="hdnCodigoGrupo" runat="server"
-                                                    Value='<%# Eval("CodigoGrupo") %>' />
-                                                <asp:CheckBox ID="chkSelecionar" runat="server"
-                                                    Checked='<%# (bool)Eval("AnsValido") %>'
-                                                    Enabled='<%# (bool)Eval("AnsValido") %>'
-                                                    CssClass="chk-linha-pendente" />
-                                            </td>
-                                            <td><%# Eval("Numero_CNPJ") %></td>
-                                            <td>
-                                                <%# Eval("RegistroANS") ?? "—" %>
-                                                <%# (bool)Eval("AnsValido") ? "" : "<i class='bi bi-exclamation-triangle-fill text-danger ms-1' title='Registro ANS inválido'></i>" %>
-                                            </td>
-                                            <td><%# Eval("RazaoSocial") %></td>
-                                            <td>
-                                                <%# Eval("NomeComercial") %>
-                                                <span class="badge-novo ms-1">NOVO</span>
-                                                <%# (bool)Eval("AnsValido")
-                                                    ? ""
-                                                    : "<div class='text-danger' style='font-size:11px; margin-top:4px;'><i class='bi bi-exclamation-circle'></i> Registro ANS inválido — corrija na origem antes de importar</div>" %>
-                                            </td>
-                                        </tr>
-                                    </ItemTemplate>
-                                </asp:Repeater>
-                            </tbody>
-                        </table>
+        <p class="text-muted mb-3" style="font-size:13px;">
+            As operadoras abaixo existem no sistema de origem (Aliança) mas
+            ainda <strong>não foram importadas</strong> para esta base.
+        </p>
 
-                    </div>
+        <div class="barra-selecao">
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0;">
+                <input type="checkbox" id="chkSelecionarTodos" checked
+                       style="width:16px; height:16px; cursor:pointer;" />
+                Selecionar todos
+            </label>
+            <span>
+                <strong><asp:Label ID="lblQtdSelecionadas" runat="server">0</asp:Label></strong>
+                operadora(s) selecionada(s)
+            </span>
+        </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Cancelar</button>
+        <table class="table table-bordered table-hover table-pendentes">
+            <thead>
+                <tr>
+                    <th class="col-check"></th>
+                    <th>CNPJ</th>
+                    <th>Registro ANS</th>
+                    <th>Razão Social</th>
+                    <th>Nome Comercial</th>
+                </tr>
+            </thead>
+            <tbody>
+                <asp:Repeater ID="rptPendentes" runat="server">
+                    <ItemTemplate>
+                        <tr class='<%# (bool)Eval("AnsValido") ? "" : "linha-ans-invalido" %>'>
+                            <td class="col-check">
+                                <asp:HiddenField ID="hdnCodigoGrupo" runat="server" Value='<%# Eval("CodigoGrupo") %>' />
+                                <asp:CheckBox ID="chkSelecionar" runat="server"
+                                    Checked='<%# (bool)Eval("AnsValido") %>'
+                                    Enabled='<%# (bool)Eval("AnsValido") %>'
+                                    CssClass="chk-linha-pendente" />
+                            </td>
+                            <td><%# Eval("Numero_CNPJ") %></td>
+                            <td>
+                                <%# Eval("RegistroANS") ?? "—" %>
+                                <%# (bool)Eval("AnsValido") ? "" : "<i class='bi bi-exclamation-triangle-fill text-danger ms-1' title='Registro ANS inválido'></i>" %>
+                            </td>
+                            <td><%# Eval("RazaoSocial") %></td>
+                            <td>
+                                <%# Eval("NomeComercial") %>
+                                <span class="badge-novo ms-1">NOVO</span>
+                                <%# (bool)Eval("AnsValido")
+                                    ? ""
+                                    : "<div class='text-danger' style='font-size:11px; margin-top:4px;'><i class='bi bi-exclamation-circle'></i> Registro ANS inválido — corrija na origem antes de importar</div>" %>
+                            </td>
+                        </tr>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </tbody>
+        </table>
 
-                        <asp:Button ID="btnConfirmarSync" runat="server"
-                            CssClass="btn btn-success"
-                            Text="✔ Confirmar e importar selecionadas"
-                            OnClick="btnConfirmarSync_Click"
-                            OnClientClick="return confirmarImportacao();" />
-                    </div>
+    </div>
+
+    <%-- ═══ PAINEL: ALTERAÇÕES ═══ --%>
+    <div class="tab-sync-panel" id="panelAlteracoes">
+
+        <p class="text-muted mb-3" style="font-size:13px;">
+            As operadoras abaixo já existem nesta base, mas o sistema de origem (Aliança)
+            possui valores diferentes. Marque as que deseja atualizar.
+        </p>
+
+        <div class="barra-selecao">
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0;">
+                <input type="checkbox" id="chkSelecionarTodosUpdate" checked
+                       style="width:16px; height:16px; cursor:pointer;" />
+                Selecionar todos
+            </label>
+            <span>
+                <strong><asp:Label ID="lblQtdSelecionadasUpdate" runat="server">0</asp:Label></strong>
+                operadora(s) selecionada(s)
+            </span>
+        </div>
+
+        <table class="table table-bordered table-hover table-pendentes">
+            <thead>
+                <tr>
+                    <th class="col-check"></th>
+                    <th>CNPJ</th>
+                    <th>Registro ANS</th>
+                    <th>Razão Social</th>
+                    <th>Nome Comercial</th>
+                </tr>
+            </thead>
+            <tbody>
+                <asp:Repeater ID="rptAlteracoesUpdate" runat="server">
+                    <ItemTemplate>
+                        <tr>
+                            <td class="col-check">
+                                <asp:HiddenField ID="hdnCnpjUpdate" runat="server" Value='<%# Eval("Numero_CNPJ") %>' />
+                                <asp:CheckBox ID="chkSelecionarUpdate" runat="server" Checked="true" CssClass="chk-linha-update" />
+                            </td>
+                            <td><%# Eval("Numero_CNPJ") %></td>
+                            <td>
+                                <%# (bool)Eval("DivergeAns")
+                                    ? "<span class='valor-antigo'>" + (Eval("RegistroANS_Atual") ?? "—") + "</span><span class='seta-mudanca'>→</span><span class='valor-novo'>" + Eval("RegistroANS_Novo") + "</span>"
+                                    : (Eval("RegistroANS_Atual") ?? "—").ToString() %>
+                            </td>
+                            <td>
+                                <%# (bool)Eval("DivergeRazaoSocial")
+                                    ? "<span class='valor-antigo'>" + Eval("RazaoSocial_Atual") + "</span><span class='seta-mudanca'>→</span><span class='valor-novo'>" + Eval("RazaoSocial_Novo") + "</span>"
+                                    : Eval("RazaoSocial_Atual") %>
+                            </td>
+                            <td>
+                                <%# (bool)Eval("DivergeNomeComercial")
+                                    ? "<span class='valor-antigo'>" + Eval("NomeComercial_Atual") + "</span><span class='seta-mudanca'>→</span><span class='valor-novo'>" + Eval("NomeComercial_Novo") + "</span>"
+                                    : Eval("NomeComercial_Atual") %>
+                            </td>
+                        </tr>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+                   <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+    <asp:Button ID="btnConfirmarSync" runat="server"
+        CssClass="btn btn-success"
+        Text="✔ Confirmar e importar selecionadas"
+        OnClick="btnConfirmarSync_Click"
+        OnClientClick="return confirmarImportacao();" />
+
+    <asp:Button ID="btnConfirmarUpdate" runat="server"
+        CssClass="btn btn-primary"
+        Text="✔ Confirmar e atualizar selecionadas"
+        OnClick="btnConfirmarUpdate_Click"
+        OnClientClick="return confirmarAtualizacaoUpdate();"
+        Style="display:none;" />
+</div>
 
                 </div>
             </div>
@@ -244,8 +467,6 @@
                 </span>
                 Cadastro de Operadora
             </h1>
-            <asp:Button ID="btnNovaOperadora" runat="server" CssClass="btn-primary"
-                Text="Nova Operadora" OnClick="btnNovaOperadora_Click" />
         </div>
 
         <%-- ── Filtros ── --%>
@@ -285,9 +506,14 @@
         <%-- ── Grid ── --%>
         <div class="grid-container">
 
-            <div class="legenda-novo mb-2">
-                <span></span> Operadora inserida nas últimas 24h
-            </div>
+   <div class="legenda-status">
+    <span class="legenda-item">
+        <span class="legenda-cor laranja"></span> Inserida nas últimas 24h
+    </span>
+    <span class="legenda-item">
+        <span class="legenda-cor azul"></span> Atualizada recentemente
+    </span>
+</div>
             
             <asp:GridView ID="gvOperadoras" runat="server" CssClass="custom-grid"
                 AutoGenerateColumns="False" AllowPaging="True" PageSize="10"

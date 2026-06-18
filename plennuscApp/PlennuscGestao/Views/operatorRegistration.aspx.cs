@@ -86,22 +86,34 @@ namespace appWhatsapp.PlennuscGestao.Views
                     ? $"Usuário {codAutenticacaoAcesso}"
                     : nomePessoa;
 
-                // Todas vêm marcadas por padrão — usuário desmarca o que não quer
                 rptPendentes.DataSource = pendentes;
                 rptPendentes.DataBind();
 
                 lblQtdSelecionadas.Text = pendentes.Count.ToString();
-
-                ClientScript.RegisterStartupScript(
-                 this.GetType(), "AbrirModalSync",
-                 @"document.addEventListener('DOMContentLoaded', function(){ 
-                    var modalEl = document.getElementById('modalSyncOperadoras');
-                    var modal = new bootstrap.Modal(modalEl);
-                    modal.show();
-                    setTimeout(function(){ atualizarContadorSelecionadas(); }, 200);
-                });",
-                 true);
             }
+
+            // ═══ COLE AQUI — bloco novo, fora do if acima, sempre executa ═══
+            var alteracoes = _svc.BuscarOperadorasComAlteracoes();
+            if (alteracoes != null && alteracoes.Count > 0)
+            {
+                rptAlteracoesUpdate.DataSource = alteracoes;
+                rptAlteracoesUpdate.DataBind();
+                lblQtdSelecionadasUpdate.Text = alteracoes.Count.ToString();
+            }
+
+            lblQtdAbaNovas.Text = pendentes != null ? pendentes.Count.ToString() : "0";
+            lblQtdAbaAlteracoes.Text = alteracoes != null ? alteracoes.Count.ToString() : "0";
+            // ═══ FIM DO BLOCO NOVO ═══
+
+            ClientScript.RegisterStartupScript(
+             this.GetType(), "AbrirModalSync",
+             @"document.addEventListener('DOMContentLoaded', function(){ 
+                var modalEl = document.getElementById('modalSyncOperadoras');
+                var modal = new bootstrap.Modal(modalEl);
+                modal.show();
+                setTimeout(function(){ atualizarContadorSelecionadas(); atualizarContadorUpdate(); }, 200);
+            });",
+             true);
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -244,19 +256,61 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (e.Row.RowType != DataControlRowType.DataRow) return;
 
             var item = e.Row.DataItem as OperadoraListDto;
-            if (item != null && item.IsRegistroNovo)
+            if (item == null) return;
+
+            bool isNovo = item.Informacoes_log_i.HasValue &&
+                          item.Informacoes_log_i.Value > DateTime.Now.AddHours(-24);
+
+            bool isAlterado = item.Informacoes_log_a.HasValue &&
+                              item.Informacoes_log_a.Value > DateTime.Now.AddHours(-24) &&
+                              item.Informacoes_log_i != item.Informacoes_log_a;
+
+            if (isNovo)
             {
-                e.Row.Style["background-color"] = "#FFE0B2";
-                e.Row.Style["font-weight"] = "500";
+                e.Row.CssClass += " linha-inserida";
                 e.Row.ToolTip = $"Novo registro — inserido em {item.Informacoes_log_i:dd/MM/yyyy HH:mm}";
             }
+            else if (isAlterado)
+            {
+                e.Row.CssClass += " linha-atualizada";
+                e.Row.ToolTip = $"Atualizado em {item.Informacoes_log_a:dd/MM/yyyy HH:mm}";
+            }
         }
-
-        protected void btnNovaOperadora_Click(object sender, EventArgs e)
+        protected void btnConfirmarUpdate_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/novaOperadora");
-        }
+            var todasAlteracoes = _svc.BuscarOperadorasComAlteracoes();
 
+            var cnpjsSelecionados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (RepeaterItem item in rptAlteracoesUpdate.Items)
+            {
+                var chk = item.FindControl("chkSelecionarUpdate") as CheckBox;
+                var hidden = item.FindControl("hdnCnpjUpdate") as HiddenField;
+
+                if (chk != null && chk.Checked && hidden != null && !string.IsNullOrWhiteSpace(hidden.Value))
+                    cnpjsSelecionados.Add(hidden.Value.Trim());
+            }
+
+            if (cnpjsSelecionados.Count == 0)
+            {
+                MostrarAlerta("Selecione ao menos uma operadora para atualizar.", "warning");
+                return;
+            }
+
+            var selecionadas = todasAlteracoes.Where(a => cnpjsSelecionados.Contains(a.Numero_CNPJ)).ToList();
+
+            try
+            {
+                int codAutenticacaoAcesso = ObterCodAutenticacaoAcesso();
+                _svc.ConfirmarAlteracoes(selecionadas, codAutenticacaoAcesso);
+
+                MostrarAlerta($"{selecionadas.Count} operadora(s) atualizada(s) com sucesso!", "success");
+                BindGrid();
+            }
+            catch (Exception ex)
+            {
+                MostrarAlerta("Erro ao atualizar: " + ex.Message, "danger");
+            }
+        }
         // ─────────────────────────────────────────────────────────────────────
         // Utilitários
         // ─────────────────────────────────────────────────────────────────────

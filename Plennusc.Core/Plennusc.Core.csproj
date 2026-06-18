@@ -173,6 +173,7 @@
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuNode.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\menusManagementModels.cs" />
+    <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraAlteracoesDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraListDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraSyncDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsSendMessage\DetailedSubmissionResult.cs" />

@@ -103,5 +103,25 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
             FROM dbo.AutenticacaoAcesso a
             INNER JOIN dbo.Pessoa p ON p.CodPessoa = a.CodPessoa
             WHERE a.CodAutenticacaoAcesso = @CodAutenticacaoAcesso";
+
+        public const string BuscarOperadorasExistentesPlennus = @"
+            SELECT
+                o.CodigoOperadora,
+                LTRIM(RTRIM(o.Numero_CNPJ)) AS Numero_CNPJ,
+                o.RegistroANS,
+                o.RazaoSocial,
+                o.NomeComercial
+            FROM dbo.API_Venda_Operadora o
+            WHERE o.Numero_CNPJ IS NOT NULL
+              AND LTRIM(RTRIM(o.Numero_CNPJ)) <> ''";
+
+        public const string AtualizarOperadoraDinamica = @"
+            UPDATE dbo.API_Venda_Operadora
+            SET RazaoSocial        = @RazaoSocial,
+                NomeComercial      = @NomeComercial,
+                {SET_ANS}
+                CodPessoaAlteracao = @CodPessoaAlteracao,
+                Informacoes_log_a  = @DataLog
+            WHERE LTRIM(RTRIM(Numero_CNPJ)) = LTRIM(RTRIM(@Numero_CNPJ))";
     }
 }
