@@ -31,6 +31,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                 VerificarPendentes();
                 BindGrid();
             }
+            else
+            {
+                // Em postback, recria os botões para que os eventos funcionem
+                RecriarBotoesPaginacao();
+            }
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -231,15 +236,16 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Numero_CNPJ = txtCnpj.Text.Trim()
             };
 
-            var lista = _svc.ListarOperadoras(filtro);
-            gvOperadoras.DataSource = lista;
+            var listaCompleta = _svc.ListarOperadoras(filtro);
+            int total = listaCompleta.Count;
+            ViewState["TotalRegistros"] = total;
+
+            gvOperadoras.DataSource = listaCompleta;
             gvOperadoras.DataBind();
         }
 
         protected void gvOperadoras_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            gvOperadoras.PageIndex = e.NewPageIndex;
-            BindGrid();
         }
 
         protected void gvOperadoras_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -249,8 +255,13 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Session["CurrentOperadoraId"] = Convert.ToInt32(e.CommandArgument);
                 Response.Redirect("~/viewOperadora");
             }
+            else if (e.CommandName == "Page")
+            {
+                int pageIndex = Convert.ToInt32(e.CommandArgument);
+                gvOperadoras.PageIndex = pageIndex;
+                BindGrid();
+            }
         }
-
         protected void gvOperadoras_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType != DataControlRowType.DataRow) return;
@@ -275,6 +286,78 @@ namespace appWhatsapp.PlennuscGestao.Views
                 e.Row.CssClass += " linha-atualizada";
                 e.Row.ToolTip = $"Atualizado em {item.Informacoes_log_a:dd/MM/yyyy HH:mm}";
             }
+        }
+
+        protected void gvOperadoras_DataBound(object sender, EventArgs e)
+        {
+            GridViewRow pagerRow = gvOperadoras.BottomPagerRow;
+            if (pagerRow == null) return;
+
+            // Atualiza a contagem
+            Label lblInfo = (Label)pagerRow.FindControl("lblPagerInfo");
+            if (lblInfo != null)
+            {
+                int totalGeral = ObterTotalRegistros();
+                int paginaAtual = gvOperadoras.PageIndex;
+                int tamanhoPagina = gvOperadoras.PageSize;
+                int inicio = (paginaAtual * tamanhoPagina) + 1;
+                int fim = Math.Min(inicio + gvOperadoras.Rows.Count - 1, totalGeral);
+
+                lblInfo.Text = $"<strong>{inicio} - {fim}</strong> de <strong>{totalGeral}</strong> itens";
+            }
+
+            // Recria os botões (usando o método comum)
+            RecriarBotoesPaginacao();
+        }
+
+        private void RecriarBotoesPaginacao()
+        {
+            GridViewRow pagerRow = gvOperadoras.BottomPagerRow;
+            if (pagerRow == null) return;
+
+            PlaceHolder ph = (PlaceHolder)pagerRow.FindControl("phPagerButtons");
+            if (ph == null) return;
+
+            ph.Controls.Clear();
+
+            int totalGeral = ObterTotalRegistros();
+            if (totalGeral == 0) return;
+
+            int totalPaginas = (int)Math.Ceiling((double)totalGeral / gvOperadoras.PageSize);
+            int currentPage = gvOperadoras.PageIndex;
+
+            // Função local para adicionar botão
+            void AddBtn(string text, int pageIndex, bool disabled)
+            {
+                LinkButton btn = new LinkButton();
+                btn.Text = text;
+                btn.CssClass = "pager-button" + (pageIndex == currentPage ? " active" : "");
+                btn.CommandName = "Page";
+                btn.CommandArgument = pageIndex.ToString();
+                btn.Enabled = !disabled;
+                if (disabled) btn.CssClass += " disabled";
+                ph.Controls.Add(btn);
+            }
+
+            AddBtn("«", 0, currentPage == 0);
+            AddBtn("‹", currentPage - 1, currentPage == 0);
+
+            int start = Math.Max(0, currentPage - 3);
+            int end = Math.Min(totalPaginas - 1, currentPage + 3);
+            for (int i = start; i <= end; i++)
+            {
+                AddBtn((i + 1).ToString(), i, false);
+            }
+
+            AddBtn("›", currentPage + 1, currentPage >= totalPaginas - 1);
+            AddBtn("»", totalPaginas - 1, currentPage >= totalPaginas - 1);
+        }
+
+        private int ObterTotalRegistros()
+        {
+            if (ViewState["TotalRegistros"] != null)
+                return (int)ViewState["TotalRegistros"];
+            return 0;
         }
         protected void btnConfirmarUpdate_Click(object sender, EventArgs e)
         {

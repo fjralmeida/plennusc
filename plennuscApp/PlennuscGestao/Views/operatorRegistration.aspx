@@ -515,12 +515,13 @@
     </span>
 </div>
             
-            <asp:GridView ID="gvOperadoras" runat="server" CssClass="custom-grid"
-                AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
-                OnPageIndexChanging="gvOperadoras_PageIndexChanging"
-                OnRowCommand="gvOperadoras_RowCommand"
-                OnRowDataBound="gvOperadoras_RowDataBound"
-                EmptyDataText="Nenhuma operadora encontrada no cadastro.">
+      <asp:GridView ID="gvOperadoras" runat="server" CssClass="custom-grid"
+    AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
+    OnRowCommand="gvOperadoras_RowCommand"
+    OnRowDataBound="gvOperadoras_RowDataBound"
+    OnDataBound="gvOperadoras_DataBound"
+    OnPageIndexChanging="gvOperadoras_PageIndexChanging" 
+    EmptyDataText="Nenhuma operadora encontrada no cadastro.">
 
                 <Columns>
                     <asp:BoundField DataField="CodigoOperadora" HeaderText="ID"
@@ -544,7 +545,16 @@
                         HeaderStyle-CssClass="text-left" />
                 </Columns>
 
-                <PagerStyle HorizontalAlign="Center" CssClass="pagination-container" />
+                <PagerTemplate>
+    <div class="pager-custom">
+        <span class="pager-info">
+            <asp:Label ID="lblPagerInfo" runat="server" Text=""></asp:Label>
+        </span>
+        <span class="pager-buttons">
+            <asp:PlaceHolder ID="phPagerButtons" runat="server"></asp:PlaceHolder>
+        </span>
+    </div>
+</PagerTemplate>
                 <HeaderStyle CssClass="grid-header" />
             </asp:GridView>
         </div>

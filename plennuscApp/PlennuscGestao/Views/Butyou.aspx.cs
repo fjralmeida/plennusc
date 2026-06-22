@@ -821,7 +821,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_ANAVA.docx");
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_ABRAEST.docx");
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);

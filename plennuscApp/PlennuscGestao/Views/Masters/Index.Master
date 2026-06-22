@@ -180,7 +180,7 @@
                 <!-- Main Content -->
 <div class="flex-grow-1 overflow-auto" style="height:100%;">
 <iframe id="mainFrame" name="mainFrame"
-        src="<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>"
+       src="<%= ResolveUrl("~/PlennuscGestao/Views/homeManagement.aspx") %>?frame=1"
         style="width:100%; height:100%; border:none;">
 </iframe>
 </div>
@@ -457,34 +457,27 @@
         document.getElementById('mainFrame').addEventListener('load', function () {
             try {
                 var iframeTitle = this.contentDocument.title;
-                var iframeSrc = this.contentWindow.location.pathname;
+                // pathname sem frame=1 para o browser
+                var iframePath = this.contentWindow.location.pathname;
 
                 if (iframeTitle) document.title = iframeTitle;
+                sessionStorage.setItem('currentPage', iframePath);
 
-                sessionStorage.setItem('currentPage', iframeSrc);
-
-                if (iframeSrc && iframeSrc !== '/gestao') {
-                    history.pushState(null, iframeTitle, iframeSrc);
+                if (iframePath && iframePath !== '/gestao') {
+                    history.pushState(null, iframeTitle, iframePath); // URL limpa
                 }
             } catch (e) { }
         });
 
         (function () {
             var params = new URLSearchParams(window.location.search);
-            var pagina = params.get('p');
-
-            console.log('pagina lida do ?p=:', pagina);
-
-            if (!pagina) {
-                pagina = sessionStorage.getItem('currentPage');
-                console.log('pagina do sessionStorage:', pagina);
-            }
+            var pagina = params.get('p') || sessionStorage.getItem('currentPage');
 
             if (pagina && pagina !== '/gestao' && pagina !== '/homeManagement') {
-                var src = pagina + (pagina.includes('?') ? '&' : '?') + 'frame=1';
-                console.log('setando iframe.src para:', src);
-                document.getElementById('mainFrame').src = src;
-                history.replaceState(null, '', pagina);
+                // iframe recebe com frame=1
+                document.getElementById('mainFrame').src = pagina +
+                    (pagina.includes('?') ? '&' : '?') + 'frame=1';
+                history.replaceState(null, '', pagina); // browser mostra limpa
             }
         })();
     </script>

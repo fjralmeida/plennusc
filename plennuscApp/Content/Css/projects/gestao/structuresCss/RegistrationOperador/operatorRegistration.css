@@ -64,36 +64,6 @@ body {
     justify-content: center;
 }
 
-/* ── Paginação ── */
-tr.pagination-container a,
-tr.pagination-container span {
-    display: inline-block !important;
-    min-width: 36px !important;
-    height: 36px !important;
-    line-height: 36px !important;
-    padding: 0 8px !important;
-    margin: 0 4px !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    text-align: center !important;
-    text-decoration: none !important;
-    border: 1px solid #dadce0 !important;
-    border-radius: 6px !important;
-    background-color: white !important;
-    color: #3c4043 !important;
-}
-
-    tr.pagination-container a:hover {
-        background-color: #f1f3f4 !important;
-        border-color: #bdc1c6 !important;
-    }
-
-tr.pagination-container span {
-    background-color: #4cb07a !important;
-    border-color: #4cb07a !important;
-    color: white !important;
-}
-
 /* ── Banner de aviso ── */
 .banner-sync {
     display: flex;
@@ -455,20 +425,30 @@ tr.pagination-container span {
         font-size: 0.8rem;
     }
 }
-/* ─── Melhorias no grid principal ─── */
+/* ─── GRID E PAGINAÇÃO – VERSÃO FINAL ─── */
 .grid-container {
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible; /* ← impede corte da paginação */
     box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     background: white;
 }
 
 .custom-grid {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
     font-size: 14px;
+    table-layout: auto;
+    min-width: 0;
 }
+
+    .custom-grid th,
+    .custom-grid td {
+        padding: 12px 10px;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+        white-space: normal;
+        word-break: break-word;
+    }
 
     .custom-grid thead th {
         background: #f1f5f9;
@@ -478,67 +458,117 @@ tr.pagination-container span {
         text-transform: uppercase;
         letter-spacing: 0.04em;
         padding: 16px 14px;
-        border-bottom: 2px solid #e2e8f0;
+        border-bottom: 2px solid #cbd5e1;
         white-space: nowrap;
     }
 
-    .custom-grid tbody td {
-        padding: 16px 14px;
-        border-bottom: 1px solid #f1f5f9;
-        background: white;
-        transition: background 0.2s;
+    .custom-grid tbody tr:last-child td {
+        border-bottom: none;
     }
 
-    .custom-grid tbody tr {
-        transition: all 0.15s ease;
-    }
-
-        .custom-grid tbody tr:hover td {
-            background: #fafcff;
-        }
-
-        .custom-grid tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-    /* Paginação – integração com o grid */
-    .custom-grid .pagination-container {
+    .custom-grid tbody tr:hover td {
         background: #fafcff;
-        padding: 16px 20px;
-        border-top: 1px solid #e9edf4;
-        border-radius: 0 0 16px 16px;
     }
 
-        .custom-grid .pagination-container a,
-        .custom-grid .pagination-container span {
-            display: inline-block;
-            min-width: 36px;
-            height: 36px;
-            line-height: 36px;
-            padding: 0 10px;
-            margin: 0 3px;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: center;
-            text-decoration: none;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background: white;
-            color: #334155;
-            transition: all 0.15s ease;
+    /* ── Rodapé (footer) ── */
+    .custom-grid tfoot td {
+        padding: 14px 20px;
+        background: #f8fafc;
+        border-top: 2px solid #e2e8f0;
+        text-align: center;
+        font-size: 14px;
+        color: #475569;
+        font-weight: 500;
+    }
+
+        .custom-grid tfoot td strong {
+            color: #0f172a;
+            font-weight: 700;
         }
 
-            .custom-grid .pagination-container a:hover {
-                background: #f1f5f9;
-                border-color: #cbd5e1;
-            }
+/* ── PAGER CUSTOMIZADO ── */
+.pager-custom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+}
 
-        .custom-grid .pagination-container span {
-            background: #4cb07a;
-            border-color: #4cb07a;
-            color: white;
-        }
+.pager-info {
+    font-size: 14px;
+    color: #475569;
+    font-weight: 500;
+    white-space: nowrap;
+}
 
+    .pager-info strong {
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+.pager-buttons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pager-button {
+    display: inline-block;
+    min-width: 36px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+    .pager-button:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+
+    .pager-button.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    /* Página atual – destaque verde */
+    .pager-button.active {
+        background: #4cb07a !important;
+        border-color: #4cb07a !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        cursor: default;
+    }
+
+/* Responsivo */
+@media (max-width: 576px) {
+    .pager-custom {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .pager-button {
+        min-width: 30px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 11px;
+        padding: 0 6px;
+    }
+}
 /* ─── Legenda "Operadora inserida nas últimas 24h" ─── */
 .legenda-novo {
     display: inline-flex;
@@ -1029,15 +1059,6 @@ tr.pagination-container span {
     white-space: nowrap;
 }
 
-/* Paginação – manter igual */
-.pagination-container {
-    background: white;
-    border-top: 1px solid var(--gray-200);
-    display: flex;
-    justify-content: center;
-    padding: 16px;
-}
-
 .custom-grid .pager table {
     margin: 0 auto;
 }
@@ -1233,7 +1254,6 @@ tr.pagination-container span {
     background: #f8fafc;
     padding: 8px 20px;
     border: 1px solid #e2e8f0;
-    margin-bottom: 16px;
     align-items: center;
 }
 
@@ -1314,4 +1334,3 @@ tr.pagination-container span {
         max-width: 200px;
     }
 }
-

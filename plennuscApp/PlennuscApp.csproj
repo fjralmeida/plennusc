@@ -422,6 +422,7 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FrameRedirectModule.cs" />
     <Compile Include="PlennuscFinance\Views\homeFinance.aspx.cs">
       <DependentUpon>homeFinance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
