@@ -31,7 +31,7 @@
 
         <!-- Cards principais -->
         <div class="dashboard-grid">
-            <div class="dashboard-card" onclick="window.location.href='employeeManagement.aspx?acao=consultar';">
+            <div class="dashboard-card"  onclick="window.location.href='/employeeManagement?acao=consultar&frame=1';">
                 <div class="card card-colaboradores">
                     <div class="card-body">
                         <div class="card-content">
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="dashboard-card" onclick="window.location.href='employeeDepartment.aspx';">
+            <div class="dashboard-card" onclick="window.location.href='/employeeDepartment?frame=1';">
                 <div class="card card-departamentos">
                     <div class="card-body">
                         <div class="card-content">
@@ -71,7 +71,7 @@
                 </div>
             </div>
 
-            <div class="dashboard-card" onclick="window.location.href='employeePosition.aspx';">
+            <div class="dashboard-card" onclick="window.location.href='/employeePosition?frame=1';">
                 <div class="card card-cargos">
                     <div class="card-body">
                         <div class="card-content">
@@ -91,7 +91,7 @@
                 </div>
             </div>
 
-            <div class="dashboard-card" onclick="window.location.href='demand.aspx';">
+            <div class="dashboard-card" onclick="window.location.href='/demand?frame=1';">
                 <div class="card card-teste">
                     <div class="card-body">
                         <div class="card-content">

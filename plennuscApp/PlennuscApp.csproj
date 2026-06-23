@@ -236,6 +236,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsProgress.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsRefused.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsWaiting.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\PlanRegistration\planRegistratrion.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\priceTable.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\privacySettings.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\profile.css" />

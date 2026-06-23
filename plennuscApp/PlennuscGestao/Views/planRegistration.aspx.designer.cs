@@ -15,13 +15,49 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
-        /// Controle btnNovoPlano.
+        /// Controle pnlMensagem.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNovoPlano;
+        protected global::System.Web.UI.WebControls.Panel pnlMensagem;
+
+        /// <summary>
+        /// Controle lblMensagem.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMensagem;
+
+        /// <summary>
+        /// Controle pnlAviso.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAviso;
+
+        /// <summary>
+        /// Controle lblQtdPendentes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdPendentes;
+
+        /// <summary>
+        /// Controle btnVerPendentes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnVerPendentes;
 
         /// <summary>
         /// Controle txtNomePlanoComercial.
