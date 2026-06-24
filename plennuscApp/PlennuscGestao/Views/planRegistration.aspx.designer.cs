@@ -15,6 +15,15 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
 
         /// <summary>
+        /// Controle ScriptManager1.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager ScriptManager1;
+
+        /// <summary>
         /// Controle pnlMensagem.
         /// </summary>
         /// <remarks>
@@ -51,13 +60,85 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Label lblQtdPendentes;
 
         /// <summary>
-        /// Controle btnVerPendentes.
+        /// Controle btnSincronizar.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnVerPendentes;
+        protected global::System.Web.UI.WebControls.Button btnSincronizar;
+
+        /// <summary>
+        /// Controle lblUsuarioConfirmacao.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblUsuarioConfirmacao;
+
+        /// <summary>
+        /// Controle lblQtdAbaNovas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdAbaNovas;
+
+        /// <summary>
+        /// Controle lblQtdAbaAlteracoes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdAbaAlteracoes;
+
+        /// <summary>
+        /// Controle lblQtdSelecionadas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdSelecionadas;
+
+        /// <summary>
+        /// Controle rptPendentes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptPendentes;
+
+        /// <summary>
+        /// Controle lblQtdSelecionadasUpdate.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblQtdSelecionadasUpdate;
+
+        /// <summary>
+        /// Controle btnConfirmarSync.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnConfirmarSync;
+
+        /// <summary>
+        /// Controle btnConfirmarUpdate.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnConfirmarUpdate;
 
         /// <summary>
         /// Controle txtNomePlanoComercial.
@@ -103,6 +184,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnFiltrar;
+
+        /// <summary>
+        /// Controle btnLimpar.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnLimpar;
 
         /// <summary>
         /// Controle gvPlanos.

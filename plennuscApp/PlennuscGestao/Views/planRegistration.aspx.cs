@@ -1,7 +1,8 @@
-﻿using Plennusc.Core.Models.ModelsGestao;
-using Plennusc.Core.Service.ServiceGestao.planiumApi;
-using Plennusc.Core.Service.ServiceGestao.department;
+﻿using Plennusc.Core.Models.ModelsGestao.modelsPlan;
+using Plennusc.Core.Service.ServiceGestao.planService;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -9,16 +10,178 @@ namespace appWhatsapp.PlennuscGestao.Views
 {
     public partial class planRegistration : System.Web.UI.Page
     {
-        private readonly PlanoService _svc = new PlanoService("Plennus");
+        private PlanoService _svc;
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            string connPlennus = System.Configuration.ConfigurationManager.ConnectionStrings["Plennus"].ConnectionString;
+            string connAlianca = System.Configuration.ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+            _svc = new PlanoService(connPlennus, connAlianca);
+
             if (!IsPostBack)
             {
                 BindGrid();
+                VerificarPendentes();
+
+                if (Session["NomeUsuario"] != null)
+                    lblUsuarioConfirmacao.Text = Session["NomeUsuario"].ToString();
+                else
+                    lblUsuarioConfirmacao.Text = "Administrador";
+            }
+
+            // Sempre verifica pendentes (mantém o painel visível no postback)
+            VerificarPendentes();
+
+            // Atualiza contadores após qualquer postback
+            ScriptManager.RegisterStartupScript(this, GetType(), "atualizarContadores",
+                "setTimeout(function() { " +
+                "var panelNovas = document.getElementById('panelNovas'); " +
+                "var panelAlteracoes = document.getElementById('panelAlteracoes'); " +
+                "if (panelNovas && panelNovas.classList.contains('active')) { atualizarContadorSelecionadas(); } " +
+                "else if (panelAlteracoes && panelAlteracoes.classList.contains('active')) { atualizarContadorUpdate(); } " +
+                "}, 200);", true);
+        }
+
+        // ============================================================
+        //  VERIFICAR PENDENTES (banner e totais das abas)
+        // ============================================================
+        private void VerificarPendentes()
+        {
+            try
+            {
+                var pendentes = _svc.ListarPlanosPendentesAlianca();
+                int qtd = pendentes?.Count ?? 0;
+
+                if (qtd > 0)
+                {
+                    pnlAviso.Visible = true;
+                    lblQtdPendentes.Text = qtd.ToString();
+                }
+                else
+                {
+                    pnlAviso.Visible = false;
+                }
+
+                lblQtdAbaNovas.Text = qtd.ToString();
+                lblQtdAbaAlteracoes.Text = "0";
+            }
+            catch (Exception ex)
+            {
+                ExibirMensagem("Erro ao verificar pendentes: " + ex.Message, "danger");
             }
         }
 
-        protected void btnFiltrar_Click(object sender, EventArgs e) => BindGrid();
+        protected void btnVerPendentes_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var pendentes = _svc.ListarPlanosPendentesAlianca();
+                if (pendentes == null || pendentes.Count == 0)
+                {
+                    ExibirMensagem("Nenhum plano pendente encontrado.", "info");
+                    ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal", "abrirModalSync();", true);
+                    return;
+                }
+
+                rptPendentes.DataSource = pendentes;
+                rptPendentes.DataBind();
+
+                lblQtdAbaNovas.Text = pendentes.Count.ToString();
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal",
+                    "setTimeout(function(){ abrirModalSync(); }, 300);", true);
+
+                VerificarPendentes();
+            }
+            catch (Exception ex)
+            {
+                ExibirMensagem("Erro ao carregar pendentes: " + ex.Message, "danger");
+            }
+        }
+
+        protected void btnConfirmarSync_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                List<PlanoPendenteAliancaModel> selecionados = new List<PlanoPendenteAliancaModel>();
+
+                foreach (RepeaterItem item in rptPendentes.Items)
+                {
+                    CheckBox chk = item.FindControl("chkSelecionar") as CheckBox;
+                    if (chk != null && chk.Checked)
+                    {
+                        var plano = new PlanoPendenteAliancaModel
+                        {
+                            CodigoPlano = Convert.ToInt32((item.FindControl("hdnCodigoPlano") as HiddenField).Value),
+                            RegistroANS = (item.FindControl("hdnRegistroANS") as HiddenField).Value,
+                            TipoContratacaoDescricao = (item.FindControl("hdnTipoContratacao") as HiddenField).Value,
+                            CodigoAbrangencia = string.IsNullOrEmpty((item.FindControl("hdnCodigoAbrangencia") as HiddenField).Value)
+                             ? (int?)null
+                             : Convert.ToInt32((item.FindControl("hdnCodigoAbrangencia") as HiddenField).Value),
+                            Coparticipacao = (item.FindControl("hdnCoparticipacao") as HiddenField).Value,
+                            Segmentacao = (item.FindControl("hdnSegmentacao") as HiddenField).Value,
+                            AcomodacaoDescricao = (item.FindControl("hdnAcomodacao") as HiddenField).Value,
+                            Conf_Ativo = (item.FindControl("hdnConf_Ativo") as HiddenField).Value,
+                            NomePlanoFamiliar = (item.FindControl("hdnNomePlano") as HiddenField).Value,
+                            CodigoGrupoContrato = string.IsNullOrEmpty((item.FindControl("hdnCodigoGrupoContrato") as HiddenField).Value)
+                             ? (int?)null
+                             : Convert.ToInt32((item.FindControl("hdnCodigoGrupoContrato") as HiddenField).Value),
+                            CnpjOperadora = (item.FindControl("hdnCnpjOperadora") as HiddenField).Value,
+                            DecSau = (item.FindControl("ddlDecSau") as DropDownList).SelectedValue,
+                            Promocional = (item.FindControl("ddlPromocional") as DropDownList).SelectedValue
+                        };
+                        selecionados.Add(plano);
+                    }
+                }
+
+                if (selecionados.Count == 0)
+                {
+                    ExibirMensagem("Nenhum plano selecionado para importar.", "warning");
+                    ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal", "abrirModalSync();", true);
+                    return;
+                }
+
+                int importados = _svc.ImportarPlanos(selecionados, ObterCodUsuarioLogado());
+
+                ExibirMensagem($"{importados} plano(s) importado(s) com sucesso!", "success");
+
+                BindGrid();
+                VerificarPendentes();
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "fecharModal", "$('#modalSyncPlanos').modal('hide');", true);
+            }
+            catch (Exception ex)
+            {
+                ExibirMensagem("Erro ao importar planos: " + ex.Message, "danger");
+                ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal", "abrirModalSync();", true);
+            }
+        }
+
+        // ============================================================
+        //  BOTÃO DE ATUALIZAÇÃO (placeholder)
+        // ============================================================
+        protected void btnConfirmarUpdate_Click(object sender, EventArgs e)
+        {
+            ExibirMensagem("Funcionalidade de atualização em desenvolvimento.", "info");
+            ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal", "abrirModalSync();", true);
+        }
+
+        // ============================================================
+        //  FILTROS
+        // ============================================================
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            BindGrid();
+        }
+
+        protected void btnLimpar_Click(object sender, EventArgs e)
+        {
+            txtNomePlanoComercial.Text = "";
+            txtSegmentacao.Text = "";
+            txtAbrangencia.Text = "";
+            txtCoparticipacao.Text = "";
+            BindGrid();
+        }
 
         private void BindGrid()
         {
@@ -30,127 +193,57 @@ namespace appWhatsapp.PlennuscGestao.Views
                 Coparticipacao = txtCoparticipacao.Text.Trim(),
             };
 
-            var listaPlanos = _svc.ListarPlanos(filtro);
-            int total = listaPlanos.Count;
-            ViewState["TotalRegistros"] = total;
-
-            gvPlanos.DataSource = listaPlanos;
+            var lista = _svc.ListarPlanos(filtro);
+            gvPlanos.DataSource = lista;
             gvPlanos.DataBind();
         }
 
-        protected void GvPlanos_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        protected void gvPlanos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvPlanos.PageIndex = e.NewPageIndex;
             BindGrid();
         }
 
-        protected void gvPlanos_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void gvPlanos_RowDataBound(object sender, GridViewRowEventArgs e) { }
+
+        protected void gvPlanos_DataBound(object sender, EventArgs e) { }
+
+        // ============================================================
+        //  REPEATER ITEM DATABOUND
+        // ============================================================
+        protected void rptPendentes_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
-            if (e.CommandName == "Ver")
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
-                int codPlano = Convert.ToInt32(e.CommandArgument);
-                Session["CurrentPlanoId"] = codPlano;
-                Response.Redirect("~/viewPlano");
+                var plano = e.Item.DataItem as PlanoPendenteAliancaModel;
+                if (plano != null)
+                {
+                    DropDownList ddlDec = e.Item.FindControl("ddlDecSau") as DropDownList;
+                    DropDownList ddlProm = e.Item.FindControl("ddlPromocional") as DropDownList;
+
+                    if (!string.IsNullOrEmpty(plano.DecSau))
+                        ddlDec.SelectedValue = plano.DecSau;
+                    if (!string.IsNullOrEmpty(plano.Promocional))
+                        ddlProm.SelectedValue = plano.Promocional;
+                }
             }
         }
 
-        protected void btnNovoPlano_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/novoPlano");
-        }
-
-        protected void gvPlanos_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-
-        }
-
-        protected void gvPlanos_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-        }
-
-        protected void gvPlanos_DataBound(object sender, EventArgs e)
-        {
-            GridViewRow pagerRow = gvPlanos.BottomPagerRow;
-            if (pagerRow == null) return;
-
-            // Atualiza a contagem
-            Label lblInfo = (Label)pagerRow.FindControl("lblPagerInfo");
-            if (lblInfo != null)
-            {
-                int totalGeral = ObterTotalRegistros();
-                int paginaAtual = gvPlanos.PageIndex;
-                int tamanhoPagina = gvPlanos.PageSize;
-                int inicio = (paginaAtual * tamanhoPagina) + 1;
-                int fim = Math.Min(inicio + gvPlanos.Rows.Count - 1, totalGeral);
-
-                lblInfo.Text = $"<strong>{inicio} - {fim}</strong> de <strong>{totalGeral}</strong> itens";
-            }
-
-            // Recria os botões (usando o método comum)
-            RecriarBotoesPaginacao();
-        }
-
-        private void RecriarBotoesPaginacao()
-        {
-            GridViewRow pagerRow = gvPlanos.BottomPagerRow;
-            if (pagerRow == null) return;
-
-            PlaceHolder ph = (PlaceHolder)pagerRow.FindControl("phPagerButtons");
-            if (ph == null) return;
-
-            ph.Controls.Clear();
-
-            int totalGeral = ObterTotalRegistros();
-            if (totalGeral == 0) return;
-
-            int totalPaginas = (int)Math.Ceiling((double)totalGeral / gvPlanos.PageSize);
-            int currentPage = gvPlanos.PageIndex;
-
-            // Função local para adicionar botão
-            void AddBtn(string text, int pageIndex, bool disabled)
-            {
-                LinkButton btn = new LinkButton();
-                btn.Text = text;
-                btn.CssClass = "pager-button" + (pageIndex == currentPage ? " active" : "");
-                btn.CommandName = "Page";
-                btn.CommandArgument = pageIndex.ToString();
-                btn.Enabled = !disabled;
-                if (disabled) btn.CssClass += " disabled";
-                ph.Controls.Add(btn);
-            }
-
-            AddBtn("«", 0, currentPage == 0);
-            AddBtn("‹", currentPage - 1, currentPage == 0);
-
-            int start = Math.Max(0, currentPage - 3);
-            int end = Math.Min(totalPaginas - 1, currentPage + 3);
-            for (int i = start; i <= end; i++)
-            {
-                AddBtn((i + 1).ToString(), i, false);
-            }
-
-            AddBtn("›", currentPage + 1, currentPage >= totalPaginas - 1);
-            AddBtn("»", totalPaginas - 1, currentPage >= totalPaginas - 1);
-        }
-
-        private int ObterTotalRegistros()
-        {
-            if (ViewState["TotalRegistros"] != null)
-                return (int)ViewState["TotalRegistros"];
-            return 0;
-        }
-
-        protected void btnVerPendentes_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void MostrarAlerta(string mensagem, string tipo = "info")
+        // ============================================================
+        //  UTILITÁRIOS
+        // ============================================================
+        private void ExibirMensagem(string texto, string tipo)
         {
             pnlMensagem.Visible = true;
-            lblMensagem.Text = mensagem;
-            pnlMensagem.CssClass = $"alert alert-{tipo} alert-dismissible mb-3";
+            lblMensagem.Text = texto;
+            pnlMensagem.CssClass = "alert alert-" + tipo + " alert-dismissible mb-3";
+        }
+
+        private int ObterCodUsuarioLogado()
+        {
+            if (Session["CodUsuario"] != null)
+                return Convert.ToInt32(Session["CodUsuario"]);
+            return 1;
         }
     }
 }
-    

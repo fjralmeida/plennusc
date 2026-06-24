@@ -26,8 +26,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
                 o.NomeComercial,
                 o.CodPessoaCadastro,
                 o.CodPessoaAlteracao,
-                o.Informacoes_log_i,
-                o.Informacoes_log_a
+                o.Informacoes_log_a,
+                o.Informacoes_log_i
             FROM dbo.API_Venda_Operadora o
             WHERE 1 = 1
               {FILTRO_NOME}
@@ -40,7 +40,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
         // ─────────────────────────────────────────────────────────────────────
 
         public const string BuscarTodasOperadorasAlianca = @"
-            SELECT
+             SELECT
                 e.CODIGO_GRUPO_CONTRATO AS CodigoGrupo,
                 e.CNPJ_OPERADORA        AS Numero_CNPJ,
                 e.NUMERO_ANS_OPERADORA  AS RegistroANS,
@@ -48,6 +48,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
                 e.NOME_GRUPO_CONTRATO   AS NomeComercial
             FROM ESP0002 e
             WHERE e.CNPJ_OPERADORA IS NOT NULL
+              AND NUMERO_ANS_OPERADORA IS NOT NULL
               AND LTRIM(RTRIM(e.CNPJ_OPERADORA)) <> ''
             ORDER BY e.NOME_GRUPO_CONTRATO";
 

@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.79\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=3.4.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.3.4.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
@@ -42,6 +45,9 @@
     </Reference>
     <Reference Include="EPPlus.Interfaces, Version=8.4.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.Interfaces.8.4.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.10.0.8\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.8.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Edm.5.8.5\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -83,8 +89,8 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Security.Cryptography.Xml, Version=8.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -92,6 +98,9 @@
     </Reference>
     <Reference Include="System.Spatial, Version=5.8.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.8.5\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -176,6 +185,7 @@
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraAlteracoesDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraListDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraSyncDto.cs" />
+    <Compile Include="Models\ModelsGestao\modelsPlan\PlanoModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsSendMessage\DetailedSubmissionResult.cs" />
     <Compile Include="Models\ModelsGestao\modelsSistema\SistemaModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\OptionItemStructure.cs" />
@@ -209,6 +219,7 @@
     <Compile Include="Service\ServiceGestao\planiumApi\ComercializacaoService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\OperadoraService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\PlanoService.cs" />
+    <Compile Include="Service\ServiceGestao\planService\PlanoService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\companyMenuManagementSystemService.cs" />
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\PrecoService.cs" />
@@ -247,6 +258,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\price\TablePrice.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\AutenticacaoDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\registrationPlan\PlanoQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\sendMessage\HistoricoEnvioQuery.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />

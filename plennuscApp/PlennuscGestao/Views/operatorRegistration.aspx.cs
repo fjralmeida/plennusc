@@ -97,7 +97,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 lblQtdSelecionadas.Text = pendentes.Count.ToString();
             }
 
-            // ═══ COLE AQUI — bloco novo, fora do if acima, sempre executa ═══
             var alteracoes = _svc.BuscarOperadorasComAlteracoes();
             if (alteracoes != null && alteracoes.Count > 0)
             {
