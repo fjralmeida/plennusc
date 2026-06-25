@@ -182,6 +182,7 @@
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuNode.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\menusManagementModels.cs" />
+    <Compile Include="Models\ModelsGestao\modelsMigration\TermoReajusteVallor.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraAlteracoesDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraListDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraSyncDto.cs" />
@@ -225,6 +226,8 @@
     <Compile Include="Service\ServiceGestao\planiumApi\PrecoService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\ExcelReportService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
+    <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteImportService.cs" />
+    <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteVallorDocxService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxServiceCsv.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\EnterpriseDocx.cs" />

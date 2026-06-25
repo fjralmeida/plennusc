@@ -5,6 +5,8 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using OfficeOpenXml;
 using Plennusc.Core.Models.ModelsGestao.modelsButYou;
+using Plennusc.Core.Models.ModelsGestao.modelsMigration;
+using Plennusc.Core.Service.ServiceGestao.serviceMigration;
 using Plennusc.Core.Service.ServiceGestao.serviceYouBut;
 using Plennusc.Core.SqlQueries.SqlQueriesGestao.butYouQueries;
 using System;
@@ -14,6 +16,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -32,6 +35,100 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void Page_Load(object sender, EventArgs e)
         {
             //OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+        }
+
+
+        protected void trmReajusteVallor_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // ── 1. Caminhos ───────────────────────────────────────────────────
+                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\AASP.csv";
+                // Ajuste o nome do template conforme o arquivo real
+                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/HAPVIDA_TERMO_DE_REAJUSTE.docx");
+                string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\termoReajusteVallor";
+
+                if (!Directory.Exists(pastaDestino))
+                    Directory.CreateDirectory(pastaDestino);
+
+                // ── 2. Importar CSV ───────────────────────────────────────────────
+                var importService = new TermoReajusteImportService();
+                List<TermoReajusteVallor> grupos;
+
+                try
+                {
+                    grupos = importService.ImportarCsv(caminhoArquivo);
+                }
+                catch (Exception exImport)
+                {
+                    lblErro.Text = $"Erro ao ler arquivo: {exImport.Message}";
+                    lblErro.Visible = true;
+                    return;
+                }
+
+                if (grupos == null || grupos.Count == 0)
+                {
+                    lblErro.Text = "Nenhum titular encontrado no arquivo.";
+                    lblErro.Visible = true;
+                    return;
+                }
+
+                lblMensagem.Text = $"Encontrados {grupos.Count} titular(es). Processando...";
+                lblMensagem.Visible = true;
+
+                // ── 3. Gerar um documento por titular ────────────────────────────
+                var docxService = new TermoReajusteVallorDocxService();
+                int documentosCriados = 0;
+                var erros = new System.Text.StringBuilder();
+
+                foreach (var grupo in grupos)
+                {
+                    try
+                    {
+                        // Nome do arquivo: CPF_NOME.docx
+                        string cpfLimpo = Regex.Replace(grupo.Cpf ?? "SEM_CPF", @"[^\d]", "");
+                        string nomeLimpo = LimparNomeArquivo(grupo.Nome ?? "SEM_NOME");
+                        string nomeArq = $"{cpfLimpo}_{nomeLimpo}.docx";
+                        string outputPath = Path.Combine(pastaDestino, nomeArq);
+
+                        docxService.GerarDocumento(templatePath, outputPath, grupo);
+
+                        documentosCriados++;
+                    }
+                    catch (Exception exGrupo)
+                    {
+                        erros.AppendLine($"✗ {grupo.Nome} ({grupo.Cpf}): {exGrupo.Message}");
+                    }
+                }
+
+                // ── 4. Resultado ──────────────────────────────────────────────────
+                lblMensagem.Text += $"<br/><br/>✅ {documentosCriados} documento(s) criado(s) em:<br/>{pastaDestino}";
+
+                if (erros.Length > 0)
+                {
+                    lblErro.Text = $"<br/>Erros durante processamento:<br/><pre>{erros}</pre>";
+                    lblErro.Visible = true;
+                }
+
+                if (documentosCriados > 0)
+                {
+                    lblMensagem.Text += $"<br/><a href='file:///{pastaDestino.Replace("\\", "/")}' target='_blank'>Abrir pasta</a>";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblErro.Text = $"ERRO GERAL: {ex.Message}<br/><br/>Stack: {ex.StackTrace}";
+                lblErro.Visible = true;
+            }
+        }
+
+        /// <summary>Sanitiza o nome para uso em nome de arquivo.</summary>
+        private string LimparNomeArquivo(string nome)
+        {
+            // Remove caracteres inválidos e limita o tamanho
+            string limpo = Regex.Replace(nome, @"[^\w\s-]", "", RegexOptions.None);
+            limpo = Regex.Replace(limpo, @"\s+", "_");
+            return limpo.Length > 50 ? limpo.Substring(0, 50) : limpo;
         }
 
 
@@ -1186,7 +1283,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 // 3. Retorna o associado com os campos extras preenchidos
                 return associado;
-            }
+            }           
         }
     }
 }

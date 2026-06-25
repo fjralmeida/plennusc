@@ -38,6 +38,11 @@
              Text="Preencher com Dados Reais CSV" 
              OnClick="btnPreencherComDadosCsv_Click" 
              CssClass="btn btn-primary" />
+
+          <asp:Button ID="trmReajusteVallor" runat="server" 
+              Text="Preencher termo de reajuste" 
+              OnClick="trmReajusteVallor_Click" 
+              CssClass="btn btn-primary" />
         </div>
         
         <!-- MENSAGENS -->
