@@ -174,15 +174,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             BindGrid();
         }
 
-        protected void btnLimpar_Click(object sender, EventArgs e)
-        {
-            txtNomePlanoComercial.Text = "";
-            txtSegmentacao.Text = "";
-            txtAbrangencia.Text = "";
-            txtCoparticipacao.Text = "";
-            BindGrid();
-        }
-
         private void BindGrid()
         {
             var filtro = new PlanoFiltro

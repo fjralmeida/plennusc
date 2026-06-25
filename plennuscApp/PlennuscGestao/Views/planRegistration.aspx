@@ -548,8 +548,6 @@
                 <div class="btn-filter-container">
                     <asp:Button ID="btnFiltrar" runat="server" CssClass="btn-filter"
                         Text="Aplicar Filtros" OnClick="btnFiltrar_Click" />
-                    <asp:Button ID="btnLimpar" runat="server" CssClass="btn-clear"
-                        Text="Limpar" OnClick="btnLimpar_Click" Style="margin-top: 4px;" />
                 </div>
 
             </div>

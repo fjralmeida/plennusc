@@ -1244,19 +1244,6 @@ body {
         border-left: 4px solid #1a73e8;
     }
 
-.table-pendentes tbody {
-    display: block;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-    .table-pendentes thead,
-    .table-pendentes tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-    }
-
 /* ── Legenda expandida ── */
 .legenda-status {
     display: flex;
