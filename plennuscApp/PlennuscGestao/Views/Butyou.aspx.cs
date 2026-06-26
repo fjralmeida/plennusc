@@ -86,9 +86,10 @@ namespace appWhatsapp.PlennuscGestao.Views
                     try
                     {
                         // Nome do arquivo: CPF_NOME.docx
-                        string cpfLimpo = Regex.Replace(grupo.Cpf ?? "SEM_CPF", @"[^\d]", "");
+                        //string cpfLimpo = Regex.Replace(grupo.Cpf ?? "SEM_CPF", @"[^\d]", "");
+                        string emailLimpo = LimparNomeArquivo(grupo.Email ?? "SEM_EMAIL");
                         string nomeLimpo = LimparNomeArquivo(grupo.Nome ?? "SEM_NOME");
-                        string nomeArq = $"{cpfLimpo}_{nomeLimpo}.docx";
+                        string nomeArq = $"{emailLimpo}_{nomeLimpo}.docx";
                         string outputPath = Path.Combine(pastaDestino, nomeArq);
 
                         docxService.GerarDocumento(templatePath, outputPath, grupo);

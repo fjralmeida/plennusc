@@ -51,6 +51,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
 
                 SubstituirPlaceholders(body, dados);
                 MarcarCheckboxPlano(body, dados.NomeProduto);
+                LimparIdsTemplate(body);
                 PreencherTabelaComposicao(body, dados);
                 //PreencherAssinatura(body, dados.Nome);
  
@@ -228,7 +229,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
         private void MarcarCheckboxPlano(Body body, string nomeProduto)
         {
             if (string.IsNullOrWhiteSpace(nomeProduto)) return;
-
             var mapaPlanos = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
         { "NOSSO PLANO CE + ODONTO SC GM 1", "51A" },
@@ -242,26 +242,65 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
             foreach (var cell in body.Descendants<TableCell>())
             {
                 string textoCelula = string.Join("", cell.Descendants<Text>().Select(t => t.Text));
-
                 if (textoCelula.Contains(idAlvo))
                 {
                     cell.RemoveAllChildren<Paragraph>();
                     var para = new Paragraph();
 
+                    // ☑ azul
                     var runCheck = new Run();
                     var rpCheck = new RunProperties();
                     rpCheck.Append(new Color { Val = "0070C0" });
+                    rpCheck.Append(new Bold());
                     runCheck.RunProperties = rpCheck;
                     runCheck.AppendChild(new Text("☑ ") { Space = SpaceProcessingModeValues.Preserve });
                     para.AppendChild(runCheck);
 
+                    // Nome do plano negrito preto
                     var runTexto = new Run();
+                    var rpTexto = new RunProperties();
+                    rpTexto.Append(new Bold());
+                    runTexto.RunProperties = rpTexto;
                     runTexto.AppendChild(new Text(nomeProduto) { Space = SpaceProcessingModeValues.Preserve });
                     para.AppendChild(runTexto);
 
                     cell.AppendChild(para);
                     return;
                 }
+            }
+        }
+
+        private void LimparIdsTemplate(Body body)
+        {
+            var ids = new[] { "51A", "52B", "53C", "54D" };
+
+            foreach (var cell in body.Descendants<TableCell>())
+            {
+                string textoCell = string.Join("", cell.Descendants<Text>().Select(t => t.Text));
+                if (!ids.Any(id => textoCell.Contains(id))) continue;
+
+                string textoLimpo = textoCell;
+                foreach (var id in ids)
+                    textoLimpo = textoLimpo.Replace(id, "");
+
+                textoLimpo = textoLimpo.Replace(" - ", "").Replace("- ", "").Replace(" -", "").Trim();
+
+                // Reconstrói célula com texto em negrito
+                var paraProps = cell.Descendants<Paragraph>().FirstOrDefault()?.ParagraphProperties != null
+                    ? (ParagraphProperties)cell.Descendants<Paragraph>().First().ParagraphProperties.CloneNode(true)
+                    : null;
+
+                cell.RemoveAllChildren<Paragraph>();
+                var para = new Paragraph();
+                if (paraProps != null) para.AppendChild(paraProps);
+
+                var run = new Run();
+                var rp = new RunProperties();
+                rp.Append(new Bold());
+                run.RunProperties = rp;
+                run.AppendChild(new Text(textoLimpo) { Space = SpaceProcessingModeValues.Preserve });
+                para.AppendChild(run);
+                cell.AppendChild(para);
             }
         }
 
