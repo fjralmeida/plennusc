@@ -89,7 +89,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                         //string cpfLimpo = Regex.Replace(grupo.Cpf ?? "SEM_CPF", @"[^\d]", "");
                         string emailLimpo = LimparNomeArquivo(grupo.Email ?? "SEM_EMAIL");
                         string nomeLimpo = LimparNomeArquivo(grupo.Nome ?? "SEM_NOME");
-                        string nomeArq = $"{emailLimpo}_{nomeLimpo}.docx";
+                        string nomeArq = $"{emailLimpo}__{nomeLimpo}.docx";
                         string outputPath = Path.Combine(pastaDestino, nomeArq);
 
                         docxService.GerarDocumento(templatePath, outputPath, grupo);
@@ -126,8 +126,8 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// <summary>Sanitiza o nome para uso em nome de arquivo.</summary>
         private string LimparNomeArquivo(string nome)
         {
-            // Remove caracteres inválidos e limita o tamanho
-            string limpo = Regex.Replace(nome, @"[^\w\s-]", "", RegexOptions.None);
+            // Permite: letras, números, underline, espaço, hífen, PONTO e @
+            string limpo = Regex.Replace(nome, @"[^\w\s\-\.@]", "", RegexOptions.None);
             limpo = Regex.Replace(limpo, @"\s+", "_");
             return limpo.Length > 50 ? limpo.Substring(0, 50) : limpo;
         }
