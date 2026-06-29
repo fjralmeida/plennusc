@@ -1,10 +1,12 @@
-﻿using Plennusc.Core.Models.ModelsGestao.modelsPlan;
+﻿using Plennusc.Core.Models.ModelsGestao;
+using Plennusc.Core.Models.ModelsGestao.modelsPlan;
 using Plennusc.Core.Service.ServiceGestao.planService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using PlanoFiltro = Plennusc.Core.Models.ModelsGestao.PlanoFiltro;
 
 namespace appWhatsapp.PlennuscGestao.Views
 {
@@ -195,7 +197,31 @@ namespace appWhatsapp.PlennuscGestao.Views
             BindGrid();
         }
 
-        protected void gvPlanos_RowDataBound(object sender, GridViewRowEventArgs e) { }
+        protected void gvPlanos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType != DataControlRowType.DataRow) return;
+
+            var item = e.Row.DataItem as PlanoListDto; // ← troque pelo nome real da sua classe
+            if (item == null) return;
+
+            bool isNovo = item.Informacoes_log_i.HasValue &&
+                          item.Informacoes_log_i.Value > DateTime.Now.AddHours(-24);
+
+            bool isAlterado = item.Informacoes_log_a.HasValue &&
+                              item.Informacoes_log_a.Value > DateTime.Now.AddHours(-24) &&
+                              item.Informacoes_log_i != item.Informacoes_log_a;
+
+            if (isNovo)
+            {
+                e.Row.CssClass += " linha-inserida";
+                e.Row.ToolTip = $"Novo registro — inserido em {item.Informacoes_log_i:dd/MM/yyyy HH:mm}";
+            }
+            else if (isAlterado)
+            {
+                e.Row.CssClass += " linha-atualizada";
+                e.Row.ToolTip = $"Atualizado em {item.Informacoes_log_a:dd/MM/yyyy HH:mm}";
+            }
+        }
 
         protected void gvPlanos_DataBound(object sender, EventArgs e) { }
 

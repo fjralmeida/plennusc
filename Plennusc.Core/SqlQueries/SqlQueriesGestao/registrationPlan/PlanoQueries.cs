@@ -69,22 +69,22 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.registrationPlan
         //  INSERIR PLANO (Plennus)
         // ============================================================
         public const string InserirPlano = @"
-            INSERT INTO API_VENDA_PLANO
-            (
-                CodigoPlano, CodigoProduto, RegistroANS, Num_CNPJ_Operadora,
-                TipoContratacao, Nome, NomePlanoComercial, Segmentacao,
-                Abrangencia, Coparticipacao, Acomodacao, DecSau, Promocional,
-                Conf_Ativo, CodPessoaCadastro, CodPessoaAlteracao,
-                Informacoes_log_i, Informacoes_log_a
-            )
-            VALUES
-            (
-                @CodigoPlano, @CodigoPlano, @RegistroANS, @Num_CNPJ_Operadora,
-                @TipoContratacao, @Nome, @NomePlanoComercial, @Segmentacao,
-                @Abrangencia, @Coparticipacao, @Acomodacao, @DecSau, @Promocional,
-                @Conf_Ativo, @CodPessoaCadastro, @CodPessoaAlteracao,
-                GETDATE(), NULL
-            )";
+        INSERT INTO API_VENDA_PLANO
+        (
+            CodigoProduto, RegistroANS, Num_CNPJ_Operadora,
+            TipoContratacao, Nome, NomePlanoComercial, Segmentacao,
+            Abrangencia, Coparticipacao, Acomodacao, DecSau, Promocional,
+            Conf_Ativo, CodPessoaCadastro, CodPessoaAlteracao,
+            Informacoes_log_i, Informacoes_log_a
+        )
+        VALUES
+        (
+            @CodigoProduto, @RegistroANS, @Num_CNPJ_Operadora,
+            @TipoContratacao, @Nome, @NomePlanoComercial, @Segmentacao,
+            @Abrangencia, @Coparticipacao, @Acomodacao, @DecSau, @Promocional,
+            @Conf_Ativo, @CodPessoaCadastro, @CodPessoaAlteracao,
+            GETDATE(), NULL
+        )";
 
         // ============================================================
         //  OPERADORAS (dropdown do modal)

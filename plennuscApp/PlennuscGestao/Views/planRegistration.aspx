@@ -414,14 +414,16 @@
                                                 <td><%# Eval("RegistroANS") %></td>
                                                 <td><%# Eval("TipoContratacaoDescricao") %></td>
                                                 <td><%# Eval("AcomodacaoDescricao") %></td>
-                                                <td>
-                                                    <asp:DropDownList ID="ddlDecSau" runat="server" CssClass="form-select form-select-sm">
+                                               <td>
+                                                    <asp:DropDownList ID="ddlDecSau" runat="server" 
+                                                        CssClass="grid-dropdown grid-dropdown-dec">
                                                         <asp:ListItem Text="S" Value="S" Selected="True" />
                                                         <asp:ListItem Text="N" Value="N" />
                                                     </asp:DropDownList>
                                                 </td>
                                                 <td>
-                                                    <asp:DropDownList ID="ddlPromocional" runat="server" CssClass="form-select form-select-sm">
+                                                    <asp:DropDownList ID="ddlPromocional" runat="server" 
+                                                        CssClass="grid-dropdown grid-dropdown-promo">
                                                         <asp:ListItem Text="N" Value="N" Selected="True" />
                                                         <asp:ListItem Text="S" Value="S" />
                                                     </asp:DropDownList>

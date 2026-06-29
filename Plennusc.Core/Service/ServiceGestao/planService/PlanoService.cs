@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Plennusc.Core.Models.ModelsGestao;
+using PlanoFiltro = Plennusc.Core.Models.ModelsGestao.PlanoFiltro;
 
 namespace Plennusc.Core.Service.ServiceGestao.planService
 {
@@ -22,11 +24,11 @@ namespace Plennusc.Core.Service.ServiceGestao.planService
         // ============================================================
         //  LISTAR PLANOS IMPORTADOS (grid principal)
         // ============================================================
-        public List<PlanoModel> ListarPlanos(PlanoFiltro filtro)
+        public List<PlanoListDto> ListarPlanos(PlanoFiltro filtro)
         {
             using (var conn = new SqlConnection(_connPlennus))
             {
-                return conn.Query<PlanoModel>(
+                return conn.Query<PlanoListDto>(
                     PlanoQueries.ListarPlanos,
                     new
                     {
@@ -87,10 +89,10 @@ namespace Plennusc.Core.Service.ServiceGestao.planService
                     foreach (var p in selecionados)
                     {
                         var result = conn.Execute(
-                            PlanoQueries.InserirPlano,
+                             PlanoQueries.InserirPlano,
                             new
                             {
-                                CodigoPlano = p.CodigoPlano,
+                                CodigoProduto = p.CodigoPlano,   // código da Aliança → CodigoProduto no Plennusc
                                 RegistroANS = p.RegistroANS,
                                 Num_CNPJ_Operadora = p.CnpjOperadora,
                                 TipoContratacao = p.TipoContratacaoDescricao,
@@ -102,12 +104,12 @@ namespace Plennusc.Core.Service.ServiceGestao.planService
                                 Acomodacao = p.AcomodacaoDescricao,
                                 DecSau = p.DecSau,
                                 Promocional = p.Promocional,
-                                Conf_Ativo = p.Conf_Ativo,
+                                Conf_Ativo = p.Conf_Ativo == "S" || p.Conf_Ativo == "1", // "S" → true (1), resto → false (0)
                                 CodPessoaCadastro = codPessoaCadastro,
                                 CodPessoaAlteracao = codPessoaCadastro
                             },
-                            transaction: trans
-                        );
+                             transaction: trans
+                         );
                         if (result > 0) importados++;
                     }
                     trans.Commit();

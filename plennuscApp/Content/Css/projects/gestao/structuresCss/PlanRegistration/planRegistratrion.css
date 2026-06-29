@@ -149,6 +149,32 @@ body {
         font-weight: 600;
     }
 
+
+/* ─── DROPDOWNS DO GRID ─── */
+.grid-dropdown {
+    padding: 4px 6px;
+    font-size: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: white;
+    min-width: 60px;
+    cursor: pointer;
+}
+
+    .grid-dropdown:hover {
+        background: #f9fafb;
+    }
+
+/* DecSau - tom verde */
+.grid-dropdown-dec {
+    border-color: #a5d6a7;
+}
+
+/* Promocional - tom azul */
+.grid-dropdown-promo {
+    border-color: #90caf9;
+}
+
 /* Abas – mais clean */
 .tabs-sync {
     display: flex;
