@@ -1212,8 +1212,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                         cmd.ExecuteNonQuery();
                     }
 
-                    // CORREÇÃO: Usar o código fixo 65 para "Aguardando Aprovação"
-                    int codSituacaoAguardando = 65; // Código direto da sua tabela
+                    //Usar o código fixo 185 para "Aguardando Aprovação"
+                    int codSituacaoAguardando = 185; 
 
                     // 4) Atualizar a situação da Demanda para 'Aguardando aprovação'
                     using (var cmd = new SqlCommand(Demanda.UpdateSituacaoDemanda, con, tx))
