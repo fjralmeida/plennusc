@@ -1803,13 +1803,13 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                 var body = doc.MainDocumentPart.Document.Body;
                 var paragraphs = body.Descendants<Paragraph>().ToList();
                 var mapeamento = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            { "NOME COMPLETO",      "NOME_COMPLETO" },
-            { "DATA DE NASCIMENTO", "DATA_NASCIMENTO" },
-            { "CPF",                "CPF_TITULAR" },
-            { "E-MAIL",             "EMAIL" },
-            { "TELEFONE CELULAR",   "TELEFONE_CELULAR" }
-        };
+                {
+                    { "NOME COMPLETO",      "NOME_COMPLETO" },
+                    { "DATA DE NASCIMENTO", "DATA_NASCIMENTO" },
+                    { "CPF",                "CPF_TITULAR" },
+                    { "E-MAIL",             "EMAIL" },
+                    { "TELEFONE CELULAR",   "TELEFONE_CELULAR" }
+                };
 
                 bool dentroDaSecao = false;
 
