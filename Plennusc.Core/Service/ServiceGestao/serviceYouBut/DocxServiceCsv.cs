@@ -925,88 +925,75 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
             return 0;
         }
-        private int ProcessarCampoSexo(
-      TableCell cell,
-      List<Text> textos,
-      string conteudoCelula,
-      Dictionary<string, string> dados)
+        private int ProcessarCampoSexo(TableCell cell, List<Text> cellTexts, string cellContent, Dictionary<string, string> dados)
         {
-            if (!dados.ContainsKey("SEXO") || textos.Count == 0)
+            if (!dados.ContainsKey("SEXO") || string.IsNullOrEmpty(dados["SEXO"]))
                 return 0;
 
             string valorSexo = dados["SEXO"].ToUpperInvariant(); // "M", "F" ou "OUTROS"
 
-            // Juntar todo o conteúdo da célula
-            string conteudoOriginal = string.Join("", textos.Select(t => t.Text));
-
-            // Primeiro, NORMALIZAR o conteúdo para facilitar a manipulação
-            string conteudoNormalizado = conteudoOriginal
-                .Replace("SEXOF", "SEXO")  // Corrigir "SEXOF" para "SEXO"
-                .Replace("SEX0", "SEXO")   // Corrigir possível erro de digitação (zero em vez de O)
-                .Trim();
-
-            // Construir o novo conteúdo baseado no valor
-            string opcoes = "";
-
-            // Determinar as opções marcadas
+            // Mapeia o valor para o texto esperado no template (ex: "MASCULINO", "FEMININO", "OUTROS")
+            string opcaoAlvo = "";
             switch (valorSexo)
             {
-                case "M":
-                    opcoes = "☒ M   ☐ F   ☐ OUTROS";
-                    break;
-                case "F":
-                    opcoes = "☐ M   ☒ F   ☐ OUTROS";
-                    break;
-                case "OUTROS":
-                    opcoes = "☐ M   ☐ F   ☒ OUTROS";
-                    break;
-                default:
-                    return 0;
+                case "M": opcaoAlvo = "MASCULINO"; break;
+                case "F": opcaoAlvo = "FEMININO"; break;
+                case "OUTROS": opcaoAlvo = "OUTROS"; break;
+                default: return 0;
             }
 
-            // Verificar se o conteúdo já está correto (com quebra de linha)
-            string conteudoEsperado = "SEXO:\n" + opcoes;
-            if (conteudoOriginal.Replace("\r\n", "\n").Trim() == conteudoEsperado.Replace("\r\n", "\n").Trim())
-                return 0;
+            // Procura em todos os textos da célula por um padrão de checkbox
+            // Exemplo: "☐ MASCULINO" ou "□ FEMININO"
+            bool modificado = false;
 
-            // Limpar todos os textos da célula
-            cell.RemoveAllChildren<Paragraph>();
+            foreach (var text in cellTexts)
+            {
+                string original = text.Text;
+                string novo = original;
 
-            // Criar um novo parágrafo
-            Paragraph newParagraph = new Paragraph();
+                // Verifica se o texto contém algum dos checkboxes (☐ ou □) seguido da opção alvo
+                if (novo.Contains("☐") || novo.Contains("□"))
+                {
+                    // Se encontrar a opção alvo, troca o checkbox vazio por marcado
+                    if (novo.Contains(opcaoAlvo))
+                    {
+                        novo = novo.Replace("☐", "☒").Replace("□", "☒");
+                        modificado = true;
+                    }
+                    else
+                    {
+                        // Para as outras opções, garantir que fiquem vazias
+                        novo = novo.Replace("☒", "☐").Replace("X", "☐"); // remove qualquer marcação indevida
+                    }
+                }
 
-            // 1. PRIMEIRO RUN: Rótulo "SEXO:" SEM NEGRITO
-            Run runRotulo = new Run();
-            RunProperties runPropertiesRotulo = new RunProperties();
-            // Apenas tamanho padrão, SEM negrito
-            runPropertiesRotulo.Append(new FontSize() { Val = "12" });
-            runPropertiesRotulo.Append(new FontSizeComplexScript() { Val = "12" });
-            runRotulo.AppendChild(runPropertiesRotulo);
-            runRotulo.AppendChild(new Text("SEXO:"));
+                if (modificado)
+                {
+                    text.Text = novo;
+                    return 1; // marcou um checkbox
+                }
+            }
 
-            // Adicionar quebra de linha após o rótulo
-            runRotulo.AppendChild(new Break());
+            // Se não encontrou nenhum checkbox, fallback: recria a célula com o texto formatado (como você já fazia)
+            // Mas só para garantir, vamos fazer isso apenas se não tiver modificado.
+            if (!modificado)
+            {
+                string opcoes = valorSexo == "M" ? "☒ M   ☐ F   ☐ OUTROS" :
+                                valorSexo == "F" ? "☐ M   ☒ F   ☐ OUTROS" :
+                                "☐ M   ☐ F   ☒ OUTROS";
 
-            // 2. SEGUNDO RUN: Opções dos checkboxes COM NEGRITO E AZUL
-            Run runOpcoes = new Run();
-            RunProperties runPropertiesOpcoes = new RunProperties();
+                // Limpa a célula e insere o novo conteúdo
+                cell.RemoveAllChildren<Paragraph>();
+                Paragraph p = new Paragraph();
+                Run r = new Run();
+                r.RunProperties = new RunProperties(new FontSize() { Val = "16" }, new Color() { Val = "0000FF" });
+                r.AppendChild(new Text("SEXO:\n" + opcoes));
+                p.AppendChild(r);
+                cell.AppendChild(p);
+                return 1;
+            }
 
-            runPropertiesOpcoes.Append(new FontSize() { Val = "16" });
-            runPropertiesOpcoes.Append(new FontSizeComplexScript() { Val = "16" });
-            // ADICIONA COR AZUL
-            runPropertiesOpcoes.Append(new Color() { Val = "0000FF" });
-
-            runOpcoes.AppendChild(runPropertiesOpcoes);
-            runOpcoes.AppendChild(new Text(opcoes));
-
-            // Adicionar os runs ao parágrafo
-            newParagraph.AppendChild(runRotulo);
-            newParagraph.AppendChild(runOpcoes);
-
-            // Adicionar o parágrafo à célula
-            cell.AppendChild(newParagraph);
-
-            return 1;
+            return 0;
         }
 
         // NOVA FUNÇÃO PARA ESTADO CIVIL
@@ -1793,8 +1780,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             return applied;
         }
 
-
-
         public int PreencherCamposDadosAssociado(string documentoPath, Dictionary<string, string> dados)
         {
             int applied = 0;
@@ -1802,14 +1787,16 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             {
                 var body = doc.MainDocumentPart.Document.Body;
                 var paragraphs = body.Descendants<Paragraph>().ToList();
+
                 var mapeamento = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-                {
-                    { "NOME COMPLETO",      "NOME_COMPLETO" },
-                    { "DATA DE NASCIMENTO", "DATA_NASCIMENTO" },
-                    { "CPF",                "CPF_TITULAR" },
-                    { "E-MAIL",             "EMAIL" },
-                    { "TELEFONE CELULAR",   "TELEFONE_CELULAR" }
-                };
+        {
+            { "NOME COMPLETO",      "NOME_COMPLETO" },
+            { "DATA DE NASCIMENTO", "DATA_NASCIMENTO" },
+            { "CPF TITULAR",        "CPF_TITULAR" },
+            { "CPF",                "CPF_TITULAR" },    // Pega "CPF" sozinho
+            { "E-MAIL",             "EMAIL" },
+            { "TELEFONE CELULAR",   "TELEFONE_CELULAR" }
+        };
 
                 bool dentroDaSecao = false;
 
@@ -1818,13 +1805,17 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                     string textoPara = string.Join("", para.Descendants<Text>().Select(t => t.Text)).Trim();
                     if (string.IsNullOrWhiteSpace(textoPara)) continue;
 
-                    if (textoPara.Contains("Dados do Associados") || textoPara.Contains("FICHA DE ASSOCIATIVA"))
+                    // Início da seção: usa IndexOf com StringComparison
+                    if (textoPara.IndexOf("DADOS DO ASSOCIADO", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        textoPara.IndexOf("FICHA DE FILIAÇÃO", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        textoPara.IndexOf("FICHA DE ASSOCIATIVA", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         dentroDaSecao = true;
                         continue;
                     }
 
-                    if (dentroDaSecao && textoPara.Contains("DISPOSIÇÕES GERAIS"))
+                    // Fim da seção: "DISPOSIÇÕES GERAIS"
+                    if (dentroDaSecao && textoPara.IndexOf("DISPOSIÇÕES GERAIS", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         dentroDaSecao = false;
                         continue;
@@ -1832,6 +1823,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
 
                     if (!dentroDaSecao) continue;
 
+                    // Para cada campo do mapeamento
                     foreach (var kvp in mapeamento)
                     {
                         string rotulo = kvp.Key;
@@ -1843,9 +1835,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                                 continue;
 
                             string valor = dados[chave];
-                            if (textoPara.Contains(valor)) continue;
+                            if (textoPara.Contains(valor)) continue; // já preenchido
 
-                            // Preserva formatação original do rótulo
+                            // Preserva formatação
                             var runsOriginais = para.Descendants<Run>().ToList();
                             RunProperties estiloRotuloOriginal = null;
                             if (runsOriginais.Count > 0)
@@ -1862,18 +1854,17 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
                             var paraProps = para.ParagraphProperties?.CloneNode(true);
                             if (paraProps != null) para.AppendChild(paraProps);
 
-                            // Rótulo com estilo original
+                            // Rótulo
                             Run runRotulo = new Run();
                             if (estiloRotuloOriginal != null)
                                 runRotulo.RunProperties = estiloRotuloOriginal;
                             runRotulo.AppendChild(new Text(rotulo));
                             runRotulo.AppendChild(new Break());
 
-                            // Valor com azul, negrito e tamanho menor
+                            // Valor azul, negrito, tamanho menor
                             Run runValor = new Run();
                             RunProperties propsValor = new RunProperties();
                             propsValor.Append(new Color() { Val = "0000FF" });
-                            // ↓↓↓ Diminui a fonte do valor preenchido ↓↓↓
                             propsValor.Append(new FontSize() { Val = "18" });
                             propsValor.Append(new FontSizeComplexScript() { Val = "18" });
                             runValor.RunProperties = propsValor;

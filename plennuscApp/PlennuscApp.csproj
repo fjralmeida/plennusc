@@ -231,6 +231,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\listDemand.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\menu\Menus-Management.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\menu\Munu-System-Assignment.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\Migracoes\butYou.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsCompleted.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsOpen.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\myDemandsProgress.css" />

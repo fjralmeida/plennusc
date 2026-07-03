@@ -1,131 +1,151 @@
 ﻿<%@ Page Title="Gerador de Propostas" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="Butyou.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.Butyou" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <style>
-        .container { padding: 20px; }
-        .btn { padding: 10px 20px; margin: 10px; }
-        .result { margin: 20px 0; padding: 20px; background: #f5f5f5; border: 1px solid #ddd; }
-        .error { color: red; }
-        .success { color: green; }
-        .debug-panel { 
-            margin: 20px 0; 
-            padding: 15px; 
-            background: #e8f4f8; 
-            border: 2px solid #007bff; 
-            border-radius: 5px; 
-            max-height: 300px; 
-            overflow-y: auto; 
-        }
-    </style>
+    <link href="../../Content/Css/projects/gestao/structuresCss/Migracoes/butYou.css" rel="stylesheet" />
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <div class="container">
-        <h1>GERADOR DE PROPOSTAS - MIGRAÇÃO ANASERV</h1>
-        
-            
-            <!-- BOTÃO DE TESTE NOVO CORRIGIDO -->
-            <asp:Button ID="btnTestarPreenchimento" runat="server" Text="✅ TESTAR PREENCHIMENTO" 
-                OnClick="btnTestarPreenchimento_Click" CssClass="btn btn-info" />
+<div class="mg-wrap">
 
-        <asp:Button ID="btnPreencherComDadosReais" runat="server" 
-                    Text="Preencher com Dados Reais" 
-                    OnClick="btnPreencherComDadosReais_Click" 
-                    CssClass="btn btn-primary" />
-          
-
-         <asp:Button ID="btnPreencherComDadosCsv" runat="server" 
-             Text="Preencher com Dados Reais CSV" 
-             OnClick="btnPreencherComDadosCsv_Click" 
-             CssClass="btn btn-primary" />
-
-          <asp:Button ID="trmReajusteVallor" runat="server" 
-              Text="Preencher termo de reajuste" 
-              OnClick="trmReajusteVallor_Click" 
-              CssClass="btn btn-primary" />
-        </div>
-        
-        <!-- MENSAGENS -->
-        <div style="margin: 15px 0;">
-            <asp:Label ID="lblMensagem" runat="server" CssClass="success" Visible="false" Font-Bold="true"></asp:Label>
-            <asp:Label ID="lblErro" runat="server" CssClass="error" Visible="false" Font-Bold="true"></asp:Label>
-        </div>
-        
-        <!-- ÁREA DE RESULTADOS -->
-        <div class="result">
-            <!-- Lista de campos encontrados -->
-            <asp:Panel ID="pnlCampos" runat="server" Visible="false">
-                <h3>📋 CAMPOS IDENTIFICADOS NO DOCX:</h3>
-                <asp:Literal ID="litCampos" runat="server"></asp:Literal>
-            </asp:Panel>
-            
-            <!-- PANEL DE DEBUG (PARA VER O QUE ESTÁ SENDO ENCONTRADO) -->
-            <asp:Panel ID="pnlDebug" runat="server" Visible="false" CssClass="debug-panel">
-                <h4>🔍 DEBUG - Textos encontrados no documento:</h4>
-                <asp:Literal ID="litDebug" runat="server"></asp:Literal>
-            </asp:Panel>
-            
-            <!-- DADOS DE TESTE USADOS -->
-            <asp:Panel ID="pnlDadosTeste" runat="server" Visible="false" style="margin-top: 20px;">
-                <h4>📝 DADOS DE TESTE USADOS:</h4>
-                <div style="background: white; padding: 10px; border: 1px solid #ccc;">
-                    <strong>TITULAR:</strong><br />
-                    NOME: MARCOS ANTONIO SILVEIRA<br />
-                    CPF: 123.456.789-00<br />
-                    NASCIMENTO: 15/03/1985<br />
-                    RG: 12.345.678-9<br />
-                    ENDEREÇO: AVENIDA BOA VIAGEM, 1001, APTO 502<br />
-                    <br />
-                    <strong>DEPENDENTE 1 (ESPOSA):</strong><br />
-                    NOME: ANA CAROLINA SILVEIRA<br />
-                    CPF: 111.222.333-44<br />
-                    <br />
-                    <strong>DEPENDENTE 2 (FILHO):</strong><br />
-                    NOME: LUCAS SILVEIRA<br />
-                    CPF: 555.666.777-88<br />
-                </div>
-            </asp:Panel>
-        </div>
-        
-        <!-- INSTRUÇÕES DE TESTE -->
-        <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffc107;">
-            <h4>📋 COMO TESTAR:</h4>
-            <ol>
-                <li>Clique em <strong>"✅ TESTAR PREENCHIMENTO"</strong></li>
-                <li>Será gerado um arquivo DOCX com dados de teste</li>
-                <li>Baixe e abra o arquivo</li>
-                <li>Verifique se todos os campos foram preenchidos corretamente</li>
-                <li>No painel de DEBUG acima, veja quais textos foram encontrados</li>
-            </ol>
-        </div>
-        
-        <!-- Informações do projeto -->
-        <div style="margin-top: 30px; padding: 15px; background: #e9ecef;">
-            <h4>📊 INFORMAÇÕES DO PROJETO:</h4>
-            <ul>
-                <li><strong>Template:</strong> MAIS VOCE - PE - DOCX.docx</li>
-                <li><strong>Tabela de origem:</strong> ps1000</li>
-                <li><strong>Total de beneficiários:</strong> 1200 vidas</li>
-                <li><strong>Saída:</strong> Arquivos DOCX individuais + ZIP</li>
-                <li><strong>Status:</strong> <span style="color: orange;">⏳ EM TESTE</span></li>
-            </ul>
+    <%-- ── Cabeçalho ── --%>
+    <div class="mg-header">
+        <div class="mg-header-icon">&#128196;</div>
+        <div>
+            <h1>Gerador de Propostas</h1>
+            <p>Migra&ccedil;&atilde;o ANASERV &mdash; gera&ccedil;&atilde;o de documentos DOCX em lote</p>
         </div>
     </div>
-    
-    <!-- Script para reabilitar botão após erro -->
-<%--    <script>
-        function reabilitarBotoes() {
-            var btnTeste = document.getElementById('<%= btnTestarPreenchimento.ClientID %>');
-            if (btnTeste) {
-                btnTeste.disabled = false;
-                btnTeste.value = '✅ TESTAR PREENCHIMENTO';
-            }
-        }
 
-        // Executar quando houver erro
-        if (document.getElementById('<%= lblErro.ClientID %>') && 
-            document.getElementById('<%= lblErro.ClientID %>').style.display != 'none') {
-            reabilitarBotoes();
-        }
-    </script>--%>
+    <%-- ── Mensagens ── --%>
+    <asp:Panel ID="pnlMensagem" runat="server" Visible="false">
+        <div class="mg-alert sucesso">
+            <span class="mg-alert-icon">&#10004;</span>
+            <asp:Label ID="lblMensagem" runat="server"></asp:Label>
+        </div>
+    </asp:Panel>
+    <asp:Panel ID="pnlErro" runat="server" Visible="false">
+        <div class="mg-alert erro">
+            <span class="mg-alert-icon">&#9888;</span>
+            <asp:Label ID="lblErro" runat="server"></asp:Label>
+        </div>
+    </asp:Panel>
+
+    <%-- ── Cards de ação ── --%>
+    <div class="mg-grid">
+
+        <%-- Card 1 — Dados Reais --%>
+        <div class="mg-card">
+            <div class="mg-card-ico blue">&#128209;</div>
+            <p class="mg-card-title">Preencher com Dados Reais</p>
+            <p class="mg-card-desc">
+                Busca associados diretamente no banco Alian&ccedil;a e gera os documentos DOCX
+                com titular e dependentes agrupados.
+            </p>
+            <asp:Button ID="btnPreencherComDadosReais" runat="server"
+                Text="&#9654; Executar"
+                OnClick="btnPreencherComDadosReais_Click"
+                CssClass="mg-btn azul" />
+        </div>
+
+        <%-- Card 2 — CSV --%>
+        <div class="mg-card">
+            <div class="mg-card-ico green">&#128196;</div>
+            <p class="mg-card-title">Preencher via CSV</p>
+            <p class="mg-card-desc">
+                L&ecirc; o arquivo <strong>AASP_MIGRACAO_UNIAOMED.csv</strong> e gera os
+                documentos DOCX para cada titular encontrado.
+            </p>
+            <asp:Button ID="btnPreencherComDadosCsv" runat="server"
+                Text="&#9654; Executar"
+                OnClick="btnPreencherComDadosCsv_Click"
+                CssClass="mg-btn verde" />
+        </div>
+
+        <%-- Card 3 — Termo de Reajuste --%>
+        <div class="mg-card">
+            <div class="mg-card-ico orange">&#128203;</div>
+            <p class="mg-card-title">Termo de Reajuste Vallor</p>
+            <p class="mg-card-desc">
+                Gera o termo de reajuste Hapvida / Vallor a partir do arquivo
+                <strong>AASP.csv</strong>, um documento por benefici&aacute;rio.
+            </p>
+            <asp:Button ID="trmReajusteVallor" runat="server"
+                Text="&#9654; Executar"
+                OnClick="trmReajusteVallor_Click"
+                CssClass="mg-btn laranja" />
+        </div>
+
+    </div>
+
+    <%-- ── Informações do projeto ── --%>
+    <div class="mg-info-card">
+        <p class="mg-info-title">
+            <span class="ico">&#9432;</span> Informa&ccedil;&otilde;es do Projeto
+        </p>
+        <div class="mg-info-grid">
+            <div class="mg-info-item">
+                <span class="lbl">Template principal</span>
+                <span class="val">MAIS VOCE - PE - DOCX.docx</span>
+            </div>
+            <div class="mg-info-item">
+                <span class="lbl">Tabela de origem</span>
+                <span class="val">ps1000</span>
+            </div>
+            <div class="mg-info-item">
+                <span class="lbl">Total de benefici&aacute;rios</span>
+                <span class="val">1.200 vidas</span>
+            </div>
+            <div class="mg-info-item">
+                <span class="lbl">Sa&iacute;da</span>
+                <span class="val">Arquivos DOCX individuais</span>
+            </div>
+            <div class="mg-info-item">
+                <span class="lbl">Status</span>
+                <span class="val"><span class="mg-badge-teste">&#9203; Em teste</span></span>
+            </div>
+        </div>
+    </div>
+
+    <%-- ── Instruções ── --%>
+    <div class="mg-instrucoes">
+        <p class="mg-instrucoes-title">&#10067; Como usar</p>
+        <ol>
+            <li>Escolha o processo desejado nos cards acima e clique em <strong>Executar</strong>.</li>
+            <li>Aguarde o processamento &mdash; os documentos ser&atilde;o gerados automaticamente.</li>
+            <li>Ao concluir, uma mensagem de sucesso indicar&aacute; a pasta de destino.</li>
+            <li>Clique no link gerado para abrir a pasta com os arquivos DOCX.</li>
+            <li>Em caso de erro, verifique os detalhes na mensagem vermelha acima.</li>
+        </ol>
+    </div>
+
+    <%-- ── Panels de resultado ocultos ── --%>
+    <asp:Panel ID="pnlCampos" runat="server" Visible="false">
+        <div class="mg-info-card">
+            <p class="mg-info-title"><span class="ico">&#9989;</span> Campos identificados no DOCX</p>
+            <asp:Literal ID="litCampos" runat="server"></asp:Literal>
+        </div>
+    </asp:Panel>
+
+    <asp:Panel ID="pnlDebug" runat="server" Visible="false">
+        <div class="mg-debug">
+            <h4>&#128027; DEBUG &mdash; Textos encontrados no documento</h4>
+            <asp:Literal ID="litDebug" runat="server"></asp:Literal>
+        </div>
+    </asp:Panel>
+
+    <asp:Panel ID="pnlDadosTeste" runat="server" Visible="false">
+        <div class="mg-dados-teste">
+            <h4>&#128101; Dados de teste utilizados</h4>
+            <strong>TITULAR:</strong><br />
+            NOME: MARCOS ANTONIO SILVEIRA &mdash; CPF: 123.456.789-00<br />
+            NASCIMENTO: 15/03/1985 &mdash; RG: 12.345.678-9<br />
+            ENDERE&Ccedil;O: AVENIDA BOA VIAGEM, 1001, APTO 502<br /><br />
+            <strong>DEPENDENTE 1 (ESPOSA):</strong><br />
+            NOME: ANA CAROLINA SILVEIRA &mdash; CPF: 111.222.333-44<br /><br />
+            <strong>DEPENDENTE 2 (FILHO):</strong><br />
+            NOME: LUCAS SILVEIRA &mdash; CPF: 555.666.777-88
+        </div>
+    </asp:Panel>
+
+</div>
 </asp:Content>
