@@ -225,6 +225,10 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
             return string.Empty;
         }
 
+        // ─────────────────────────────────────────────────────────────────────
+        // ALTERAÇÕES — detectar divergências entre Aliança e Plennus
+        // ─────────────────────────────────────────────────────────────────────
+
         public List<OperadoraAlteracoesDto> BuscarOperadorasComAlteracoes()
         {
             var existentesPlennus = new Dictionary<string, OperadoraAlteracoesDto>(StringComparer.OrdinalIgnoreCase);
@@ -277,6 +281,10 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
             return divergentes;
         }
 
+        // ─────────────────────────────────────────────────────────────────────
+        // ALTERAÇÕES — confirmar: UPDATE no Banco 2
+        // ─────────────────────────────────────────────────────────────────────
+
         public void ConfirmarAlteracoes(List<OperadoraAlteracoesDto> alteracoes, int codAutenticacaoAcesso)
         {
             if (alteracoes == null || alteracoes.Count == 0) return;
@@ -319,6 +327,92 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                     throw;
                 }
             }
+        }
+
+        // ───────────────────────────────────────────────────────────────────────────
+        //  Edição de Operadora — Banco 2 (Plennus) — Razão Social e Nome Comercial
+        // ───────────────────────────────────────────────────────────────────────────
+
+        // No front já está retornando o nome e a razão social, de acordo com o código da operadora. Aqui é só atualizar no banco Plennus, caso o usuário altere algum campo.
+
+        public bool AtualizarOperadora(int codigoOperadora, string razaoSocial, string nomeComercial)
+        {
+            // Valida se pelo menos um campo foi preenchido
+            if (string.IsNullOrWhiteSpace(razaoSocial) && string.IsNullOrWhiteSpace(nomeComercial))
+                return false;
+
+            try
+            {
+                using (var con = OpenPlennus())
+                {
+                    // Primeiro verifica se a operadora existe usando a query do arquivo operatorRegistrationQueries.cs, na variável VerificarOperadoraExiste
+                    using (var checarOperadora = new SqlCommand(OperatorRegistrationQueries.VerificarOperadoraExiste, con))
+                    {
+                        // Adiciona o valor do retorno do código da operadora (obtido por @CodigoOperadora), que é passado como parâmetro codigoOperadora
+                        checarOperadora.Parameters.AddWithValue("@CodigoOperadora", codigoOperadora);
+                        // Executa a query e obtém o resultado (quantidade de registros encontrados)
+                        int count = Convert.ToInt32(checarOperadora.ExecuteScalar());
+                        if (count == 0)
+                            return false;
+                    }
+
+                    // Decide qual query usar baseado no que foi preenchido no campo
+                    string sql;
+                    bool temRazaoSocial = !string.IsNullOrWhiteSpace(razaoSocial);
+                    bool temNomeComercial = !string.IsNullOrWhiteSpace(nomeComercial);
+
+                    if (temRazaoSocial && temNomeComercial)
+                    {
+                        // Se tiver ambos, decide atualizar os dois campos
+                        sql = OperatorRegistrationQueries.AtualizarOperadoraEdit;
+                    }
+                    else if (temRazaoSocial)
+                    {
+                        // Decide atualizar só Razão Social 
+                        sql = OperatorRegistrationQueries.AtualizarRazaoSocial;
+                    }
+                    else
+                    {
+                        // Decide atualizar só Nome Comercial
+                        sql = OperatorRegistrationQueries.AtualizarNomeComercial;
+                    }
+
+                    using (var cmd = new SqlCommand(sql, con))
+                    {
+                        // Depois da decisão / preenchimento do(s) campo(s), executa a query para atualizar no banco Plennus, e atribui para a query
+                        if (temRazaoSocial)
+                            cmd.Parameters.AddWithValue("@RazaoSocial", razaoSocial.Trim());
+
+                        if (temNomeComercial)
+                            cmd.Parameters.AddWithValue("@NomeComercial", nomeComercial.Trim());
+
+                        cmd.Parameters.AddWithValue("@CodPessoaAlteracao", ObterCodUsuarioLogado());
+                        cmd.Parameters.AddWithValue("@DataLog", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@CodigoOperadora", codigoOperadora);
+
+                        int linhasAfetadas = cmd.ExecuteNonQuery();
+                        return linhasAfetadas > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log do erro
+                throw new Exception($"Erro ao atualizar operadora: {ex.Message}", ex);
+            }
+        }
+
+        ////////////////////////////////// Obtém o código do usuário logado
+        private int ObterCodUsuarioLogado()
+        {
+            // TODO: Implementar a lógica para pegar o usuário logado
+            // Exemplo de implementação:
+            // if (System.Web.HttpContext.Current?.Session?["CodUsuario"] != null)
+            //     return Convert.ToInt32(System.Web.HttpContext.Current.Session["CodUsuario"]);
+            // return 1; // Fallback
+
+            // IMPORTANTE: Substitua isso pela sua lógica real de autenticação
+            return 1; // Temporário - substituir pela implementação real
         }
     }
 }
