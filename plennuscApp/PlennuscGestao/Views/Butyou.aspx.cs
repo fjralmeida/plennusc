@@ -877,7 +877,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
 
                 // DEPOIS — busca do arquivo Excel/CSV
-                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\AASP.csv";
+                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\AASP_MIGRACAO_UNIAOMED.csv";
                 // ou: string caminhoArquivo = Server.MapPath("~/public/uploadgestao/docs/importacao/associados.csv
                 var importService = new ImportacaoAssociadosService();
                 List<DadosAssociadoCompleto> todosAssociados;

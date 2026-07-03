@@ -49,7 +49,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             set { ViewState["AnexosSelecionados"] = value; }
         }
 
-        private void CarregarTudo()
+        private void CarregarTudo() 
         {
             CarregarDemanda();
             CarregarHistorico();
