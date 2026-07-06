@@ -386,7 +386,7 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
                         if (temNomeComercial)
                             cmd.Parameters.AddWithValue("@NomeComercial", nomeComercial.Trim());
 
-                        cmd.Parameters.AddWithValue("@CodPessoaAlteracao", ObterCodUsuarioLogado());
+                        cmd.Parameters.AddWithValue("@CodPessoaAlteracao", ObterCodAutenticacaoAcesso());
                         cmd.Parameters.AddWithValue("@DataLog", DateTime.Now);
                         cmd.Parameters.AddWithValue("@CodigoOperadora", codigoOperadora);
 
@@ -402,17 +402,16 @@ namespace Plennusc.Core.Service.ServiceGestao.planiumApi
             }
         }
 
-        ////////////////////////////////// Obtém o código do usuário logado
-        private int ObterCodUsuarioLogado()
-        {
-            // TODO: Implementar a lógica para pegar o usuário logado
-            // Exemplo de implementação:
-            // if (System.Web.HttpContext.Current?.Session?["CodUsuario"] != null)
-            //     return Convert.ToInt32(System.Web.HttpContext.Current.Session["CodUsuario"]);
-            // return 1; // Fallback
+        // ───────────────────────────────────────────────────────────────────────────
+        // Helper para obter código do usuário logado (acesso à sessão)
+        // ───────────────────────────────────────────────────────────────────────────
 
-            // IMPORTANTE: Substitua isso pela sua lógica real de autenticação
-            return 1; // Temporário - substituir pela implementação real
+        private int ObterCodAutenticacaoAcesso()
+        {
+            if (System.Web.HttpContext.Current?.Session?["CodUsuario"] == null)
+                throw new InvalidOperationException("Usuário não está logado (Session[\"CodUsuario\"] ausente).");
+
+            return Convert.ToInt32(System.Web.HttpContext.Current.Session["CodUsuario"]);
         }
     }
 }
