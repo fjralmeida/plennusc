@@ -27,5 +27,14 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
         public decimal TaxaAdesao { get; set; }
         public decimal Desconto { get; set; }
         public decimal Cobrado { get; set; }
+
+        public string MesAnoReferencia { get; set; }
+
+
+        // ===================== Campos preenchidos na etapa de conferência =====================
+
+        public decimal? ValorOperadoraView { get; set; }   // valor encontrado na VW_RELATORIO_CONFERENCIA
+        public decimal? DiferencaValor { get; set; }        // Cobrado - ValorOperadoraView
+        public string StatusConferencia { get; set; }
     }
 }

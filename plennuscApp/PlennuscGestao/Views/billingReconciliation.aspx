@@ -4,31 +4,38 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-     <div class="form-row">
-        <!-- OPERADORA -->
-        <div class="form-group">
-            <label for="ddlOperadora">Operadora *</label>
-            <asp:DropDownList ID="ddlOperadora" runat="server" CssClass="form-control" onchange="mostrarImportacao(this)">
-            </asp:DropDownList>
-        </div>
+<div class="form-row">
+    <!-- OPERADORA -->
+    <div class="form-group">
+        <label for="ddlOperadora">Operadora *</label>
+        <asp:DropDownList ID="ddlOperadora" runat="server" CssClass="form-control" onchange="mostrarImportacao(this)">
+        </asp:DropDownList>
+    </div>
 
-        <!-- GRUPO DE FATURAMENTO -->
-        <div class="form-group">
-            <label class="field-label">Vigência (opcional)</label>
-            <div class="custom-dropdown" id="dropdownGrupoFaturamento">
-                <div class="dropdown-header" onclick="toggleDropdown(this)">
-                    <span class="resumo-texto" id="lblGrupoFaturamentoResumo">
-                        <span class="placeholder">Selecione...</span>
-                    </span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="dropdown-panel">
-                    <asp:CheckBoxList ID="cblGrupoFaturamento" runat="server" ClientIDMode="Static">
-                    </asp:CheckBoxList>
-                </div>
+    <!-- MÊS/ANO REFERÊNCIA -->
+    <div class="form-group">
+        <label for="txtMesAnoReferencia">Mês/Ano Referência *</label>
+        <asp:TextBox ID="txtMesAnoReferencia" runat="server" CssClass="form-control"
+            MaxLength="7" placeholder="MM/AAAA" onkeyup="mascararMesAno(this)" />
+    </div>
+
+    <!-- GRUPO DE FATURAMENTO -->
+    <div class="form-group">
+        <label class="field-label">Vigência (opcional)</label>
+        <div class="custom-dropdown" id="dropdownGrupoFaturamento">
+            <div class="dropdown-header" onclick="toggleDropdown(this)">
+                <span class="resumo-texto" id="lblGrupoFaturamentoResumo">
+                    <span class="placeholder">Selecione...</span>
+                </span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="dropdown-panel">
+                <asp:CheckBoxList ID="cblGrupoFaturamento" runat="server" ClientIDMode="Static">
+                </asp:CheckBoxList>
             </div>
         </div>
     </div>
+</div>
 
  <!-- IMPORTAÇÃO (só aparece depois de escolher a operadora) -->
     <div class="form-group hidden" id="divImportar">
@@ -39,10 +46,19 @@
         <asp:Label ID="lblMensagemImportacao" runat="server" CssClass="msg-importacao"></asp:Label>
     </div>
 
-    <div class="form-group hidden" id="divPreview" runat="server">
-        <label class="field-label">Pré-visualização dos dados importados</label>
-        <asp:GridView ID="gridPreview" runat="server" CssClass="grid-preview" AutoGenerateColumns="false"
-            EmptyDataText="Nenhum registro encontrado." GridLines="None">
+ <div class="form-group hidden" id="divPreview" runat="server">
+    <label class="field-label">Pré-visualização dos dados importados</label>
+    <asp:Button ID="btnConferir" runat="server" Text="Conferir com a Operadora"
+        CssClass="btn btn-primary" OnClick="btnConferir_Click" style="margin-bottom:12px;" />
+
+     <asp:Button ID="btnExportarDivergentes" runat="server" Text="Exportar Divergentes (Excel)"
+    CssClass="btn btn-secondary" OnClick="btnExportarDivergentes_Click" style="margin-left:8px;" />
+
+    <asp:Label ID="lblMensagemConferencia" runat="server" CssClass="msg-importacao"></asp:Label>
+    <div class="grid-container">
+        <asp:GridView ID="gridPreview" runat="server" CssClass="custom-grid" AutoGenerateColumns="false"
+            EmptyDataText="Nenhum registro encontrado." GridLines="None"
+            OnRowDataBound="gridPreview_RowDataBound">
             <Columns>
                 <asp:BoundField DataField="Empresa" HeaderText="Empresa" />
                 <asp:BoundField DataField="Unidade" HeaderText="Unidade" />
@@ -55,9 +71,19 @@
                 <asp:BoundField DataField="Plano" HeaderText="Plano" />
                 <asp:BoundField DataField="Mensalidade" HeaderText="Mensalidade" DataFormatString="{0:N2}" />
                 <asp:BoundField DataField="Cobrado" HeaderText="Cobrado" DataFormatString="{0:N2}" />
+                <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Operadora" DataFormatString="{0:N2}" />
+                <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" />
+                <asp:TemplateField HeaderText="Status">
+                    <ItemTemplate>
+                        <span class='badge status-<%# ((string)Eval("StatusConferencia") ?? "").ToLower().Replace("_", "-") %>'>
+                            <%# TraduzirStatus((string)Eval("StatusConferencia")) %>
+                        </span>
+                    </ItemTemplate>
+                </asp:TemplateField>
             </Columns>
         </asp:GridView>
     </div>
+</div>
 
  <script>
      function mostrarImportacao(ddl) {
@@ -118,6 +144,18 @@
 
          var ddl = document.getElementById('<%= ddlOperadora.ClientID %>');
         if (ddl) mostrarImportacao(ddl);
-    });
+     });
+
+     function mascararMesAno(input) {
+         var valor = input.value.replace(/\D/g, ''); // remove tudo que não é número
+
+         if (valor.length > 6) valor = valor.substring(0, 6);
+
+         if (valor.length >= 3) {
+             valor = valor.substring(0, 2) + '/' + valor.substring(2);
+         }
+
+         input.value = valor;
+     }
     </script>
 </asp:Content>

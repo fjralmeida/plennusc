@@ -78,5 +78,32 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
 
             return lista;
         }
+
+        public decimal? BuscarValorOperadoraPorCpfECredencial(string cpf, string credencial, string mesAnoReferencia)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+            string sql = @"
+        SELECT VALOR_OPERADORA
+        FROM VW_RELATORIO_CONFERENCIA
+        WHERE NUMERO_CPF = @Cpf
+          AND NUMERO_CARTEIRINHA = @Credencial
+          AND MES_ANO_REFERENCIA = @MesAnoReferencia
+          AND TIPO = @Tipo";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Cpf", cpf);
+                cmd.Parameters.AddWithValue("@Credencial", credencial);
+                cmd.Parameters.AddWithValue("@MesAnoReferencia", mesAnoReferencia);
+                cmd.Parameters.AddWithValue("@Tipo", "CONVÊNIO");
+                conn.Open();
+
+                var resultado = cmd.ExecuteScalar();
+                return resultado != null && resultado != DBNull.Value
+                    ? Convert.ToDecimal(resultado)
+                    : (decimal?)null;
+            }
+        }
     }
 }

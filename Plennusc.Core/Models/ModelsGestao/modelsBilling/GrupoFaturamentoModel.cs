@@ -11,4 +11,9 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
         public int CodigoGrupoFaturamento { get; set; }
         public string DescricaoGrupoFaturamento { get; set; }
     }
+
+    public class MesAnoReferenciaModel
+    {
+        public string MesAnoReferencia { get; set; }
+    }
 }

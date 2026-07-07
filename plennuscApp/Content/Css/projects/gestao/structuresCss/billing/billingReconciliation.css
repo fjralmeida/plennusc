@@ -149,4 +149,18 @@
     color: #1e7e34;
 }
 
-/*GRID*/
+.grid-container{border-radius:16px;overflow:visible;box-shadow:0 4px 20px rgba(0,0,0,0.04);background:white;overflow-x:auto}
+.custom-grid{width:100%;border-collapse:collapse;font-size:14px;table-layout:auto;min-width:0}
+.custom-grid th,.custom-grid td{padding:12px 10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;white-space:normal;word-break:break-word}
+.custom-grid thead th{background:#f1f5f9;color:#1e293b;font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;padding:16px 14px;border-bottom:2px solid #cbd5e1;white-space:nowrap}
+.custom-grid tbody tr:last-child td{border-bottom:none}
+.custom-grid tbody tr:hover td{background:#fafcff}
+.linha-ok td{background:#e8f5e9 !important}
+.linha-divergencia-tolerada td{background:#fff8e1 !important}
+.linha-divergente td{background:#ffebee !important}
+.linha-nao-encontrado td{background:#f5f5f5 !important}
+.badge{display:inline-block;padding:6px 12px;border-radius:16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;text-align:center;min-width:80px;white-space:nowrap}
+.status-ok{background:#e8f5e9 !important;color:#2e7d32 !important;border:1px solid #c8e6c9 !important}
+.status-divergencia-tolerada{background:#fff3e0 !important;color:#ef6c00 !important;border:1px solid #ffe0b2 !important}
+.status-divergente{background:#ffebee !important;color:#c62828 !important;border:1px solid #ffcdd2 !important}
+.status-nao-encontrado{background:#f5f5f5 !important;color:#616161 !important;border:1px solid #e0e0e0 !important;font-style:italic !important}

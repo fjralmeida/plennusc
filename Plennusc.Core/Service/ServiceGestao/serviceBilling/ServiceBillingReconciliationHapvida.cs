@@ -1,4 +1,8 @@
-﻿using Plennusc.Core.Models.ModelsGestao.modelsBilling;
+﻿using DocumentFormat.OpenXml.Office.Y2022.FeaturePropertyBag;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Plennusc.Core.Models.ModelsGestao.modelsBilling;
+using Plennusc.Core.SqlQueries.SqlQueriesGestao.billing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,6 +17,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
     {
         private const string MARCADOR_INICIO = "empresa";
         private const string MARCADOR_FIM = "Historico de Beneficiarios de Empresa com Vigencia Retroativa";
+        private const decimal TOLERANCIA_DIVERGENCIA = 0.10m;
+
+        private readonly SqlBillingReconciliation _sql = new SqlBillingReconciliation();
 
         public List<ItemRelatorioImportadoHapVida> LerRelatorio(Stream arquivo, string extensao)
         {
@@ -152,10 +159,77 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             var texto = ObterTexto(v, indice);
             if (string.IsNullOrEmpty(texto)) return 0;
 
-            if (decimal.TryParse(texto, NumberStyles.Any, CultureInfo.InvariantCulture, out var valor))
-                return valor;
+            if (decimal.TryParse(texto, NumberStyles.Any, CultureInfo.InvariantCulture, out var valorBruto))
+            {
+                return valorBruto / 100m;
+            }
 
             return 0;
+        }
+
+        // ===================== CONFERÊNCIA COM A VIEW (lógica específica Hapvida) =====================
+
+        public List<ItemRelatorioImportadoHapVida> ConferirComView(List<ItemRelatorioImportadoHapVida> itensImportados)
+        {
+            foreach (var item in itensImportados)
+            {
+                string cpfTratado = TratarCpf(item.Cpf);
+                string credencialTratada = TratarCredencial(item.Credencial);
+
+                var valorView = _sql.BuscarValorOperadoraPorCpfECredencial(
+                    cpfTratado, credencialTratada, item.MesAnoReferencia);
+
+                item.ValorOperadoraView = valorView;
+
+                if (valorView == null)
+                {
+                    item.StatusConferencia = "NAO_ENCONTRADO";
+                    item.DiferencaValor = null;
+                    continue;
+                }
+
+                decimal diferenca = Math.Abs(item.Cobrado - valorView.Value);
+                item.DiferencaValor = diferenca;
+
+                if (diferenca == 0)
+                    item.StatusConferencia = "OK";
+                else if (diferenca <= TOLERANCIA_DIVERGENCIA)
+                    item.StatusConferencia = "DIVERGENCIA_TOLERADA";
+                else
+                    item.StatusConferencia = "DIVERGENTE";
+            }
+
+            return itensImportados;
+        }
+
+        // Remove apenas pontuação (ponto, hífen, espaço) e mantém o prefixo,
+        // pois é assim que o valor está gravado em NUMERO_CARTEIRINHA na view.
+        // Ex: "0GJZV.000007-00 5" -> "0GJZV000007005"
+        private string TratarCredencial(string credencial)
+        {
+            if (string.IsNullOrEmpty(credencial)) return credencial;
+
+            return credencial
+                .Replace(".", "")
+                .Replace("-", "")
+                .Replace(" ", "")
+                .Trim();
+        }
+
+        // Remove máscara do CPF (pontos e traço), já que a view guarda só números
+        private string TratarCpf(string cpf)
+        {
+            if (string.IsNullOrEmpty(cpf)) return cpf;
+            return cpf.Replace(".", "").Replace("-", "").Trim();
+        }
+
+        private Cell CriarCelulaTexto(string valor)
+        {
+            return new Cell
+            {
+                DataType = CellValues.String,
+                CellValue = new CellValue(valor ?? "")
+            };
         }
     }
 }
