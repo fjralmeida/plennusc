@@ -1,0 +1,152 @@
+﻿.form-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+    .form-row .form-group {
+        flex: 1;
+        min-width: 280px;
+        max-width: 400px;
+    }
+
+.dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    min-height: 20px;
+}
+
+    .dropdown-header .resumo-texto {
+        white-space: normal;
+        line-height: 1.4;
+    }
+
+    .dropdown-header .arrow {
+        flex-shrink: 0;
+        margin-left: 8px;
+        font-size: 11px;
+        color: #666;
+        transition: transform 0.2s ease;
+    }
+
+.custom-dropdown.open .dropdown-header .arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    z-index: 200;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.custom-dropdown.open .dropdown-panel {
+    display: block;
+}
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-panel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dropdown-panel table td {
+    padding: 6px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.dropdown-panel table tr:hover td {
+    background: #f2f6fc;
+}
+
+.dropdown-panel table input[type="checkbox"] {
+    margin: 0 6px 0 0;
+    vertical-align: middle;
+}
+
+.dropdown-panel table label {
+    display: inline;
+    font-weight: normal;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.dropdown-header {
+    align-items: flex-start;
+    min-height: 38px;
+    padding: 6px 12px;
+}
+
+.resumo-texto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1;
+}
+
+.resumo-texto .tag-item {
+    display: inline-block;
+    background: #eef3fb;
+    color: #2c5aa0;
+    border: 1px solid #cfe0f5;
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: nowrap;
+}
+
+.resumo-texto .placeholder {
+    color: #212529;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.placeholder {
+    display: inline-block;
+    min-height: 1em;
+    vertical-align: middle;
+    cursor: wait;
+    opacity: .5;
+    background-color: rgb(255 255 255);
+}
+.hidden {
+    display: none;
+}
+
+.msg-importacao {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.msg-importacao.erro {
+    color: #c0392b;
+}
+
+.msg-importacao.sucesso {
+    color: #1e7e34;
+}
+
+/*GRID*/

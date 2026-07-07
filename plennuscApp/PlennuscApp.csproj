@@ -215,6 +215,7 @@
     <Content Include="Content\Css\js\projects\gestaoJs\structuresJs\sendMessageBeneficiary.js" />
     <Content Include="Content\Css\projects\finance\structuresCss\financeHome\home-Finance.css" />
     <Content Include="Content\Css\projects\finance\structuresCss\financeMaster\master-Finance.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\billing\billingReconciliation.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\Company-Registration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\demand-Gestao.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\detailDemand.css" />
@@ -259,6 +260,7 @@
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\billingReconciliation.aspx" />
     <Content Include="PlennuscGestao\Views\Butyou.aspx" />
     <Content Include="PlennuscGestao\Views\commercializationRegistration.aspx" />
     <Content Include="PlennuscGestao\Views\companyMenuManagementSystem.aspx" />
@@ -453,6 +455,13 @@
     </Compile>
     <Compile Include="PlennuscFinance\Views\profileFinance.aspx.designer.cs">
       <DependentUpon>profileFinance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\billingReconciliation.aspx.cs">
+      <DependentUpon>billingReconciliation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\billingReconciliation.aspx.designer.cs">
+      <DependentUpon>billingReconciliation.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\Butyou.aspx.cs">
       <DependentUpon>Butyou.aspx</DependentUpon>
