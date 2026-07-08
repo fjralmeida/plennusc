@@ -40,13 +40,12 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             throw new NotSupportedException($"Ainda não existe leitura implementada para a operadora '{nomeOperadora}'.");
         }
 
-        public List<ItemRelatorioImportadoHapVida> ConferirComView(string nomeOperadora, List<ItemRelatorioImportadoHapVida> itensImportados)
+        public List<ItemRelatorioImportadoHapVida> ConferirComView(string nomeOperadora, List<ItemRelatorioImportadoHapVida> itensImportados, string tipoConferencia, int codigoGrupoContrato)
         {
             if (nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return _hapvida.ConferirComView(itensImportados);
+                return _hapvida.ConferirComView(itensImportados, tipoConferencia, codigoGrupoContrato);
             }
-
             throw new NotSupportedException($"Ainda não existe conferência implementada para a operadora '{nomeOperadora}'.");
         }
         #endregion

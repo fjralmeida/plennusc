@@ -83,12 +83,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
         {
             string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
             string sql = @"
-        SELECT VALOR_OPERADORA
-        FROM VW_RELATORIO_CONFERENCIA
-        WHERE NUMERO_CPF = @Cpf
-          AND NUMERO_CARTEIRINHA = @Credencial
-          AND MES_ANO_REFERENCIA = @MesAnoReferencia
-          AND TIPO = @Tipo";
+                SELECT VALOR_OPERADORA
+                FROM VW_RELATORIO_CONFERENCIA
+                WHERE NUMERO_CPF = @Cpf
+                  AND NUMERO_CARTEIRINHA = @Credencial
+                  AND MES_ANO_REFERENCIA = @MesAnoReferencia
+                  AND TIPO = @Tipo";
 
             using (SqlConnection conn = new SqlConnection(connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -97,6 +97,33 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
                 cmd.Parameters.AddWithValue("@Credencial", credencial);
                 cmd.Parameters.AddWithValue("@MesAnoReferencia", mesAnoReferencia);
                 cmd.Parameters.AddWithValue("@Tipo", "CONVÊNIO");
+                conn.Open();
+
+                var resultado = cmd.ExecuteScalar();
+                return resultado != null && resultado != DBNull.Value
+                    ? Convert.ToDecimal(resultado)
+                    : (decimal?)null;
+            }
+        }
+
+        public decimal? BuscarValorOdontologicoPorCpf(string cpf, string mesAnoReferencia, int codigoGrupoContrato)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+            string sql = @"
+                SELECT SUM(VALOR_OPERADORA)
+                FROM VW_RELATORIO_CONFERENCIA
+                WHERE NUMERO_CPF = @Cpf
+                  AND MES_ANO_REFERENCIA = @MesAnoReferencia
+                  AND CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
+                  AND TIPO = @Tipo";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Cpf", cpf);
+                cmd.Parameters.AddWithValue("@MesAnoReferencia", mesAnoReferencia);
+                cmd.Parameters.AddWithValue("@CodigoGrupoContrato", codigoGrupoContrato);
+                cmd.Parameters.AddWithValue("@Tipo", "EVENTO ADICIONAL");
                 conn.Open();
 
                 var resultado = cmd.ExecuteScalar();

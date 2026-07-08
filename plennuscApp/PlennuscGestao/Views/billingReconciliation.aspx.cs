@@ -167,10 +167,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             string nomeOperadora = ddlOperadora.SelectedItem.Text;
+            int codigoGrupoContrato = Convert.ToInt32(ddlOperadora.SelectedValue);
+            string tipoConferencia = rblTipoConferencia.SelectedValue; // "CONVENIO" ou "EVENTO_ADICIONAL"
 
             try
             {
-                var itensConferidos = _service.ConferirComView(nomeOperadora, itensImportados);
+                var itensConferidos = _service.ConferirComView(nomeOperadora, itensImportados, tipoConferencia, codigoGrupoContrato);
                 Session["BillingReconciliation_ItensImportados"] = itensConferidos;
 
                 gridPreview.DataSource = itensConferidos;

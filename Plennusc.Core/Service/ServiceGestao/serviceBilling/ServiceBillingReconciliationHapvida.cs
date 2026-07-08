@@ -169,15 +169,23 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
         // ===================== CONFERÊNCIA COM A VIEW (lógica específica Hapvida) =====================
 
-        public List<ItemRelatorioImportadoHapVida> ConferirComView(List<ItemRelatorioImportadoHapVida> itensImportados)
+        public List<ItemRelatorioImportadoHapVida> ConferirComView( List<ItemRelatorioImportadoHapVida> itensImportados, string tipoConferencia, int codigoGrupoContrato)
         {
             foreach (var item in itensImportados)
             {
                 string cpfTratado = TratarCpf(item.Cpf);
                 string credencialTratada = TratarCredencial(item.Credencial);
 
-                var valorView = _sql.BuscarValorOperadoraPorCpfECredencial(
-                    cpfTratado, credencialTratada, item.MesAnoReferencia);
+                decimal? valorView;
+
+                if (tipoConferencia == "EVENTO_ADICIONAL")
+                {
+                    valorView = _sql.BuscarValorOdontologicoPorCpf(cpfTratado, item.MesAnoReferencia, codigoGrupoContrato);
+                }
+                else
+                {
+                    valorView = _sql.BuscarValorOperadoraPorCpfECredencial(cpfTratado, credencialTratada, item.MesAnoReferencia);
+                }
 
                 item.ValorOperadoraView = valorView;
 
