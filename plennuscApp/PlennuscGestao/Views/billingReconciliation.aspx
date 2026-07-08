@@ -70,6 +70,7 @@
                 <asp:BoundField DataField="Parentesco" HeaderText="Parentesco" />
                 <asp:BoundField DataField="Plano" HeaderText="Plano" />
                 <asp:BoundField DataField="Mensalidade" HeaderText="Mensalidade" DataFormatString="{0:N2}" />
+                <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano Usado" />
                 <asp:BoundField DataField="Cobrado" HeaderText="Cobrado" DataFormatString="{0:N2}" />
                 <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Operadora" DataFormatString="{0:N2}" />
                 <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" />
