@@ -21,6 +21,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            Page.Form.Action = "/gestao";
 
             // Marca que esta sessão está dentro da shell
             HttpCookie cookie = new HttpCookie("InShell", "1");
@@ -622,7 +623,13 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
         {
             Session.Clear();
             Session.Abandon();
-            Response.Redirect("~/ViewsApp/SignIn.aspx", true);
+
+            // Remove cookie InShell
+            HttpCookie cookie = new HttpCookie("InShell", "");
+            cookie.Expires = DateTime.Now.AddDays(-1);
+            Response.Cookies.Add(cookie);
+
+            Response.Redirect("/ViewsApp/SignIn.aspx", true);
         }
 
         public string ObterCssNivelPrioridade(string descPrioridade)

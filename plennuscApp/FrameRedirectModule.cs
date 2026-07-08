@@ -18,20 +18,21 @@ namespace appWhatsapp
             var response = app.Response;
             var request = app.Request;
 
-            // Só intercepta redirects (301/302)
             if (response.StatusCode != 301 && response.StatusCode != 302) return;
-
-            // Só intercepta se veio de dentro do iframe (tem frame=1)
             if (request.QueryString["frame"] != "1") return;
 
-            // Pega a URL de destino do redirect
             string location = response.RedirectLocation;
             if (string.IsNullOrEmpty(location)) return;
-
-            // Já tem frame=1? Não duplica
             if (location.Contains("frame=1")) return;
 
-            // Adiciona frame=1 na URL de destino
+            // ✅ Só intercepta URLs dentro da gestão (rotas amigáveis)
+            // Ignora tudo que vai para ViewsApp, SignIn, erro, ou caminhos físicos .aspx
+            if (location.Contains(".aspx")) return;
+            if (location.Contains("ViewsApp")) return;
+            if (location.Contains("SignIn")) return;
+            if (location.Contains("signin")) return;
+            if (location.Contains("erro")) return;
+
             string sep = location.Contains("?") ? "&" : "?";
             response.RedirectLocation = location + sep + "frame=1";
         }
