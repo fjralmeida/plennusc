@@ -203,20 +203,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            var divergentes = itens.Where(i => i.StatusConferencia == "DIVERGENTE").ToList();
-
-            if (divergentes.Count == 0)
-            {
-                lblMensagemConferencia.Text = "Nenhum item divergente encontrado. Nada a exportar.";
-                lblMensagemConferencia.CssClass = "msg-importacao sucesso";
-                return;
-            }
-
-            byte[] arquivo = _service.ExportarDivergentesExcel(divergentes);
+            byte[] arquivo = _service.ExportarConferenciaExcel(itens);
 
             Response.Clear();
             Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            Response.AddHeader("Content-Disposition", $"attachment; filename=Divergentes_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+            Response.AddHeader("Content-Disposition", $"attachment; filename=Conferencia_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
             Response.BinaryWrite(arquivo);
             Response.End();
         }

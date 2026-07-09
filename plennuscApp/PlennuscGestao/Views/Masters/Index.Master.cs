@@ -378,6 +378,13 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeDisplay.Contains("concluída"))
                 return "bi bi-check-circle me-2";
 
+            // ✅ CONFERÊNCIA FATURAMENTO (subitem)
+            if (nomeObjeto.Contains("billingreconciliation") || nomeDisplay.Contains("conferência faturamento") || nomeDisplay.Contains("conferencia faturamento"))
+                return "bi bi-receipt-cutoff me-2";
+
+            if (nomeObjeto.Contains("menuconferencia") || nomeDisplay.Contains("conferência") || nomeDisplay.Contains("conferencia"))
+                return "bi bi-clipboard2-data me-2";
+
             // ✅ PESSOAS
             if (nomeObjeto.Contains("menupessoas") || nomeDisplay.Contains("pessoas"))
                 return "bi bi-person-badge me-2";

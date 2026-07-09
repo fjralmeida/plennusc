@@ -44,10 +44,13 @@ namespace appWhatsapp.PlennuscGestao.Views
             var demanda = _service.ObterDemandaDetalhesPorId(CodDemanda);
             if (demanda != null)
             {
+
                 // Preencher os dados básicos
                 lblCodDemanda.Text = demanda.CodDemanda.ToString();
                 lblTitulo.Text = demanda.Titulo;
-                lblTexto.Text = demanda.TextoDemanda;
+                lblTexto.Text = Server.HtmlEncode(demanda.TextoDemanda)
+                      .Replace("\r\n", "<br>")
+                      .Replace("\n", "<br>");
                 lblSolicitante.Text = demanda.Solicitante;
                 lblDataSolicitacao.Text = demanda.DataSolicitacao?.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
 

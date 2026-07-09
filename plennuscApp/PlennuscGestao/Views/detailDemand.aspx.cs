@@ -83,7 +83,9 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (demandaAtual != null)
             {
                 lblTitulo.Text = demandaAtual.Titulo;
-                lblTexto.Text = demandaAtual.TextoDemanda;
+                lblTexto.Text = Server.HtmlEncode(demandaAtual.TextoDemanda)
+                      .Replace("\r\n", "<br>")
+                      .Replace("\n", "<br>");
 
                 // ✅ CORREÇÃO: Usar o StatusNome que vem do banco
                 if (!string.IsNullOrEmpty(demandaAtual.StatusNome))
@@ -112,6 +114,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                 lblSolicitante.Text = demandaAtual.Solicitante;
                 lblDataSolicitacao.Text = demandaAtual.DataSolicitacao?.ToString("dd/MM/yyyy") ?? string.Empty;
             }
+        }
+
+        protected string FormatarTexto(string texto)
+        {
+            if (string.IsNullOrEmpty(texto)) return "";
+            return Server.HtmlEncode(texto)
+                         .Replace("\r\n", "<br>")
+                         .Replace("\n", "<br>");
         }
 
         private void CarregarHistorico()

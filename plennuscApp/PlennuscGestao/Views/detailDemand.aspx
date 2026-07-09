@@ -392,7 +392,7 @@
                                 <span class="accompaniment-date"><%# Eval("DataAcompanhamento", "{0:dd/MM/yyyy HH:mm}") %></span>
                             </div>
                             <div class="accompaniment-content">
-                                <%# Eval("TextoAcompanhamento") %>
+                             <%# FormatarTexto(Eval("TextoAcompanhamento")?.ToString()) %>
                             </div>
                         </div>
                     </ItemTemplate>
