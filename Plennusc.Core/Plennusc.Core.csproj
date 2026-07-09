@@ -231,6 +231,7 @@
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliation.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationHapvida.cs" />
+    <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUnimed.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteImportService.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteVallorDocxService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />

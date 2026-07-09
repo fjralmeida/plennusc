@@ -19,6 +19,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
     {
         private readonly SqlBillingReconciliation _sql = new SqlBillingReconciliation();
         private readonly ServiceBillingReconciliationHapvida _hapvida = new ServiceBillingReconciliationHapvida();
+        private readonly ServiceBillingReconciliationUnimed _unimed = new ServiceBillingReconciliationUnimed();
 
         public List<OperadoraModel> ObterOperadoras()
         {
@@ -38,6 +39,11 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             if (nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return _hapvida.LerRelatorio(arquivo, extensao);
+            }
+
+            if (nomeOperadora.IndexOf("UNIMED", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return _unimed.LerRelatorioUnimed(arquivo, extensao);
             }
 
             throw new NotSupportedException($"Ainda não existe leitura implementada para a operadora '{nomeOperadora}'.");
