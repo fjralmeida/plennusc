@@ -1334,3 +1334,96 @@ body {
         max-width: 200px;
     }
 }
+
+/* ========================================
+   ESTILOS PARA EDIÇÃO DE OPERADORA - NOVO
+   ======================================== */
+
+/* Botão de edição na grid */
+.btn-editar-operadora {
+    background: none;
+    border: none;
+    color: #1a73e8;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+    .btn-editar-operadora:hover {
+        color: #0d47a1;
+        background: #e8f0fe;
+        transform: scale(1.1);
+    }
+
+    .btn-editar-operadora i {
+        font-size: 18px;
+    }
+
+    .btn-editar-operadora:active {
+        transform: scale(0.95);
+    }
+
+/* Modal de edição */
+.modal-edita-operadoras-header {
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    color: white;
+}
+
+    .modal-edita-operadoras-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .modal-edita-operadoras-header .modal-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+/* Campos do modal de edição */
+#modalEditaOperadoras .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    #modalEditaOperadoras .form-control:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.25);
+    }
+
+#modalEditaOperadoras .form-label {
+    font-weight: 600;
+    color: #202124;
+    margin-bottom: 6px;
+}
+
+#modalEditaOperadoras .alert-info {
+    background-color: #e8f0fe;
+    border-color: #c5d5e8;
+    color: #1a3c6e;
+}
+
+/* Ajuste para coluna de ações */
+.custom-grid .col-acoes {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .btn-editar-operadora {
+        font-size: 16px;
+        padding: 2px 6px;
+    }
+
+    .custom-grid .col-acoes {
+        width: 60px;
+        min-width: 60px;
+        max-width: 60px;
+    }
+}

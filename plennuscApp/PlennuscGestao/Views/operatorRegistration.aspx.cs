@@ -2,6 +2,7 @@
 using Plennusc.Core.Service.ServiceGestao.planiumApi;       // OperadoraService
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -393,6 +394,66 @@ namespace appWhatsapp.PlennuscGestao.Views
                 MostrarAlerta("Erro ao atualizar: " + ex.Message, "danger");
             }
         }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Edição de Operadora
+        // ─────────────────────────────────────────────────────────────────────
+
+        protected void btnSalvarEdicao_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Se o código / ID for nulo ou vazio, irá mostrar erro
+                // A condição verifica com string. porque .Value do HiddenField é string
+                if (string.IsNullOrEmpty(hdnCodigoOperadoraEdit.Value))
+                {
+                    MostrarAlerta("Código da operadora não encontrado.", "warning");
+                    return;
+                }
+
+                // Depois de validar que não está vazio, converte para int
+                int codigoOperadora = Convert.ToInt32(hdnCodigoOperadoraEdit.Value);
+                string razaoSocial = txtRazaoSocialEdit.Text.Trim();
+                string nomeComercial = txtNomeComercialEdit.Text.Trim();
+
+                // Valida se pelo menos um campo foi preenchido
+                if (string.IsNullOrEmpty(razaoSocial) && string.IsNullOrEmpty(nomeComercial))
+                {
+                    MostrarAlerta("Pelo menos um campo deve ser preenchido.", "warning");
+                    return;
+                }
+
+                // Chama o método que atualiza no banco de dados
+                bool atualizado = _svc.AtualizarOperadora(codigoOperadora, razaoSocial, nomeComercial);
+
+                if (atualizado)
+                {
+                    MostrarAlerta("Dados da operadora atualizados com sucesso!", "success");
+
+                    // Recarrega o GridView
+                    BindGrid();
+
+                    // Fecha o modal via JavaScript
+                    string script = @"
+                        var modalEl = document.getElementById('modalEditaOperadoras');
+                        if (modalEl) {
+                            var modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
+                    ";
+                    ClientScript.RegisterStartupScript(this.GetType(), "FecharModalEdicao", script, true);
+                }
+                else
+                {
+                    MostrarAlerta("Erro ao atualizar os dados da operadora.", "danger");
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarAlerta("Erro: " + ex.Message, "danger");
+            }
+        }
+
         // ─────────────────────────────────────────────────────────────────────
         // Utilitários
         // ─────────────────────────────────────────────────────────────────────

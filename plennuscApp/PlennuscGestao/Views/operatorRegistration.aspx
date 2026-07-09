@@ -27,31 +27,31 @@
             var checks = getCheckboxesLinhas();
             if (checks.length === 0) {
                 var span0 = document.getElementById('<%= lblQtdSelecionadas.ClientID %>');
-            if (span0) span0.innerText = '0';
+                if (span0) span0.innerText = '0';
 
-            var btnConfirmar0 = document.getElementById('<%= btnConfirmarSync.ClientID %>');
-            if (btnConfirmar0) {
-                btnConfirmar0.disabled = true;
-                btnConfirmar0.style.opacity = '0.5';
-                btnConfirmar0.style.cursor = 'not-allowed';
+                var btnConfirmar0 = document.getElementById('<%= btnConfirmarSync.ClientID %>');
+                if (btnConfirmar0) {
+                    btnConfirmar0.disabled = true;
+                    btnConfirmar0.style.opacity = '0.5';
+                    btnConfirmar0.style.cursor = 'not-allowed';
+                }
+                return;
             }
-            return;
-        }
 
-        var marcados = 0;
-        for (var i = 0; i < checks.length; i++) {
-            if (checks[i].checked) marcados++;
-        }
+            var marcados = 0;
+            for (var i = 0; i < checks.length; i++) {
+                if (checks[i].checked) marcados++;
+            }
 
-        var span = document.getElementById('<%= lblQtdSelecionadas.ClientID %>');
-        if (span) span.innerText = marcados;
+            var span = document.getElementById('<%= lblQtdSelecionadas.ClientID %>');
+            if (span) span.innerText = marcados;
 
-        var chkTodos = document.getElementById('chkSelecionarTodos');
-        if (chkTodos) {
-            chkTodos.checked = (marcados === checks.length && checks.length > 0);
-        }
+            var chkTodos = document.getElementById('chkSelecionarTodos');
+            if (chkTodos) {
+                chkTodos.checked = (marcados === checks.length && checks.length > 0);
+            }
 
-        var btnConfirmar = document.getElementById('<%= btnConfirmarSync.ClientID %>');
+            var btnConfirmar = document.getElementById('<%= btnConfirmarSync.ClientID %>');
             if (btnConfirmar) {
                 btnConfirmar.disabled = (marcados === 0);
                 btnConfirmar.style.opacity = (marcados === 0) ? '0.5' : '1';
@@ -98,31 +98,31 @@
             var checks = getCheckboxesUpdate();
             if (checks.length === 0) {
                 var span0 = document.getElementById('<%= lblQtdSelecionadasUpdate.ClientID %>');
-            if (span0) span0.innerText = '0';
+                if (span0) span0.innerText = '0';
 
-            var btnConfirmar0 = document.getElementById('<%= btnConfirmarUpdate.ClientID %>');
-            if (btnConfirmar0) {
-                btnConfirmar0.disabled = true;
-                btnConfirmar0.style.opacity = '0.5';
-                btnConfirmar0.style.cursor = 'not-allowed';
+                var btnConfirmar0 = document.getElementById('<%= btnConfirmarUpdate.ClientID %>');
+                if (btnConfirmar0) {
+                    btnConfirmar0.disabled = true;
+                    btnConfirmar0.style.opacity = '0.5';
+                    btnConfirmar0.style.cursor = 'not-allowed';
+                }
+                return;
             }
-            return;
-        }
 
-        var marcados = 0;
-        for (var i = 0; i < checks.length; i++) {
-            if (checks[i].checked) marcados++;
-        }
+            var marcados = 0;
+            for (var i = 0; i < checks.length; i++) {
+                if (checks[i].checked) marcados++;
+            }
 
-        var span = document.getElementById('<%= lblQtdSelecionadasUpdate.ClientID %>');
-        if (span) span.innerText = marcados;
+            var span = document.getElementById('<%= lblQtdSelecionadasUpdate.ClientID %>');
+            if (span) span.innerText = marcados;
 
-        var chkTodos = document.getElementById('chkSelecionarTodosUpdate');
-        if (chkTodos) {
-            chkTodos.checked = (marcados === checks.length && checks.length > 0);
-        }
+            var chkTodos = document.getElementById('chkSelecionarTodosUpdate');
+            if (chkTodos) {
+                chkTodos.checked = (marcados === checks.length && checks.length > 0);
+            }
 
-        var btn = document.getElementById('<%= btnConfirmarUpdate.ClientID %>');
+            var btn = document.getElementById('<%= btnConfirmarUpdate.ClientID %>');
             if (btn) {
                 btn.disabled = (marcados === 0);
                 btn.style.opacity = (marcados === 0) ? '0.5' : '1';
@@ -199,6 +199,44 @@
                     atualizarContadorSelecionadas(); // fallback
                 }
             }, 300);
+        }
+
+        // ============================================================
+        //  FUNÇÕES PARA EDIÇÃO DE OPERADORA
+        // ============================================================
+
+        function abrirModalEdicaoOperadora(botaoClicado) {
+            // Pega os dados / atributos do botão e salva em variáveis
+            var codigo = botaoClicado.getAttribute('data-codigo');
+            var razaoSocial = botaoClicado.getAttribute('data-razaosocial');
+            var nomeComercial = botaoClicado.getAttribute('data-nomecomercial');
+            
+            // Pega o valor dos inputs e atribui às variáveis acima, preenchendo os campos do modal
+            document.getElementById('<%= hdnCodigoOperadoraEdit.ClientID %>').value = codigo;
+            document.getElementById('<%= txtRazaoSocialEdit.ClientID %>').value = razaoSocial;
+            document.getElementById('<%= txtNomeComercialEdit.ClientID %>').value = nomeComercial;
+            
+            // Abre o modal
+            var modalEditaOperadoras = document.getElementById('modalEditaOperadoras');
+            if (modalEditaOperadoras) {
+                var modal = new bootstrap.Modal(modalEditaOperadoras);
+                modal.show();
+            }
+        }
+
+        function confirmarAlteracaoOperadoras() {
+            // Pega os valores dos campos de edição
+            var razaoSocial = document.getElementById('<%= txtRazaoSocialEdit.ClientID %>').value.trim();
+            var nomeComercial = document.getElementById('<%= txtNomeComercialEdit.ClientID %>').value.trim();
+
+            // Se os campos tiverem vazios, aparecerá o erro de que pelo menos um deverá ser preenchido.
+            // Como segurança, se um dos campos tiver o nome apagado e o usuário clicar em "Salvar", ao invés de ficar em branco, retorna novamente por padrão o nome inicial / "original"
+            if (razaoSocial === '' && nomeComercial === '') {
+                alert('Pelo menos um campo deve ser preenchido para alterar.');
+                return false;
+            }
+
+            return confirm('Confirma a alteração dos dados da operadora?');
         }
 
         // ============================================================
@@ -463,6 +501,56 @@
             </div>
         </div>
 
+        <%-- ═══════════════════════════════════════════════════════════
+             MODAL DE EDIÇÃO DE DADOS DA OPERADORA
+        ═══════════════════════════════════════════════════════════ --%>
+        <div class="modal fade" id="modalEditaOperadoras" tabindex="-1"
+            aria-labelledby="modalEditaOperadorasLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-edita-operadoras-header">
+                        <h5 class="modal-title" id="modalEditaOperadorasLabel">
+                            <i class="bi bi-pencil-square me-2"></i>
+                            Editar Dados da Operadora
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <asp:HiddenField ID="hdnCodigoOperadoraEdit" runat="server" />
+                        
+                        <div class="mb-3">
+                            <label for="<%= txtRazaoSocialEdit.ClientID %>" class="form-label fw-bold">Razão Social</label>
+                            <asp:TextBox ID="txtRazaoSocialEdit" runat="server" CssClass="form-control" 
+                                placeholder="Digite a razão social" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="<%= txtNomeComercialEdit.ClientID %>" class="form-label fw-bold">Nome Comercial</label>
+                            <asp:TextBox ID="txtNomeComercialEdit" runat="server" CssClass="form-control" 
+                                placeholder="Digite o nome comercial" />
+                        </div>
+
+                        <div class="alert alert-info mt-3" style="font-size: 13px;">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Observação:</strong> O ID, Registro ANS e CNPJ não podem ser alterados.
+                            Apenas Razão Social e Nome Comercial podem ser editados.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <asp:Button ID="btnSalvarEdicao" runat="server"
+                            CssClass="btn btn-success"
+                            Text="✔ Salvar alterações"
+                            OnClick="btnSalvarEdicao_Click"
+                            OnClientClick="return confirmarAlteracaoOperadoras();" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <%-- ── Header ── --%>
         <div class="page-header">
             <h1 class="page-title">
@@ -547,6 +635,35 @@
                     <asp:BoundField DataField="NomeComercial" HeaderText="Nome Comercial"
                         ItemStyle-CssClass="text-left col-nomecomercial"
                         HeaderStyle-CssClass="text-left" />
+
+                    <%-- ── Coluna para editar operadora ── --%>
+                    <%-- 
+                    Algoritmo:
+
+                        Cada linha tem um botão com ícone de edição, peguei do Bootstrap Icons
+
+                        Os atributos data-* guardam os dados daquela operadora que cliquei:
+
+                            data-codigo: ID da operadora
+
+                            data-razaosocial: Razão Social atual
+
+                            data-nomecomercial: Nome Comercial atual
+
+                        Ao clicar, chama a função JavaScript abrirModalEdicaoOperadora(this)    
+                    --%>
+                    <asp:TemplateField HeaderText="Ações" ItemStyle-CssClass="text-center col-acoes" HeaderStyle-CssClass="text-center">
+                        <ItemTemplate>
+                            <button type="button" class="btn-editar-operadora"
+                                data-codigo='<%# Eval("CodigoOperadora") %>'
+                                data-razaosocial='<%# Eval("RazaoSocial") %>'
+                                data-nomecomercial='<%# Eval("NomeComercial") %>'
+                                onclick="abrirModalEdicaoOperadora(this)"
+                                title="Editar Razão Social / Nome Comercial">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
 
                 <PagerTemplate>

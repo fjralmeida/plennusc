@@ -33,7 +33,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
               {FILTRO_NOME}
               {FILTRO_ANS}
               {FILTRO_CNPJ}
-            ORDER BY o.NomeComercial";
+            ORDER BY o.CodigoOperadora";
 
         // ─────────────────────────────────────────────────────────────────────
         // BANCO 1 (Alianca) — todas as operadoras para comparação em memória
@@ -105,6 +105,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
             INNER JOIN dbo.Pessoa p ON p.CodPessoa = a.CodPessoa
             WHERE a.CodAutenticacaoAcesso = @CodAutenticacaoAcesso";
 
+        // ─────────────────────────────────────────────────────────────────────
+        // BANCO 2 (Plennus) — operadoras existentes para comparar alterações
+        // ─────────────────────────────────────────────────────────────────────
+
         public const string BuscarOperadorasExistentesPlennus = @"
             SELECT
                 o.CodigoOperadora,
@@ -116,6 +120,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
             WHERE o.Numero_CNPJ IS NOT NULL
               AND LTRIM(RTRIM(o.Numero_CNPJ)) <> ''";
 
+        // ─────────────────────────────────────────────────────────────────────
+        // BANCO 2 (Plennus) — atualização dinâmica (usada na sincronização)
+        // ─────────────────────────────────────────────────────────────────────
+
         public const string AtualizarOperadoraDinamica = @"
             UPDATE dbo.API_Venda_Operadora
             SET RazaoSocial        = @RazaoSocial,
@@ -124,5 +132,58 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.operatorRegistration
                 CodPessoaAlteracao = @CodPessoaAlteracao,
                 Informacoes_log_a  = @DataLog
             WHERE LTRIM(RTRIM(Numero_CNPJ)) = LTRIM(RTRIM(@Numero_CNPJ))";
+
+        // ─────────────────────────────────────────────────────────────────────-──────
+        //  Banco 2 (Plennus) — consultas específicas para edição manual de operadora
+        // ────────────────────────────────────────────────────────────────────────────
+
+        // Obtém uma operadora específica pelo código
+        public const string ObterOperadoraPorCodigo = @"
+            SELECT
+                o.CodigoOperadora,
+                o.RegistroANS,
+                o.Numero_CNPJ,
+                o.RazaoSocial,
+                o.NomeComercial,
+                o.CodPessoaCadastro,
+                o.CodPessoaAlteracao,
+                o.Informacoes_log_i,
+                o.Informacoes_log_a
+            FROM dbo.API_Venda_Operadora o
+            WHERE o.CodigoOperadora = @CodigoOperadora";
+
+        // Verifica se uma operadora existe pelo código
+        public const string VerificarOperadoraExiste = @"
+            SELECT COUNT(1)
+            FROM dbo.API_Venda_Operadora
+            WHERE CodigoOperadora = @CodigoOperadora";
+
+        // Atualiza ambos Razão Social e Nome Comercial (usado na edição manual)
+        public const string AtualizarOperadoraEdit = @"
+            UPDATE dbo.API_Venda_Operadora
+            SET 
+                RazaoSocial        = @RazaoSocial,
+                NomeComercial      = @NomeComercial,
+                CodPessoaAlteracao = @CodPessoaAlteracao,
+                Informacoes_log_a  = @DataLog
+            WHERE CodigoOperadora = @CodigoOperadora";
+
+        // Atualiza apenas Razão Social (usado na edição manual)
+        public const string AtualizarRazaoSocial = @"
+            UPDATE dbo.API_Venda_Operadora
+            SET 
+                RazaoSocial        = @RazaoSocial,
+                CodPessoaAlteracao = @CodPessoaAlteracao,
+                Informacoes_log_a  = @DataLog
+            WHERE CodigoOperadora = @CodigoOperadora";
+
+        // Atualiza apenas Nome Comercial (usado na edição manual)
+        public const string AtualizarNomeComercial = @"
+            UPDATE dbo.API_Venda_Operadora
+            SET 
+                NomeComercial      = @NomeComercial,
+                CodPessoaAlteracao = @CodPessoaAlteracao,
+                Informacoes_log_a  = @DataLog
+            WHERE CodigoOperadora = @CodigoOperadora";
     }
 }
