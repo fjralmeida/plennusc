@@ -14,7 +14,7 @@
     </div>
 
     <!-- CARD 1: IMPORTAÇÃO -->
-    <div class="filters-card">
+    <div class="filters-card" id="divImportacao" runat="server">
         <div class="filters-title"><i class="bi bi-cloud-upload"></i> Dados da Importação</div>
 
         <div class="form-row">
@@ -59,6 +59,16 @@
 
     <!-- CARD 2: CONFERÊNCIA -->
     <div class="filters-card hidden" id="divPreview" runat="server">
+        <div class="filters-title"><i class="bi bi-search"></i> Conferência com a Operadora</div>
+
+        <div class="banner-ajuda-conferencia">
+            <i class="bi bi-info-circle"></i>
+            <div>
+                <strong>Convênio:</strong> confere o plano de saúde principal.
+                &nbsp;&nbsp;
+                <strong>Odontológico:</strong> confere valores de evento adicional/odontológico — use quando o arquivo importado for o relatório odontológico separado.
+            </div>
+        </div>
 
         <div class="secao-tipo-conferencia">
             <div>
