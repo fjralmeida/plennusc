@@ -82,6 +82,9 @@ namespace appWhatsapp
 
             // ✅ Conferência
             routes.MapPageRoute("billingReconciliation", "billingReconciliation", "~/PlennuscGestao/Views/billingReconciliation.aspx");
+
+            // ✅ Envio de Email Automático
+            routes.MapPageRoute("sendAnAutomatedEmail", "sendAnAutomatedEmail", "~/PlennuscGestao/Views/sendAnAutomatedEmail.aspx");
             #endregion
 
 
