@@ -26,51 +26,55 @@
             <asp:TextBox ID="txtMesAnoReferencia" runat="server" CssClass="form-control"
                 MaxLength="7" placeholder="MM/AAAA" onkeyup="mascararMesAno(this)" />
         </div>
-        <!-- 🔥 CAMPO DE BUSCA POR NOME/CPF -->
         <div class="form-group">
             <label for="txtBusca" class="form-label">Buscar (Nome ou CPF)</label>
             <asp:TextBox ID="txtBusca" runat="server" CssClass="form-control" placeholder="Digite o nome ou CPF..." />
         </div>
-        <div class="form-group" style="max-width:none; flex:0; align-self:flex-end;">
+        <div class="form-group" style="max-width:none; flex:0; align-self:flex-end; display:flex; gap:8px;">
             <asp:Button ID="btnPesquisar" runat="server" Text="Pesquisar" CssClass="btn btn-success" OnClick="btnPesquisar_Click" />
+          
         </div>
     </div>
     <asp:Label ID="lblMensagemPesquisa" runat="server" CssClass="msg-importacao" />
 </div>
-
         <!-- CARD 2: RESULTADO -->
-        <div class="filters-card hidden" id="divResultado" runat="server">
-            <div class="filters-title"><i class="bi bi-exclamation-triangle"></i> Pendentes de Conferência</div>
+<div class="filters-card hidden" id="divResultado" runat="server">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div class="filters-title" style="margin-bottom: 0;">
+            <i class="bi bi-exclamation-triangle"></i> Pendentes de Conferência
+        </div>
+        <asp:Button ID="btnExportar" runat="server" Text="Exportar Excel" CssClass="btn btn-primary" OnClick="btnExportar_Click" style="white-space:nowrap;" />
+    </div>
 
-            <div class="grid-container" style="margin-top:16px;">
-<asp:GridView ID="gridPreview" runat="server" CssClass="custom-grid" AutoGenerateColumns="false"
-    EmptyDataText="Nenhum registro encontrado." GridLines="None"
-    AllowPaging="True" PageSize="10"
-    OnPageIndexChanging="gridPreview_PageIndexChanging"
-    OnDataBound="gridPreview_DataBound">
-    <Columns>
-        <asp:BoundField DataField="NumeroCpf" HeaderText="CPF" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="NomeDoAssociado" HeaderText="Nome" ItemStyle-CssClass="col-nome" />
-        <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="ValorConvenio" HeaderText="Valor Convênio" DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="ValorAdicional" HeaderText="Valor Adicional" DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="ValorFatura" HeaderText="Valor Fatura" DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="DataAdmissao" HeaderText="Data Admissão" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="DataExclusao" HeaderText="Data Exclusão" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
-    </Columns>
-    <PagerTemplate>
-        <div class="pager-custom">
-            <span class="pager-info">
-                <asp:Label ID="lblPagerInfo" runat="server" Text=""></asp:Label>
-            </span>
-            <span class="pager-buttons">
-                <asp:PlaceHolder ID="phPagerButtons" runat="server"></asp:PlaceHolder>
-            </span>
-        </div>
-    </PagerTemplate>
-</asp:GridView>
-            </div>
-        </div>
+    <div class="grid-container" style="margin-top:0;">
+        <asp:GridView ID="gridPreview" runat="server" CssClass="custom-grid" AutoGenerateColumns="false"
+            EmptyDataText="Nenhum registro encontrado." GridLines="None"
+            AllowPaging="True" PageSize="10"
+            OnPageIndexChanging="gridPreview_PageIndexChanging"
+            OnDataBound="gridPreview_DataBound">
+            <Columns>
+                <asp:BoundField DataField="NumeroCpf" HeaderText="CPF" ItemStyle-CssClass="col-curta" />
+                <asp:BoundField DataField="NomeDoAssociado" HeaderText="Nome" ItemStyle-CssClass="col-nome" />
+                <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano" ItemStyle-CssClass="col-curta" />
+                <asp:BoundField DataField="ValorConvenio" HeaderText="Valor Convênio" DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
+                <asp:BoundField DataField="ValorAdicional" HeaderText="Valor Adicional" DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
+                <asp:BoundField DataField="ValorFatura" HeaderText="Valor Fatura" DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
+                <asp:BoundField DataField="DataAdmissao" HeaderText="Data Admissão" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
+                <asp:BoundField DataField="DataExclusao" HeaderText="Data Exclusão" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
+            </Columns>
+            <PagerTemplate>
+                <div class="pager-custom">
+                    <span class="pager-info">
+                        <asp:Label ID="lblPagerInfo" runat="server" Text=""></asp:Label>
+                    </span>
+                    <span class="pager-buttons">
+                        <asp:PlaceHolder ID="phPagerButtons" runat="server"></asp:PlaceHolder>
+                    </span>
+                </div>
+            </PagerTemplate>
+        </asp:GridView>
+    </div>
+</div>
     </div>
 
     <script>

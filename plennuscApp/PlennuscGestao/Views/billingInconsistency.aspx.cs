@@ -2,6 +2,8 @@
 using Plennusc.Core.Service.ServiceGestao.serviceBilling;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Services.Description;
@@ -192,6 +194,85 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected string TraduzirStatus(string status)
         {
             return string.IsNullOrEmpty(status) ? "Pendente" : status;
+        }
+
+        protected void btnExportar_Click(object sender, EventArgs e)
+        {
+            // Recupera a lista completa da sessão (já filtrada)
+            var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
+
+            if (itens == null || itens.Count == 0)
+            {
+                ExibirMensagem("Não há dados para exportar.", erro: true);
+                return;
+            }
+
+            // Gera o Excel e faz o download
+            ExportarParaExcel(itens);
+        }
+
+        private void ExportarParaExcel(List<ItemInconsistenciaFaturamento> itens)
+        {
+            // Cria um DataTable com as colunas desejadas
+            DataTable dt = new DataTable();
+            dt.Columns.Add("CPF", typeof(string));
+            dt.Columns.Add("Nome", typeof(string));
+            dt.Columns.Add("Mês/Ano", typeof(string));
+            dt.Columns.Add("Valor Convênio", typeof(decimal));
+            dt.Columns.Add("Valor Adicional", typeof(decimal));
+            dt.Columns.Add("Valor Fatura", typeof(decimal));
+            dt.Columns.Add("Data Admissão", typeof(string));
+            dt.Columns.Add("Data Exclusão", typeof(string));
+
+            foreach (var item in itens)
+            {
+                dt.Rows.Add(
+                    item.NumeroCpf,
+                    item.NomeDoAssociado,
+                    item.MesAnoReferencia,
+                    item.ValorConvenio,
+                    item.ValorAdicional,
+                    item.ValorFatura,
+                    item.DataAdmissao?.ToString("dd/MM/yyyy"),
+                    item.DataExclusao?.ToString("dd/MM/yyyy")
+                );
+            }
+
+            // Configura a resposta HTTP para download do Excel
+            Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("Content-Disposition", $"attachment; filename=Inconsistencias_{DateTime.Now:yyyyMMdd_HHmmss}.xls");
+
+            // Gera o HTML da tabela (Excel reconhece)
+            using (StringWriter sw = new StringWriter())
+            using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+            {
+                // Cria a tabela HTML
+                htw.Write("<table border='1' cellpadding='3' cellspacing='0'>");
+
+                // Cabeçalho
+                htw.Write("<tr>");
+                foreach (DataColumn col in dt.Columns)
+                {
+                    htw.Write($"<th style='font-weight:bold;background:#f0f0f0;'>{col.ColumnName}</th>");
+                }
+                htw.Write("</tr>");
+
+                // Dados
+                foreach (DataRow row in dt.Rows)
+                {
+                    htw.Write("<tr>");
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        htw.Write($"<td>{row[col]}</td>");
+                    }
+                    htw.Write("</tr>");
+                }
+                htw.Write("</table>");
+
+                Response.Write(sw.ToString());
+                Response.End();
+            }
         }
 
         private void ExibirMensagem(string mensagem, bool erro = false, bool aviso = false)
