@@ -88,32 +88,35 @@
         <asp:Label ID="lblMensagemConferencia" runat="server" CssClass="msg-importacao" />
 
         <div class="grid-container" style="margin-top:16px;">
-            <asp:GridView ID="gridPreview" runat="server" CssClass="custom-grid" AutoGenerateColumns="false"
-                EmptyDataText="Nenhum registro encontrado." GridLines="None" OnRowDataBound="gridPreview_RowDataBound">
-                <Columns>
-                    <asp:BoundField DataField="Empresa" HeaderText="Empresa" />
-                    <asp:BoundField DataField="Unidade" HeaderText="Unidade" />
-                    <asp:BoundField DataField="NomeUnidade" HeaderText="Nome Unidade" />
-                    <asp:BoundField DataField="Matricula" HeaderText="Matrícula" />
-                    <asp:BoundField DataField="Cpf" HeaderText="CPF" />
-                    <asp:BoundField DataField="Beneficiario" HeaderText="Beneficiário" />
-                    <asp:BoundField DataField="Nascimento" HeaderText="Nascimento" DataFormatString="{0:dd/MM/yyyy}" />
-                    <asp:BoundField DataField="Parentesco" HeaderText="Parentesco" />
-                    <asp:BoundField DataField="Plano" HeaderText="Plano" />
-                    <asp:BoundField DataField="Mensalidade" HeaderText="Mensalidade" DataFormatString="{0:N2}" />
-                    <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano Usado" />
-                    <asp:BoundField DataField="Cobrado" HeaderText="Cobrado" DataFormatString="{0:N2}" />
-                    <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Operadora" DataFormatString="{0:N2}" />
-                    <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" />
-                    <asp:TemplateField HeaderText="Status">
-                        <ItemTemplate>
-                            <span class='badge status-<%# ((string)Eval("StatusConferencia") ?? "").ToLower().Replace("_", "-") %>'>
-                                <%# TraduzirStatus((string)Eval("StatusConferencia")) %>
-                            </span>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
+    <asp:GridView ID="gridPreview" runat="server" CssClass="custom-grid" AutoGenerateColumns="false"
+    EmptyDataText="Nenhum registro encontrado." GridLines="None" OnRowDataBound="gridPreview_RowDataBound">
+    <Columns>
+        <asp:BoundField DataField="Cpf" HeaderText="CPF" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="Beneficiario" HeaderText="Beneficiário" HeaderStyle-Width="180px" ItemStyle-Width="180px" ItemStyle-CssClass="col-nome" />
+        <asp:BoundField DataField="Nascimento" HeaderText="Nascimento" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="Parentesco" HeaderText="Parentesco" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="Plano" HeaderText="Plano" HeaderStyle-Width="90px" ItemStyle-Width="90px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano Usado" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="Cobrado" HeaderText="Cobrado" DataFormatString="{0:N2}" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Operadora" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
+
+        <asp:BoundField DataField="DataAdmissao" HeaderText="Data Admissão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="DataExclusao" HeaderText="Data Exclusão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="NomeMotivoExclusao" HeaderText="Motivo Exclusão" HeaderStyle-Width="160px" ItemStyle-Width="160px" ItemStyle-CssClass="col-nome" />
+        <asp:BoundField DataField="NomeTabelaPreco" HeaderText="Tabela de Preço" HeaderStyle-Width="220px" ItemStyle-Width="220px" ItemStyle-CssClass="col-texto-longo" />
+        <asp:BoundField DataField="NomeGrupoPessoas" HeaderText="Grupo de Pessoas" HeaderStyle-Width="200px" ItemStyle-Width="200px" ItemStyle-CssClass="col-texto-longo" />
+        <asp:BoundField DataField="DescricaoGrupoFaturamento" HeaderText="Grupo de Faturamento" HeaderStyle-Width="240px" ItemStyle-Width="240px" ItemStyle-CssClass="col-texto-longo" />
+
+        <asp:TemplateField HeaderText="Status" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta">
+            <ItemTemplate>
+                <span class='badge status-<%# ((string)Eval("StatusConferencia") ?? "").ToLower().Replace("_", "-") %>'>
+                    <%# TraduzirStatus((string)Eval("StatusConferencia")) %>
+                </span>
+            </ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
+</asp:GridView>
         </div>
     </div>
 

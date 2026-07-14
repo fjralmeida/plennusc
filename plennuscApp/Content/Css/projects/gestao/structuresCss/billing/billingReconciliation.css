@@ -329,38 +329,63 @@
 /* ── Grid ── */
 .grid-container {
     border-radius: var(--border-radius);
-    overflow: hidden;
     overflow-x: auto;
+    overflow-y: visible;
     box-shadow: var(--shadow);
     background: white;
+    padding: 0;
 }
 
 .custom-grid {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
-    table-layout: auto;
+    font-size: 13px;
+    table-layout: fixed; /* força as larguras definidas */
+    min-width: 1200px; /* ajuste conforme necessário */
 }
-
-    .custom-grid th, .custom-grid td {
-        padding: 12px 10px;
+    .custom-grid th,
+    .custom-grid td {
+        padding: 10px 8px;
         border-bottom: 1px solid var(--gray-200);
         vertical-align: middle;
-        white-space: normal;
-        word-break: break-word;
+        white-space: nowrap !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: keep-all;
     }
 
-    .custom-grid thead th {
-        background: var(--gray-50);
-        color: var(--gray-800);
-        font-weight: 600;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-        padding: 16px 14px;
-        border-bottom: 2px solid var(--gray-300);
-        white-space: nowrap;
-    }
+
+ .custom-grid thead th {
+    background: var(--gray-50);
+    color: var(--gray-800);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 12px 8px;
+    border-bottom: 2px solid var(--gray-300);
+    white-space: nowrap !important;
+    overflow: visible;      /* cabeçalho não corta */
+    text-overflow: clip;
+}
+
+/* Larguras específicas para cada coluna (ajuste os valores) */
+.custom-grid col:nth-child(1) { width: 8%; }   /* CPF */
+.custom-grid col:nth-child(2) { width: 12%; }  /* Beneficiário */
+.custom-grid col:nth-child(3) { width: 7%; }   /* Nascimento */
+.custom-grid col:nth-child(4) { width: 7%; }   /* Parentesco */
+.custom-grid col:nth-child(5) { width: 5%; }   /* Plano */
+.custom-grid col:nth-child(6) { width: 7%; }   /* Mês/Ano Usado */
+.custom-grid col:nth-child(7) { width: 6%; }   /* Cobrado */
+.custom-grid col:nth-child(8) { width: 8%; }   /* Valor Operadora */
+.custom-grid col:nth-child(9) { width: 6%; }   /* Diferença */
+.custom-grid col:nth-child(10) { width: 7%; }  /* Data Admissão */
+.custom-grid col:nth-child(11) { width: 7%; }  /* Data Exclusão */
+.custom-grid col:nth-child(12) { width: 8%; }  /* Motivo Exclusão */
+.custom-grid col:nth-child(13) { width: 10%; } /* Tabela de Preço */
+.custom-grid col:nth-child(14) { width: 10%; } /* Grupo de Pessoas */
+.custom-grid col:nth-child(15) { width: 10%; } /* Grupo de Faturamento */
+.custom-grid col:nth-child(16) { width: 7%; }  /* Status */
 
     .custom-grid tbody tr:last-child td {
         border-bottom: none;

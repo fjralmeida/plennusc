@@ -169,34 +169,43 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
         // ===================== CONFERÊNCIA COM A VIEW (lógica específica Hapvida) =====================
 
-        public List<ItemRelatorioImportadoHapVida> ConferirComView( List<ItemRelatorioImportadoHapVida> itensImportados, string tipoConferencia, int codigoGrupoContrato)
+        public List<ItemRelatorioImportadoHapVida> ConferirComView(List<ItemRelatorioImportadoHapVida> itensImportados, string tipoConferencia,int codigoGrupoContrato)
         {
             foreach (var item in itensImportados)
             {
                 string cpfTratado = TratarCpf(item.Cpf);
                 string credencialTratada = TratarCredencial(item.Credencial);
 
-                decimal? valorView;
+                ResultadoViewConferencia resultado;
 
                 if (tipoConferencia == "EVENTO_ADICIONAL")
                 {
-                    valorView = _sql.BuscarValorOdontologicoPorCpf(cpfTratado, item.MesAnoReferencia, codigoGrupoContrato);
+                    resultado = _sql.BuscarDadosOdontologicoPorCpf(cpfTratado, item.MesAnoReferencia, codigoGrupoContrato);
                 }
                 else
                 {
-                    valorView = _sql.BuscarValorOperadoraPorCpfECredencial(cpfTratado, credencialTratada, item.MesAnoReferencia);
+                    resultado = _sql.BuscarDadosConvenioPorCpfECredencial(cpfTratado, credencialTratada, item.MesAnoReferencia);
                 }
 
-                item.ValorOperadoraView = valorView;
-
-                if (valorView == null)
+                if (resultado == null)
                 {
+                    item.ValorOperadoraView = null;
                     item.StatusConferencia = "NAO_ENCONTRADO";
                     item.DiferencaValor = null;
                     continue;
                 }
 
-                decimal diferenca = Math.Abs(item.Cobrado - valorView.Value);
+                // Novos campos vindos da view
+                item.DataAdmissao = resultado.DataAdmissao;
+                item.DataExclusao = resultado.DataExclusao;
+                item.NomeMotivoExclusao = resultado.NomeMotivoExclusao;
+                item.NomeTabelaPreco = resultado.NomeTabelaPreco;
+                item.NomeGrupoPessoas = resultado.NomeGrupoPessoas;
+                item.DescricaoGrupoFaturamento = resultado.DescricaoGrupoFaturamento;
+
+                item.ValorOperadoraView = resultado.ValorOperadora;
+
+                decimal diferenca = Math.Abs(item.Cobrado - resultado.ValorOperadora.Value);
                 item.DiferencaValor = diferenca;
 
                 if (diferenca == 0)

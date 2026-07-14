@@ -68,7 +68,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                     var workbookPart = doc.AddWorkbookPart();
                     workbookPart.Workbook = new Workbook();
 
-                    // ===== Estilos (cores de fundo por status) =====
+                    // Estilos
                     var stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
                     stylesPart.Stylesheet = CriarStylesheet();
                     stylesPart.Stylesheet.Save();
@@ -85,37 +85,64 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         Name = "Conferência"
                     });
 
-                    // Cabeçalho
+                    // Cabeçalho com TODAS as colunas do grid
                     var headerRow = new Row();
-                    string[] colunas = { "Empresa", "Beneficiário", "CPF", "Credencial", "Mês/Ano Referência",
-                "Cobrado", "Valor Operadora", "Diferença", "Status" };
+                    string[] colunas = {
+                        "CPF",
+                        "Beneficiário",
+                        "Nascimento",
+                        "Parentesco",
+                        "Plano",
+                        "Mês/Ano Usado",
+                        "Cobrado",
+                        "Valor Operadora",
+                        "Diferença",
+                        "Data Admissão",
+                        "Data Exclusão",
+                        "Motivo Exclusão",
+                        "Tabela de Preço",
+                        "Grupo de Pessoas",
+                        "Grupo de Faturamento",
+                        "Status"
+                    };
                     foreach (var col in colunas)
                         headerRow.Append(CriarCelulaTexto(col, 5)); // estilo 5 = cabeçalho
                     sheetData.Append(headerRow);
 
-                    // Linhas — TODOS os itens, coloridos por status
+                    // Linhas — TODOS os itens
                     foreach (var item in itens)
                     {
                         uint estilo = ObterEstiloPorStatus(item.StatusConferencia);
 
                         var row = new Row();
-                        row.Append(CriarCelulaTexto(item.Empresa, estilo));
-                        row.Append(CriarCelulaTexto(item.Beneficiario, estilo));
-                        row.Append(CriarCelulaTexto(item.Cpf, estilo));
-                        row.Append(CriarCelulaTexto(item.Credencial, estilo));
-                        row.Append(CriarCelulaTexto(item.MesAnoReferencia, estilo));
+                        row.Append(CriarCelulaTexto(item.Cpf ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.Beneficiario ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.Nascimento?.ToString("dd/MM/yyyy") ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.Parentesco ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.Plano ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.MesAnoReferencia ?? "", estilo));
                         row.Append(CriarCelulaTexto(item.Cobrado.ToString("N2"), estilo));
                         row.Append(CriarCelulaTexto(item.ValorOperadoraView?.ToString("N2") ?? "", estilo));
                         row.Append(CriarCelulaTexto(item.DiferencaValor?.ToString("N2") ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.DataExclusao?.ToString("dd/MM/yyyy") ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.NomeMotivoExclusao ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.NomeTabelaPreco ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.NomeGrupoPessoas ?? "", estilo));
+                        row.Append(CriarCelulaTexto(item.DescricaoGrupoFaturamento ?? "", estilo));
                         row.Append(CriarCelulaTexto(TraduzirStatusExcel(item.StatusConferencia), estilo));
                         sheetData.Append(row);
                     }
 
                     workbookPart.Workbook.Save();
                 }
-
                 return stream.ToArray();
             }
+        }
+
+        public List<ItemInconsistenciaFaturamento> ObterInconsistenciasFaturamento(string mesAnoReferencia, int codigoGrupoContrato)
+        {
+            return _sql.BuscarInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato);
         }
 
         private string TraduzirStatusExcel(string status)

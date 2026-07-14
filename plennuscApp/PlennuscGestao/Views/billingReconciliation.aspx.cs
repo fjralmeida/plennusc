@@ -36,8 +36,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlOperadora.DataBind();
             ddlOperadora.Items.Insert(0, new ListItem("Selecione...", ""));
         }
-
-
         private void CarregarGruposFaturamento()
         {
             var grupos = _service.ObterGruposFaturamento();

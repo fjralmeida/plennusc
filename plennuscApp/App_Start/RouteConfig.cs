@@ -82,6 +82,7 @@ namespace appWhatsapp
 
             // ✅ Conferência
             routes.MapPageRoute("billingReconciliation", "billingReconciliation", "~/PlennuscGestao/Views/billingReconciliation.aspx");
+            routes.MapPageRoute("billingInconsistency", "billingInconsistency", "~/PlennuscGestao/Views/billingInconsistency.aspx");
 
             // ✅ Envio de Email Automático
             routes.MapPageRoute("sendAnAutomatedEmail", "sendAnAutomatedEmail", "~/PlennuscGestao/Views/sendAnAutomatedEmail.aspx");

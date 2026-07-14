@@ -63,7 +63,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                                         <p style=""font-weight: bold; font-size: 18px;"">Parabéns, {nome}! 🎉</p>
                                         <p>Seu número da sorte para a campanha foi gerado e você já está participando do sorteio do prêmio <strong>{premio}</strong>.</p>
                                         <p><strong>Número da sorte:</strong> {numeroSorte}</p>
-                                        <p>Lembramos que as suas chances são maiores conforme a quantidade de vidas vendidas durante a campanha!</p>
+                                        <p>Lembramos que, a cada vida vendida durante a campanha, você acumulará  um cupom na urna, garantindo uma nova chance de concorrer ao prêmio. Assim, quanto mais vidas você vendeu, mais cupons acumulará e maiores serão as suas chances de se tornar o grande vencedor!</p>
                                         <p>📅 <strong>Anote na agenda!</strong><br/>
                                         O sorteio será realizado no dia <strong>22 de julho</strong>, às <strong>16h</strong>, em uma live no Instagram <strong>@valloradmbeneficios</strong>. Não perca a oportunidade de acompanhar esse momento ao vivo!</p>
                                         <p>Agradecemos pela sua parceria e desejamos muito sucesso. Boa sorte!</p>

@@ -36,5 +36,12 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
         public decimal? ValorOperadoraView { get; set; }   // valor encontrado na VW_RELATORIO_CONFERENCIA
         public decimal? DiferencaValor { get; set; }        // Cobrado - ValorOperadoraView
         public string StatusConferencia { get; set; }
+
+        public DateTime? DataAdmissao { get; set; }
+        public DateTime? DataExclusao { get; set; }
+        public string NomeMotivoExclusao { get; set; }
+        public string NomeTabelaPreco { get; set; }
+        public string NomeGrupoPessoas { get; set; }
+        public string DescricaoGrupoFaturamento { get; set; }
     }
 }
