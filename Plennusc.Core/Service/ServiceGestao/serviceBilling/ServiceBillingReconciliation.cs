@@ -59,6 +59,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         }
         #endregion
 
+        #region LOGICA DE EXPORTAÇÃO PARA EXCEL
         public byte[] ExportarConferenciaExcel(List<ItemRelatorioImportadoHapVida> itens)
         {
             using (var stream = new MemoryStream())
@@ -140,11 +141,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             }
         }
 
-        public List<ItemInconsistenciaFaturamento> ObterInconsistenciasFaturamento(string mesAnoReferencia, int codigoGrupoContrato)
-        {
-            return _sql.BuscarInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato);
-        }
-
         private string TraduzirStatusExcel(string status)
         {
             switch (status)
@@ -156,6 +152,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 default: return status ?? "";
             }
         }
+
 
         // Mapeia o status pro índice de estilo (cor) criado no CriarStylesheet
         private uint ObterEstiloPorStatus(string status)
@@ -221,6 +218,23 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         }
 
 
+
+        #endregion
+
+        #region LOGICA DE INCONSISTÊNCIAS DE FATURAMENTO
+        public List<ItemInconsistenciaFaturamento> ObterInconsistenciasFaturamento(string mesAnoReferencia, int codigoGrupoContrato)
+        {
+            return _sql.BuscarInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato);
+        }
+
+        public void ConferirInconsistencias(List<ItemInconsistenciaFaturamento> itens)
+        {
+            _sql.ConferirInconsistencias(itens);
+        }
+        #endregion
+
+
+
         //public byte[] ExportarDivergentesExcel(List<ItemRelatorioImportadoHapVida> divergentes)
         //{
         //    using (var stream = new MemoryStream())
@@ -272,14 +286,5 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         //        return stream.ToArray();
         //    }
         //}
-
-        private Cell CriarCelulaTexto(string valor)
-        {
-            return new Cell
-            {
-                DataType = CellValues.String,
-                CellValue = new CellValue(valor ?? "")
-            };
-        }
     }
 }

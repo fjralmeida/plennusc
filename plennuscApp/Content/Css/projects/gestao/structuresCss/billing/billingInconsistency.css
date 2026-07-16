@@ -307,6 +307,40 @@ body {
         cursor: default;
     }
 
+.btn-exportar {
+    background: var(--primary-hover);
+    color: white;
+    margin-left: 8px;
+}
+
+.btn-primary {
+    background: var(--primary-hover);
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: #0b4a8f;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+/* Seletor de registros por página */
+.pager-custom .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+}
+
+    .pager-custom .form-control:focus {
+        outline: none;
+        border-color: #4cb07a;
+        box-shadow: 0 0 0 2px rgba(76, 176, 122, 0.2);
+    }
+
+.pager-custom label {
+    font-weight: 500;
+}
+
 @media (max-width: 992px) {
     .grid-container {
         overflow-x: auto;

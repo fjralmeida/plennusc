@@ -78,6 +78,33 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divResultado;
 
         /// <summary>
+        /// Controle ddlPageSize.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPageSize;
+
+        /// <summary>
+        /// Controle btnConferirSelecionados.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnConferirSelecionados;
+
+        /// <summary>
+        /// Controle btnExportar.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnExportar;
+
+        /// <summary>
         /// Controle gridPreview.
         /// </summary>
         /// <remarks>
