@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -230,9 +231,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
             ps.CODIGO_EMPRESA,
             ps.CODIGO_ASSOCIADO,
             ps.MES_ANO_VENCIMENTO AS MES_ANO_REFERENCIA,
-            ps.VALOR_CONVENIO,
-            ps.VALOR_ADICIONAL,
-            ps.VALOR_FATURA,
+            ps.VALOR_NET_CORRIGIDO,
             p1000.NOME_ASSOCIADO,
             p1000.NUMERO_CPF,
             p1000.DATA_ADMISSAO,
@@ -256,22 +255,58 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
                     {
                         lista.Add(new ItemInconsistenciaFaturamento
                         {
-                            NumeroRegistro = Convert.ToInt32(reader["NUMERO_REGISTRO"]),
-                            CodigoEmpresa = Convert.ToInt32(reader["CODIGO_EMPRESA"]),
-                            CodigoAssociado = reader["CODIGO_ASSOCIADO"].ToString(),
-                            MesAnoReferencia = reader["MES_ANO_REFERENCIA"].ToString(),
-                            ValorConvenio = reader["VALOR_CONVENIO"] != DBNull.Value ? Convert.ToDecimal(reader["VALOR_CONVENIO"]) : 0,
-                            ValorAdicional = reader["VALOR_ADICIONAL"] != DBNull.Value ? Convert.ToDecimal(reader["VALOR_ADICIONAL"]) : 0,
-                            ValorFatura = reader["VALOR_FATURA"] != DBNull.Value ? Convert.ToDecimal(reader["VALOR_FATURA"]) : 0,
-                            NomeDoAssociado = reader["NOME_ASSOCIADO"]?.ToString(),
-                            NumeroCpf = reader["NUMERO_CPF"]?.ToString(),
+                            NumeroRegistro = reader["NUMERO_REGISTRO"] != DBNull.Value ? Convert.ToInt32(reader["NUMERO_REGISTRO"]) : 0,
+                            CodigoEmpresa = reader["CODIGO_EMPRESA"] != DBNull.Value ? Convert.ToInt32(reader["CODIGO_EMPRESA"]) : 0,
+                            CodigoAssociado = reader["CODIGO_ASSOCIADO"] != DBNull.Value ? reader["CODIGO_ASSOCIADO"].ToString() : "",
+                            MesAnoReferencia = reader["MES_ANO_REFERENCIA"] != DBNull.Value ? reader["MES_ANO_REFERENCIA"].ToString() : "",
+                            ValorConvenio = reader["VALOR_NET_CORRIGIDO"] != DBNull.Value ? Convert.ToDecimal(reader["VALOR_NET_CORRIGIDO"]) : 0,
+                            NomeDoAssociado = reader["NOME_ASSOCIADO"] != DBNull.Value ? reader["NOME_ASSOCIADO"].ToString() : "",
+                            NumeroCpf = reader["NUMERO_CPF"] != DBNull.Value ? reader["NUMERO_CPF"].ToString() : "",
                             DataAdmissao = reader["DATA_ADMISSAO"] != DBNull.Value ? Convert.ToDateTime(reader["DATA_ADMISSAO"]) : (DateTime?)null,
                             DataExclusao = reader["DATA_EXCLUSAO"] != DBNull.Value ? Convert.ToDateTime(reader["DATA_EXCLUSAO"]) : (DateTime?)null,
+                            NomeMotivoExclusao = "" // se quiser buscar o nome do motivo em outra tabela, faça um JOIN ou consulta adicional
                         });
                     }
                 }
             }
             return lista;
+        }
+        public void ConferirInconsistencias(List<ItemInconsistenciaFaturamento> itens)
+        {
+            if (itens == null || itens.Count == 0)
+                throw new ArgumentException("Nenhum item para conferir.");
+
+            string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+
+            string sql = @"
+        UPDATE PS1021
+        SET DATA_CONFERENCIA_FATUR = GETDATE()
+        WHERE NUMERO_REGISTRO = @NumeroRegistro
+          AND CODIGO_EMPRESA = @CodigoEmpresa
+          AND CODIGO_ASSOCIADO = @CodigoAssociado
+          AND MES_ANO_VENCIMENTO = @MesAnoReferencia";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.Add("@NumeroRegistro", SqlDbType.Int);
+                    cmd.Parameters.Add("@CodigoEmpresa", SqlDbType.Int);
+                    cmd.Parameters.Add("@CodigoAssociado", SqlDbType.VarChar, 20);
+                    cmd.Parameters.Add("@MesAnoReferencia", SqlDbType.VarChar, 10);
+
+                    foreach (var item in itens)
+                    {
+                        cmd.Parameters["@NumeroRegistro"].Value = item.NumeroRegistro;
+                        cmd.Parameters["@CodigoEmpresa"].Value = item.CodigoEmpresa;
+                        cmd.Parameters["@CodigoAssociado"].Value = item.CodigoAssociado;
+                        cmd.Parameters["@MesAnoReferencia"].Value = item.MesAnoReferencia;
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
         }
     }
 }

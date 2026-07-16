@@ -21,6 +21,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!IsPostBack)
             {
                 CarregarOperadoras();
+                // Restaura o PageSize salvo em ViewState
+                if (ViewState["PageSize"] != null)
+                {
+                    gridPreview.PageSize = (int)ViewState["PageSize"];
+                    ddlPageSize.SelectedValue = gridPreview.PageSize.ToString();
+                }
             }
             else
             {
@@ -42,24 +48,22 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             if (string.IsNullOrEmpty(ddlOperadora.SelectedValue))
             {
-                ExibirMensagem("Selecione uma operadora antes de pesquisar.", erro: true);
+                ExibirMensagem("Selecione uma operadora.", erro: true);
                 return;
             }
 
             string mesAnoReferencia = txtMesAnoReferencia.Text.Trim();
-
             if (string.IsNullOrEmpty(mesAnoReferencia))
             {
-                ExibirMensagem("Informe o Mês/Ano Referência antes de pesquisar.", erro: true);
+                ExibirMensagem("Informe o Mês/Ano Referência.", erro: true);
                 return;
             }
 
             if (!System.Text.RegularExpressions.Regex.IsMatch(mesAnoReferencia, @"^(0[1-9]|1[0-2])\/\d{4}$"))
             {
-                ExibirMensagem("Mês/Ano Referência inválido. Use o formato MM/AAAA.", erro: true);
+                ExibirMensagem("Formato inválido. Use MM/AAAA.", erro: true);
                 return;
             }
-
 
             int codigoGrupoContrato = Convert.ToInt32(ddlOperadora.SelectedValue);
 
@@ -67,17 +71,21 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 var itens = _service.ObterInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato);
 
-                // 🔥 FILTRO POR NOME OU CPF
+                // Filtro por nome ou CPF
                 string busca = txtBusca.Text.Trim();
                 if (!string.IsNullOrEmpty(busca))
                 {
                     itens = itens.Where(x =>
-                        x.NomeDoAssociado != null && x.NomeDoAssociado.ToLower().Contains(busca.ToLower()) ||
-                        x.NumeroCpf != null && x.NumeroCpf.Contains(busca)
+                        (x.NomeDoAssociado != null && x.NomeDoAssociado.ToLower().Contains(busca.ToLower())) ||
+                        (x.NumeroCpf != null && x.NumeroCpf.Contains(busca))
                     ).ToList();
                 }
 
                 Session["BillingInconsistency_Itens"] = itens;
+
+                // Aplica o PageSize atual
+                gridPreview.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
+                ViewState["PageSize"] = gridPreview.PageSize;
 
                 gridPreview.DataSource = itens;
                 gridPreview.DataBind();
@@ -96,11 +104,13 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        protected void gridPreview_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gridPreview.PageIndex = e.NewPageIndex;
+            int newSize = Convert.ToInt32(ddlPageSize.SelectedValue);
+            gridPreview.PageSize = newSize;
+            ViewState["PageSize"] = newSize;
+            gridPreview.PageIndex = 0;
 
-            // 👇 CHAVE E TIPO CORRETOS
             var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
             if (itens != null)
             {
@@ -109,9 +119,41 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        protected void gridPreview_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gridPreview.PageIndex = e.NewPageIndex;
+            var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
+            if (itens != null)
+            {
+                gridPreview.DataSource = itens;
+                gridPreview.DataBind();
+            }
+        }
+
+        protected void gridPreview_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            // Opcional: associar dado ao checkbox, se necessário
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                // Exemplo: CheckBox chk = (CheckBox)e.Row.FindControl("chkSelecionar");
+                // chk.Attributes["data-id"] = DataBinder.Eval(e.Row.DataItem, "NumeroRegistro").ToString();
+            }
+        }
+
         protected void gridPreview_DataBound(object sender, EventArgs e)
         {
-            // 👇 CHAVE E TIPO CORRETOS
+            // Sincroniza o dropdown com o PageSize atual
+            if (ViewState["PageSize"] != null)
+            {
+                int pageSize = (int)ViewState["PageSize"];
+                gridPreview.PageSize = pageSize;
+                ddlPageSize.SelectedValue = pageSize.ToString();
+            }
+            else
+            {
+                ddlPageSize.SelectedValue = gridPreview.PageSize.ToString();
+            }
+
             var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
             ViewState["TotalRegistrosGridPreview"] = itens?.Count ?? 0;
 
@@ -126,7 +168,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 int tamanhoPagina = gridPreview.PageSize;
                 int inicio = totalGeral == 0 ? 0 : (paginaAtual * tamanhoPagina) + 1;
                 int fim = Math.Min(inicio + gridPreview.Rows.Count - 1, totalGeral);
-
                 lblInfo.Text = $"<strong>{inicio} - {fim}</strong> de <strong>{totalGeral}</strong> itens";
             }
 
@@ -159,7 +200,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 btn.Click += (s, ev) =>
                 {
                     gridPreview.PageIndex = pageIndex;
-                    // 👇 CHAVE E TIPO CORRETOS
                     var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
                     if (itens != null)
                     {
@@ -186,19 +226,22 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private int ObterTotalRegistrosGridPreview()
         {
-            if (ViewState["TotalRegistrosGridPreview"] != null)
-                return (int)ViewState["TotalRegistrosGridPreview"];
-            return 0;
+            return ViewState["TotalRegistrosGridPreview"] as int? ?? 0;
         }
 
-        protected string TraduzirStatus(string status)
+        private void ExibirMensagem(string mensagem, bool erro = false, bool aviso = false)
         {
-            return string.IsNullOrEmpty(status) ? "Pendente" : status;
+            lblMensagemPesquisa.Text = mensagem;
+            string classe = "msg-importacao";
+            if (erro) classe += " erro";
+            else if (aviso) classe += " aviso";
+            else classe += " sucesso";
+            lblMensagemPesquisa.CssClass = classe;
         }
 
+        // 🔥 EXPORTAÇÃO PARA EXCEL
         protected void btnExportar_Click(object sender, EventArgs e)
         {
-            // Recupera a lista completa da sessão (já filtrada)
             var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
 
             if (itens == null || itens.Count == 0)
@@ -207,13 +250,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            // Gera o Excel e faz o download
             ExportarParaExcel(itens);
         }
 
         private void ExportarParaExcel(List<ItemInconsistenciaFaturamento> itens)
         {
-            // Cria um DataTable com as colunas desejadas
             DataTable dt = new DataTable();
             dt.Columns.Add("CPF", typeof(string));
             dt.Columns.Add("Nome", typeof(string));
@@ -238,51 +279,167 @@ namespace appWhatsapp.PlennuscGestao.Views
                 );
             }
 
-            // Configura a resposta HTTP para download do Excel
             Response.Clear();
             Response.ContentType = "application/vnd.ms-excel";
             Response.AddHeader("Content-Disposition", $"attachment; filename=Inconsistencias_{DateTime.Now:yyyyMMdd_HHmmss}.xls");
 
-            // Gera o HTML da tabela (Excel reconhece)
-            using (StringWriter sw = new StringWriter())
+            using (System.IO.StringWriter sw = new System.IO.StringWriter())
             using (HtmlTextWriter htw = new HtmlTextWriter(sw))
             {
-                // Cria a tabela HTML
-                htw.Write("<table border='1' cellpadding='3' cellspacing='0'>");
+                htw.Write(@"
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                      xmlns:x='urn:schemas-microsoft-com:office:excel' 
+                      xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                <!--[if gte mso 9]>
+                <xml>
+                <x:ExcelWorkbook>
+                <x:ExcelWorksheets>
+                <x:ExcelWorksheet>
+                <x:Name>Inconsistencias</x:Name>
+                <x:WorksheetOptions>
+                <x:DisplayGridlines/>
+                </x:WorksheetOptions>
+                </x:ExcelWorksheet>
+                </x:ExcelWorksheets>
+                </x:ExcelWorkbook>
+                </xml>
+                <![endif]-->
+                <style>
+                    body { font-family: Calibri, Arial, sans-serif; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { 
+                        border: 1px solid #999; 
+                        padding: 6px 8px; 
+                        font-size: 12px;
+                        vertical-align: middle;
+                        text-align: left;
+                    }
+                    th { 
+                        background-color: #e6e6e6; 
+                        font-weight: bold; 
+                        text-align: center;
+                    }
+                    .numero { text-align: right; }
+                    .data { text-align: center; }
+                    .texto { text-align: left; }
+                </style>
+                </head>
+                <body>");
 
-                // Cabeçalho
+                htw.Write("<table>");
                 htw.Write("<tr>");
                 foreach (DataColumn col in dt.Columns)
                 {
-                    htw.Write($"<th style='font-weight:bold;background:#f0f0f0;'>{col.ColumnName}</th>");
+                    htw.Write($"<th>{col.ColumnName}</th>");
                 }
                 htw.Write("</tr>");
 
-                // Dados
                 foreach (DataRow row in dt.Rows)
                 {
                     htw.Write("<tr>");
-                    foreach (DataColumn col in dt.Columns)
+                    for (int i = 0; i < dt.Columns.Count; i++)
                     {
-                        htw.Write($"<td>{row[col]}</td>");
+                        string classe = "texto";
+                        if (i == 0) classe = "texto";
+                        else if (i == 1) classe = "texto";
+                        else if (i == 2) classe = "data";
+                        else if (i >= 3 && i <= 5) classe = "numero";
+                        else if (i >= 6) classe = "data";
+
+                        object valor = row[i];
+                        string conteudo = valor != DBNull.Value && valor != null ? valor.ToString() : "";
+
+                        if (i >= 3 && i <= 5 && valor != DBNull.Value && valor != null)
+                        {
+                            decimal dec = Convert.ToDecimal(valor);
+                            conteudo = dec.ToString("N2");
+                        }
+
+                        htw.Write($"<td class='{classe}'>{conteudo}</td>");
                     }
                     htw.Write("</tr>");
                 }
+
                 htw.Write("</table>");
+                htw.Write("</body></html>");
 
                 Response.Write(sw.ToString());
                 Response.End();
             }
         }
 
-        private void ExibirMensagem(string mensagem, bool erro = false, bool aviso = false)
+        protected void btnConferirSelecionados_Click(object sender, EventArgs e)
         {
-            lblMensagemPesquisa.Text = mensagem;
-            string classe = "msg-importacao";
-            if (erro) classe += " erro";
-            else if (aviso) classe += " aviso";
-            else classe += " sucesso";
-            lblMensagemPesquisa.CssClass = classe;
+            var selecionados = ObterItensSelecionados();
+
+            if (selecionados.Count == 0)
+            {
+                ExibirMensagem("Selecione pelo menos um registro para conferir.", erro: true);
+                return;
+            }
+
+            try
+            {
+                // Atualiza DATA_CONFERENCIA_FATUR no banco
+                _service.ConferirInconsistencias(selecionados);
+
+                ExibirMensagem($"{selecionados.Count} registro(s) conferido(s) com sucesso.", erro: false);
+
+                // Recarrega a lista removendo os conferidos (ou refaz a pesquisa)
+                RecarregarLista();
+
+                // Rebinda o grid
+                var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
+                if (itens != null)
+                {
+                    gridPreview.DataSource = itens;
+                    gridPreview.DataBind();
+                }
+
+                // Se não houver mais itens, esconde o card de resultado
+                if (itens == null || itens.Count == 0)
+                {
+                    divResultado.Attributes.Add("class", "filters-card hidden");
+                    ExibirMensagem("Todos os registros foram conferidos.", erro: false);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExibirMensagem("Erro ao conferir: " + ex.Message, erro: true);
+            }
+        }
+
+        private List<ItemInconsistenciaFaturamento> ObterItensSelecionados()
+        {
+            var selecionados = new List<ItemInconsistenciaFaturamento>();
+            var itens = Session["BillingInconsistency_Itens"] as List<ItemInconsistenciaFaturamento>;
+
+            if (itens == null) return selecionados;
+
+            foreach (GridViewRow row in gridPreview.Rows)
+            {
+                if (row.RowType == DataControlRowType.DataRow)
+                {
+                    CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
+                    if (chk != null && chk.Checked)
+                    {
+                        int rowIndex = row.RowIndex;
+                        int dataIndex = gridPreview.PageIndex * gridPreview.PageSize + rowIndex;
+                        if (dataIndex < itens.Count)
+                        {
+                            selecionados.Add(itens[dataIndex]);
+                        }
+                    }
+                }
+            }
+            return selecionados;
+        }
+
+        private void RecarregarLista()
+        {
+            // Refaz a pesquisa com os mesmos filtros
+            btnPesquisar_Click(null, null);
         }
     }
 }
