@@ -774,7 +774,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                     AtualizarListaAnexos();
                 }
 
-                MostrarMensagem($"Demanda criada com sucesso! (Código: {id})", "success");
+                MostrarMensagem($"Demanda criada com sucesso!", "success");
 
                 // Limpa os campos
                 txtTitulo.Text = "";

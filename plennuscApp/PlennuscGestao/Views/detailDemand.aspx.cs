@@ -408,9 +408,27 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void btnEncerrar_Click(object sender, EventArgs e)
         {
-            // MUDA STATUS PARA "CONCLUÍDA" (23) - DEMANDA FINALIZADA
-            _service.AtualizarStatusComHistorico(CodDemanda, 23, CodPessoaAtual);
-            Response.RedirectToRoute("listDemand");
+            try
+            {
+                // MUDA STATUS PARA "CONCLUÍDA" (23) - DEMANDA FINALIZADA
+                _service.AtualizarStatusComHistorico(CodDemanda, 23, CodPessoaAtual);
+
+                // Exibe toast de sucesso
+                MostrarMensagem("Demanda concluída com sucesso!", "success");
+
+                // Recarrega todos os dados da página (atualiza a UI)
+                CarregarDemanda();
+                CarregarHistorico();
+                CarregarAcompanhamentos();
+                AjustarBotoes();
+                CarregarAnexos();
+                CarregarStatusAcompanhamento();
+                ConfigurarFormularioAcompanhamento(); // desabilita campos se fechada
+            }
+            catch (Exception ex)
+            {
+                MostrarMensagem("Erro ao concluir demanda: " + ex.Message, "error");
+            }
         }
 
         private void CarregarAnexos()
