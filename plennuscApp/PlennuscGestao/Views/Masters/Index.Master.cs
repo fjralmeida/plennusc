@@ -385,6 +385,9 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeObjeto.Contains("menuconferencia") || nomeDisplay.Contains("conferência") || nomeDisplay.Contains("conferencia"))
                 return "bi bi-clipboard2-data me-2";
 
+            if (nomeObjeto.Contains("billinginconsistency") || nomeDisplay.Contains("inconsistências") || nomeDisplay.Contains("inconsistencias"))
+                return "bi bi-exclamation-triangle me-2";
+
             // ✅ PESSOAS
             if (nomeObjeto.Contains("menupessoas") || nomeDisplay.Contains("pessoas"))
                 return "bi bi-person-badge me-2";
