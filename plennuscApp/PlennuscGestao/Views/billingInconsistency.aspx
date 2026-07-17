@@ -76,7 +76,7 @@
                                 <asp:CheckBox ID="chkSelecionar" runat="server" CssClass="chk-linha-pendente" />
                             </ItemTemplate>
                         </asp:TemplateField>
-
+                        <asp:BoundField DataField="NumeroRegistro" HeaderText="Número Registro" ItemStyle-CssClass="col-curta" />
                         <asp:BoundField DataField="NumeroCpf" HeaderText="CPF" ItemStyle-CssClass="col-curta" />
                         <asp:BoundField DataField="NomeDoAssociado" HeaderText="Nome" ItemStyle-CssClass="col-nome" />
                         <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano" ItemStyle-CssClass="col-curta" />
