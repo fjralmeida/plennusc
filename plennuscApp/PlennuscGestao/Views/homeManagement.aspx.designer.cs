@@ -15,6 +15,15 @@ namespace PlennuscGestao.Views
     {
 
         /// <summary>
+        /// Controle divCardColaboradores.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCardColaboradores;
+
+        /// <summary>
         /// Controle lblTotalColaboradores.
         /// </summary>
         /// <remarks>
@@ -31,6 +40,15 @@ namespace PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotalColaboradoresValue;
+
+        /// <summary>
+        /// Controle divCardDepartamentos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCardDepartamentos;
 
         /// <summary>
         /// Controle lblTotalDepartamentos.
@@ -51,6 +69,15 @@ namespace PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Label lblTotalDepartamentosValue;
 
         /// <summary>
+        /// Controle divCardCargos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCardCargos;
+
+        /// <summary>
         /// Controle lblTotalCargos.
         /// </summary>
         /// <remarks>
@@ -67,5 +94,14 @@ namespace PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotalCargosValue;
+
+        /// <summary>
+        /// Controle divCardDemanda.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCardDemanda;
     }
 }

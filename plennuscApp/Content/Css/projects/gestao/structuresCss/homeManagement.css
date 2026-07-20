@@ -374,6 +374,13 @@
             transition: all 0.3s ease !important;
         }
 
+.dashboard-card-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+    filter: grayscale(60%);
+}
+
 /* Animações */
 @keyframes chartSlideIn {
     from {
