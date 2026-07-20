@@ -34,15 +34,33 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        #region CHAMADA DIRETA DE OPERADORAS ESPECIFICAS
+        //private void CarregarOperadoras()
+        //{
+        //    var operadoras = _service.ObterOperadoras();
+        //    ddlOperadora.DataSource = operadoras;
+        //    ddlOperadora.DataTextField = "NomeOperadora";
+        //    ddlOperadora.DataValueField = "CodigoGrupoContrato";
+        //    ddlOperadora.DataBind();
+        //    ddlOperadora.Items.Insert(0, new ListItem("Selecione...", ""));
+        //}
+        #endregion
+
         private void CarregarOperadoras()
         {
-            var operadoras = _service.ObterOperadoras();
-            ddlOperadora.DataSource = operadoras;
+            var operadora = _service.ObterOperadoras();
+
+            var lista = new List<OperadoraModel>();
+            if (operadora != null)
+                lista.Add(operadora);
+
+            ddlOperadora.DataSource = lista;
             ddlOperadora.DataTextField = "NomeOperadora";
             ddlOperadora.DataValueField = "CodigoGrupoContrato";
             ddlOperadora.DataBind();
             ddlOperadora.Items.Insert(0, new ListItem("Selecione...", ""));
         }
+
 
         protected void btnPesquisar_Click(object sender, EventArgs e)
         {

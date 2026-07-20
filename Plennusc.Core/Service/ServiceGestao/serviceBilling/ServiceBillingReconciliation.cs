@@ -21,7 +21,14 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         private readonly ServiceBillingReconciliationHapvida _hapvida = new ServiceBillingReconciliationHapvida();
         private readonly ServiceBillingReconciliationUnimed _unimed = new ServiceBillingReconciliationUnimed();
 
-        public List<OperadoraModel> ObterOperadoras()
+        #region CHAMADA DE SQL PARA OBTER TODAS AS OPERADORAS E GRUPOS DE FATURAMENTO
+        //public List<OperadoraModel> ObterOperadoras()
+        //{
+        //    return _sql.BuscarOperadoras();
+        //}
+        #endregion
+
+        public OperadoraModel ObterOperadoras()
         {
             return _sql.BuscarOperadoras();
         }
