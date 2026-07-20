@@ -29,82 +29,79 @@
             <p class="page-description">Veja o que está acontecendo agora no sistema</p>
         </header>
 
-        <!-- Cards principais -->
-        <div class="dashboard-grid">
-            <div class="dashboard-card"  onclick="window.location.href='/employeeManagement?acao=consultar&frame=1';">
-                <div class="card card-colaboradores">
-                    <div class="card-body">
-                        <div class="card-content">
-                            <h6 class="card-title">
-                                <asp:Label ID="lblTotalColaboradores" runat="server"></asp:Label>
-                                colaboradores
-                            </h6>
-                            <p class="card-value">
-                                <asp:Label ID="lblTotalColaboradoresValue" runat="server"></asp:Label>
-                            </p>
-                            <p class="card-description">Ativos no sistema</p>
-                        </div>
-                        <div class="card-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
+       <!-- Cards principais -->
+<div class="dashboard-grid">
+    <div id="divCardColaboradores" runat="server" class="dashboard-card">
+        <div class="card card-colaboradores">
+            <div class="card-body">
+                <div class="card-content">
+                    <h6 class="card-title">
+                        <asp:Label ID="lblTotalColaboradores" runat="server"></asp:Label>
+                        colaboradores
+                    </h6>
+                    <p class="card-value">
+                        <asp:Label ID="lblTotalColaboradoresValue" runat="server"></asp:Label>
+                    </p>
+                    <p class="card-description">Ativos no sistema</p>
                 </div>
-            </div>
-
-            <div class="dashboard-card" onclick="window.location.href='/employeeDepartment?frame=1';">
-                <div class="card card-departamentos">
-                    <div class="card-body">
-                        <div class="card-content">
-                            <h6 class="card-title">
-                                <asp:Label ID="lblTotalDepartamentos" runat="server"></asp:Label>
-                                departamentos
-                            </h6>
-                            <p class="card-value">
-                                <asp:Label ID="lblTotalDepartamentosValue" runat="server"></asp:Label>
-                            </p>
-                            <p class="card-description">Organizados</p>
-                        </div>
-                        <div class="card-icon">
-                            <i class="fas fa-sitemap"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-card" onclick="window.location.href='/employeePosition?frame=1';">
-                <div class="card card-cargos">
-                    <div class="card-body">
-                        <div class="card-content">
-                            <h6 class="card-title">
-                                <asp:Label ID="lblTotalCargos" runat="server"></asp:Label>
-                                cargos
-                            </h6>
-                            <p class="card-value">
-                                <asp:Label ID="lblTotalCargosValue" runat="server"></asp:Label>
-                            </p>
-                            <p class="card-description">Em uso</p>
-                        </div>
-                        <div class="card-icon">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-card" onclick="window.location.href='/demand?frame=1';">
-                <div class="card card-teste">
-                    <div class="card-body">
-                        <div class="card-content">
-                            <h6 class="card-title">Demanda</h6>
-                            <p class="card-description">Criar Demanda</p>
-                        </div>
-                        <div class="card-icon">
-                            <i class="bi bi-plus-lg"></i>
-                        </div>
-                    </div>
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
                 </div>
             </div>
         </div>
+    </div>
+    <div id="divCardDepartamentos" runat="server" class="dashboard-card">
+        <div class="card card-departamentos">
+            <div class="card-body">
+                <div class="card-content">
+                    <h6 class="card-title">
+                        <asp:Label ID="lblTotalDepartamentos" runat="server"></asp:Label>
+                        departamentos
+                    </h6>
+                    <p class="card-value">
+                        <asp:Label ID="lblTotalDepartamentosValue" runat="server"></asp:Label>
+                    </p>
+                    <p class="card-description">Organizados</p>
+                </div>
+                <div class="card-icon">
+                    <i class="fas fa-sitemap"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divCardCargos" runat="server" class="dashboard-card">
+        <div class="card card-cargos">
+            <div class="card-body">
+                <div class="card-content">
+                    <h6 class="card-title">
+                        <asp:Label ID="lblTotalCargos" runat="server"></asp:Label>
+                        cargos
+                    </h6>
+                    <p class="card-value">
+                        <asp:Label ID="lblTotalCargosValue" runat="server"></asp:Label>
+                    </p>
+                    <p class="card-description">Em uso</p>
+                </div>
+                <div class="card-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divCardDemanda" runat="server" class="dashboard-card">
+        <div class="card card-teste">
+            <div class="card-body">
+                <div class="card-content">
+                    <h6 class="card-title">Demanda</h6>
+                    <p class="card-description">Criar Demanda</p>
+                </div>
+                <div class="card-icon">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         <!-- Widgets de Demandas LADO A LADO -->
         <div class="demands-row">
             <!-- Hoje -->
