@@ -120,6 +120,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                     divPreview.Attributes.Add("class", "form-group");
 
                     ExibirMensagem($"Arquivo '{fileRelatorio.FileName}' importado com sucesso. {itensImportados.Count} registro(s) encontrado(s).", erro: false);
+
+                    bool ehHapvida = nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0;
+                    pnlTipoConferencia.Visible = ehHapvida;
+
+                    if (!ehHapvida)
+                    {
+                        rblTipoConferencia.SelectedValue = "CONVENIO";
+                    }
                 }
             }
             catch (Exception ex)

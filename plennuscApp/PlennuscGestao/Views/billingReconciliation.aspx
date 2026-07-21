@@ -59,39 +59,37 @@
 
     <!-- CARD 2: CONFERÊNCIA -->
     <div class="filters-card hidden" id="divPreview" runat="server">
-        <div class="filters-title"><i class="bi bi-search"></i> Conferência com a Operadora</div>
-
-        <div class="banner-ajuda-conferencia">
-            <i class="bi bi-info-circle"></i>
-            <div>
-                <strong>Convênio:</strong> confere o plano de saúde principal.
-                &nbsp;&nbsp;
-                <strong>Odontológico:</strong> confere valores de evento adicional/odontológico — use quando o arquivo importado for o relatório odontológico separado.
-            </div>
-        </div>
-
-        <div class="secao-tipo-conferencia">
-            <div>
-                <label class="form-label" style="margin-bottom:8px;">Tipo de Conferência *</label>
-                <asp:RadioButtonList ID="rblTipoConferencia" runat="server" RepeatDirection="Horizontal"
-                    RepeatLayout="Flow" CssClass="radio-tipo-conferencia">
-                    <asp:ListItem Text="Convênio" Value="CONVENIO" Selected="True" />
-                    <asp:ListItem Text="Odontológico (Evento Adicional)" Value="EVENTO_ADICIONAL" />
-                </asp:RadioButtonList>
-            </div>
-            <div class="acoes-conferencia">
-                <asp:Button ID="btnConferir" runat="server" Text="Conferir com a Operadora" CssClass="btn btn-primary" OnClick="btnConferir_Click" />
-                <asp:Button ID="btnExportarDivergentes" runat="server" Text="Exportar Divergentes (Excel)" CssClass="btn btn-secondary" OnClick="btnExportarDivergentes_Click" />
-            </div>
-        </div>
-
+        <asp:Panel ID="pnlTipoConferencia" runat="server">
+                <div class="banner-ajuda-conferencia">
+                    <i class="bi bi-info-circle"></i>
+                    <div>
+                        <strong>Convênio:</strong> confere o plano de saúde principal.
+                        &nbsp;&nbsp;
+                        <strong>Odontológico:</strong> confere valores de evento adicional/odontológico — use quando o arquivo importado for o relatório odontológico separado.
+                    </div>
+                </div>
+                <div class="secao-tipo-conferencia">
+                    <div>
+                        <label class="form-label" style="margin-bottom:8px;">Tipo de Conferência *</label>
+                        <asp:RadioButtonList ID="rblTipoConferencia" runat="server" RepeatDirection="Horizontal"
+                            RepeatLayout="Flow" CssClass="radio-tipo-conferencia">
+                            <asp:ListItem Text="Convênio" Value="CONVENIO" Selected="True" />
+                            <asp:ListItem Text="Odontológico (Evento Adicional)" Value="EVENTO_ADICIONAL" />
+                        </asp:RadioButtonList>
+                    </div>
+                    <div class="acoes-conferencia">
+                        <asp:Button ID="btnConferir" runat="server" Text="Conferir com a Operadora" CssClass="btn btn-primary" OnClick="btnConferir_Click" />
+                        <asp:Button ID="btnExportarDivergentes" runat="server" Text="Exportar Divergentes (Excel)" CssClass="btn btn-secondary" OnClick="btnExportarDivergentes_Click" />
+                    </div>
+                </div>
+            </asp:Panel>
         <asp:Label ID="lblMensagemConferencia" runat="server" CssClass="msg-importacao" />
 
         <div class="grid-container" style="margin-top:16px;">
     <asp:GridView ID="gridPreview" runat="server" CssClass="custom-grid" AutoGenerateColumns="false"
     EmptyDataText="Nenhum registro encontrado." GridLines="None" OnRowDataBound="gridPreview_RowDataBound">
     <Columns>
-        <asp:BoundField DataField="Cpf" HeaderText="CPF" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="Cpf" HeaderText="CPF / Carteirinha" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
         <asp:BoundField DataField="Beneficiario" HeaderText="Beneficiário" HeaderStyle-Width="180px" ItemStyle-Width="180px" ItemStyle-CssClass="col-nome" />
         <asp:BoundField DataField="Nascimento" HeaderText="Nascimento" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
         <asp:BoundField DataField="Parentesco" HeaderText="Parentesco" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />

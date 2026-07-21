@@ -69,7 +69,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                     decimal valor = ConverterValor(valorBruto);
 
                     // CPF só vem na última linha do grupo familiar
-                    //string cpf = campos.Length > 31 ? campos[31].Trim() : null;
+                    string cpf = carteirinha;
 
                     var item = new ItemRelatorioImportadoUnimed
                     {
@@ -78,7 +78,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         NomeTitular = nomeTitular,
                         Descricao = descricaoProduto,
                         ValorOperadora = valor,
-                        //Cpf = string.IsNullOrWhiteSpace(cpf) ? null : cpf
+                        Cpf = string.IsNullOrWhiteSpace(cpf) ? null : cpf
                     };
 
                     itens.Add(item);
