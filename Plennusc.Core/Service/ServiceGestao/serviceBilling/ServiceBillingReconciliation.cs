@@ -22,17 +22,11 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         private readonly ServiceBillingReconciliationUnimed _unimed = new ServiceBillingReconciliationUnimed();
 
         #region CHAMADA DE SQL PARA OBTER TODAS AS OPERADORAS E GRUPOS DE FATURAMENTO
-        //public List<OperadoraModel> ObterOperadoras()
-        //{
-        //    return _sql.BuscarOperadoras();
-        //}
-        #endregion
-
-        public OperadoraModel ObterOperadoras()
+        public List<OperadoraModel> ObterOperadoras()
         {
             return _sql.BuscarOperadoras();
         }
-
+        #endregion
         public List<GrupoFaturamentoModel> ObterGruposFaturamento()
         {
             return _sql.BuscarGruposFaturamento();
@@ -50,7 +44,16 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
             if (nomeOperadora.IndexOf("UNIMED", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return _unimed.LerRelatorioUnimed(arquivo, extensao);
+                return _unimed.LerRelatorioUnimed(arquivo, extensao)
+                    .Select(u => new ItemRelatorioImportadoHapVida
+                    {
+                        Credencial = u.Credencial,
+                        Beneficiario = u.NomeBeneficiario,
+                        Plano = u.Descricao,
+                        Cobrado = u.ValorOperadora,
+                        Cpf = u.Cpf
+                    })
+                    .ToList();
             }
 
             throw new NotSupportedException($"Ainda não existe leitura implementada para a operadora '{nomeOperadora}'.");

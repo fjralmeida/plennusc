@@ -49,10 +49,13 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
         //}
         #endregion
 
-        public OperadoraModel BuscarOperadoras()
+
+        public List<OperadoraModel> BuscarOperadoras()
         {
-            OperadoraModel operadora = null;
+            var lista = new List<OperadoraModel>();
+
             string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+
             string sql = @"
                 SELECT DISTINCT
                     CODIGO_GRUPO_CONTRATO,
@@ -60,7 +63,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
                 FROM ESP0002
                 WHERE NOME_OPERADORA IS NOT NULL
                 AND NUMERO_ANS_OPERADORA IS NOT NULL
-                AND CODIGO_GRUPO_CONTRATO = 4";
+                AND CODIGO_GRUPO_CONTRATO IN (4, 3)";
 
             using (SqlConnection conn = new SqlConnection(connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -68,17 +71,18 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
                 conn.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        operadora = new OperadoraModel
+                        lista.Add(new OperadoraModel
                         {
                             CodigoGrupoContrato = Convert.ToInt32(reader["CODIGO_GRUPO_CONTRATO"]),
                             NomeOperadora = reader["NOME_OPERADORA"].ToString()
-                        };
+                        });
                     }
                 }
             }
-            return operadora;
+
+            return lista;
         }
 
         public List<GrupoFaturamentoModel> BuscarGruposFaturamento()

@@ -28,31 +28,16 @@ namespace appWhatsapp.PlennuscGestao.Views
         }
 
         #region CHAMADA DIRETA DE OPERADORAS ESPECIFICAS
-        //private void CarregarOperadoras()
-        //{
-        //    var operadoras = _service.ObterOperadoras();
-        //    ddlOperadora.DataSource = operadoras;
-        //    ddlOperadora.DataTextField = "NomeOperadora";
-        //    ddlOperadora.DataValueField = "CodigoGrupoContrato";
-        //    ddlOperadora.DataBind();
-        //    ddlOperadora.Items.Insert(0, new ListItem("Selecione...", ""));
-        //}
-        #endregion
-
         private void CarregarOperadoras()
         {
-            var operadora = _service.ObterOperadoras();
-
-            var lista = new List<OperadoraModel>();
-            if (operadora != null)
-                lista.Add(operadora);
-
-            ddlOperadora.DataSource = lista;
+            var operadoras = _service.ObterOperadoras();
+            ddlOperadora.DataSource = operadoras;
             ddlOperadora.DataTextField = "NomeOperadora";
             ddlOperadora.DataValueField = "CodigoGrupoContrato";
             ddlOperadora.DataBind();
             ddlOperadora.Items.Insert(0, new ListItem("Selecione...", ""));
         }
+        #endregion
 
         private void CarregarGruposFaturamento()
         {
@@ -94,7 +79,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             string extensao = System.IO.Path.GetExtension(fileRelatorio.FileName).ToLower();
-            var extensoesPermitidas = new[] { ".csv", ".xlsx", ".xls", ".docx" };
+            var extensoesPermitidas = new[] { ".csv", ".xlsx", ".xls", ".docx", ".txt" };
 
             if (!extensoesPermitidas.Contains(extensao))
             {

@@ -159,8 +159,10 @@
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\GrupoFaturamentoModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsBilling\IItemRelatorioImportado.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\ItemInconsistenciaFaturamento.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\ItemRelatorioImportadoHapVida.cs" />
+    <Compile Include="Models\ModelsGestao\modelsBilling\ItemRelatorioImportadoUnimed.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\OperadoraModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\ResultadoViewConferencia.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\BeneficiarioEmpresa.cs" />
