@@ -377,6 +377,7 @@
     <Content Include="Uploads\logoVallor.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Uploads\logo_plennus.png" />
+    <Content Include="Uploads\logo_plennus_cortado.png" />
     <Content Include="Uploads\logo_plennus_sb.png" />
     <Content Include="ViewsApp\erro.aspx" />
     <Content Include="ViewsApp\Home.aspx" />

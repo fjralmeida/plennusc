@@ -24,14 +24,15 @@ namespace appWhatsapp.Views
                 ItensPedIntegradoUtil util = new ItensPedIntegradoUtil();
                 DataTable dtPerfil = util.ConsultaInfoPerfil();
 
-                if (dtPerfil.Rows.Count > 0)
-                {
-                    string simbolo = dtPerfil.Rows[0]["Conf_Simbolo"]?.ToString();
-                    if (!string.IsNullOrEmpty(simbolo))
-                    {
-                        imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + simbolo);
-                    }
-                }
+                // if (dtPerfil.Rows.Count > 0)
+                // {
+                //    string simbolo = dtPerfil.Rows[0]["Conf_Simbolo"]?.ToString();
+                //    if (!string.IsNullOrEmpty(simbolo))
+                //    {
+                //        imgLogo.ImageUrl = ResolveUrl("~/Uploads/" + simbolo);
+                //    }
+                //}
+
                 CarregarSistemas();
             }
         }
