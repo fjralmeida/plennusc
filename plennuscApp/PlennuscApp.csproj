@@ -276,7 +276,6 @@
     <Content Include="Content\Css\projects\medic\structuresCss\MedicMaster\masterMedic.css" />
     <Content Include="Content\Css\styleIndexMaster.css" />
     <Content Include="Content\Css\styleSignIn.css" />
-    <Content Include="Content\Css\styleWebForm1.css" />
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
@@ -429,7 +428,6 @@
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Site.Master" />
     <Content Include="ViewsApp\Unauthorized.aspx" />
-    <Content Include="ViewsApp\WebForm1.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -1067,13 +1065,6 @@
     </Compile>
     <Compile Include="ViewsApp\Unauthorized.aspx.designer.cs">
       <DependentUpon>Unauthorized.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ViewsApp\WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ViewsApp\WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
