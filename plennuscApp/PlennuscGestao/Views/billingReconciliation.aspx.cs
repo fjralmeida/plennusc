@@ -177,7 +177,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             string nomeOperadora = ddlOperadora.SelectedItem.Text;
             int codigoGrupoContrato = Convert.ToInt32(ddlOperadora.SelectedValue);
-            string tipoConferencia = rblTipoConferencia.SelectedValue; // "CONVENIO" ou "EVENTO_ADICIONAL"
+            string tipoConferencia = rblTipoConferencia.SelectedValue;
 
             try
             {
@@ -186,6 +186,10 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                 gridPreview.DataSource = itensConferidos;
                 gridPreview.DataBind();
+
+                // ===== Atualiza DATA_CONFERENCIA_FATUR na PS1021 pros itens OK/tolerados =====
+                _service.ConferirFaturamento(itensConferidos);
+                // ================================================================================
 
                 int divergentes = itensConferidos.Count(i => i.StatusConferencia == "DIVERGENTE");
                 int naoEncontrados = itensConferidos.Count(i => i.StatusConferencia == "NAO_ENCONTRADO");

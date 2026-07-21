@@ -69,6 +69,18 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         }
         #endregion
 
+        public void ConferirFaturamento(List<ItemRelatorioImportadoHapVida> itensConferidos)
+        {
+            var itensParaAtualizar = itensConferidos
+                .Where(i => i.StatusConferencia == "OK" || i.StatusConferencia == "DIVERGENCIA_TOLERADA")
+                .ToList();
+
+            if (itensParaAtualizar.Count == 0)
+                return;
+
+            _sql.ConferirFaturamento(itensParaAtualizar);
+        }
+
         #region LOGICA DE EXPORTAÇÃO PARA EXCEL
         public byte[] ExportarConferenciaExcel(List<ItemRelatorioImportadoHapVida> itens)
         {

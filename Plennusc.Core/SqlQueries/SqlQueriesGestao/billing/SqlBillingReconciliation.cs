@@ -317,12 +317,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
             string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
 
             string sql = @"
-        UPDATE PS1021
-        SET DATA_CONFERENCIA_FATUR = GETDATE()
-        WHERE NUMERO_REGISTRO = @NumeroRegistro
-          AND CODIGO_EMPRESA = @CodigoEmpresa
-          AND CODIGO_ASSOCIADO = @CodigoAssociado
-          AND MES_ANO_VENCIMENTO = @MesAnoReferencia";
+                UPDATE PS1021
+                SET DATA_CONFERENCIA_FATUR = GETDATE()
+                WHERE NUMERO_REGISTRO = @NumeroRegistro
+                  AND CODIGO_EMPRESA = @CodigoEmpresa
+                  AND CODIGO_ASSOCIADO = @CodigoAssociado
+                  AND MES_ANO_VENCIMENTO = @MesAnoReferencia";
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
@@ -345,6 +345,56 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
                     }
                 }
             }
+        }
+        public void ConferirFaturamento(List<ItemRelatorioImportadoHapVida> itensParaConfirmar)
+        {
+            if (itensParaConfirmar == null || itensParaConfirmar.Count == 0)
+                throw new ArgumentException("Nenhum item para conferir.");
+
+            string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+
+            string sql = @"
+        UPDATE ps1021
+        SET ps1021.DATA_CONFERENCIA_FATUR = GETDATE()
+        FROM PS1021 ps1021
+        INNER JOIN PS1000 ps1000 ON ps1021.CODIGO_ASSOCIADO = ps1000.CODIGO_ASSOCIADO
+        WHERE ps1021.MES_ANO_VENCIMENTO = @MesAnoReferencia
+          AND (
+                (@Cpf IS NOT NULL AND ps1000.NUMERO_CPF = @Cpf)
+                OR
+                (@Credencial IS NOT NULL AND ps1000.NUMERO_CARTEIRINHA = @Credencial)
+              )";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.Add("@MesAnoReferencia", SqlDbType.VarChar, 10);
+                    cmd.Parameters.Add("@Cpf", SqlDbType.VarChar, 20);
+                    cmd.Parameters.Add("@Credencial", SqlDbType.VarChar, 20);
+
+                    foreach (var item in itensParaConfirmar)
+                    {
+                        string cpfLimpo = LimparApenasDigitos(item.Cpf);
+                        string credencialLimpa = LimparApenasDigitos(item.Credencial);
+
+                        cmd.Parameters["@MesAnoReferencia"].Value = (object)item.MesAnoReferencia ?? DBNull.Value;
+                        cmd.Parameters["@Cpf"].Value = string.IsNullOrWhiteSpace(cpfLimpo) ? (object)DBNull.Value : cpfLimpo;
+                        cmd.Parameters["@Credencial"].Value = string.IsNullOrWhiteSpace(credencialLimpa) ? (object)DBNull.Value : credencialLimpa;
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        private string LimparApenasDigitos(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+                return null;
+
+            return new string(valor.Where(char.IsDigit).ToArray());
         }
     }
 }
