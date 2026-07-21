@@ -340,7 +340,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    table-layout: fixed; /* força as larguras definidas */
+    table-layout: auto; /* ajusta a largura automaticamente*/
     min-width: 1200px; /* ajuste conforme necessário */
 }
     .custom-grid th,
