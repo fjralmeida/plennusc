@@ -105,6 +105,7 @@
         <asp:BoundField DataField="Plano" HeaderText="Plano" HeaderStyle-Width="90px" ItemStyle-Width="90px" ItemStyle-CssClass="col-curta" />
         <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano Usado" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
         <asp:BoundField DataField="Cobrado" HeaderText="Valor Operadora" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+        <asp:BoundField DataField="Adicional" HeaderText="Valor Adicional" DataFormatString="{0:N2}" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
         <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Cobrança" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
         <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
 

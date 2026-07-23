@@ -118,6 +118,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         "Plano",
                         "Mês/Ano Usado",
                         "Cobrado",
+                        "Valor Adicional",
                         "Valor Operadora",
                         "Diferença",
                         "Data Admissão",
@@ -145,6 +146,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         row.Append(CriarCelulaTexto(item.Plano ?? "", estilo));
                         row.Append(CriarCelulaTexto(item.MesAnoReferencia ?? "", estilo));
                         row.Append(CriarCelulaTexto(item.Cobrado.ToString("N2"), estilo));
+                        row.Append(CriarCelulaTexto(item.Adicional.ToString("N2"), estilo));
                         row.Append(CriarCelulaTexto(item.ValorOperadoraView?.ToString("N2") ?? "", estilo));
                         row.Append(CriarCelulaTexto(item.DiferencaValor?.ToString("N2") ?? "", estilo));
                         row.Append(CriarCelulaTexto(item.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", estilo));

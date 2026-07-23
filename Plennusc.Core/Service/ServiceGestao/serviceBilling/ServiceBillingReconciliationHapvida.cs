@@ -174,27 +174,24 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             foreach (var item in itensImportados)
             {
                 string cpfTratado = TratarCpf(item.Cpf);
-                string credencialTratada = TratarCredencial(item.Credencial);
                 ResultadoViewConferencia resultado;
+
                 if (tipoConferencia == "EVENTO_ADICIONAL")
                 {
                     resultado = _sql.BuscarDadosOdontologicoPorCpf(cpfTratado, item.MesAnoReferencia, codigoGrupoContrato);
                 }
                 else
                 {
-                    resultado = _sql.BuscarDadosConvenioPorCpfECredencial(cpfTratado, credencialTratada, item.MesAnoReferencia);
+                    resultado = _sql.BuscarDadosConvenioPorCpf(cpfTratado, item.MesAnoReferencia);
                 }
+
                 if (resultado == null)
                 {
                     item.ValorOperadoraView = null;
                     item.DiferencaValor = null;
-
-                    // NOVO: no convênio, o não-encontrado quase sempre é a carteirinha divergente do CPF.
-                    // Sinaliza isso pro usuário, sem mexer na consulta.
-                    item.StatusConferencia = (tipoConferencia == "EVENTO_ADICIONAL")
-                        ? "NAO_ENCONTRADO"
-                        : "CARTEIRINHA_NAO_ENCONTRADA";
-
+                    // Agora que não filtramos mais por carteirinha, "não encontrado" no convênio
+                    // volta a significar CPF não encontrado mesmo (não é mais problema de carteirinha).
+                    item.StatusConferencia = "NAO_ENCONTRADO";
                     continue;
                 }
                 // resto do método continua 100% igual
