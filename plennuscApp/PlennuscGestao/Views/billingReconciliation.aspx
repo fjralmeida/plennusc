@@ -4,6 +4,13 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
+<div id="overlayCarregando" class="overlay-carregando">
+    <div class="overlay-carregando-card">
+        <div class="overlay-spinner"></div>
+        <p class="overlay-texto">Processando conferência, aguarde...</p>
+    </div>
+</div>
+
 <div class="container-main">
 
     <div class="page-header">
@@ -78,7 +85,9 @@
                         </asp:RadioButtonList>
                     </div>
                     <div class="acoes-conferencia">
-                        <asp:Button ID="btnConferir" runat="server" Text="Conferir com a Operadora" CssClass="btn btn-primary" OnClick="btnConferir_Click" />
+                        <asp:Button ID="btnConferir" runat="server" Text="Conferir com a Operadora" CssClass="btn btn-primary"
+                            OnClientClick="return mostrarOverlayCarregando();"
+                            OnClick="btnConferir_Click" />
                         <asp:Button ID="btnExportarDivergentes" runat="server" Text="Exportar Divergentes (Excel)" CssClass="btn btn-secondary" OnClick="btnExportarDivergentes_Click" />
                     </div>
                 </div>
@@ -172,5 +181,19 @@
         if (valor.length >= 3) valor = valor.substring(0, 2) + '/' + valor.substring(2);
         input.value = valor;
     }
+</script>
+
+    <script>
+        function mostrarOverlayCarregando() {
+            document.getElementById('overlayCarregando').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(function () {
+                var botoes = document.querySelectorAll('button, input[type="submit"]');
+                botoes.forEach(function (b) { b.disabled = true; });
+            }, 0);
+
+            return true;
+        }
 </script>
 </asp:Content>

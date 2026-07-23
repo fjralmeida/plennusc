@@ -482,7 +482,7 @@ namespace appWhatsapp.PlennuscMedic.Views
                     <html>
                       <body>
                         <h2>Olá, {nome}!</h2>
-                        <p>Seu acesso ao sistema Plennusc foi criado com sucesso.</p>
+                        <p>Seu acesso ao sistema Plennusc (http://plennusc.vallorbeneficios.com.br/ViewsApp/SignIn.aspx) foi criado com sucesso.</p>
                         <p><b>Usuário:</b> {usuario}</p>
                         <p><b>Senha temporária:</b> {senhaTemp}</p>
                         <p>Recomendamos que altere sua senha no primeiro login.</p>

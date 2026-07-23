@@ -148,6 +148,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 case "DIVERGENCIA_TOLERADA": e.Row.CssClass = "linha-divergencia-tolerada"; break;
                 case "DIVERGENTE": e.Row.CssClass = "linha-divergente"; break;
                 case "NAO_ENCONTRADO": e.Row.CssClass = "linha-nao-encontrado"; break;
+                case "CARTEIRINHA_NAO_ENCONTRADA": e.Row.CssClass = "linha-carteirinha-nao-encontrada"; break;
             }
         }
 
@@ -160,6 +161,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 case "DIVERGENCIA_TOLERADA": return "OK (dif. 10 centavos)";
                 case "DIVERGENTE": return "Divergente";
                 case "NAO_ENCONTRADO": return "Não encontrado";
+                case "CARTEIRINHA_NAO_ENCONTRADA": return "Carteirinha não encontrada";
                 default: return status;
             }
         }

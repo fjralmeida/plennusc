@@ -175,9 +175,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             {
                 string cpfTratado = TratarCpf(item.Cpf);
                 string credencialTratada = TratarCredencial(item.Credencial);
-
                 ResultadoViewConferencia resultado;
-
                 if (tipoConferencia == "EVENTO_ADICIONAL")
                 {
                     resultado = _sql.BuscarDadosOdontologicoPorCpf(cpfTratado, item.MesAnoReferencia, codigoGrupoContrato);
@@ -186,28 +184,29 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 {
                     resultado = _sql.BuscarDadosConvenioPorCpfECredencial(cpfTratado, credencialTratada, item.MesAnoReferencia);
                 }
-
                 if (resultado == null)
                 {
                     item.ValorOperadoraView = null;
-                    item.StatusConferencia = "NAO_ENCONTRADO";
                     item.DiferencaValor = null;
+
+                    // NOVO: no convênio, o não-encontrado quase sempre é a carteirinha divergente do CPF.
+                    // Sinaliza isso pro usuário, sem mexer na consulta.
+                    item.StatusConferencia = (tipoConferencia == "EVENTO_ADICIONAL")
+                        ? "NAO_ENCONTRADO"
+                        : "CARTEIRINHA_NAO_ENCONTRADA";
+
                     continue;
                 }
-
-                // Novos campos vindos da view
+                // resto do método continua 100% igual
                 item.DataAdmissao = resultado.DataAdmissao;
                 item.DataExclusao = resultado.DataExclusao;
                 item.NomeMotivoExclusao = resultado.NomeMotivoExclusao;
                 item.NomeTabelaPreco = resultado.NomeTabelaPreco;
                 item.NomeGrupoPessoas = resultado.NomeGrupoPessoas;
                 item.DescricaoGrupoFaturamento = resultado.DescricaoGrupoFaturamento;
-
                 item.ValorOperadoraView = resultado.ValorOperadora;
-
                 decimal diferenca = Math.Abs(item.Cobrado - resultado.ValorOperadora.Value);
                 item.DiferencaValor = diferenca;
-
                 if (diferenca == 0)
                     item.StatusConferencia = "OK";
                 else if (diferenca <= TOLERANCIA_DIVERGENCIA)
@@ -215,7 +214,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 else
                     item.StatusConferencia = "DIVERGENTE";
             }
-
             return itensImportados;
         }
 
@@ -238,15 +236,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         {
             if (string.IsNullOrEmpty(cpf)) return cpf;
             return cpf.Replace(".", "").Replace("-", "").Trim();
-        }
-
-        private Cell CriarCelulaTexto(string valor)
-        {
-            return new Cell
-            {
-                DataType = CellValues.String,
-                CellValue = new CellValue(valor ?? "")
-            };
         }
     }
 }

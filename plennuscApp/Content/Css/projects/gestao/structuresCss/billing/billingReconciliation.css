@@ -386,6 +386,14 @@
 .custom-grid col:nth-child(14) { width: 10%; } /* Grupo de Pessoas */
 .custom-grid col:nth-child(15) { width: 10%; } /* Grupo de Faturamento */
 .custom-grid col:nth-child(16) { width: 7%; }  /* Status */
+.status-carteirinha-nao-encontrada {
+    background: #D1C4E9;
+    color: #4527A0;
+}
+
+.linha-carteirinha-nao-encontrada td {
+    background: #F3E5F5 !important;
+}
 
     .custom-grid tbody tr:last-child td {
         border-bottom: none;
@@ -457,6 +465,53 @@
     color: white !important;
     box-shadow: 0 0 0 2px rgba(76,176,122,.35) !important;
     outline: none !important;
+}
+
+/* ── Overlay de Carregamento ── */
+.overlay-carregando {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(32, 33, 36, 0.35);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay-carregando-card {
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.overlay-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--gray-200);
+    border-top-color: var(--primary-hover);
+    border-radius: 50%;
+    animation: overlay-spin .8s linear infinite;
+}
+
+.overlay-texto {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+@keyframes overlay-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .banner-ajuda-conferencia {
