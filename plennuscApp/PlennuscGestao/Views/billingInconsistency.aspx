@@ -27,6 +27,20 @@
                         MaxLength="7" placeholder="MM/AAAA" onkeyup="mascararMesAno(this)" />
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Vigência (opcional)</label>
+                    <div class="custom-dropdown" id="dropdownGrupoFaturamento">
+                        <div class="dropdown-header" onclick="toggleDropdown(this)">
+                            <span class="resumo-texto" id="lblGrupoFaturamentoResumo">
+                                <span class="placeholder">Selecione...</span>
+                            </span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="dropdown-panel">
+                            <asp:CheckBoxList ID="cblGrupoFaturamento" runat="server" ClientIDMode="Static" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="txtBusca" class="form-label">Buscar (Nome ou CPF)</label>
                     <asp:TextBox ID="txtBusca" runat="server" CssClass="form-control" placeholder="Digite o nome ou CPF..." />
                 </div>
@@ -116,6 +130,60 @@
                     checkboxes[i].checked = checkbox.checked;
                 }
             }
+        }
+    </script>
+
+    <script>
+        function mostrarImportacao(ddl) {
+            var divImportar = document.getElementById('divImportar');
+            if (ddl.value && ddl.value !== '') divImportar.classList.remove('hidden');
+            else divImportar.classList.add('hidden');
+        }
+        function toggleDropdown(header) {
+            var wrapper = header.parentElement;
+            var isOpen = wrapper.classList.contains('open');
+            document.querySelectorAll('.custom-dropdown.open').forEach(function (w) {
+                if (w !== wrapper) w.classList.remove('open');
+            });
+            wrapper.classList.toggle('open', !isOpen);
+        }
+        document.addEventListener('click', function (e) {
+            document.querySelectorAll('.custom-dropdown').forEach(function (wrapper) {
+                if (!wrapper.contains(e.target)) wrapper.classList.remove('open');
+            });
+        });
+        function atualizarResumoGrupoFaturamento() {
+            var checkboxes = document.querySelectorAll('#cblGrupoFaturamento input[type="checkbox"]:checked');
+            var label = document.getElementById('lblGrupoFaturamentoResumo');
+            label.innerHTML = '';
+            if (checkboxes.length === 0) {
+                label.innerHTML = '<span class="placeholder">Selecione...</span>';
+                return;
+            }
+            checkboxes.forEach(function (chk) {
+                var nome = chk.closest('td').textContent.trim();
+                var tag = document.createElement('span');
+                tag.className = 'tag-item';
+                tag.textContent = nome;
+                label.appendChild(tag);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var painel = document.getElementById('cblGrupoFaturamento');
+            if (painel) {
+                painel.addEventListener('change', function (e) {
+                    if (e.target && e.target.type === 'checkbox') atualizarResumoGrupoFaturamento();
+                });
+            }
+            atualizarResumoGrupoFaturamento();
+            var ddl = document.getElementById('<%= ddlOperadora.ClientID %>');
+        if (ddl) mostrarImportacao(ddl);
+    });
+        function mascararMesAno(input) {
+            var valor = input.value.replace(/\D/g, '');
+            if (valor.length > 6) valor = valor.substring(0, 6);
+            if (valor.length >= 3) valor = valor.substring(0, 2) + '/' + valor.substring(2);
+            input.value = valor;
         }
     </script>
 </asp:Content>

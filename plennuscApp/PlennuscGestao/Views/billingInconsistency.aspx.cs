@@ -21,6 +21,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (!IsPostBack)
             {
                 CarregarOperadoras();
+                CarregarGruposFaturamento();
                 // Restaura o PageSize salvo em ViewState
                 if (ViewState["PageSize"] != null)
                 {
@@ -46,6 +47,14 @@ namespace appWhatsapp.PlennuscGestao.Views
         }
         #endregion
 
+        private void CarregarGruposFaturamento()
+        {
+            var grupos = _service.ObterGruposFaturamento();
+            cblGrupoFaturamento.DataSource = grupos;
+            cblGrupoFaturamento.DataTextField = "DescricaoGrupoFaturamento";
+            cblGrupoFaturamento.DataValueField = "CodigoGrupoFaturamento";
+            cblGrupoFaturamento.DataBind();
+        }
         protected void btnPesquisar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(ddlOperadora.SelectedValue))
@@ -68,6 +77,16 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
 
             int codigoGrupoContrato = Convert.ToInt32(ddlOperadora.SelectedValue);
+
+            List<int> codigosGrupoFaturamento = cblGrupoFaturamento.Items
+               .Cast<ListItem>()
+               .Where(item => item.Selected)
+               .Select(item => Convert.ToInt32(item.Value))
+               .ToList();
+
+            //Session[SESSION_OPERADORA] = codigoOperadora;
+            //Session[SESSION_GRUPOS_FATURAMENTO] = codigosGrupoFaturamento;
+            //Session["BillingReconciliation_MesAnoReferencia"] = mesAnoReferencia; // guardado pra usar depois
 
             try
             {

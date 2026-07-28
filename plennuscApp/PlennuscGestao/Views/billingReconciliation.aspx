@@ -84,46 +84,44 @@
                             <asp:ListItem Text="Odontológico (Evento Adicional)" Value="EVENTO_ADICIONAL" />
                         </asp:RadioButtonList>
                     </div>
-                    <div class="acoes-conferencia">
-                        <asp:Button ID="btnConferir" runat="server" Text="Conferir com a Operadora" CssClass="btn btn-primary"
-                            OnClientClick="return mostrarOverlayCarregando();"
-                            OnClick="btnConferir_Click" />
-                        <asp:Button ID="btnExportarDivergentes" runat="server" Text="Exportar Divergentes (Excel)" CssClass="btn btn-secondary" OnClick="btnExportarDivergentes_Click" />
-                    </div>
                 </div>
             </asp:Panel>
+          <div class="acoes-conferencia">
+              <asp:Button ID="btnConferir" runat="server" Text="Conferir com a Operadora" CssClass="btn btn-primary"
+                  OnClientClick="return mostrarOverlayCarregando();"
+                  OnClick="btnConferir_Click" />
+              <asp:Button ID="btnExportarDivergentes" runat="server" Text="Exportar Divergentes (Excel)" CssClass="btn btn-secondary" OnClick="btnExportarDivergentes_Click" />
+          </div>
         <asp:Label ID="lblMensagemConferencia" runat="server" CssClass="msg-importacao" />
 
         <div class="grid-container" style="margin-top:16px;">
     <asp:GridView ID="gridPreview" runat="server" CssClass="custom-grid" AutoGenerateColumns="false"
     EmptyDataText="Nenhum registro encontrado." GridLines="None" OnRowDataBound="gridPreview_RowDataBound">
     <Columns>
-        <asp:BoundField DataField="Cpf" HeaderText="CPF / Carteirinha" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="Beneficiario" HeaderText="Beneficiário" HeaderStyle-Width="180px" ItemStyle-Width="180px" ItemStyle-CssClass="col-nome" />
-        <asp:BoundField DataField="Nascimento" HeaderText="Nascimento" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="Parentesco" HeaderText="Parentesco" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="Plano" HeaderText="Plano" HeaderStyle-Width="90px" ItemStyle-Width="90px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano Usado" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="Cobrado" HeaderText="Valor Operadora" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="Adicional" HeaderText="Valor Adicional" DataFormatString="{0:N2}" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Cobrança" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
-
-        <asp:BoundField DataField="DataAdmissao" HeaderText="Data Admissão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="DataExclusao" HeaderText="Data Exclusão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
-        <asp:BoundField DataField="NomeMotivoExclusao" HeaderText="Motivo Exclusão" HeaderStyle-Width="160px" ItemStyle-Width="160px" ItemStyle-CssClass="col-nome" />
-        <asp:BoundField DataField="NomeTabelaPreco" HeaderText="Tabela de Preço" HeaderStyle-Width="220px" ItemStyle-Width="220px" ItemStyle-CssClass="col-texto-longo" />
-        <asp:BoundField DataField="NomeGrupoPessoas" HeaderText="Grupo de Pessoas" HeaderStyle-Width="200px" ItemStyle-Width="200px" ItemStyle-CssClass="col-texto-longo" />
-        <asp:BoundField DataField="DescricaoGrupoFaturamento" HeaderText="Grupo de Faturamento" HeaderStyle-Width="240px" ItemStyle-Width="240px" ItemStyle-CssClass="col-texto-longo" />
-
-        <asp:TemplateField HeaderText="Status" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta">
-            <ItemTemplate>
-                <span class='badge status-<%# ((string)Eval("StatusConferencia") ?? "").ToLower().Replace("_", "-") %>'>
-                    <%# TraduzirStatus((string)Eval("StatusConferencia")) %>
-                </span>
-            </ItemTemplate>
-        </asp:TemplateField>
-    </Columns>
+    <asp:BoundField DataField="Cpf" HeaderText="CPF / Carteirinha" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="Beneficiario" HeaderText="Beneficiário" HeaderStyle-Width="180px" ItemStyle-Width="180px" ItemStyle-CssClass="col-nome" />
+    <asp:BoundField DataField="Nascimento" HeaderText="Nascimento" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="Parentesco" HeaderText="Parentesco" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="Plano" HeaderText="Plano" HeaderStyle-Width="90px" ItemStyle-Width="90px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="MesAnoReferencia" HeaderText="Mês/Ano Usado" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="Cobrado" HeaderText="Valor Operadora" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="Adicional" HeaderText="Valor Adicional" DataFormatString="{0:N2}" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Cobrança" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="DataAdmissao" HeaderText="Data Admissão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="DataExclusao" HeaderText="Data Exclusão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+    <asp:BoundField DataField="NomeMotivoExclusao" HeaderText="Motivo Exclusão" HeaderStyle-Width="160px" ItemStyle-Width="160px" ItemStyle-CssClass="col-nome" />
+    <asp:BoundField DataField="NomeTabelaPreco" HeaderText="Tabela de Preço" HeaderStyle-Width="220px" ItemStyle-Width="220px" ItemStyle-CssClass="col-texto-longo" />
+    <asp:BoundField DataField="NomeGrupoPessoas" HeaderText="Grupo de Pessoas" HeaderStyle-Width="200px" ItemStyle-Width="200px" ItemStyle-CssClass="col-texto-longo" />
+    <asp:BoundField DataField="DescricaoGrupoFaturamento" HeaderText="Grupo de Faturamento" HeaderStyle-Width="240px" ItemStyle-Width="240px" ItemStyle-CssClass="col-texto-longo" />
+    <asp:TemplateField HeaderText="Status" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta">
+        <ItemTemplate>
+            <span class='badge status-<%# ((string)Eval("StatusConferencia") ?? "").ToLower().Replace("_", "-") %>'>
+                <%# TraduzirStatus((string)Eval("StatusConferencia")) %>
+            </span>
+        </ItemTemplate>
+    </asp:TemplateField>
+</Columns>
 </asp:GridView>
         </div>
     </div>

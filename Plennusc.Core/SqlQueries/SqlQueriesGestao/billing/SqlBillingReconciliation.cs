@@ -385,6 +385,53 @@ WHERE NUMERO_CPF = @Cpf
             }
         }
 
+        public ResultadoViewConferencia BuscarDadosUnimedPorCarteirinha(string carteirinha, string mesAnoReferencia, int codigoGrupoContrato, string tipo, string filtroDescricao)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+
+            string sql = @"
+            SELECT TOP 1
+                VALOR_OPERADORA,
+                DATA_ADMISSAO,
+                DATA_EXCLUSAO,
+                NOME_MOTIVO_EXCLUSAO,
+                NOME_TABELA_PRECO,
+                NOME_GRUPO_DE_PESSOAS,
+                DESCRICAO_GRUPO_FATURAMENTO
+            FROM VW_RELATORIO_CONFERENCIA
+            WHERE NUMERO_CARTEIRINHA = @Carteirinha
+              AND MES_ANO_REFERENCIA = @MesAnoReferencia
+              AND CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
+              AND TIPO = @Tipo";
+
+            if (!string.IsNullOrEmpty(filtroDescricao))
+            {
+                sql += " AND DESCRICAO LIKE @FiltroDescricao";
+            }
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Carteirinha", carteirinha);
+                cmd.Parameters.AddWithValue("@MesAnoReferencia", mesAnoReferencia);
+                cmd.Parameters.AddWithValue("@CodigoGrupoContrato", codigoGrupoContrato);
+                cmd.Parameters.AddWithValue("@Tipo", tipo);
+
+                if (!string.IsNullOrEmpty(filtroDescricao))
+                {
+                    cmd.Parameters.AddWithValue("@FiltroDescricao", $"%{filtroDescricao}%");
+                }
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                        return MapearResultado(reader);
+                }
+            }
+            return null;
+        }
+
         private string LimparApenasDigitos(string valor)
         {
             if (string.IsNullOrWhiteSpace(valor))

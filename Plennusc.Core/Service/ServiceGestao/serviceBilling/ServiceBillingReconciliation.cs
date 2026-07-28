@@ -65,6 +65,12 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             {
                 return _hapvida.ConferirComView(itensImportados, tipoConferencia, codigoGrupoContrato);
             }
+
+            if (nomeOperadora.IndexOf("UNIMED", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return _unimed.ConferirComView(itensImportados, codigoGrupoContrato);
+            }
+
             throw new NotSupportedException($"Ainda não existe conferência implementada para a operadora '{nomeOperadora}'.");
         }
         #endregion

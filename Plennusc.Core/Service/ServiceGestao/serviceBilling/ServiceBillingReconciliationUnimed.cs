@@ -38,6 +38,21 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             }
         }
 
+        private string DeterminarTipoServico(string descricaoProduto)
+        {
+            if (string.IsNullOrEmpty(descricaoProduto))
+                return "CONVENIO";
+
+            if (descricaoProduto.IndexOf("ODONTO", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "ODONTO";
+
+            if (descricaoProduto.IndexOf("AEROMEDICO", StringComparison.OrdinalIgnoreCase) >= 0
+                || descricaoProduto.IndexOf("AÉREOMEDICO", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "AEROMEDICO";
+
+            return "CONVENIO";
+        }
+
         private List<ItemRelatorioImportadoUnimed> LerRelatorioTXT(Stream arquivo)
         {
             var itens = new List<ItemRelatorioImportadoUnimed>();
@@ -86,6 +101,71 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             }
 
             return itens;
+        }
+
+        public List<ItemRelatorioImportadoHapVida> ConferirComView(List<ItemRelatorioImportadoHapVida> itensImportados, int codigoGrupoContrato)
+        {
+            foreach (var item in itensImportados)
+            {
+                string carteirinhaTratada = TratarCredencial(item.Credencial);
+                string tipoServico = DeterminarTipoServico(item.Plano); // Plano = Descricao do produto vinda do TXT
+
+                string tipoView;
+                string filtroDescricao;
+
+                switch (tipoServico)
+                {
+                    case "ODONTO":
+                        tipoView = "EVENTO ADICIONAL";
+                        filtroDescricao = "ODONTO";
+                        break;
+                    case "AEROMEDICO":
+                        tipoView = "EVENTO ADICIONAL";
+                        filtroDescricao = "AEROMEDICO";
+                        break;
+                    default:
+                        tipoView = "CONVÊNIO";
+                        filtroDescricao = null;
+                        break;
+                }
+
+                var resultado = _sql.BuscarDadosUnimedPorCarteirinha(carteirinhaTratada, item.MesAnoReferencia, codigoGrupoContrato, tipoView, filtroDescricao);
+
+                if (resultado == null)
+                {
+                    item.ValorOperadoraView = null;
+                    item.DiferencaValor = null;
+                    item.StatusConferencia = "NAO_ENCONTRADO";
+                    continue;
+                }
+
+                item.DataAdmissao = resultado.DataAdmissao;
+                item.DataExclusao = resultado.DataExclusao;
+                item.NomeMotivoExclusao = resultado.NomeMotivoExclusao;
+                item.NomeTabelaPreco = resultado.NomeTabelaPreco;
+                item.NomeGrupoPessoas = resultado.NomeGrupoPessoas;
+                item.DescricaoGrupoFaturamento = resultado.DescricaoGrupoFaturamento;
+                item.ValorOperadoraView = resultado.ValorOperadora;
+
+                decimal diferenca = Math.Abs(item.Cobrado - resultado.ValorOperadora.Value);
+                item.DiferencaValor = diferenca;
+
+                if (diferenca == 0)
+                    item.StatusConferencia = "OK";
+                else if (diferenca <= TOLERANCIA_DIVERGENCIA)
+                    item.StatusConferencia = "DIVERGENCIA_TOLERADA";
+                else
+                    item.StatusConferencia = "DIVERGENTE";
+            }
+
+            return itensImportados;
+        }
+
+        // Mesma lógica de tratamento usada no import — reaproveita se já existir, senão adiciona:
+        private string TratarCredencial(string credencial)
+        {
+            if (string.IsNullOrEmpty(credencial)) return credencial;
+            return credencial.Replace(".", "").Replace("-", "").Replace(" ", "").Trim();
         }
 
         private decimal ConverterValor(string valorBruto)

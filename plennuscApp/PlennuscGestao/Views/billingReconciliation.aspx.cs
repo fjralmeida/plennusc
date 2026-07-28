@@ -114,14 +114,18 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     Session["BillingReconciliation_ItensImportados"] = itensImportados;
 
+                    bool ehHapvida = nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0;
+
+                    AjustarColunasGridPorOperadora(ehHapvida);
+
                     gridPreview.DataSource = itensImportados;
                     gridPreview.DataBind();
+
                     divPreview.Attributes.Remove("class");
                     divPreview.Attributes.Add("class", "form-group");
 
                     ExibirMensagem($"Arquivo '{fileRelatorio.FileName}' importado com sucesso. {itensImportados.Count} registro(s) encontrado(s).", erro: false);
 
-                    bool ehHapvida = nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0;
                     pnlTipoConferencia.Visible = ehHapvida;
 
                     if (!ehHapvida)
@@ -133,6 +137,28 @@ namespace appWhatsapp.PlennuscGestao.Views
             catch (Exception ex)
             {
                 ExibirMensagem("Erro ao processar o arquivo: " + ex.Message, erro: true);
+            }
+        }
+
+        private void AjustarColunasGridPorOperadora(bool ehHapvida)
+        {
+            var camposSomenteHapvida = new[]
+            {
+                "Nascimento",
+                "Parentesco",
+                "Adicional",
+                "DataAdmissao",
+                "NomeTabelaPreco",
+                "NomeGrupoPessoas",
+                "DescricaoGrupoFaturamento"
+            };
+
+            foreach (DataControlField coluna in gridPreview.Columns)
+            {
+                if (coluna is BoundField boundField && camposSomenteHapvida.Contains(boundField.DataField))
+                {
+                    coluna.Visible = ehHapvida;
+                }
             }
         }
 
