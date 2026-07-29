@@ -254,34 +254,54 @@ WHERE NUMERO_CPF = @Cpf
             };
         }
 
-        public List<ItemInconsistenciaFaturamento> BuscarInconsistenciasFaturamento(string mesAnoReferencia, int codigoGrupoContrato)
+        public List<ItemInconsistenciaFaturamento> BuscarInconsistenciasFaturamento(string mesAnoReferencia, int codigoGrupoContrato, List<int> codigosGrupoFaturamento)
         {
             var lista = new List<ItemInconsistenciaFaturamento>();
             string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
 
             string sql = @"
-        SELECT 
-            ps.NUMERO_REGISTRO,
-            ps.CODIGO_EMPRESA,
-            ps.CODIGO_ASSOCIADO,
-            ps.MES_ANO_VENCIMENTO AS MES_ANO_REFERENCIA,
-            ps.VALOR_NET_CORRIGIDO,
-            p1000.NOME_ASSOCIADO,
-            p1000.NUMERO_CPF,
-            p1000.DATA_ADMISSAO,
-            p1000.DATA_EXCLUSAO,
-            p1000.CODIGO_MOTIVO_EXCLUSAO
-        FROM PS1021 ps
-        INNER JOIN PS1000 p1000 ON ps.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO
-        WHERE ps.MES_ANO_VENCIMENTO = @MesAnoReferencia
-          AND ps.DATA_CONFERENCIA_FATUR IS NULL
-          AND p1000.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato";
+                SELECT 
+                    ps.NUMERO_REGISTRO,
+                    ps.CODIGO_EMPRESA,
+                    ps.CODIGO_ASSOCIADO,
+                    ps.MES_ANO_VENCIMENTO AS MES_ANO_REFERENCIA,
+                    ps.VALOR_NET_CORRIGIDO,
+                    p1000.NOME_ASSOCIADO,
+                    p1000.NUMERO_CPF,
+                    p1000.DATA_ADMISSAO,
+                    p1000.DATA_EXCLUSAO,
+                    p1000.CODIGO_MOTIVO_EXCLUSAO
+                FROM PS1021 ps
+                INNER JOIN PS1000 p1000 ON ps.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO
+                WHERE ps.MES_ANO_VENCIMENTO = @MesAnoReferencia
+                  AND ps.DATA_CONFERENCIA_FATUR IS NULL
+                  AND p1000.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato";
+
+            // ===== Filtro opcional de Vigência (Grupo de Faturamento) =====
+            if (codigosGrupoFaturamento != null && codigosGrupoFaturamento.Count > 0)
+            {
+                var nomesParametros = codigosGrupoFaturamento
+                    .Select((codigo, indice) => $"@GrupoFat{indice}")
+                    .ToList();
+
+                sql += $" AND p1000.CODIGO_GRUPO_FATURAMENTO IN ({string.Join(",", nomesParametros)})";
+            }
+            // ================================================================
 
             using (SqlConnection conn = new SqlConnection(connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@MesAnoReferencia", mesAnoReferencia);
                 cmd.Parameters.AddWithValue("@CodigoGrupoContrato", codigoGrupoContrato);
+
+                if (codigosGrupoFaturamento != null && codigosGrupoFaturamento.Count > 0)
+                {
+                    for (int i = 0; i < codigosGrupoFaturamento.Count; i++)
+                    {
+                        cmd.Parameters.AddWithValue($"@GrupoFat{i}", codigosGrupoFaturamento[i]);
+                    }
+                }
+
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -298,7 +318,7 @@ WHERE NUMERO_CPF = @Cpf
                             NumeroCpf = reader["NUMERO_CPF"] != DBNull.Value ? reader["NUMERO_CPF"].ToString() : "",
                             DataAdmissao = reader["DATA_ADMISSAO"] != DBNull.Value ? Convert.ToDateTime(reader["DATA_ADMISSAO"]) : (DateTime?)null,
                             DataExclusao = reader["DATA_EXCLUSAO"] != DBNull.Value ? Convert.ToDateTime(reader["DATA_EXCLUSAO"]) : (DateTime?)null,
-                            NomeMotivoExclusao = "" // se quiser buscar o nome do motivo em outra tabela, faça um JOIN ou consulta adicional
+                            NomeMotivoExclusao = ""
                         });
                     }
                 }

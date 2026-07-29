@@ -90,7 +90,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             try
             {
-                var itens = _service.ObterInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato);
+                var itens = _service.ObterInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato, codigosGrupoFaturamento);
 
                 // Filtro por nome ou CPF
                 string busca = txtBusca.Text.Trim();

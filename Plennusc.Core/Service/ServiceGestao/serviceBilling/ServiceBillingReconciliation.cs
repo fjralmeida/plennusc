@@ -252,9 +252,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         #endregion
 
         #region LOGICA DE INCONSISTÊNCIAS DE FATURAMENTO
-        public List<ItemInconsistenciaFaturamento> ObterInconsistenciasFaturamento(string mesAnoReferencia, int codigoGrupoContrato)
+        public List<ItemInconsistenciaFaturamento> ObterInconsistenciasFaturamento(string mesAnoReferencia, int codigoGrupoContrato, List<int> codigosGrupoFaturamento)
         {
-            return _sql.BuscarInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato);
+            return _sql.BuscarInconsistenciasFaturamento(mesAnoReferencia, codigoGrupoContrato, codigosGrupoFaturamento);
         }
 
         public void ConferirInconsistencias(List<ItemInconsistenciaFaturamento> itens)
