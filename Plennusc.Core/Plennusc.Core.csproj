@@ -158,6 +158,7 @@
     <Compile Include="Models\ModelsGestao\HistoricoDto.cs" />
     <Compile Include="Models\ModelsGestao\Mensagem.cs" />
     <Compile Include="Models\ModelsGestao\modelsAnnex\temporaryAnnex.cs" />
+    <Compile Include="Models\ModelsGestao\modelsBilling\ItemFaturamentosConferidos.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\GrupoFaturamentoModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\IItemRelatorioImportado.cs" />
     <Compile Include="Models\ModelsGestao\modelsBilling\ItemInconsistenciaFaturamento.cs" />
@@ -236,6 +237,7 @@
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliation.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationHapvida.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUnimed.cs" />
+    <Compile Include="Service\ServiceGestao\serviceBilling\ServiceRevenueVerified.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteImportService.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteVallorDocxService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />
@@ -252,6 +254,7 @@
     <Compile Include="SqlQueries\SqlQueriesFinance\settingsFinance\PrivacySettingsFinance.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\autenticacao\PermissaoQuery.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\billing\SqlBillingReconciliation.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\billing\SqlRevenueVerified.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\butYouQueries\butYouQueriesAssociados.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\butYouQueries\enterpriseButYouQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\CompanyDAO.cs" />

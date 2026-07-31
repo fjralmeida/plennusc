@@ -312,6 +312,7 @@
     <Content Include="PlennuscGestao\Views\privacySettings.aspx" />
     <Content Include="PlennuscGestao\Views\registerStructures.aspx" />
     <Content Include="PlennuscGestao\Views\registerStructureType.aspx" />
+    <Content Include="PlennuscGestao\Views\revenueVerified.aspx" />
     <Content Include="PlennuscGestao\Views\sendAnAutomatedEmail.aspx" />
     <Content Include="PlennuscGestao\Views\sendCompanyMessage.aspx" />
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
@@ -716,6 +717,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\registerStructureType.aspx.designer.cs">
       <DependentUpon>registerStructureType.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\revenueVerified.aspx.cs">
+      <DependentUpon>revenueVerified.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\revenueVerified.aspx.designer.cs">
+      <DependentUpon>revenueVerified.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\sendAnAutomatedEmail.aspx.cs">
       <DependentUpon>sendAnAutomatedEmail.aspx</DependentUpon>
