@@ -43,5 +43,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
         public string NomeTabelaPreco { get; set; }
         public string NomeGrupoPessoas { get; set; }
         public string DescricaoGrupoFaturamento { get; set; }
+        public decimal Credito { get; set; }
+        public decimal Debito { get; set; }
     }
 }

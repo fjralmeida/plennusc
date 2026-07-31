@@ -17,6 +17,8 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 {
     public class ServiceBillingReconciliation
     {
+        private const string OP_HAPVIDA = "HAPVIDA";
+        private const string OP_UNIMED = "UNIMED";
         private readonly SqlBillingReconciliation _sql = new SqlBillingReconciliation();
         private readonly ServiceBillingReconciliationHapvida _hapvida = new ServiceBillingReconciliationHapvida();
         private readonly ServiceBillingReconciliationUnimed _unimed = new ServiceBillingReconciliationUnimed();
@@ -51,7 +53,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         Beneficiario = u.NomeBeneficiario,
                         Plano = u.Descricao,
                         Cobrado = u.ValorOperadora,
-                        Cpf = u.Cpf
+                        Cpf = u.Cpf,
+                        Credito = u.Credito,
+                        Debito = u.Debito
                     })
                     .ToList();
             }
@@ -87,9 +91,47 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             _sql.ConferirFaturamento(itensParaAtualizar);
         }
 
-        #region LOGICA DE EXPORTAÇÃO PARA EXCEL
-        public byte[] ExportarConferenciaExcel(List<ItemRelatorioImportadoHapVida> itens)
+        private class ColunaExport
         {
+            public string Header { get; set; }
+            public Func<ItemRelatorioImportadoHapVida, string> ObterValor { get; set; }
+            public string[] OperadorasPermitidas { get; set; }
+        }
+
+        #region LOGICA DE EXPORTAÇÃO PARA EXCEL
+
+        private List<ColunaExport> MontarDefinicaoColunas()
+        {
+            return new List<ColunaExport>
+    {
+        new ColunaExport { Header = "CPF / Carteirinha", ObterValor = i => i.Cpf ?? "" },
+        new ColunaExport { Header = "Beneficiário", ObterValor = i => i.Beneficiario ?? "" },
+        new ColunaExport { Header = "Nascimento", ObterValor = i => i.Nascimento?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+        new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+        new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "" },
+        new ColunaExport { Header = "Mês/Ano Usado", ObterValor = i => i.MesAnoReferencia ?? "" },
+        new ColunaExport { Header = "Valor Operadora", ObterValor = i => i.Cobrado.ToString("N2") },
+        new ColunaExport { Header = "Valor Adicional", ObterValor = i => i.Adicional.ToString("N2"), OperadorasPermitidas = new[] { OP_HAPVIDA } },
+        new ColunaExport { Header = "Crédito", ObterValor = i => i.Credito.ToString("N2"), OperadorasPermitidas = new[] { OP_UNIMED } },
+        new ColunaExport { Header = "Débito", ObterValor = i => i.Debito.ToString("N2"), OperadorasPermitidas = new[] { OP_UNIMED } },
+        new ColunaExport { Header = "Valor Cobrança", ObterValor = i => i.ValorOperadoraView?.ToString("N2") ?? "" },
+        new ColunaExport { Header = "Diferença", ObterValor = i => i.DiferencaValor?.ToString("N2") ?? "" },
+        new ColunaExport { Header = "Data Admissão", ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+        new ColunaExport { Header = "Data Exclusão", ObterValor = i => i.DataExclusao?.ToString("dd/MM/yyyy") ?? "" },
+        new ColunaExport { Header = "Motivo Exclusão", ObterValor = i => i.NomeMotivoExclusao ?? "" },
+        new ColunaExport { Header = "Tabela de Preço", ObterValor = i => i.NomeTabelaPreco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+        new ColunaExport { Header = "Grupo de Pessoas", ObterValor = i => i.NomeGrupoPessoas ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+        new ColunaExport { Header = "Grupo de Faturamento", ObterValor = i => i.DescricaoGrupoFaturamento ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+        new ColunaExport { Header = "Status", ObterValor = i => TraduzirStatusExcel(i.StatusConferencia) },
+    };
+        }
+
+        public byte[] ExportarConferenciaExcel(List<ItemRelatorioImportadoHapVida> itens, string codigoOperadora)
+        {
+            var colunasAplicaveis = MontarDefinicaoColunas()
+                .Where(c => c.OperadorasPermitidas == null || c.OperadorasPermitidas.Contains(codigoOperadora))
+                .ToList();
+
             using (var stream = new MemoryStream())
             {
                 using (var doc = SpreadsheetDocument.Create(stream, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
@@ -97,7 +139,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                     var workbookPart = doc.AddWorkbookPart();
                     workbookPart.Workbook = new Workbook();
 
-                    // Estilos
                     var stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
                     stylesPart.Stylesheet = CriarStylesheet();
                     stylesPart.Stylesheet.Save();
@@ -114,54 +155,17 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         Name = "Conferência"
                     });
 
-                    // Cabeçalho com TODAS as colunas do grid
                     var headerRow = new Row();
-                    string[] colunas = {
-                        "CPF",
-                        "Beneficiário",
-                        "Nascimento",
-                        "Parentesco",
-                        "Plano",
-                        "Mês/Ano Usado",
-                        "Cobrado",
-                        "Valor Adicional",
-                        "Valor Operadora",
-                        "Diferença",
-                        "Data Admissão",
-                        "Data Exclusão",
-                        "Motivo Exclusão",
-                        "Tabela de Preço",
-                        "Grupo de Pessoas",
-                        "Grupo de Faturamento",
-                        "Status"
-                    };
-                    foreach (var col in colunas)
-                        headerRow.Append(CriarCelulaTexto(col, 5)); // estilo 5 = cabeçalho
+                    foreach (var coluna in colunasAplicaveis)
+                        headerRow.Append(CriarCelulaTexto(coluna.Header, 5));
                     sheetData.Append(headerRow);
 
-                    // Linhas — TODOS os itens
                     foreach (var item in itens)
                     {
                         uint estilo = ObterEstiloPorStatus(item.StatusConferencia);
-
                         var row = new Row();
-                        row.Append(CriarCelulaTexto(item.Cpf ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.Beneficiario ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.Nascimento?.ToString("dd/MM/yyyy") ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.Parentesco ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.Plano ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.MesAnoReferencia ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.Cobrado.ToString("N2"), estilo));
-                        row.Append(CriarCelulaTexto(item.Adicional.ToString("N2"), estilo));
-                        row.Append(CriarCelulaTexto(item.ValorOperadoraView?.ToString("N2") ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.DiferencaValor?.ToString("N2") ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.DataExclusao?.ToString("dd/MM/yyyy") ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.NomeMotivoExclusao ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.NomeTabelaPreco ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.NomeGrupoPessoas ?? "", estilo));
-                        row.Append(CriarCelulaTexto(item.DescricaoGrupoFaturamento ?? "", estilo));
-                        row.Append(CriarCelulaTexto(TraduzirStatusExcel(item.StatusConferencia), estilo));
+                        foreach (var coluna in colunasAplicaveis)
+                            row.Append(CriarCelulaTexto(coluna.ObterValor(item), estilo));
                         sheetData.Append(row);
                     }
 

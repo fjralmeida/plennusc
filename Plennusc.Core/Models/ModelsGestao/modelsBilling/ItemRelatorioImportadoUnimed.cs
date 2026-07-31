@@ -14,6 +14,8 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
         public string Descricao { get; set; }
         public decimal ValorOperadora { get; set; }
         public string Cpf { get; set; }
+        public decimal Credito { get; set; }
+        public decimal Debito { get; set; }
 
         // Preenchidos depois, na etapa de conferência com a VW_RELATORIO_CONFERENCIA
         public decimal? ValorSistema { get; set; }

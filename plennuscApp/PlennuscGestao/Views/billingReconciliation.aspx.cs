@@ -153,11 +153,24 @@ namespace appWhatsapp.PlennuscGestao.Views
                 "DescricaoGrupoFaturamento"
             };
 
+            var camposSomenteUnimed = new[]
+            {
+                "Credito",
+                "Debito"
+            };
+
             foreach (DataControlField coluna in gridPreview.Columns)
             {
-                if (coluna is BoundField boundField && camposSomenteHapvida.Contains(boundField.DataField))
+                if (coluna is BoundField boundField)
                 {
-                    coluna.Visible = ehHapvida;
+                    if (camposSomenteHapvida.Contains(boundField.DataField))
+                    {
+                        coluna.Visible = ehHapvida;
+                    }
+                    else if (camposSomenteUnimed.Contains(boundField.DataField))
+                    {
+                        coluna.Visible = !ehHapvida;
+                    }
                 }
             }
         }
@@ -244,13 +257,25 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            byte[] arquivo = _service.ExportarConferenciaExcel(itens);
+            string nomeOperadora = ddlOperadora.SelectedItem.Text;
+            string codigoOperadora = DeterminarCodigoOperadora(nomeOperadora);
+
+            byte[] arquivo = _service.ExportarConferenciaExcel(itens, codigoOperadora);
 
             Response.Clear();
             Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             Response.AddHeader("Content-Disposition", $"attachment; filename=Conferencia_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
             Response.BinaryWrite(arquivo);
             Response.End();
+        }
+
+        private string DeterminarCodigoOperadora(string nomeOperadora)
+        {
+            if (nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "HAPVIDA";
+            if (nomeOperadora.IndexOf("UNIMED", StringComparison.OrdinalIgnoreCase) >= 0)
+                return "UNIMED";
+            return null;
         }
 
         private void ExibirMensagem(string mensagem, bool erro)
