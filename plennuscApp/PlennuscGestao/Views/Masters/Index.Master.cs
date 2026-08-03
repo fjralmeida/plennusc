@@ -337,8 +337,6 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 return "bi bi-building me-2";  // prédio = enterprise
             }
 
-
-
             // ✅ PREÇOS
             if (nomeObjeto.Contains("menuprecos") || nomeDisplay.Contains("preço") || nomeDisplay.Contains("precos"))
                 return "bi bi-currency-dollar me-2";
@@ -387,6 +385,9 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
 
             if (nomeObjeto.Contains("billinginconsistency") || nomeDisplay.Contains("inconsistências") || nomeDisplay.Contains("inconsistencias"))
                 return "bi bi-exclamation-triangle me-2";
+
+            if (nomeObjeto.Contains("revenueverified") || nomeDisplay.Contains("Faturamentos") || nomeDisplay.Contains("Conferidos"))
+                return "bi bi-check-circle me-2";
 
             // ✅ PESSOAS
             if (nomeObjeto.Contains("menupessoas") || nomeDisplay.Contains("pessoas"))
