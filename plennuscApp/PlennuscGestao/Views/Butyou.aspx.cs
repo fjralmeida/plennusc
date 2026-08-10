@@ -1059,5 +1059,67 @@ namespace appWhatsapp.PlennuscGestao.Views
             pnlErro.Visible = true;
         }
 
+        protected void btnSetCemg_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\MIGRACAO_TERMO.csv";
+                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_SETCEMG_UNITARIO.docx");
+                string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
+
+                if (!Directory.Exists(pastaDestino))
+                    Directory.CreateDirectory(pastaDestino);
+
+                var importService = new ImportacaoSetCemgService();
+                List<DadosPropostaSetCemg> propostas = importService.ImportarCsv(caminhoArquivo);
+
+                if (propostas == null || propostas.Count == 0)
+                {
+                    ExibirErro("Nenhuma proposta encontrada no arquivo.");
+                    return;
+                }
+
+                ExibirMensagem($"Encontradas {propostas.Count} propostas. Processando...");
+
+                var docxService = new DocxServiceSetCemg();
+                int documentosCriados = 0;
+                var erros = new StringBuilder();
+
+                foreach (var proposta in propostas)
+                {
+                    try
+                    {
+                        string cnpjLimpo = Regex.Replace(proposta.Cnpj ?? "SEM_CNPJ", @"[^\d]", "");
+                        string nomeLimpo = LimparNomeArquivo(proposta.RazaoSocial ?? "SEM_NOME");
+                        string nomeArquivo = SanitizarNomeArquivo($"{cnpjLimpo}__{nomeLimpo}.docx");
+                        string outputPath = Path.Combine(pastaDestino, nomeArquivo);
+
+                        // Gera o documento e obtém o log
+                        string logResultado = docxService.GerarDocumento(templatePath, outputPath, proposta);
+
+                        // Opcional: exibir o log de cada proposta (para debug)
+                        // ExibirMensagem($"<pre>{logResultado.Replace("\n", "<br/>")}</pre>", append: true);
+
+                        documentosCriados++;
+                    }
+                    catch (Exception exProposta)
+                    {
+                        erros.AppendLine($"✗ {proposta.RazaoSocial} ({proposta.Cnpj}): {exProposta.Message}");
+                    }
+                }
+
+                ExibirMensagem($"<br/>✅ {documentosCriados} documento(s) gerado(s) com sucesso.", append: true);
+
+                if (erros.Length > 0)
+                {
+                    ExibirErro($"<br/>Erros:<br/>{erros.ToString().Replace(Environment.NewLine, "<br/>")}", append: true);
+                }
+            }
+            catch (Exception ex)
+            {
+                lblErro.Text = $"ERRO GERAL: {ex.Message}<br/><br/>Stack: {ex.StackTrace}";
+                lblErro.Visible = true;
+            }
+        }
     }
 }

@@ -190,6 +190,7 @@
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\MenuNode.cs" />
     <Compile Include="Models\ModelsGestao\modelsMenu\menusManagementModels.cs" />
+    <Compile Include="Models\ModelsGestao\modelsMigration\DadosPropostaSetCemg.cs" />
     <Compile Include="Models\ModelsGestao\modelsMigration\TermoReajusteVallor.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraAlteracoesDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraListDto.cs" />
@@ -238,6 +239,8 @@
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationHapvida.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUnimed.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceRevenueVerified.cs" />
+    <Compile Include="Service\ServiceGestao\serviceMigration\DocxServiceSetCemg.cs" />
+    <Compile Include="Service\ServiceGestao\serviceMigration\ImportacaoSetCemgService.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteImportService.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteVallorDocxService.cs" />
     <Compile Include="Service\ServiceGestao\serviceYouBut\DocxService.cs" />

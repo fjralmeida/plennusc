@@ -59,6 +59,11 @@
                 Text="&#9654; Executar"
                 OnClick="btnPreencherComDadosCsv_Click"
                 CssClass="mg-btn verde" />
+
+              <asp:Button ID="btnSetCemg" runat="server"
+      Text="&#9654; Executar SetCemg"
+      OnClick="btnSetCemg_Click"
+      CssClass="mg-btn verde" />
         </div>
 
         <%-- Card 3 — Termo de Reajuste --%>
