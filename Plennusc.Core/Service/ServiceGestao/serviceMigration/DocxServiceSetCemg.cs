@@ -71,10 +71,15 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
                 { "{{EMAIL_DO_RESPONS_VEL}}", dados.EmailResponsavel },
             };
 
-            // Percorre Run por Run (não Paragraph inteiro) e faz igualdade
-            // exata de texto — nunca "Contains", pra não confundir
-            // "{{EMAIL}}" com "{{EMAIL_DO_RESPONS_VEL}}", por exemplo.
-            var runs = body.Descendants<Run>().ToList();
+            // 1ª passada: tenta achar o token inteiro num Run só (caso comum).
+            // 2ª passada (fallback): o Word às vezes quebra o texto em vários
+            // Runs dentro do mesmo parágrafo (autocorreção, edição manual,
+            // "salvar como" etc.) — nesse caso o token fica picotado tipo
+            // "{{PROPOSTA" + "}}" em runs separados. Pra cobrir isso, quando
+            // a busca simples falha, procuramos por parágrafo: juntamos o
+            // texto de todos os Runs, achamos o token ali, e substituímos
+            // reescrevendo os Runs daquele parágrafo.
+            var paragrafos = body.Descendants<Paragraph>().ToList();
 
             foreach (var kv in mapeamento)
             {
@@ -82,26 +87,65 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
                 string valor = kv.Value ?? "";
                 bool encontrado = false;
 
-                foreach (var run in runs)
+                // 1ª passada — Run único com o token exato
+                foreach (var run in body.Descendants<Run>())
                 {
                     var textEl = run.Descendants<Text>().FirstOrDefault(t => t.Text == token);
                     if (textEl == null) continue;
 
                     textEl.Text = valor;
                     textEl.Space = SpaceProcessingModeValues.Preserve;
-
-                    RunProperties rp = run.RunProperties ?? new RunProperties();
-                    // remove cor anterior (se houver) e força azul
-                    foreach (var c in rp.Elements<Color>().ToList()) c.Remove();
-                    rp.Append(new Color() { Val = "0000FF" });
-                    run.RunProperties = rp;
-
+                    AplicarCorAzul(run);
                     encontrado = true;
-                    break; // token é único no documento
+                    break;
+                }
+
+                // 2ª passada — token espalhado em runs diferentes do mesmo parágrafo
+                if (!encontrado)
+                {
+                    foreach (var paragrafo in paragrafos)
+                    {
+                        var runsDoParagrafo = paragrafo.Descendants<Run>().ToList();
+                        string textoCompleto = string.Concat(
+                            runsDoParagrafo.SelectMany(r => r.Descendants<Text>().Select(t => t.Text)));
+
+                        int idx = textoCompleto.IndexOf(token, StringComparison.Ordinal);
+                        if (idx < 0) continue;
+
+                        // Reescreve o parágrafo inteiro como texto puro (perde
+                        // formatação rica de trechos que não sejam o rótulo,
+                        // mas garante que o valor entre no lugar certo).
+                        string novoTexto = textoCompleto.Substring(0, idx)
+                            + valor
+                            + textoCompleto.Substring(idx + token.Length);
+
+                        // Preserva as RunProperties do primeiro run como base
+                        RunProperties baseProps = runsDoParagrafo.FirstOrDefault()?.RunProperties?.CloneNode(true) as RunProperties;
+
+                        foreach (var r in runsDoParagrafo.ToList()) r.Remove();
+
+                        Run novoRun = new Run();
+                        if (baseProps != null) novoRun.RunProperties = baseProps;
+                        Text novoTextEl = new Text(novoTexto) { Space = SpaceProcessingModeValues.Preserve };
+                        novoRun.AppendChild(novoTextEl);
+                        paragrafo.AppendChild(novoRun);
+
+                        AplicarCorAzul(novoRun);
+                        encontrado = true;
+                        break;
+                    }
                 }
 
                 log.AppendLine($"[TEXTO] '{token}' => {(encontrado ? "OK" : "NÃO ENCONTRADO")}");
             }
+        }
+
+        private void AplicarCorAzul(Run run)
+        {
+            RunProperties rp = run.RunProperties ?? new RunProperties();
+            foreach (var c in rp.Elements<Color>().ToList()) c.Remove();
+            rp.Append(new Color() { Val = "0000FF" });
+            run.RunProperties = rp;
         }
 
         // ─── VIGÊNCIA / VENCIMENTO ───
