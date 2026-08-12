@@ -394,37 +394,20 @@ function confirmarEnvioMassa() {
 function mostrarLoading() {
     var overlay = document.getElementById('loadingOverlay');
     if (overlay) {
-        // Mensagem padrão para menos de 100 mensagens
-        document.getElementById('loadingSubtext').textContent = 
+        document.getElementById('loadingSubtext').textContent =
             'Por favor, aguarde. Este processo pode levar alguns minutos.';
-        
-        // Reseta a barra de progresso
-        document.getElementById('loadingProgressBar').style.width = '0%';
-        
         overlay.style.display = 'flex';
-        
-        // Inicia animação da barra de progresso
-        iniciarAnimacaoProgresso();
     }
 }
 
 function mostrarLoadingComMensagem(quantidade) {
     var overlay = document.getElementById('loadingOverlay');
     if (overlay) {
-        // Mensagem personalizada para envio em massa
-        document.getElementById('loadingSubtext').textContent = 
+        document.getElementById('loadingSubtext').textContent =
             'Enviando ' + quantidade + ' mensagens. Por favor, não feche esta janela.';
-        
-        // Reseta a barra de progresso
-        document.getElementById('loadingProgressBar').style.width = '0%';
-        
         overlay.style.display = 'flex';
-        
-        // Inicia animação da barra de progresso
-        iniciarAnimacaoProgresso();
     }
 }
-
 function iniciarAnimacaoProgresso() {
     var progressBar = document.getElementById('loadingProgressBar');
     var width = 0;
@@ -440,24 +423,6 @@ function iniciarAnimacaoProgresso() {
     }, 50);
 }
 
-// Função para completar o progresso (pode ser chamada quando o envio terminar)
-function completarProgresso() {
-    var progressBar = document.getElementById('loadingProgressBar');
-    if (progressBar) {
-        progressBar.style.width = '100%';
-    }
-    
-    // Esconde o loading após 1 segundo
-    setTimeout(function() {
-        var overlay = document.getElementById('loadingOverlay');
-        if (overlay) {
-            overlay.style.display = 'none';
-        }
-        
-        // Reseta a flag de confirmação
-        envioConfirmadoPeloUsuario = false;
-    }, 1000);
-}
 
 // Função para esconder o loading em caso de erro
 function esconderLoading() {
@@ -548,14 +513,12 @@ function esconderLoading() {
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay">
+<div id="loadingOverlay">
+    <div class="loading-overlay-card">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Enviando mensagens...</div>
-        <div class="loading-subtext" id="loadingSubtext">Por favor, aguarde. Este processo pode levar alguns minutos.</div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar" id="loadingProgressBar"></div>
-        </div>
+        <p class="loading-text" id="loadingSubtext">Enviando mensagens...</p>
     </div>
+</div>
 
     <%--MODAL TEMPLETE MENSAGEM--%>
 
