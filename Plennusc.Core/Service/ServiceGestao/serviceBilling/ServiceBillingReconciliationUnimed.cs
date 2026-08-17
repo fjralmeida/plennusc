@@ -134,7 +134,6 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             {
                 string carteirinhaTratada = TratarCredencial(item.Credencial);
                 string tipoServico = DeterminarTipoServico(item.Plano); // Plano = Descricao do produto vinda do TXT
-
                 string tipoView;
                 string filtroDescricao;
 
@@ -171,18 +170,18 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 item.NomeGrupoPessoas = resultado.NomeGrupoPessoas;
                 item.DescricaoGrupoFaturamento = resultado.DescricaoGrupoFaturamento;
                 item.ValorOperadoraView = resultado.ValorOperadora;
-
+                item.CodigoEmpresa = resultado.CodigoEmpresa;
+                item.Empresa = resultado.Empresa;
                 decimal diferenca = Math.Abs(item.Cobrado - resultado.ValorOperadora.Value);
                 item.DiferencaValor = diferenca;
 
                 if (diferenca == 0)
                     item.StatusConferencia = "OK";
                 else if (diferenca <= TOLERANCIA_DIVERGENCIA)
-                    item.StatusConferencia = "DIVERGENCIA_TOLERADA";
+                    item.StatusConferencia = "DIVERGENTE_TOLERADA";
                 else
                     item.StatusConferencia = "DIVERGENTE";
             }
-
             return itensImportados;
         }
 

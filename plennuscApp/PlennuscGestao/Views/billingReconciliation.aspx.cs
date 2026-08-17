@@ -147,16 +147,18 @@ namespace appWhatsapp.PlennuscGestao.Views
                 "Nascimento",
                 "Parentesco",
                 "Adicional",
-                "DataAdmissao",
                 "NomeTabelaPreco",
-                "NomeGrupoPessoas",
                 "DescricaoGrupoFaturamento"
             };
 
             var camposSomenteUnimed = new[]
             {
                 "Credito",
-                "Debito"
+                "Debito",
+                "CODIGO_EMPRESA",
+                "EMPRESA",
+                "NOME_GRUPO_DE_PESSOAS",
+                "DATA_ADMISSAO"
             };
 
             foreach (DataControlField coluna in gridPreview.Columns)

@@ -15,5 +15,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
         public string NomeTabelaPreco { get; set; }
         public string NomeGrupoPessoas { get; set; }
         public string DescricaoGrupoFaturamento { get; set; }
+        public int? CodigoEmpresa { get; set; }
+        public string Empresa { get; set; }
     }
 }

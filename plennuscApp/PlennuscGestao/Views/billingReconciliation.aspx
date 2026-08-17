@@ -110,11 +110,15 @@
     <asp:BoundField DataField="Debito" HeaderText="Débito" DataFormatString="{0:N2}" HeaderStyle-Width="110px" ItemStyle-Width="110px" ItemStyle-CssClass="col-curta" />
     <asp:BoundField DataField="ValorOperadoraView" HeaderText="Valor Cobrança" DataFormatString="{0:N2}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
     <asp:BoundField DataField="DiferencaValor" HeaderText="Diferença" DataFormatString="{0:N2}" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
-    <asp:BoundField DataField="DataAdmissao" HeaderText="Data Admissão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
+
+<asp:BoundField DataField="CodigoEmpresa" HeaderText="Codigo Empresa" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
+<asp:BoundField DataField="Empresa" HeaderText="Empresa" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
+<asp:BoundField DataField="NomeGrupoPessoas" HeaderText="Nome Grupo de Pessoas" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
+<asp:BoundField DataField="DataAdmissao" HeaderText="Data de Admissão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="100px" ItemStyle-Width="100px" ItemStyle-CssClass="col-curta" />
+
     <asp:BoundField DataField="DataExclusao" HeaderText="Data Exclusão" DataFormatString="{0:dd/MM/yyyy}" HeaderStyle-Width="130px" ItemStyle-Width="130px" ItemStyle-CssClass="col-curta" />
     <asp:BoundField DataField="NomeMotivoExclusao" HeaderText="Motivo Exclusão" HeaderStyle-Width="160px" ItemStyle-Width="160px" ItemStyle-CssClass="col-nome" />
     <asp:BoundField DataField="NomeTabelaPreco" HeaderText="Tabela de Preço" HeaderStyle-Width="220px" ItemStyle-Width="220px" ItemStyle-CssClass="col-texto-longo" />
-    <asp:BoundField DataField="NomeGrupoPessoas" HeaderText="Grupo de Pessoas" HeaderStyle-Width="200px" ItemStyle-Width="200px" ItemStyle-CssClass="col-texto-longo" />
     <asp:BoundField DataField="DescricaoGrupoFaturamento" HeaderText="Grupo de Faturamento" HeaderStyle-Width="240px" ItemStyle-Width="240px" ItemStyle-CssClass="col-texto-longo" />
     <asp:TemplateField HeaderText="Status" HeaderStyle-Width="120px" ItemStyle-Width="120px" ItemStyle-CssClass="col-curta">
         <ItemTemplate>

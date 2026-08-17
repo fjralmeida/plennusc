@@ -103,27 +103,29 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         private List<ColunaExport> MontarDefinicaoColunas()
         {
             return new List<ColunaExport>
-    {
-        new ColunaExport { Header = "CPF / Carteirinha", ObterValor = i => i.Cpf ?? "" },
-        new ColunaExport { Header = "Beneficiário", ObterValor = i => i.Beneficiario ?? "" },
-        new ColunaExport { Header = "Nascimento", ObterValor = i => i.Nascimento?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
-        new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
-        new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "" },
-        new ColunaExport { Header = "Mês/Ano Usado", ObterValor = i => i.MesAnoReferencia ?? "" },
-        new ColunaExport { Header = "Valor Operadora", ObterValor = i => i.Cobrado.ToString("N2") },
-        new ColunaExport { Header = "Valor Adicional", ObterValor = i => i.Adicional.ToString("N2"), OperadorasPermitidas = new[] { OP_HAPVIDA } },
-        new ColunaExport { Header = "Crédito", ObterValor = i => i.Credito.ToString("N2"), OperadorasPermitidas = new[] { OP_UNIMED } },
-        new ColunaExport { Header = "Débito", ObterValor = i => i.Debito.ToString("N2"), OperadorasPermitidas = new[] { OP_UNIMED } },
-        new ColunaExport { Header = "Valor Cobrança", ObterValor = i => i.ValorOperadoraView?.ToString("N2") ?? "" },
-        new ColunaExport { Header = "Diferença", ObterValor = i => i.DiferencaValor?.ToString("N2") ?? "" },
-        new ColunaExport { Header = "Data Admissão", ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
-        new ColunaExport { Header = "Data Exclusão", ObterValor = i => i.DataExclusao?.ToString("dd/MM/yyyy") ?? "" },
-        new ColunaExport { Header = "Motivo Exclusão", ObterValor = i => i.NomeMotivoExclusao ?? "" },
-        new ColunaExport { Header = "Tabela de Preço", ObterValor = i => i.NomeTabelaPreco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
-        new ColunaExport { Header = "Grupo de Pessoas", ObterValor = i => i.NomeGrupoPessoas ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
-        new ColunaExport { Header = "Grupo de Faturamento", ObterValor = i => i.DescricaoGrupoFaturamento ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
-        new ColunaExport { Header = "Status", ObterValor = i => TraduzirStatusExcel(i.StatusConferencia) },
-    };
+            {
+                new ColunaExport { Header = "CPF / Carteirinha", ObterValor = i => i.Cpf ?? "" },
+                new ColunaExport { Header = "Beneficiário", ObterValor = i => i.Beneficiario ?? "" },
+                new ColunaExport { Header = "Nascimento", ObterValor = i => i.Nascimento?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+                new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+                new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "" },
+                new ColunaExport { Header = "Mês/Ano Usado", ObterValor = i => i.MesAnoReferencia ?? "" },
+                new ColunaExport { Header = "Valor Operadora", ObterValor = i => i.Cobrado.ToString("N2") },
+                new ColunaExport { Header = "Valor Adicional", ObterValor = i => i.Adicional.ToString("N2"), OperadorasPermitidas = new[] { OP_HAPVIDA } },
+                new ColunaExport { Header = "Crédito", ObterValor = i => i.Credito.ToString("N2"), OperadorasPermitidas = new[] { OP_UNIMED } },
+                new ColunaExport { Header = "Débito", ObterValor = i => i.Debito.ToString("N2"), OperadorasPermitidas = new[] { OP_UNIMED } },
+                new ColunaExport { Header = "Valor Cobrança", ObterValor = i => i.ValorOperadoraView?.ToString("N2") ?? "" },
+                new ColunaExport { Header = "Diferença", ObterValor = i => i.DiferencaValor?.ToString("N2") ?? "" },
+                new ColunaExport { Header = "Codigo Empresa", ObterValor = i => i.CodigoEmpresa?.ToString() ?? "", OperadorasPermitidas = new[] { OP_UNIMED } },
+                new ColunaExport { Header = "Empresa", ObterValor = i => i.Empresa ?? "", OperadorasPermitidas = new[] { OP_UNIMED } },
+                new ColunaExport { Header = "Data Admissão", ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "" },
+                new ColunaExport { Header = "Data Exclusão", ObterValor = i => i.DataExclusao?.ToString("dd/MM/yyyy") ?? "" },
+                new ColunaExport { Header = "Motivo Exclusão", ObterValor = i => i.NomeMotivoExclusao ?? "" },
+                new ColunaExport { Header = "Tabela de Preço", ObterValor = i => i.NomeTabelaPreco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+                new ColunaExport { Header = "Grupo de Pessoas", ObterValor = i => i.NomeGrupoPessoas ?? "" },
+                new ColunaExport { Header = "Grupo de Faturamento", ObterValor = i => i.DescricaoGrupoFaturamento ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+                new ColunaExport { Header = "Status", ObterValor = i => TraduzirStatusExcel(i.StatusConferencia) },
+            };
         }
 
         public byte[] ExportarConferenciaExcel(List<ItemRelatorioImportadoHapVida> itens, string codigoOperadora)

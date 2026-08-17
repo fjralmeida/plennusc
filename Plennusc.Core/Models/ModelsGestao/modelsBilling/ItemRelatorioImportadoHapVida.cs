@@ -38,6 +38,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
         public string StatusConferencia { get; set; }
 
         public DateTime? DataAdmissao { get; set; }
+        public int? CodigoEmpresa { get; set; }
         public DateTime? DataExclusao { get; set; }
         public string NomeMotivoExclusao { get; set; }
         public string NomeTabelaPreco { get; set; }

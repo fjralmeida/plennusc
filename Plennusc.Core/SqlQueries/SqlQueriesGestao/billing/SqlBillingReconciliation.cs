@@ -250,7 +250,9 @@ WHERE NUMERO_CPF = @Cpf
                 NomeMotivoExclusao = reader["NOME_MOTIVO_EXCLUSAO"] != DBNull.Value ? reader["NOME_MOTIVO_EXCLUSAO"].ToString() : null,
                 NomeTabelaPreco = reader["NOME_TABELA_PRECO"] != DBNull.Value ? reader["NOME_TABELA_PRECO"].ToString() : null,
                 NomeGrupoPessoas = reader["NOME_GRUPO_DE_PESSOAS"] != DBNull.Value ? reader["NOME_GRUPO_DE_PESSOAS"].ToString() : null,
-                DescricaoGrupoFaturamento = reader["DESCRICAO_GRUPO_FATURAMENTO"] != DBNull.Value ? reader["DESCRICAO_GRUPO_FATURAMENTO"].ToString() : null
+                DescricaoGrupoFaturamento = reader["DESCRICAO_GRUPO_FATURAMENTO"] != DBNull.Value ? reader["DESCRICAO_GRUPO_FATURAMENTO"].ToString() : null,
+                CodigoEmpresa = reader["CODIGO_EMPRESA"] != DBNull.Value ? Convert.ToInt32(reader["CODIGO_EMPRESA"]) : (int?)null,
+                Empresa = reader["EMPRESA"] as string
             };
         }
 
@@ -417,7 +419,9 @@ WHERE NUMERO_CPF = @Cpf
                 NOME_MOTIVO_EXCLUSAO,
                 NOME_TABELA_PRECO,
                 NOME_GRUPO_DE_PESSOAS,
-                DESCRICAO_GRUPO_FATURAMENTO
+                DESCRICAO_GRUPO_FATURAMENTO,
+                CODIGO_EMPRESA,
+                EMPRESA
             FROM VW_RELATORIO_CONFERENCIA
             WHERE NUMERO_CARTEIRINHA = @Carteirinha
               AND MES_ANO_REFERENCIA = @MesAnoReferencia
