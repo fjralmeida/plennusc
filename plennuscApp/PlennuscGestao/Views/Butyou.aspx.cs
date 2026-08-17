@@ -1067,6 +1067,10 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_SETCEMG_UNITARIO.docx");
                 string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
 
+                // Pasta onde estão os ~700 arquivos nomeados por e-mail (sem "@"),
+                // que serão anexados depois de cada proposta gerada.
+                string pastaComplementares = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\Uploads\PROPOSTAS_UNIMED_SETCEMG";
+
                 if (!Directory.Exists(pastaDestino))
                     Directory.CreateDirectory(pastaDestino);
 
@@ -1082,6 +1086,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 ExibirMensagem($"Encontradas {propostas.Count} propostas. Processando...");
 
                 var docxService = new DocxServiceSetCemg();
+                var mergeService = new DocxMergeService(); // NOVO
+
                 int documentosCriados = 0;
                 var erros = new StringBuilder();
 
@@ -1089,16 +1095,32 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string cnpjLimpo = Regex.Replace(proposta.Cnpj ?? "SEM_CNPJ", @"[^\d]", "");
+                        string email = LimparNomeArquivo(proposta.EmailResponsavel ?? "SEM_EMAIL");
                         string nomeLimpo = LimparNomeArquivo(proposta.RazaoSocial ?? "SEM_NOME");
-                        string nomeArquivo = SanitizarNomeArquivo($"{cnpjLimpo}__{nomeLimpo}.docx");
-                        string outputPath = Path.Combine(pastaDestino, nomeArquivo);
+                        string nomeArquivo = SanitizarNomeArquivo($"{email}__{nomeLimpo}.docx");
 
-                        // Gera o documento e obtém o log
-                        string logResultado = docxService.GerarDocumento(templatePath, outputPath, proposta);
+                        // Gera a proposta primeiro num arquivo temporário...
+                        string outputTemp = Path.Combine(pastaDestino, "TEMP__" + nomeArquivo);
+                        string logResultado = docxService.GerarDocumento(templatePath, outputTemp, proposta);
 
-                        // Opcional: exibir o log de cada proposta (para debug)
-                        // ExibirMensagem($"<pre>{logResultado.Replace("\n", "<br/>")}</pre>", append: true);
+                        // ...localiza o complementar pelo e-mail do responsável...
+                        string outputFinal = Path.Combine(pastaDestino, nomeArquivo);
+
+                        // Se o e-mail do responsável vier com mais de um separado por
+                        // ";", por enquanto usamos o primeiro (ajustar aqui se vocês
+                        // decidirem tentar os dois).
+                        string emailBusca = (proposta.EmailResponsavel ?? "")
+                            .Split(';')[0]
+                            .Trim();
+
+                        // ...e junta os dois num arquivo final. Se não achar o
+                        // complementar, isso lança ArquivoComplementarNaoEncontradoException
+                        // e cai direto no catch — nada fica gerado na pasta final,
+                        // conforme combinado.
+                        mergeService.JuntarPorEmail(outputTemp, pastaComplementares, emailBusca, outputFinal);
+
+                        // Remove o temporário — só o arquivo final (proposta + complementar) fica.
+                        File.Delete(outputTemp);
 
                         documentosCriados++;
                     }

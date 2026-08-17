@@ -176,7 +176,7 @@
 
                 btn.innerHTML =
                     '<i data-lucide="eye-off"></i>';
-
+-
             } else {
 
                 password.type = "password";

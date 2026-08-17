@@ -239,6 +239,7 @@
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationHapvida.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUnimed.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceRevenueVerified.cs" />
+    <Compile Include="Service\ServiceGestao\serviceMigration\DocxMergeService.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\DocxServiceSetCemg.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\ImportacaoSetCemgService.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\TermoReajusteImportService.cs" />
