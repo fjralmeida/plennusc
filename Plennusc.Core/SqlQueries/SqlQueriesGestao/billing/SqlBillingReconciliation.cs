@@ -198,7 +198,7 @@ WHERE NUMERO_CPF = @Cpf
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
-                        return MapearResultado(reader);
+                        return MapearResultadoHapVida(reader);
                 }
             }
             return null;
@@ -234,10 +234,24 @@ WHERE NUMERO_CPF = @Cpf
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
-                        return MapearResultado(reader);
+                        return MapearResultadoHapVida(reader);
                 }
             }
             return null;
+        }
+
+        private ResultadoViewConferencia MapearResultadoHapVida(SqlDataReader reader)
+        {
+            return new ResultadoViewConferencia
+            {
+                ValorOperadora = reader["VALOR_OPERADORA"] != DBNull.Value ? Convert.ToDecimal(reader["VALOR_OPERADORA"]) : (decimal?)null,
+                DataAdmissao = reader["DATA_ADMISSAO"] != DBNull.Value ? Convert.ToDateTime(reader["DATA_ADMISSAO"]) : (DateTime?)null,
+                DataExclusao = reader["DATA_EXCLUSAO"] != DBNull.Value ? Convert.ToDateTime(reader["DATA_EXCLUSAO"]) : (DateTime?)null,
+                NomeMotivoExclusao = reader["NOME_MOTIVO_EXCLUSAO"] != DBNull.Value ? reader["NOME_MOTIVO_EXCLUSAO"].ToString() : null,
+                NomeTabelaPreco = reader["NOME_TABELA_PRECO"] != DBNull.Value ? reader["NOME_TABELA_PRECO"].ToString() : null,
+                NomeGrupoPessoas = reader["NOME_GRUPO_DE_PESSOAS"] != DBNull.Value ? reader["NOME_GRUPO_DE_PESSOAS"].ToString() : null,
+                DescricaoGrupoFaturamento = reader["DESCRICAO_GRUPO_FATURAMENTO"] != DBNull.Value ? reader["DESCRICAO_GRUPO_FATURAMENTO"].ToString() : null
+            };
         }
 
         private ResultadoViewConferencia MapearResultado(SqlDataReader reader)

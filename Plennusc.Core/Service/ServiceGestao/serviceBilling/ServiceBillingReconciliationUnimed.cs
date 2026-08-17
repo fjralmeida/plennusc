@@ -171,7 +171,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 item.DescricaoGrupoFaturamento = resultado.DescricaoGrupoFaturamento;
                 item.ValorOperadoraView = resultado.ValorOperadora;
                 item.CodigoEmpresa = resultado.CodigoEmpresa;
-                item.Empresa = resultado.Empresa;
+                item.EmpresaUnimed = resultado.Empresa;
                 decimal diferenca = Math.Abs(item.Cobrado - resultado.ValorOperadora.Value);
                 item.DiferencaValor = diferenca;
 

@@ -144,22 +144,21 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             var camposSomenteHapvida = new[]
             {
-                "Nascimento",
-                "Parentesco",
-                "Adicional",
-                "NomeTabelaPreco",
-                "DescricaoGrupoFaturamento"
-            };
+        "Nascimento",
+        "Parentesco",
+        "Adicional",
+        "NomeTabelaPreco",
+        "DescricaoGrupoFaturamento",
+        "Empresa"
+    };
 
             var camposSomenteUnimed = new[]
             {
-                "Credito",
-                "Debito",
-                "CODIGO_EMPRESA",
-                "EMPRESA",
-                "NOME_GRUPO_DE_PESSOAS",
-                "DATA_ADMISSAO"
-            };
+        "Credito",
+        "Debito",
+        "CodigoEmpresa",
+        "EmpresaUnimed"
+    };
 
             foreach (DataControlField coluna in gridPreview.Columns)
             {
