@@ -235,6 +235,7 @@
     <Content Include="Content\Css\projects\finance\structuresCss\financeMaster\master-Finance.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\billing\billingInconsistency.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\billing\billingReconciliation.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\CIDs\ICDImport.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\Company-Registration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\demand-Gestao.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\detailDemand.css" />
@@ -294,6 +295,7 @@
     <Content Include="PlennuscGestao\Views\employeePosition.aspx" />
     <Content Include="PlennuscGestao\Views\enterpriseButYou.aspx" />
     <Content Include="PlennuscGestao\Views\FixedMessageSending.aspx" />
+    <Content Include="PlennuscGestao\Views\ICDImport.aspx" />
     <Content Include="PlennuscGestao\Views\linkSector.aspx" />
     <Content Include="PlennuscGestao\Views\listDemand.aspx" />
     <Content Include="PlennuscGestao\Views\listPlatform.aspx" />
@@ -584,6 +586,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\FixedMessageSending.aspx.designer.cs">
       <DependentUpon>FixedMessageSending.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\ICDImport.aspx.cs">
+      <DependentUpon>ICDImport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\ICDImport.aspx.designer.cs">
+      <DependentUpon>ICDImport.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\linkSector.aspx.cs">
       <DependentUpon>linkSector.aspx</DependentUpon>

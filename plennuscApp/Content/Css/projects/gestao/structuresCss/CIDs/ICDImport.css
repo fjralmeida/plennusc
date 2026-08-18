@@ -1,0 +1,19 @@
+﻿.icd-import-container {
+    padding: 20px;
+}
+
+    .icd-import-container .form-row {
+        margin-bottom: 15px;
+    }
+
+.icd-required {
+    color: red;
+}
+
+#gridNaoImportados {
+    background-color: #fff3f3;
+}
+
+#gridImportados {
+    background-color: #f3fff3;
+}
