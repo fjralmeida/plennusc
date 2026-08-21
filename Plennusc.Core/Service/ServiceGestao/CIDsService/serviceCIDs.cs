@@ -28,84 +28,147 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             {
                 foreach (var linha in linhas)
                 {
-                    if (string.IsNullOrWhiteSpace(linha.Cid))
+                    // Quebra o campo CID em múltiplos códigos (separados por vírgula)
+                    var cidsDaLinha = ExtrairCids(linha.Cid);
+
+                    // Se não sobrou nenhum CID válido depois de filtrar vazios/traços, pula a linha inteira
+                    if (cidsDaLinha.Count == 0)
                         continue;
 
-                    var item = new CIDsImportResultModel
+                    foreach (var cidIndividual in cidsDaLinha)
                     {
-                        LinhaCsv = linha.LinhaCsv,
-                        Cpf = linha.Cpf,
-                        Titular = linha.Titular,
-                        Beneficiario = linha.Beneficiario,
-                        Cid = linha.Cid
-                    };
-
-                    if (string.IsNullOrWhiteSpace(linha.Cpf))
-                    {
-                        item.Sucesso = false;
-                        item.Motivo = "CPF não informado na planilha.";
-                        resultados.Add(item);
-                        continue;
-                    }
-
-                    var associado = _data.BuscarAssociadoPorCpf(conn, linha.Cpf);
-
-                    if (associado == null)
-                    {
-                        item.Sucesso = false;
-                        item.Motivo = "CPF não encontrado na PS1000.";
-                        resultados.Add(item);
-                        continue;
-                    }
-
-                    item.CodigoAssociado = associado.CodigoAssociado;
-
-                    if (!associado.DataAdmissao.HasValue ||
-                        associado.DataAdmissao.Value.Date != vigenciaObrigatoria.Date)
-                    {
-                        item.Sucesso = false;
-                        item.Motivo = $"Data de admissão ({associado.DataAdmissao:dd/MM/yyyy}) não confere com a vigência informada ({vigenciaObrigatoria:dd/MM/yyyy}).";
-                        resultados.Add(item);
-                        continue;
-                    }
-
-                    if (_data.JaExisteRegistro(conn, associado.CodigoAssociado, linha.Cid))
-                    {
-                        item.Sucesso = false;
-                        item.Motivo = "Já cadastrado no sistema (PS1009).";
-                        resultados.Add(item);
-                        continue;
-                    }
-
-                    try
-                    {
-                        var registro = new CIDsRegistroInsertModel
+                        var item = new CIDsImportResultModel
                         {
-                            CodigoAssociado = associado.CodigoAssociado,
-                            CodigoCid = linha.Cid,
-                            DataTermino = linha.Vigencia,
-                            ReferenciaImportacao = "IMPORT_XLSX_" + DateTime.Now.ToString("yyyyMMddHHmmss"),
-                            InformacoesLogI = $"Importado em {DateTime.Now:dd/MM/yyyy HH:mm:ss} - CPF: {linha.Cpf}",
-                            InformacoesLogA = null,
-                            IdInstanciaProcesso = null
+                            LinhaCsv = linha.LinhaCsv,
+                            Cpf = linha.Cpf,
+                            Titular = linha.Titular,
+                            Beneficiario = linha.Beneficiario,
+                            Cid = cidIndividual
                         };
 
-                        _data.InserirRegistro(conn, registro);
+                        if (string.IsNullOrWhiteSpace(linha.Cpf))
+                        {
+                            item.Sucesso = false;
+                            item.Motivo = "CPF não informado na planilha.";
+                            resultados.Add(item);
+                            continue;
+                        }
 
-                        item.Sucesso = true;
-                        item.Motivo = "Importado com sucesso.";
-                    }
-                    catch (Exception ex)
-                    {
-                        item.Sucesso = false;
-                        item.Motivo = "Erro ao inserir: " + ex.Message;
-                    }
+                        var associado = _data.BuscarAssociadoPorCpf(conn, linha.Cpf);
 
-                    resultados.Add(item);
+                        if (associado == null)
+                        {
+                            item.Sucesso = false;
+                            item.Motivo = "CPF não encontrado na PS1000.";
+                            resultados.Add(item);
+                            continue;
+                        }
+
+                        item.CodigoAssociado = associado.CodigoAssociado;
+
+                        if (!associado.DataAdmissao.HasValue ||
+                            associado.DataAdmissao.Value.Date != vigenciaObrigatoria.Date)
+                        {
+                            item.Sucesso = false;
+                            item.Motivo = $"Data de admissão ({associado.DataAdmissao:dd/MM/yyyy}) não confere com a vigência informada ({vigenciaObrigatoria:dd/MM/yyyy}).";
+                            resultados.Add(item);
+                            continue;
+                        }
+
+                        if (_data.JaExisteRegistro(conn, associado.CodigoAssociado, cidIndividual))
+                        {
+                            item.Sucesso = false;
+                            item.Motivo = "Já cadastrado no sistema (PS1009).";
+                            resultados.Add(item);
+                            continue;
+                        }
+
+                        // NOVO: valida se o CID existe na tabela de domínio antes de tentar inserir
+                        if (!_data.CidExisteNoDominio(conn, cidIndividual))
+                        {
+                            item.Sucesso = false;
+                            item.Motivo = $"CID '{cidIndividual}' NÃO CADASTRADO.";
+                            resultados.Add(item);
+                            continue;
+                        }
+
+                        try
+                        {
+                            var registro = new CIDsRegistroInsertModel
+                            {
+                                CodigoAssociado = associado.CodigoAssociado,
+                                CodigoCid = cidIndividual,
+                                DataTermino = linha.Vigencia,
+                                ReferenciaImportacao = "IMPORT_XLSX_" + DateTime.Now.ToString("yyyyMMddHHmmss"),
+                                InformacoesLogI = "IMP " + DateTime.Now.ToString("dd/MM/yy HH:mm"),
+                                InformacoesLogA = $"CPF: {linha.Cpf} - Importado em {DateTime.Now:dd/MM/yyyy HH:mm:ss}",
+                                IdInstanciaProcesso = null
+                            };
+
+                            _data.InserirRegistro(conn, registro);
+
+                            item.Sucesso = true;
+                            item.Motivo = "Importado com sucesso.";
+                        }
+                        catch (Exception ex)
+                        {
+                            item.Sucesso = false;
+                            item.Motivo = "Erro ao inserir: " + ex.Message;
+                        }
+
+                        resultados.Add(item);
+                    }
                 }
             }
 
             return resultados;
+        }
+
+        /// <summary>
+        /// Extrai a lista de CIDs individuais de um campo que pode conter vários separados por vírgula.
+        /// Ex: "Z98, K35, J01, E73" -> ["Z98", "K35", "J01", "E73"]
+        /// Filtra automaticamente valores vazios, "-", "N/A" etc.
+        /// </summary>
+        private List<string> ExtrairCids(string campoCid)
+        {
+            var resultado = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(campoCid))
+                return resultado;
+
+            var partes = campoCid.Split(',');
+
+            foreach (var parte in partes)
+            {
+                var cidLimpo = parte.Trim();
+
+                if (CidEstaVazio(cidLimpo))
+                    continue;
+
+                resultado.Add(cidLimpo);
+            }
+
+            return resultado;
+        }
+
+        /// <summary>
+        /// Verifica se um CID individual deve ser considerado vazio/inválido.
+        /// </summary>
+        private bool CidEstaVazio(string cid)
+        {
+            if (string.IsNullOrWhiteSpace(cid))
+                return true;
+
+            var valor = cid.Trim();
+
+            if (valor.All(c => c == '-'))
+                return true;
+
+            var valoresIgnorados = new[] { "N/A", "NA", "NAO", "NÃO", "SEM CID", "-" };
+            if (valoresIgnorados.Contains(valor.ToUpperInvariant()))
+                return true;
+
+            return false;
         }
 
         // =================================================================

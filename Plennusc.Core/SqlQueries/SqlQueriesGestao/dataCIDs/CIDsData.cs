@@ -28,7 +28,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
             const string sql = @"
                 SELECT CODIGO_ASSOCIADO, DATA_ADMISSAO
                 FROM PS1000
-                WHERE CPF = @cpf";
+                WHERE NUMERO_CPF = @cpf";
 
             using (var cmd = new SqlCommand(sql, conn))
             {
@@ -79,25 +79,51 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
         public void InserirRegistro(SqlConnection conn, CIDsRegistroInsertModel registro)
         {
             const string sql = @"
-                INSERT INTO PS1009
-                    (CODIGO_ASSOCIADO, CODIGO_CID, DATA_TERMINO, REFERENCIA_IMPORTACAO,
-                     INFORMACOES_LOG_I, INFORMACOES_LOG_A, ID_INSTANCIA_PROCESSO)
-                VALUES
-                    (@codigoAssociado, @cid, @dataTermino, @referenciaImportacao,
-                     @logI, @logA, @idInstancia)";
+        INSERT INTO PS1009
+            (CODIGO_ASSOCIADO, CODIGO_CID, DATA_TERMINO, REFERENCIA_IMPORTACAO,
+             INFORMACOES_LOG_I, INFORMACOES_LOG_A, ID_INSTANCIA_PROCESSO)
+        VALUES
+            (@codigoAssociado, @cid, @dataTermino, @referenciaImportacao,
+             @logI, @logA, @idInstancia)";
 
             using (var cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@codigoAssociado", registro.CodigoAssociado);
-                cmd.Parameters.AddWithValue("@cid", registro.CodigoCid);
+                cmd.Parameters.AddWithValue("@codigoAssociado", Truncar(registro.CodigoAssociado, 15));
+                cmd.Parameters.AddWithValue("@cid", Truncar(registro.CodigoCid, 10));
                 cmd.Parameters.AddWithValue("@dataTermino", (object)registro.DataTermino ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@referenciaImportacao", (object)registro.ReferenciaImportacao ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@logI", (object)registro.InformacoesLogI ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@logA", (object)registro.InformacoesLogA ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@idInstancia", (object)registro.IdInstanciaProcesso ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@referenciaImportacao", Truncar(registro.ReferenciaImportacao, 50));
+                cmd.Parameters.AddWithValue("@logI", Truncar(registro.InformacoesLogI, 30));
+                cmd.Parameters.AddWithValue("@logA", Truncar(registro.InformacoesLogA, 93));
+                cmd.Parameters.AddWithValue("@idInstancia", Truncar(registro.IdInstanciaProcesso, 10));
 
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        /// <summary>
+        /// Verifica se o código do CID existe na tabela de domínio PS5201.
+        /// </summary>
+        public bool CidExisteNoDominio(SqlConnection conn, string codigoCid)
+        {
+            const string sql = @"
+        SELECT COUNT(1)
+        FROM PS5201
+        WHERE CODIGO_CID = @cid";
+
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@cid", codigoCid);
+                var count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
+        }
+
+        private object Truncar(string valor, int tamanhoMaximo)
+        {
+            if (string.IsNullOrEmpty(valor))
+                return DBNull.Value;
+
+            return valor.Length > tamanhoMaximo ? valor.Substring(0, tamanhoMaximo) : valor;
         }
 
         /// <summary>
