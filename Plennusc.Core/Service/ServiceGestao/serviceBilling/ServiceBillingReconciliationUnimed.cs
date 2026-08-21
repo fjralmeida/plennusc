@@ -57,47 +57,71 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         private List<ItemRelatorioImportadoUnimed> LerRelatorioTXT(Stream arquivo)
         {
             var itens = new List<ItemRelatorioImportadoUnimed>();
+            int numeroLinha = 0;
+
             using (var reader = new StreamReader(arquivo, Encoding.GetEncoding("ISO-8859-1")))
             {
                 string linha;
                 while ((linha = reader.ReadLine()) != null)
                 {
+                    numeroLinha++;
+
                     if (string.IsNullOrWhiteSpace(linha))
                         continue;
 
                     var campos = linha.Split(';');
 
                     // Header (H) e trailer (9) ignorados por enquanto
-                    if (campos[0] != "1")
+                    if (campos.Length == 0 || campos[0] != "1")
                         continue;
 
-                    string carteirinha = campos[1].Trim();
-                    string nomeBeneficiario = campos[2].Trim();
-                    string nomeTitular = campos[3].Trim();
-
-                    var dadosVariaveis = ExtrairCamposVariaveis(campos);
-                    if (dadosVariaveis == null)
-                        continue; // linha fora do padrão esperado -> ignora com segurança
-
-                    var (descricaoProduto, valor, credito, debito) = dadosVariaveis.Value;
-
-                    // CPF só vem na última linha do grupo familiar
-                    string cpf = carteirinha;
-
-                    var item = new ItemRelatorioImportadoUnimed
+                    // Blindagem: precisa ter no mínimo os campos essenciais (até o índice 19 = valor)
+                    const int MIN_CAMPOS_NECESSARIOS = 20;
+                    if (campos.Length < MIN_CAMPOS_NECESSARIOS)
                     {
-                        Credencial = carteirinha,
-                        NomeBeneficiario = nomeBeneficiario,
-                        NomeTitular = nomeTitular,
-                        Descricao = descricaoProduto,
-                        ValorOperadora = valor,
-                        Cpf = string.IsNullOrWhiteSpace(cpf) ? null : cpf,
-                        Credito = credito,
-                        Debito = debito
-                    };
-                    itens.Add(item);
+                        // Loga e ignora a linha em vez de derrubar o arquivo inteiro
+                        System.Diagnostics.Debug.WriteLine(
+                            $"Linha {numeroLinha} ignorada: apenas {campos.Length} campos (esperado >= {MIN_CAMPOS_NECESSARIOS}).");
+                        continue;
+                    }
+
+                    try
+                    {
+                        string carteirinha = campos[1].Trim();
+                        string nomeBeneficiario = campos[2].Trim();
+                        string nomeTitular = campos[3].Trim();
+
+                        var dadosVariaveis = ExtrairCamposVariaveis(campos);
+                        if (dadosVariaveis == null)
+                            continue; // linha fora do padrão esperado -> ignora com segurança
+
+                        var (descricaoProduto, valor, credito, debito) = dadosVariaveis.Value;
+
+                        string cpf = carteirinha;
+
+                        var item = new ItemRelatorioImportadoUnimed
+                        {
+                            Credencial = carteirinha,
+                            NomeBeneficiario = nomeBeneficiario,
+                            NomeTitular = nomeTitular,
+                            Descricao = descricaoProduto,
+                            ValorOperadora = valor,
+                            Cpf = string.IsNullOrWhiteSpace(cpf) ? null : cpf,
+                            Credito = credito,
+                            Debito = debito
+                        };
+
+                        itens.Add(item);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Não deixa uma linha malformada derrubar o arquivo inteiro
+                        System.Diagnostics.Debug.WriteLine($"Linha {numeroLinha} ignorada por erro: {ex.Message}");
+                        continue;
+                    }
                 }
             }
+
             return itens;
         }
 
