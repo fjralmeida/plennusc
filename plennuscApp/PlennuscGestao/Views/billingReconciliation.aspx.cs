@@ -2,9 +2,7 @@
 using Plennusc.Core.Service.ServiceGestao.serviceBilling;
 using System;
 using System.Collections.Generic;
-using System.EnterpriseServices;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -14,9 +12,10 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
         private readonly ServiceBillingReconciliation _service = new ServiceBillingReconciliation();
 
-        // Chaves de Session usadas para carregar o contexto da conferência nas próximas etapas
         private const string SESSION_OPERADORA = "BillingReconciliation_CodigoOperadora";
         private const string SESSION_GRUPOS_FATURAMENTO = "BillingReconciliation_CodigosGrupoFaturamento";
+        private const string SESSION_ITENS_IMPORTADOS = "BillingReconciliation_ItensImportados";
+        private const string SESSION_MES_ANO = "BillingReconciliation_MesAnoReferencia";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -27,7 +26,8 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        #region CHAMADA DIRETA DE OPERADORAS ESPECIFICAS
+        #region CARREGAMENTO DE DADOS BÁSICOS
+
         private void CarregarOperadoras()
         {
             var operadoras = _service.ObterOperadoras();
@@ -37,7 +37,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             ddlOperadora.DataBind();
             ddlOperadora.Items.Insert(0, new ListItem("Selecione...", ""));
         }
-        #endregion
 
         private void CarregarGruposFaturamento()
         {
@@ -48,49 +47,24 @@ namespace appWhatsapp.PlennuscGestao.Views
             cblGrupoFaturamento.DataBind();
         }
 
+        #endregion
+
+        #region IMPORTAÇÃO DO RELATÓRIO
+
         protected void btnImportar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(ddlOperadora.SelectedValue))
+            if (!ValidarCamposImportacao(out string mensagemErro))
             {
-                ExibirMensagem("Selecione uma operadora antes de importar.", erro: true);
+                ExibirMensagem(mensagemErro, erro: true);
                 return;
             }
 
-            // ===== Validação do Mês/Ano Referência =====
-            string mesAnoReferencia = txtMesAnoReferencia.Text.Trim();
-
-            if (string.IsNullOrEmpty(mesAnoReferencia))
-            {
-                ExibirMensagem("Informe o Mês/Ano Referência antes de importar.", erro: true);
-                return;
-            }
-
-            if (!System.Text.RegularExpressions.Regex.IsMatch(mesAnoReferencia, @"^(0[1-9]|1[0-2])\/\d{4}$"))
-            {
-                ExibirMensagem("Mês/Ano Referência inválido. Use o formato MM/AAAA.", erro: true);
-                return;
-            }
-            // =============================================
-
-            if (!fileRelatorio.HasFile)
-            {
-                ExibirMensagem("Selecione um arquivo para importar.", erro: true);
-                return;
-            }
-
-            string extensao = System.IO.Path.GetExtension(fileRelatorio.FileName).ToLower();
-            var extensoesPermitidas = new[] { ".csv", ".xlsx", ".xls", ".docx", ".txt" };
-
-            if (!extensoesPermitidas.Contains(extensao))
-            {
-                ExibirMensagem("Formato inválido. Envie um arquivo .csv, .xlsx, .xls ou .docx.", erro: true);
-                return;
-            }
-
-            int codigoOperadora = Convert.ToInt32(ddlOperadora.SelectedValue);
             string nomeOperadora = ddlOperadora.SelectedItem.Text;
+            int codigoOperadora = Convert.ToInt32(ddlOperadora.SelectedValue);
+            string mesAnoReferencia = txtMesAnoReferencia.Text.Trim();
+            string extensao = System.IO.Path.GetExtension(fileRelatorio.FileName).ToLower();
 
-            List<int> codigosGrupoFaturamento = cblGrupoFaturamento.Items
+            var codigosGrupoFaturamento = cblGrupoFaturamento.Items
                 .Cast<ListItem>()
                 .Where(item => item.Selected)
                 .Select(item => Convert.ToInt32(item.Value))
@@ -98,7 +72,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             Session[SESSION_OPERADORA] = codigoOperadora;
             Session[SESSION_GRUPOS_FATURAMENTO] = codigosGrupoFaturamento;
-            Session["BillingReconciliation_MesAnoReferencia"] = mesAnoReferencia; // guardado pra usar depois
+            Session[SESSION_MES_ANO] = mesAnoReferencia;
 
             try
             {
@@ -106,17 +80,16 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     var itensImportados = _service.ProcessarRelatorioImportado(nomeOperadora, streamArquivo, extensao);
 
-                    // Preenche o mês/ano em cada item importado
                     foreach (var item in itensImportados)
                     {
                         item.MesAnoReferencia = mesAnoReferencia;
                     }
 
-                    Session["BillingReconciliation_ItensImportados"] = itensImportados;
+                    Session[SESSION_ITENS_IMPORTADOS] = itensImportados;
 
-                    bool ehHapvida = nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0;
+                    bool usarLayoutHapvida = IsHapvida(nomeOperadora) || IsUniaoMedica(nomeOperadora);
 
-                    AjustarColunasGridPorOperadora(ehHapvida);
+                    AjustarColunasGridPorOperadora(usarLayoutHapvida);
 
                     gridPreview.DataSource = itensImportados;
                     gridPreview.DataBind();
@@ -126,9 +99,9 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     ExibirMensagem($"Arquivo '{fileRelatorio.FileName}' importado com sucesso. {itensImportados.Count} registro(s) encontrado(s).", erro: false);
 
-                    pnlTipoConferencia.Visible = ehHapvida;
+                    pnlTipoConferencia.Visible = usarLayoutHapvida;
 
-                    if (!ehHapvida)
+                    if (!pnlTipoConferencia.Visible)
                     {
                         rblTipoConferencia.SelectedValue = "CONVENIO";
                     }
@@ -140,37 +113,81 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        private void AjustarColunasGridPorOperadora(bool ehHapvida)
+        private bool ValidarCamposImportacao(out string mensagemErro)
+        {
+            mensagemErro = null;
+
+            if (string.IsNullOrEmpty(ddlOperadora.SelectedValue))
+            {
+                mensagemErro = "Selecione uma operadora antes de importar.";
+                return false;
+            }
+
+            string mesAnoReferencia = txtMesAnoReferencia.Text.Trim();
+            if (string.IsNullOrEmpty(mesAnoReferencia))
+            {
+                mensagemErro = "Informe o Mês/Ano Referência antes de importar.";
+                return false;
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(mesAnoReferencia, @"^(0[1-9]|1[0-2])\/\d{4}$"))
+            {
+                mensagemErro = "Mês/Ano Referência inválido. Use o formato MM/AAAA.";
+                return false;
+            }
+
+            if (!fileRelatorio.HasFile)
+            {
+                mensagemErro = "Selecione um arquivo para importar.";
+                return false;
+            }
+
+            string extensao = System.IO.Path.GetExtension(fileRelatorio.FileName).ToLower();
+            var extensoesPermitidas = new[] { ".csv", ".xlsx", ".xls", ".docx", ".txt" };
+            if (!extensoesPermitidas.Contains(extensao))
+            {
+                mensagemErro = "Formato inválido. Envie um arquivo .csv, .xlsx, .xls ou .docx.";
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region AJUSTES DO GRID
+
+        private void AjustarColunasGridPorOperadora(bool usarLayoutHapvida)
         {
             var camposSomenteHapvida = new[]
             {
-        "Nascimento",
-        "Parentesco",
-        "Adicional",
-        "NomeTabelaPreco",
-        "DescricaoGrupoFaturamento",
-        "Empresa"
-    };
+                "Nascimento",
+                "Parentesco",
+                "Adicional",
+                "NomeTabelaPreco",
+                "DescricaoGrupoFaturamento",
+                "Empresa"
+            };
 
             var camposSomenteUnimed = new[]
             {
-        "Credito",
-        "Debito",
-        "CodigoEmpresa",
-        "EmpresaUnimed"
-    };
+                "Credito",
+                "Debito",
+                "CodigoEmpresa",
+                "EmpresaUnimed"
+            };
 
             foreach (DataControlField coluna in gridPreview.Columns)
             {
                 if (coluna is BoundField boundField)
                 {
-                    if (camposSomenteHapvida.Contains(boundField.DataField))
+                    if (Array.IndexOf(camposSomenteHapvida, boundField.DataField) >= 0)
                     {
-                        coluna.Visible = ehHapvida;
+                        coluna.Visible = usarLayoutHapvida;
                     }
-                    else if (camposSomenteUnimed.Contains(boundField.DataField))
+                    else if (Array.IndexOf(camposSomenteUnimed, boundField.DataField) >= 0)
                     {
-                        coluna.Visible = !ehHapvida;
+                        coluna.Visible = !usarLayoutHapvida;
                     }
                 }
             }
@@ -179,36 +196,37 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected void gridPreview_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType != DataControlRowType.DataRow) return;
+
             var item = e.Row.DataItem as ItemRelatorioImportadoHapVida;
             if (item == null || string.IsNullOrEmpty(item.StatusConferencia)) return;
 
             switch (item.StatusConferencia)
             {
-                case "OK": e.Row.CssClass = "linha-ok"; break;
-                case "DIVERGENCIA_TOLERADA": e.Row.CssClass = "linha-divergencia-tolerada"; break;
-                case "DIVERGENTE": e.Row.CssClass = "linha-divergente"; break;
-                case "NAO_ENCONTRADO": e.Row.CssClass = "linha-nao-encontrado"; break;
-                case "CARTEIRINHA_NAO_ENCONTRADA": e.Row.CssClass = "linha-carteirinha-nao-encontrada"; break;
+                case "OK":
+                    e.Row.CssClass = "linha-ok";
+                    break;
+                case "DIVERGENCIA_TOLERADA":
+                    e.Row.CssClass = "linha-divergencia-tolerada";
+                    break;
+                case "DIVERGENTE":
+                    e.Row.CssClass = "linha-divergente";
+                    break;
+                case "NAO_ENCONTRADO":
+                    e.Row.CssClass = "linha-nao-encontrado";
+                    break;
+                case "CARTEIRINHA_NAO_ENCONTRADA":
+                    e.Row.CssClass = "linha-carteirinha-nao-encontrada";
+                    break;
             }
         }
 
+        #endregion
 
-        protected string TraduzirStatus(string status)
-        {
-            switch (status)
-            {
-                case "OK": return "OK";
-                case "DIVERGENCIA_TOLERADA": return "OK (dif. 10 centavos)";
-                case "DIVERGENTE": return "Divergente";
-                case "NAO_ENCONTRADO": return "Não encontrado";
-                case "CARTEIRINHA_NAO_ENCONTRADA": return "Carteirinha não encontrada";
-                default: return status;
-            }
-        }
+        #region CONFERÊNCIA
 
         protected void btnConferir_Click(object sender, EventArgs e)
         {
-            var itensImportados = Session["BillingReconciliation_ItensImportados"] as List<ItemRelatorioImportadoHapVida>;
+            var itensImportados = Session[SESSION_ITENS_IMPORTADOS] as List<ItemRelatorioImportadoHapVida>;
 
             if (itensImportados == null || itensImportados.Count == 0)
             {
@@ -224,18 +242,16 @@ namespace appWhatsapp.PlennuscGestao.Views
             try
             {
                 var itensConferidos = _service.ConferirComView(nomeOperadora, itensImportados, tipoConferencia, codigoGrupoContrato);
-                Session["BillingReconciliation_ItensImportados"] = itensConferidos;
+                Session[SESSION_ITENS_IMPORTADOS] = itensConferidos;
 
                 gridPreview.DataSource = itensConferidos;
                 gridPreview.DataBind();
 
-                // ===== Atualiza DATA_CONFERENCIA_FATUR na PS1021 pros itens OK/tolerados =====
                 _service.ConferirFaturamento(itensConferidos);
-                // ================================================================================
 
+                int ok = itensConferidos.Count(i => i.StatusConferencia == "OK" || i.StatusConferencia == "DIVERGENCIA_TOLERADA");
                 int divergentes = itensConferidos.Count(i => i.StatusConferencia == "DIVERGENTE");
                 int naoEncontrados = itensConferidos.Count(i => i.StatusConferencia == "NAO_ENCONTRADO");
-                int ok = itensConferidos.Count(i => i.StatusConferencia == "OK" || i.StatusConferencia == "DIVERGENCIA_TOLERADA");
 
                 lblMensagemConferencia.Text = $"Conferência concluída: {ok} OK, {divergentes} divergente(s), {naoEncontrados} não encontrado(s).";
                 lblMensagemConferencia.CssClass = "msg-importacao " + (divergentes > 0 || naoEncontrados > 0 ? "erro" : "sucesso");
@@ -247,9 +263,13 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        #endregion
+
+        #region EXPORTAÇÃO
+
         protected void btnExportarDivergentes_Click(object sender, EventArgs e)
         {
-            var itens = Session["BillingReconciliation_ItensImportados"] as List<ItemRelatorioImportadoHapVida>;
+            var itens = Session[SESSION_ITENS_IMPORTADOS] as List<ItemRelatorioImportadoHapVida>;
 
             if (itens == null || itens.Count == 0)
             {
@@ -261,6 +281,13 @@ namespace appWhatsapp.PlennuscGestao.Views
             string nomeOperadora = ddlOperadora.SelectedItem.Text;
             string codigoOperadora = DeterminarCodigoOperadora(nomeOperadora);
 
+            if (string.IsNullOrEmpty(codigoOperadora))
+            {
+                lblMensagemConferencia.Text = "Operadora não reconhecida para exportação.";
+                lblMensagemConferencia.CssClass = "msg-importacao erro";
+                return;
+            }
+
             byte[] arquivo = _service.ExportarConferenciaExcel(itens, codigoOperadora);
 
             Response.Clear();
@@ -270,13 +297,38 @@ namespace appWhatsapp.PlennuscGestao.Views
             Response.End();
         }
 
+        #endregion
+
+        #region MÉTODOS AUXILIARES
+
         private string DeterminarCodigoOperadora(string nomeOperadora)
         {
-            if (nomeOperadora.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (IsHapvida(nomeOperadora))
                 return "HAPVIDA";
-            if (nomeOperadora.IndexOf("UNIMED", StringComparison.OrdinalIgnoreCase) >= 0)
+
+            if (IsUnimed(nomeOperadora))
                 return "UNIMED";
+
+            if (IsUniaoMedica(nomeOperadora))
+                return "UNIAO_MEDICA";
+
             return null;
+        }
+
+        private bool IsHapvida(string nome)
+        {
+            return nome.IndexOf("HAPVIDA", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private bool IsUnimed(string nome)
+        {
+            return nome.IndexOf("UNIMED", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private bool IsUniaoMedica(string nome)
+        {
+            return nome.IndexOf("UNIÃO MÉDICA", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   nome.IndexOf("UNIAO MEDICA", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void ExibirMensagem(string mensagem, bool erro)
@@ -284,5 +336,26 @@ namespace appWhatsapp.PlennuscGestao.Views
             lblMensagemImportacao.Text = mensagem;
             lblMensagemImportacao.CssClass = "msg-importacao " + (erro ? "erro" : "sucesso");
         }
+
+        public string TraduzirStatus(string status)
+        {
+            switch (status)
+            {
+                case "OK":
+                    return "OK";
+                case "DIVERGENCIA_TOLERADA":
+                    return "OK (dif. 10 centavos)";
+                case "DIVERGENTE":
+                    return "Divergente";
+                case "NAO_ENCONTRADO":
+                    return "Não encontrado";
+                case "CARTEIRINHA_NAO_ENCONTRADA":
+                    return "Carteirinha não encontrada";
+                default:
+                    return status;
+            }
+        }
+
+        #endregion
     }
 }
