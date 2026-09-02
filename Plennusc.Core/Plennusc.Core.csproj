@@ -309,6 +309,7 @@
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliation.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationHapvida.cs" />
+    <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUniaoMedica.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUnimed.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceRevenueVerified.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\DocxServiceSetCemg.cs" />

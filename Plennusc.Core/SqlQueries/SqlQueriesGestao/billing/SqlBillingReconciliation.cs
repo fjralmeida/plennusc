@@ -63,7 +63,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
                 FROM ESP0002
                 WHERE NOME_OPERADORA IS NOT NULL
                 AND NUMERO_ANS_OPERADORA IS NOT NULL
-                AND CODIGO_GRUPO_CONTRATO IN (4, 3)";
+                AND CODIGO_GRUPO_CONTRATO IN (4, 3, 15)";
 
             using (SqlConnection conn = new SqlConnection(connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
