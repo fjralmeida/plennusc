@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Plennusc.Core.Service.ServiceGestao.serviceMigration;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
 using TableCell = DocumentFormat.OpenXml.Wordprocessing.TableCell;
 using TableRow = DocumentFormat.OpenXml.Wordprocessing.TableRow;
@@ -1059,20 +1060,111 @@ namespace appWhatsapp.PlennuscGestao.Views
             pnlErro.Visible = true;
         }
 
+        //protected void btnSetCemg_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\MIGRACAO_TERMO_UNITARIO.csv";
+        //        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_SETCEMG_UNITARIO.docx");
+        //        string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
+
+        //        // Pasta onde estão os ~700 arquivos nomeados por e-mail (sem "@"),
+        //        // que serão anexados depois de cada proposta gerada.
+        //        string pastaComplementares = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\Uploads\PROPOSTAS_UNIMED_SETCEMG";
+
+        //        if (!Directory.Exists(pastaDestino))
+        //            Directory.CreateDirectory(pastaDestino);
+
+        //        var importService = new ImportacaoSetCemgService();
+        //        List<DadosPropostaSetCemg> propostas = importService.ImportarCsv(caminhoArquivo);
+
+        //        if (propostas == null || propostas.Count == 0)
+        //        {
+        //            ExibirErro("Nenhuma proposta encontrada no arquivo.");
+        //            return;
+        //        }
+
+        //        ExibirMensagem($"Encontradas {propostas.Count} propostas. Processando...");
+
+        //        var docxService = new DocxServiceSetCemg();
+        //        var mergeService = new DocxMergeService(); // NOVO
+
+        //        int documentosCriados = 0;
+        //        var erros = new StringBuilder();
+
+        //        foreach (var proposta in propostas)
+        //        {
+        //            try
+        //            {
+        //                string email = LimparNomeArquivo(proposta.EmailResponsavel ?? "SEM_EMAIL");
+        //                string nomeLimpo = LimparNomeArquivo(proposta.RazaoSocial ?? "SEM_NOME");
+        //                string nomeArquivo = SanitizarNomeArquivo($"{email}__{nomeLimpo}.docx");
+
+        //                // Gera a proposta primeiro num arquivo temporário...
+        //                string outputTemp = Path.Combine(pastaDestino, "TEMP__" + nomeArquivo);
+        //                string logResultado = docxService.GerarDocumento(templatePath, outputTemp, proposta);
+
+        //                // ...localiza o complementar pelo e-mail do responsável...
+        //                string outputFinal = Path.Combine(pastaDestino, nomeArquivo);
+
+        //                // Se o e-mail do responsável vier com mais de um separado por
+        //                // ";", por enquanto usamos o primeiro (ajustar aqui se vocês
+        //                // decidirem tentar os dois).
+        //                string emailBusca = (proposta.EmailResponsavel ?? "")
+        //                    .Split(';')[0]
+        //                    .Trim();
+
+        //                // ...e junta os dois num arquivo final. Se não achar o
+        //                // complementar, isso lança ArquivoComplementarNaoEncontradoException
+        //                // e cai direto no catch — nada fica gerado na pasta final,
+        //                // conforme combinado.
+        //                mergeService.JuntarPorEmail(outputTemp, pastaComplementares, emailBusca, outputFinal);
+
+        //                // Remove o temporário — só o arquivo final (proposta + complementar) fica.
+        //                File.Delete(outputTemp);
+
+        //                documentosCriados++;
+        //            }
+        //            catch (Exception exProposta)
+        //            {
+        //                erros.AppendLine($"✗ {proposta.RazaoSocial} ({proposta.Cnpj}): {exProposta.Message}");
+        //            }
+        //        }
+
+        //        ExibirMensagem($"<br/>✅ {documentosCriados} documento(s) gerado(s) com sucesso.", append: true);
+
+        //        if (erros.Length > 0)
+        //        {
+        //            ExibirErro($"<br/>Erros:<br/>{erros.ToString().Replace(Environment.NewLine, "<br/>")}", append: true);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblErro.Text = $"ERRO GERAL: {ex.Message}<br/><br/>Stack: {ex.StackTrace}";
+        //        lblErro.Visible = true;
+        //    }
+        //}
+
         protected void btnSetCemg_Click(object sender, EventArgs e)
         {
             try
             {
-                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\MIGRACAO_TERMO_UNITARIO.csv";
-                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_SETCEMG_UNITARIO.docx");
+                //PRECISA SER MUDADO DE ACORDO COM A MODALIDADE DE CADA UM
+                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\MIGRACAO_TERMO_FAMILIAR.csv";
+                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_SETCEMG_FAMILIAR.docx");
+
                 string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
 
-                // Pasta onde estão os ~700 arquivos nomeados por e-mail (sem "@"),
-                // que serão anexados depois de cada proposta gerada.
                 string pastaComplementares = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\Uploads\PROPOSTAS_UNIMED_SETCEMG";
+
+                // Pasta temporária só pra guardar os PDFs/docx intermediários
+                // (proposta convertida) antes de juntar. É limpa no final.
+                string pastaTemp = Path.Combine(pastaDestino, "_temp_pdf");
 
                 if (!Directory.Exists(pastaDestino))
                     Directory.CreateDirectory(pastaDestino);
+                if (!Directory.Exists(pastaTemp))
+                    Directory.CreateDirectory(pastaTemp);
 
                 var importService = new ImportacaoSetCemgService();
                 List<DadosPropostaSetCemg> propostas = importService.ImportarCsv(caminhoArquivo);
@@ -1086,41 +1178,54 @@ namespace appWhatsapp.PlennuscGestao.Views
                 ExibirMensagem($"Encontradas {propostas.Count} propostas. Processando...");
 
                 var docxService = new DocxServiceSetCemg();
-                var mergeService = new DocxMergeService(); // NOVO
+                var conversor = new DocxToPdfConverter(); // usa o caminho padrão do LibreOffice — ajuste se necessário
+                var pdfMerge = new PdfMergeService();
 
                 int documentosCriados = 0;
                 var erros = new StringBuilder();
 
                 foreach (var proposta in propostas)
                 {
+                    string nomeArquivo = null;
                     try
                     {
                         string email = LimparNomeArquivo(proposta.EmailResponsavel ?? "SEM_EMAIL");
                         string nomeLimpo = LimparNomeArquivo(proposta.RazaoSocial ?? "SEM_NOME");
-                        string nomeArquivo = SanitizarNomeArquivo($"{email}__{nomeLimpo}.docx");
+                        nomeArquivo = SanitizarNomeArquivo($"{email}__{nomeLimpo}");
 
-                        // Gera a proposta primeiro num arquivo temporário...
-                        string outputTemp = Path.Combine(pastaDestino, "TEMP__" + nomeArquivo);
-                        string logResultado = docxService.GerarDocumento(templatePath, outputTemp, proposta);
+                        // 1. Localiza TODOS os complementares para esse CNPJ.
+                        List<string> complementares;
+                        try
+                        {
+                            complementares = pdfMerge.LocalizarArquivosPorCnpj(pastaComplementares, proposta.Cnpj);
+                        }
+                        catch (ArquivoComplementarNaoEncontradoException)
+                        {
+                            erros.AppendLine($"⊘ {proposta.RazaoSocial} ({proposta.Cnpj}): sem arquivo na pasta de complementares, pulado.");
+                            continue;
+                        }
 
-                        // ...localiza o complementar pelo e-mail do responsável...
-                        string outputFinal = Path.Combine(pastaDestino, nomeArquivo);
+                        // 2. Gera a proposta preenchida em .docx (temporário).
+                        string propostaDocxTemp = Path.Combine(pastaTemp, nomeArquivo + "__proposta.docx");
+                        string logResultado = docxService.GerarDocumento(templatePath, propostaDocxTemp, proposta);
 
-                        // Se o e-mail do responsável vier com mais de um separado por
-                        // ";", por enquanto usamos o primeiro (ajustar aqui se vocês
-                        // decidirem tentar os dois).
-                        string emailBusca = (proposta.EmailResponsavel ?? "")
-                            .Split(';')[0]
-                            .Trim();
+                        // 3. Converte a proposta pra PDF.
+                        string propostaPdf = conversor.ConverterParaPdf(propostaDocxTemp, pastaTemp);
 
-                        // ...e junta os dois num arquivo final. Se não achar o
-                        // complementar, isso lança ArquivoComplementarNaoEncontradoException
-                        // e cai direto no catch — nada fica gerado na pasta final,
-                        // conforme combinado.
-                        mergeService.JuntarPorEmail(outputTemp, pastaComplementares, emailBusca, outputFinal);
+                        // 4. Converte CADA complementar para PDF (se for DOCX) e monta a lista.
+                        List<string> complementaresPdf = new List<string>();
+                        foreach (var comp in complementares)
+                        {
+                            string compPdf = comp.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                                ? comp
+                                : conversor.ConverterParaPdf(comp, pastaTemp);
+                            complementaresPdf.Add(compPdf);
+                        }
 
-                        // Remove o temporário — só o arquivo final (proposta + complementar) fica.
-                        File.Delete(outputTemp);
+                        // 5. Junta: proposta + TODOS os complementares (ocultando cabeçalho).
+                        string outputFinal = Path.Combine(pastaDestino, nomeArquivo + ".pdf");
+                        pdfMerge.JuntarOcultandoCabecalhoComplementar(
+                            propostaPdf, complementaresPdf, outputFinal, alturaCabecalhoPontos: 30);
 
                         documentosCriados++;
                     }
@@ -1129,6 +1234,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                         erros.AppendLine($"✗ {proposta.RazaoSocial} ({proposta.Cnpj}): {exProposta.Message}");
                     }
                 }
+
+                // Limpa os arquivos intermediários da pasta temp.
+                try { Directory.Delete(pastaTemp, true); } catch { /* não crítico */ }
 
                 ExibirMensagem($"<br/>✅ {documentosCriados} documento(s) gerado(s) com sucesso.", append: true);
 

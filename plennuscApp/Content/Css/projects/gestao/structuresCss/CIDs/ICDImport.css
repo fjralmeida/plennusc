@@ -1,0 +1,531 @@
+﻿:root {
+    --primary: #83ceee;
+    --primary-hover: #4cb07a;
+    --success: #4cb07a;
+    --success-hover: #3b8b65;
+    --warning: #ffa726;
+    --warning-hover: #f57c00;
+    --gray-50: #f8f9fa;
+    --gray-100: #f1f3f4;
+    --gray-200: #e8eaed;
+    --gray-300: #dadce0;
+    --gray-400: #bdc1c6;
+    --gray-500: #9aa0a6;
+    --gray-600: #80868b;
+    --gray-700: #5f6368;
+    --gray-800: #3c4043;
+    --gray-900: #202124;
+    --border-radius: 8px;
+    --shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    --transition: all .2s ease-in-out;
+}
+
+.container-main {
+    max-width: 2600px;
+    margin: 20px auto;
+    padding: 0 16px;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.title-icon {
+    background: var(--primary);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.filters-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+}
+
+    .filters-card + .filters-card {
+        margin-top: 24px;
+    }
+
+.filters-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-800);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+    .filters-title i {
+        color: var(--primary-hover);
+    }
+
+.form-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+    .form-row .form-group {
+        flex: 1;
+        min-width: 280px;
+        max-width: 400px;
+    }
+
+.form-label, .field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    font-size: 14px;
+    transition: var(--transition);
+    background: white;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(131,206,238,.35);
+    }
+
+.btn {
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: var(--primary-hover);
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: #3c9565;
+        box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+.btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+    .btn-secondary:hover {
+        background: var(--gray-200);
+    }
+
+.icd-required {
+    color: #c0392b;
+}
+
+.msg-importacao {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+    .msg-importacao.erro {
+        color: #c0392b;
+    }
+
+    .msg-importacao.sucesso {
+        color: var(--success-hover);
+    }
+
+/* Card que envolve a tabela: sombra + cantos arredondados, como o resto da UI */
+.grid-container {
+    background: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--gray-200);
+}
+
+.custom-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    table-layout: auto;
+    min-width: 1200px;
+}
+
+    .custom-grid th,
+    .custom-grid td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--gray-100);
+        vertical-align: middle;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: keep-all;
+        color: var(--gray-800);
+    }
+
+        /* a coluna Motivo costuma ter o texto mais longo: deixa ela quebrar
+       linha em vez de cortar tudo com "..." */
+        .custom-grid td:last-child {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            color: var(--gray-700);
+            line-height: 1.4;
+        }
+
+    .custom-grid thead th {
+        background: linear-gradient(180deg, #fbfcfd 0%, var(--gray-50) 100%);
+        color: var(--gray-700);
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        padding: 16px;
+        border-bottom: 2px solid var(--gray-300);
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: clip;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    .custom-grid tbody tr {
+        transition: var(--transition);
+    }
+
+        .custom-grid tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .custom-grid tbody tr:hover td {
+            background: #eef6fd !important;
+        }
+
+.linha-divergencia-tolerada td {
+    background: #fff8e1 !important;
+}
+
+.linha-nao-encontrado td {
+    background: #f7f7f8 !important;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    text-align: center;
+    min-width: 96px;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+    .badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        flex-shrink: 0;
+    }
+
+.status-ok {
+    background: #e6f7ec !important;
+    color: #1e8e4f !important;
+    border: 1px solid #b7e6c6 !important;
+}
+
+.status-divergencia-tolerada {
+    background: #fff3e0 !important;
+    color: #e08600 !important;
+    border: 1px solid #ffdca8 !important;
+}
+
+.status-divergente {
+    background: #fdecec !important;
+    color: #d32f2f !important;
+    border: 1px solid #f8c6c6 !important;
+}
+
+.status-nao-encontrado {
+    background: #f0f1f2 !important;
+    color: #6b7075 !important;
+    border: 1px solid #dfe1e3 !important;
+    font-style: normal !important;
+}
+
+    .status-nao-encontrado::before {
+        background: var(--gray-500) !important;
+    }
+
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:active:focus {
+    background: #3c9565 !important;
+    border-color: #3c9565 !important;
+    color: white !important;
+    box-shadow: 0 0 0 2px rgba(76,176,122,.35) !important;
+    outline: none !important;
+}
+
+/* ── Abas de Status (Importação de CID) ── */
+.tabs-status {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--gray-200);
+    margin: 24px 0 0;
+    overflow-x: auto;
+}
+
+.tab-status-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-600);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+    .tab-status-link:hover {
+        color: var(--gray-800);
+    }
+
+    .tab-status-link.active {
+        color: var(--success-hover);
+        border-bottom-color: var(--success-hover);
+        font-weight: 600;
+    }
+
+.tab-status-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--gray-200);
+    color: var(--gray-700);
+}
+
+.tab-status-link.active .tab-status-count {
+    background: var(--success-hover);
+    color: white;
+}
+
+.tab-status-panel {
+    display: none;
+    padding-top: 20px;
+}
+
+    .tab-status-panel.active {
+        display: block;
+    }
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+        .form-row .form-group {
+            max-width: 100%;
+        }
+}
+
+/* ============================================================
+   PAGINAÇÃO - VERSÃO FINAL CORRIGIDA
+   O <asp:Label id="lblPagerInfo"> fica FORA da <table class="custom-grid">
+   (é irmão dela dentro de .grid-container), então não dá pra "juntar"
+   os dois numa linha flex só com CSS de posicionamento normal.
+   Solução: escondemos a linha do pager de dentro da própria posição
+   normal (removendo a borda/padding extra que ela cria) e usamos
+   grid no .grid-container pra sobrepor o Label exatamente em cima
+   da linha do pager, alinhado à esquerda, com o pager alinhado à direita.
+   ============================================================ */
+
+.grid-container {
+    position: relative;
+    /* espaço reservado embaixo pra tabela, pra label absoluta não colidir
+       com as linhas de dados acima do pager */
+    padding-bottom: 58px;
+}
+
+/* A linha do pager fica dentro da própria <table>, como último <tr> */
+.custom-grid .pager-custom {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    padding: 12px 20px !important;
+    background: #ffffff !important;
+    border-top: 1px solid var(--gray-200) !important;
+    box-sizing: border-box !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+}
+
+    .custom-grid .pager-custom table {
+        margin: 0 !important;
+        border-collapse: separate !important;
+        border-spacing: 4px !important;
+    }
+
+    .custom-grid .pager-custom tr {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+    }
+
+    .custom-grid .pager-custom td {
+        padding: 0 !important;
+        border: none !important;
+        white-space: nowrap !important;
+    }
+
+    .custom-grid .pager-custom a,
+    .custom-grid .pager-custom span {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 34px !important;
+        height: 34px !important;
+        padding: 0 10px !important;
+        border: 1px solid var(--gray-300) !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+        color: var(--gray-700) !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: var(--transition) !important;
+        cursor: pointer !important;
+    }
+
+        .custom-grid .pager-custom a:hover {
+            background: var(--gray-100) !important;
+            border-color: var(--gray-400) !important;
+            text-decoration: none !important;
+        }
+
+    .custom-grid .pager-custom span {
+        background: var(--success) !important;
+        border-color: var(--success) !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        cursor: default !important;
+    }
+
+/* Label da contagem: mesma linha (absoluta), altura e alinhamento
+   idênticos ao .pager-custom, mas colada na esquerda */
+.pager-info {
+    display: flex !important;
+    align-items: center !important;
+    position: absolute !important;
+    left: 20px !important;
+    bottom: 0 !important;
+    height: 58px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 16px !important;
+    color: var(--gray-600) !important;
+    font-weight: 500 !important;
+    line-height: normal !important;
+    background: transparent !important;
+    white-space: nowrap !important;
+    z-index: 1;
+    box-sizing: border-box !important;
+}
+
+    .pager-info strong {
+        color: var(--gray-800) !important;
+        font-weight: 700 !important;
+    }
+
+/* Responsivo: empilha label acima do pager, ambos centralizados */
+@media (max-width: 768px) {
+    .grid-container {
+        padding-bottom: 110px;
+    }
+
+    .custom-grid .pager-custom {
+        flex-direction: column !important;
+        gap: 8px !important;
+        justify-content: center !important;
+        height: 110px !important;
+    }
+
+    .pager-info {
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        height: 44px !important;
+        justify-content: center !important;
+        position: absolute !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-grid .pager-custom a,
+    .custom-grid .pager-custom span {
+        min-width: 28px !important;
+        height: 28px !important;
+        padding: 0 6px !important;
+        font-size: 11px !important;
+    }
+}

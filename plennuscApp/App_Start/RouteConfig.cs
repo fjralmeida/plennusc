@@ -88,6 +88,9 @@ namespace appWhatsapp
 
             // ✅ Envio de Email Automático
             routes.MapPageRoute("sendAnAutomatedEmail", "sendAnAutomatedEmail", "~/PlennuscGestao/Views/sendAnAutomatedEmail.aspx");
+
+            // ✅ Importação de CIDs (NOVA ROTA)
+            routes.MapPageRoute("ICDImport", "ICDImport", "~/PlennuscGestao/Views/ICDImport.aspx");
             #endregion
 
 
