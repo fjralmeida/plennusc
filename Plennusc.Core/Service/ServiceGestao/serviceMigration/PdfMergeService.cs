@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
 {
@@ -44,6 +42,41 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
         /// Lança <see cref="ArquivoComplementarNaoEncontradoException"/> se
         /// não encontrar nada — nesse caso, nada deve ser gerado.
         /// </summary>
+        /// <summary>
+        /// Procura, dentro de <paramref name="pastaArquivos"/>, TODOS os
+        /// arquivos (docx OU pdf) cujo nome (sem extensão) começa com o
+        /// CNPJ informado — pode haver mais de um contrato pro mesmo CNPJ.
+        /// Comparação usa só os dígitos do CNPJ (ignora pontuação/barra),
+        /// pra não depender de como o arquivo foi salvo.
+        /// Lança <see cref="ArquivoComplementarNaoEncontradoException"/> se
+        /// não encontrar NENHUM — nesse caso, nada deve ser gerado.
+        /// </summary>
+        public List<string> LocalizarArquivosPorCnpj(string pastaArquivos, string cnpj)
+        {
+            if (string.IsNullOrWhiteSpace(cnpj))
+                throw new ArquivoComplementarNaoEncontradoException(cnpj ?? "(vazio)");
+
+            string cnpjNormalizado = SoDigitos(cnpj);
+
+            var encontrados = Directory.EnumerateFiles(pastaArquivos)
+                .Where(f => f.EndsWith(".docx", StringComparison.OrdinalIgnoreCase)
+                         || f.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                .Where(arquivo => SoDigitos(Path.GetFileNameWithoutExtension(arquivo)).Contains(cnpjNormalizado))
+                .OrderBy(arquivo => arquivo) // ordem estável e previsível
+                .ToList();
+
+            if (encontrados.Count == 0)
+                throw new ArquivoComplementarNaoEncontradoException(cnpj);
+
+            return encontrados;
+        }
+
+        private string SoDigitos(string texto)
+        {
+            return new string((texto ?? "").Where(char.IsDigit).ToArray());
+        }
+
+        // Mantido por compatibilidade, caso ainda seja usado em algum lugar.
         public string LocalizarArquivoPorEmail(string pastaArquivos, string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -87,20 +120,22 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
         }
 
         /// <summary>
-        /// Junta a proposta com o complementar, mas cobre com um retângulo
-        /// branco a faixa de cabeçalho (logos) de TODAS as páginas do
-        /// complementar, pra não duplicar o cabeçalho que a proposta já
-        /// tem na própria página.
+        /// Junta a proposta com UM OU MAIS complementares, cobrindo com um
+        /// retângulo branco a faixa de cabeçalho (logos) de TODAS as
+        /// páginas de TODOS os complementares — pra não duplicar o
+        /// cabeçalho que a proposta já tem na própria página. Use essa
+        /// versão quando o mesmo CNPJ tiver mais de um contrato/arquivo
+        /// pra anexar.
         /// </summary>
         /// <param name="pdfProposta">PDF da proposta (gerada pelo nosso template).</param>
-        /// <param name="pdfComplementar">PDF do termo já assinado (nativo do DocuSign).</param>
+        /// <param name="pdfsComplementares">PDFs dos termos já assinados, na ordem em que devem aparecer.</param>
         /// <param name="alturaCabecalhoPontos">
         /// Altura, em pontos (1 pt = 1/72 polegada), da faixa a cobrir no
-        /// topo de cada página do complementar. Ajuste esse número olhando
-        /// o PDF real — comece testando com 90 e vá calibrando.
+        /// topo de cada página dos complementares. Ajuste esse número
+        /// olhando o PDF real — comece testando com 90 e vá calibrando.
         /// </param>
         public void JuntarOcultandoCabecalhoComplementar(
-            string pdfProposta, string pdfComplementar, string caminhoSaida, double alturaCabecalhoPontos = 90)
+            string pdfProposta, List<string> pdfsComplementares, string caminhoSaida, double alturaCabecalhoPontos = 90)
         {
             using (var documentoFinal = new PdfDocument())
             {
@@ -111,23 +146,36 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceMigration
                         documentoFinal.AddPage(pagina);
                 }
 
-                // páginas do complementar entram com o cabeçalho mascarado
-                using (var origemComplementar = PdfReader.Open(pdfComplementar, PdfDocumentOpenMode.Import))
+                // páginas de CADA complementar entram com o cabeçalho mascarado
+                foreach (var pdfComplementar in pdfsComplementares)
                 {
-                    foreach (var paginaOrigem in origemComplementar.Pages)
+                    using (var origemComplementar = PdfReader.Open(pdfComplementar, PdfDocumentOpenMode.Import))
                     {
-                        var novaPagina = documentoFinal.AddPage(paginaOrigem);
-
-                        using (var gfx = XGraphics.FromPdfPage(novaPagina))
+                        foreach (var paginaOrigem in origemComplementar.Pages)
                         {
-                            var pincel = XBrushes.White;
-                            gfx.DrawRectangle(pincel, 0, 0, novaPagina.Width.Point, alturaCabecalhoPontos);
+                            var novaPagina = documentoFinal.AddPage(paginaOrigem);
+
+                            using (var gfx = XGraphics.FromPdfPage(novaPagina))
+                            {
+                                var pincel = XBrushes.White;
+                                gfx.DrawRectangle(pincel, 0, 0, novaPagina.Width.Point, alturaCabecalhoPontos);
+                            }
                         }
                     }
                 }
 
                 documentoFinal.Save(caminhoSaida);
             }
+        }
+
+        /// <summary>
+        /// Sobrecarga de compatibilidade pra um único complementar.
+        /// </summary>
+        public void JuntarOcultandoCabecalhoComplementar(
+            string pdfProposta, string pdfComplementar, string caminhoSaida, double alturaCabecalhoPontos = 90)
+        {
+            JuntarOcultandoCabecalhoComplementar(
+                pdfProposta, new List<string> { pdfComplementar }, caminhoSaida, alturaCabecalhoPontos);
         }
     }
 }

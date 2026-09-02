@@ -1149,9 +1149,12 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\MIGRACAO_TERMO_UNITARIO.csv";
-                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_SETCEMG_UNITARIO.docx");
+                //PRECISA SER MUDADO DE ACORDO COM A MODALIDADE DE CADA UM
+                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\MIGRACAO_TERMO_FAMILIAR.csv";
+                string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_SETCEMG_FAMILIAR.docx");
+
                 string pastaDestino = @"C:\inetpub\wwwroot\plennusc\plennuscApp\public\uploadgestao\docs\dadosReaisYouBut";
+
                 string pastaComplementares = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\Uploads\PROPOSTAS_UNIMED_SETCEMG";
 
                 // Pasta temporária só pra guardar os PDFs/docx intermediários
@@ -1184,42 +1187,45 @@ namespace appWhatsapp.PlennuscGestao.Views
                 foreach (var proposta in propostas)
                 {
                     string nomeArquivo = null;
-
                     try
                     {
                         string email = LimparNomeArquivo(proposta.EmailResponsavel ?? "SEM_EMAIL");
                         string nomeLimpo = LimparNomeArquivo(proposta.RazaoSocial ?? "SEM_NOME");
                         nomeArquivo = SanitizarNomeArquivo($"{email}__{nomeLimpo}");
 
-                        // 1. Localiza o complementar ANTES de gerar qualquer coisa —
-                        //    se não achar, essa proposta não é processada (nada é
-                        //    gerado pra ela) e o erro fica registrado na tela.
-                        //    Se o e-mail do responsável vier com mais de um separado
-                        //    por ";", usamos o primeiro.
-                        string emailBusca = (proposta.EmailResponsavel ?? "").Split(';')[0].Trim();
-                        string complementar = pdfMerge.LocalizarArquivoPorEmail(pastaComplementares, emailBusca);
+                        // 1. Localiza TODOS os complementares para esse CNPJ.
+                        List<string> complementares;
+                        try
+                        {
+                            complementares = pdfMerge.LocalizarArquivosPorCnpj(pastaComplementares, proposta.Cnpj);
+                        }
+                        catch (ArquivoComplementarNaoEncontradoException)
+                        {
+                            erros.AppendLine($"⊘ {proposta.RazaoSocial} ({proposta.Cnpj}): sem arquivo na pasta de complementares, pulado.");
+                            continue;
+                        }
 
-                        // 2. Gera a proposta preenchida em .docx (arquivo temporário).
+                        // 2. Gera a proposta preenchida em .docx (temporário).
                         string propostaDocxTemp = Path.Combine(pastaTemp, nomeArquivo + "__proposta.docx");
                         string logResultado = docxService.GerarDocumento(templatePath, propostaDocxTemp, proposta);
 
                         // 3. Converte a proposta pra PDF.
-                        //    O complementar já é PDF se a pasta foi atualizada com os
-                        //    PDFs nativos do DocuSign — nesse caso pula a conversão.
-                        //    Se ainda for .docx, converte também (pode sair com o
-                        //    mesmo problema de layout que já existe nesse arquivo de
-                        //    origem — isso é uma limitação do arquivo, não do código).
                         string propostaPdf = conversor.ConverterParaPdf(propostaDocxTemp, pastaTemp);
 
-                        string complementarPdf = complementar.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
-                            ? complementar
-                            : conversor.ConverterParaPdf(complementar, pastaTemp);
+                        // 4. Converte CADA complementar para PDF (se for DOCX) e monta a lista.
+                        List<string> complementaresPdf = new List<string>();
+                        foreach (var comp in complementares)
+                        {
+                            string compPdf = comp.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                                ? comp
+                                : conversor.ConverterParaPdf(comp, pastaTemp);
+                            complementaresPdf.Add(compPdf);
+                        }
 
-                        // 4. Junta os PDFs no arquivo final, mascarando o cabeçalho
-                        //    duplicado do complementar.
+                        // 5. Junta: proposta + TODOS os complementares (ocultando cabeçalho).
                         string outputFinal = Path.Combine(pastaDestino, nomeArquivo + ".pdf");
                         pdfMerge.JuntarOcultandoCabecalhoComplementar(
-      propostaPdf, complementarPdf, outputFinal, alturaCabecalhoPontos: 30);
+                            propostaPdf, complementaresPdf, outputFinal, alturaCabecalhoPontos: 30);
 
                         documentosCriados++;
                     }
