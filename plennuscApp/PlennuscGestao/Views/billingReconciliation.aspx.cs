@@ -23,6 +23,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 CarregarOperadoras();
                 CarregarGruposFaturamento();
+                ConfigurarRadioButtonList();
             }
         }
 
@@ -45,6 +46,20 @@ namespace appWhatsapp.PlennuscGestao.Views
             cblGrupoFaturamento.DataTextField = "DescricaoGrupoFaturamento";
             cblGrupoFaturamento.DataValueField = "CodigoGrupoFaturamento";
             cblGrupoFaturamento.DataBind();
+        }
+
+        /// <summary>
+        /// Garante que os dois itens estejam sempre disponíveis no RadioButtonList
+        /// </summary>
+        private void ConfigurarRadioButtonList()
+        {
+            if (rblTipoConferencia.Items.FindByValue("CONVENIO") == null)
+                rblTipoConferencia.Items.Insert(0, new ListItem("Convênio", "CONVENIO"));
+
+            if (rblTipoConferencia.Items.FindByValue("EVENTO_ADICIONAL") == null)
+                rblTipoConferencia.Items.Add(new ListItem("Odontológico (Evento Adicional)", "EVENTO_ADICIONAL"));
+
+            rblTipoConferencia.SelectedValue = "CONVENIO";
         }
 
         #endregion
@@ -87,9 +102,39 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     Session[SESSION_ITENS_IMPORTADOS] = itensImportados;
 
-                    bool usarLayoutHapvida = IsHapvida(nomeOperadora) || IsUniaoMedica(nomeOperadora);
+                    // ===== DEFINIÇÕES DE COMPORTAMENTO POR OPERADORA =====
+                    bool ehHapvida = IsHapvida(nomeOperadora);
+                    bool ehUniaoMedica = IsUniaoMedica(nomeOperadora);
+                    bool ehUnimed = IsUnimed(nomeOperadora);
 
-                    AjustarColunasGridPorOperadora(usarLayoutHapvida);
+                    // 1. Painel de Tipo de Conferência: visível APENAS para Hapvida
+                    //    (Unimed e União Médica NÃO exibem)
+                    pnlTipoConferencia.Visible = ehHapvida;
+
+                    // 2. Se for União Médica, forçamos o tipo como CONVENIO (não haverá radio visível)
+                    //    e garantimos que o item odontológico não atrapalhe
+                    if (ehUniaoMedica)
+                    {
+                        // Remove o item Odontológico para não poluir a lista
+                        var itemOdonto = rblTipoConferencia.Items.FindByValue("EVENTO_ADICIONAL");
+                        if (itemOdonto != null)
+                            rblTipoConferencia.Items.Remove(itemOdonto);
+
+                        // Garante que o item Convênio exista e seja selecionado
+                        var itemConvenio = rblTipoConferencia.Items.FindByValue("CONVENIO");
+                        if (itemConvenio == null)
+                            rblTipoConferencia.Items.Insert(0, new ListItem("Convênio", "CONVENIO"));
+                        rblTipoConferencia.SelectedValue = "CONVENIO";
+                    }
+                    else
+                    {
+                        // Para outras operadoras, garante que o item Odontológico esteja presente
+                        if (rblTipoConferencia.Items.FindByValue("EVENTO_ADICIONAL") == null)
+                            rblTipoConferencia.Items.Add(new ListItem("Odontológico (Evento Adicional)", "EVENTO_ADICIONAL"));
+                    }
+
+                    // 3. Ajustar colunas do grid
+                    AjustarColunasGridPorOperadora(nomeOperadora);
 
                     gridPreview.DataSource = itensImportados;
                     gridPreview.DataBind();
@@ -98,13 +143,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     divPreview.Attributes.Add("class", "form-group");
 
                     ExibirMensagem($"Arquivo '{fileRelatorio.FileName}' importado com sucesso. {itensImportados.Count} registro(s) encontrado(s).", erro: false);
-
-                    pnlTipoConferencia.Visible = usarLayoutHapvida;
-
-                    if (!pnlTipoConferencia.Visible)
-                    {
-                        rblTipoConferencia.SelectedValue = "CONVENIO";
-                    }
                 }
             }
             catch (Exception ex)
@@ -157,38 +195,46 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         #region AJUSTES DO GRID
 
-        private void AjustarColunasGridPorOperadora(bool usarLayoutHapvida)
+        private void AjustarColunasGridPorOperadora(string nomeOperadora)
         {
-            var camposSomenteHapvida = new[]
-            {
-                "Nascimento",
-                "Parentesco",
-                "Adicional",
-                "NomeTabelaPreco",
-                "DescricaoGrupoFaturamento",
-                "Empresa"
-            };
-
-            var camposSomenteUnimed = new[]
-            {
-                "Credito",
-                "Debito",
-                "CodigoEmpresa",
-                "EmpresaUnimed"
-            };
+            bool ehHapvida = IsHapvida(nomeOperadora);
+            bool ehUniaoMedica = IsUniaoMedica(nomeOperadora);
+            bool ehUnimed = IsUnimed(nomeOperadora);
 
             foreach (DataControlField coluna in gridPreview.Columns)
             {
                 if (coluna is BoundField boundField)
                 {
-                    if (Array.IndexOf(camposSomenteHapvida, boundField.DataField) >= 0)
+                    string dataField = boundField.DataField;
+
+                    // Colunas que ficam visíveis APENAS para Hapvida (e União Médica também)
+                    if (dataField == "Nascimento" || dataField == "Adicional" ||
+                        dataField == "NomeTabelaPreco" || dataField == "DescricaoGrupoFaturamento")
                     {
-                        coluna.Visible = usarLayoutHapvida;
+                        coluna.Visible = ehHapvida || ehUniaoMedica;
                     }
-                    else if (Array.IndexOf(camposSomenteUnimed, boundField.DataField) >= 0)
+                    // Parentesco: SÓ para Hapvida (União Médica NÃO exibe)
+                    else if (dataField == "Parentesco")
                     {
-                        coluna.Visible = !usarLayoutHapvida;
+                        coluna.Visible = ehHapvida;
                     }
+                    // Empresa: SÓ para Hapvida (União Médica NÃO exibe)
+                    else if (dataField == "Empresa")
+                    {
+                        coluna.Visible = ehHapvida;
+                    }
+                    // Plano: oculto para União Médica, visível para Hapvida e Unimed
+                    else if (dataField == "Plano")
+                    {
+                        coluna.Visible = !ehUniaoMedica;
+                    }
+                    // Colunas específicas da Unimed
+                    else if (dataField == "Credito" || dataField == "Debito" ||
+                             dataField == "CodigoEmpresa" || dataField == "EmpresaUnimed")
+                    {
+                        coluna.Visible = ehUnimed;
+                    }
+                    // Demais colunas (CPF, Beneficiário, etc.) permanecem visíveis para todos
                 }
             }
         }

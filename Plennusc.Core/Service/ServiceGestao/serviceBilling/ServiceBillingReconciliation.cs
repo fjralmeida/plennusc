@@ -131,8 +131,8 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 new ColunaExport { Header = "CPF / Carteirinha", ObterValor = i => i.Cpf ?? "" },
                 new ColunaExport { Header = "Beneficiário", ObterValor = i => i.Beneficiario ?? "" },
                 new ColunaExport { Header = "Nascimento", ObterValor = i => i.Nascimento?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = operadorasCpf },
-                new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = operadorasCpf },
-                new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "" },
+                new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } }, // ALTERADO
+                new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA, OP_UNIMED } }, // ALTERADO
                 new ColunaExport { Header = "Mês/Ano Usado", ObterValor = i => i.MesAnoReferencia ?? "" },
                 new ColunaExport { Header = "Valor Operadora", ObterValor = i => i.Cobrado.ToString("N2") },
                 new ColunaExport { Header = "Valor Adicional", ObterValor = i => i.Adicional.ToString("N2"), OperadorasPermitidas = operadorasCpf },
