@@ -52,6 +52,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 int colunaCpf = -1;
                 int colunaMensalidade = -1;
                 int colunaUsuario = -1;
+                int colunaNascimento = -1; // NOVO
                 bool cabecalhoEncontrado = false;
 
                 foreach (var row in sheetData.Elements<Row>())
@@ -85,6 +86,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                             else if (valorLimpo.Equals("Usuario", StringComparison.OrdinalIgnoreCase) ||
                                      valorLimpo.Equals("Usuário", StringComparison.OrdinalIgnoreCase))
                                 colunaUsuario = i;
+                            else if (valorLimpo.Equals("Nascimento", StringComparison.OrdinalIgnoreCase) ||
+                                     valorLimpo.Equals("Data Nascimento", StringComparison.OrdinalIgnoreCase))
+                                colunaNascimento = i;
                         }
 
                         if (colunaCpf >= 0 && colunaMensalidade >= 0)
@@ -113,6 +117,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         var cpf = colunaCpf < celulas.Count ? ObterValorCelula(celulas[colunaCpf], workbookPart) : null;
                         var mensalidade = colunaMensalidade < celulas.Count ? ObterValorCelula(celulas[colunaMensalidade], workbookPart) : null;
                         var usuario = colunaUsuario >= 0 && colunaUsuario < celulas.Count ? ObterValorCelula(celulas[colunaUsuario], workbookPart) : null;
+                        var nascimento = colunaNascimento >= 0 && colunaNascimento < celulas.Count ? ObterValorCelula(celulas[colunaNascimento], workbookPart) : null;
 
                         if (string.IsNullOrWhiteSpace(cpf) || string.IsNullOrWhiteSpace(mensalidade))
                             continue;
@@ -124,11 +129,15 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         if (!TryConverterValorMonetario(mensalidade, out decimal valor))
                             continue;
 
+                        // Converter data de nascimento
+                        DateTime? dataNascimento = ConverterDataNascimento(nascimento);
+
                         var item = new ItemRelatorioImportadoHapVida
                         {
                             Cpf = cpf,
                             Beneficiario = usuario,
                             Cobrado = valor,
+                            Nascimento = dataNascimento, // Preenche a data
                             StatusConferencia = "PENDENTE"
                         };
 
@@ -213,6 +222,27 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             };
 
             return invalidos.Any(i => texto.IndexOf(i, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private DateTime? ConverterDataNascimento(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+                return null;
+
+            // Remove aspas duplas se houver
+            valor = valor.Trim('"');
+
+            // Tenta formatos comuns
+            if (DateTime.TryParseExact(valor, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt1))
+                return dt1;
+
+            if (DateTime.TryParseExact(valor, "dd/MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt2))
+                return dt2;
+
+            if (DateTime.TryParse(valor, new CultureInfo("pt-BR"), DateTimeStyles.None, out DateTime dt3))
+                return dt3;
+
+            return null;
         }
 
         // ===================== CONFERÊNCIA =====================
