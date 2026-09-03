@@ -44,6 +44,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             // Guarda na SESSION (não usa ViewState para a lista)
             Session[SESSION_KEY] = resultados;
 
+            // Aplica o tamanho de página atual (vindo do DropDown)
+            gridTodos.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
+            gridTodos.PageIndex = 0;
+            gridTodos.DataSource = resultados;
+            gridTodos.DataBind();
+
             gridTodos.PageIndex = 0;
             gridTodos.DataSource = resultados;
             gridTodos.DataBind();
@@ -98,6 +104,10 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
+            // Sincroniza o DropDown com o PageSize atual (caso seja alterado por código)
+            if (ddlPageSize.Items.FindByValue(gridTodos.PageSize.ToString()) != null)
+                ddlPageSize.SelectedValue = gridTodos.PageSize.ToString();
+
             gridTodos.DataSource = dados;
             gridTodos.DataBind();
         }
@@ -114,6 +124,16 @@ namespace appWhatsapp.PlennuscGestao.Views
             lblPagerInfo.Text = total == 0
                 ? ""
                 : $"<strong>{inicio} - {fim}</strong> de <strong>{total}</strong> itens";
+        }
+
+        protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Altera o PageSize da grid
+            gridTodos.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
+            // Volta para a primeira página (opcional, mas recomendado)
+            gridTodos.PageIndex = 0;
+            // Rebind com os dados da SESSION
+            BindGridTodos();
         }
 
         // ============================================================

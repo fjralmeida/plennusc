@@ -35,11 +35,13 @@
                         ErrorMessage="Selecione um arquivo Excel."
                         CssClass="msg-importacao erro" Display="Dynamic" />
                 </div>
+
+                <div class="form-row" style="margin-top: 10px;">
+    <asp:Button ID="btnImportar" runat="server" Text="Importar" CssClass="btn btn-primary" OnClick="btnImportar_Click" />
+</div>
             </div>
 
-            <div class="form-row" style="margin-top: 10px;">
-                <asp:Button ID="btnImportar" runat="server" Text="Importar" CssClass="btn btn-primary" OnClick="btnImportar_Click" />
-            </div>
+            
         </div>
 
         <asp:Panel ID="pnlResultado" runat="server" Visible="false">
@@ -64,8 +66,24 @@
                 </button>
             </div>
 
+
       <div class="tab-status-panel active" id="tab-todos">
     <div class="grid-container">
+
+        
+            <div class="grid-toolbar">
+    <div class="grid-toolbar-left">
+        <label for="ddlPageSize">Registros por página:</label>
+        <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged" CssClass="form-control ddl-pagesize">
+            <asp:ListItem Text="5" Value="5" />
+            <asp:ListItem Text="10" Value="10" Selected="True" />
+            <asp:ListItem Text="20" Value="20" />
+            <asp:ListItem Text="50" Value="50" />
+            <asp:ListItem Text="100" Value="100" />
+        </asp:DropDownList>
+    </div>
+</div>
+
         <asp:GridView ID="gridTodos" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
             EmptyDataText="Nenhum registro processado."
             OnRowDataBound="gridTodos_RowDataBound"
