@@ -295,6 +295,7 @@
     <Content Include="PlennuscFinance\Views\homeFinance.aspx" />
     <Content Include="PlennuscFinance\Views\privacySettingsFinance.aspx" />
     <Content Include="PlennuscFinance\Views\profileFinance.aspx" />
+    <Content Include="PlennuscGestao\Views\activityReport.aspx" />
     <Content Include="PlennuscGestao\Views\billingInconsistency.aspx" />
     <Content Include="PlennuscGestao\Views\billingReconciliation.aspx" />
     <Content Include="PlennuscGestao\Views\Butyou.aspx" />
@@ -496,6 +497,13 @@
     </Compile>
     <Compile Include="PlennuscFinance\Views\profileFinance.aspx.designer.cs">
       <DependentUpon>profileFinance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\activityReport.aspx.cs">
+      <DependentUpon>activityReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\activityReport.aspx.designer.cs">
+      <DependentUpon>activityReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\billingInconsistency.aspx.cs">
       <DependentUpon>billingInconsistency.aspx</DependentUpon>
