@@ -100,14 +100,11 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
         public void ConferirFaturamento(List<ItemRelatorioImportadoHapVida> itensConferidos)
         {
-            var itensParaAtualizar = itensConferidos
-                .Where(i => i.StatusConferencia == "OK" || i.StatusConferencia == "DIVERGENCIA_TOLERADA")
-                .ToList();
-
-            if (itensParaAtualizar.Count == 0)
+            if (itensConferidos == null || itensConferidos.Count == 0)
                 return;
 
-            _sql.ConferirFaturamento(itensParaAtualizar);
+            // Agora atualiza TODOS os itens, independente do status
+            _sql.ConferirFaturamento(itensConferidos);
         }
 
         #endregion
