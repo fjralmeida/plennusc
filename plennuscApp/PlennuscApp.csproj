@@ -251,6 +251,7 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\billing\billingInconsistency.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\billing\billingReconciliation.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\CIDs\ICDImport.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\CIDs\ReportActivity.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\Company-Registration.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\demand-Gestao.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\detailDemand.css" />
