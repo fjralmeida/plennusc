@@ -32,12 +32,13 @@
     <div class="filters-card" id="divResultado" runat="server" visible="false">
         <div class="filters-title"><i class="bi bi-table"></i>Resultado</div>
 
-        <div class="grid-resumo">
-            <span class="grid-resumo-total">
-                <strong><asp:Literal ID="litTotalRegistros" runat="server" /></strong> registro(s) encontrado(s)
-            </span>
-        </div>
-
+<div class="grid-resumo">
+    <span class="grid-resumo-total">
+        <strong><asp:Literal ID="litTotalRegistros" runat="server" /></strong> registro(s) encontrado(s)
+    </span>
+    <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel" 
+        CssClass="btn btn-success" OnClick="btnExportarExcel_Click" />
+</div>
         <div class="grid-container">
             <div class="grid-scroll">
                 <asp:GridView ID="gvRelatorio" runat="server" CssClass="custom-grid"
