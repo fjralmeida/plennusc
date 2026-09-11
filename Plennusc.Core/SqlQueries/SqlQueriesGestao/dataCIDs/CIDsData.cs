@@ -80,17 +80,16 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
         {
             const string sql = @"
         INSERT INTO PS1009
-            (CODIGO_ASSOCIADO, CODIGO_CID, DATA_TERMINO, REFERENCIA_IMPORTACAO,
+            (CODIGO_ASSOCIADO, CODIGO_CID, REFERENCIA_IMPORTACAO,
              INFORMACOES_LOG_I, INFORMACOES_LOG_A, ID_INSTANCIA_PROCESSO)
         VALUES
-            (@codigoAssociado, @cid, @dataTermino, @referenciaImportacao,
+            (@codigoAssociado, @cid, @referenciaImportacao,
              @logI, @logA, @idInstancia)";
 
             using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@codigoAssociado", Truncar(registro.CodigoAssociado, 15));
                 cmd.Parameters.AddWithValue("@cid", Truncar(registro.CodigoCid, 10));
-                cmd.Parameters.AddWithValue("@dataTermino", (object)registro.DataTermino ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@referenciaImportacao", Truncar(registro.ReferenciaImportacao, 50));
                 cmd.Parameters.AddWithValue("@logI", Truncar(registro.InformacoesLogI, 30));
                 cmd.Parameters.AddWithValue("@logA", Truncar(registro.InformacoesLogA, 93));

@@ -340,6 +340,9 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
         {
             if (string.IsNullOrWhiteSpace(valor)) return null;
 
+            // Remove espaços extras
+            valor = valor.Trim();
+
             // Excel guarda datas como número serial (dias desde 30/12/1899)
             if (double.TryParse(valor, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var serial))
             {
@@ -353,11 +356,18 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                 }
             }
 
-            if (DateTime.TryParse(valor, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var data))
+            // ✅ FORÇA A CONVERSÃO COM O FORMATO BRASILEIRO dd/MM/yyyy
+            string[] formatos = { "dd/MM/yyyy", "dd/MM/yyyy HH:mm:ss", "dd/MM/yy" };
+            if (DateTime.TryParseExact(valor, formatos,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
+                out var data))
+            {
                 return data;
+            }
 
-            if (DateTime.TryParseExact(valor.Trim(), new[] { "dd/MM/yyyy", "dd/MM/yyyy HH:mm:ss", "yyyy-MM-dd" },
-                System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out data))
+            // Fallback: tenta com TryParse normal (como último recurso)
+            if (DateTime.TryParse(valor, out data))
                 return data;
 
             return null;
