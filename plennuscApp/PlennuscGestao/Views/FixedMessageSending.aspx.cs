@@ -162,13 +162,23 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                         if (antigoCliente == "SIM")
                         {
-                            retornoApi = await api.ConexaoApiNovoPlano(
+                            retornoApi = await api.ConexaoApiOfertaAntigoCliente(
                                 new List<string> { mensagem.Telefone },
-                                mensagem.Field3,          // Nome do beneficiário
-                                mensagem.NomeOperador     // Nome do operador
+                                mensagem.Field3,          // {{1}} Nome do beneficiário
+                                mensagem.NomeOperador     // {{2}} Nome do operador (Vallor)
                             );
                             status = "OK";
                         }
+
+                        //if (antigoCliente == "SIM")
+                        //{
+                        //    retornoApi = await api.ConexaoApiNovoPlano(
+                        //        new List<string> { mensagem.Telefone },
+                        //        mensagem.Field3,          // Nome do beneficiário
+                        //        mensagem.NomeOperador     // Nome do operador
+                        //    );
+                        //    status = "OK";
+                        //}
                         else // Qualquer outra coisa (NAO, vazio, etc) trata como NOVO CLIENTE
                         {
                             //retornoApi = await api.ConexaoApiNovoCliente(
@@ -379,7 +389,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             // CASO 3: 9 dígitos (sem DDD) - adiciona DDD 31 e mantém o 9
             if (clean.Length == 9 && clean.StartsWith("9"))
             {
-                return "55" + "87" + clean;
+                return "55" + "31" + clean;
             }
 
             // CASO 4: 10 dígitos (DDD + número sem 9)

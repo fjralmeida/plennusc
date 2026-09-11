@@ -793,5 +793,75 @@ namespace appWhatsapp.Service
 
             return resultado.ToString();
         }
+
+        public async Task<string> ConexaoApiOfertaAntigoCliente(List<string> telefones, string nomeBeneficiario, string nomeOperador)
+        {
+            var apiUrl = "https://vallorbeneficios.vollsc.com/api/mailings";
+            var apiKey = "7e0f20f6f8e754ff84918fbbbf3e40a9";
+            var resultadoFinal = new StringBuilder();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("voll-api-key", apiKey);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                foreach (var telefone in telefones)
+                {
+                    var jsonBody = $@"
+                    {{
+                    ""media_hsm_configuration_id"": ""dbae1464-e936-4f46-937b-33de9258a783"",
+                            ""hsm_type"": ""media_hsm"",
+                            ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121"",
+                            ""system"": ""whatsapp_enterprise"",
+                            ""directed_campaigns_attributes"": [
+                                {{
+                                    ""campaign_id"": ""5ce46cf9-68fa-46cd-91db-542b503b8121""
+                                }}
+                            ],
+
+                            ""contacts"": [
+                                {{
+                                ""phone_number"": ""{telefone}"",
+                                ""field_1"": ""{nomeBeneficiario}"", 
+                                ""field_2"": ""{nomeOperador}"",  
+                                ""field_3"": """",
+                                ""field_4"": """",
+                                ""field_5"": """"
+                        }}
+                        ]
+                    }}";
+
+                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    try
+                    {
+                        var response = await client.PostAsync(apiUrl, content);
+                        var responseBody = await response.Content.ReadAsStringAsync();
+
+                        var json = JObject.Parse(responseBody);
+                        var id = json["id"]?.ToString();
+
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            var statusResponse = await ConsultarStatusEnvioAsync(id, telefone, apiKey);
+                            resultadoFinal.AppendLine(statusResponse);
+                        }
+                        else
+                        {
+                            resultadoFinal.AppendLine($"⚠️ {telefone}: ID não encontrado na resposta.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        resultadoFinal.AppendLine($"❌ {telefone}: Erro - {ex.Message}");
+                    }
+
+                    await Task.Delay(5000);
+                }
+            }
+
+            return resultadoFinal.ToString();
+        }
     }
 }
