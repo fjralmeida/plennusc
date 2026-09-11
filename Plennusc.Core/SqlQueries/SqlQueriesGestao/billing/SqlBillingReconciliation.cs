@@ -177,17 +177,19 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
             string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
             string sql = @"
 SELECT TOP 1
-    VALOR_OPERADORA,
-    DATA_ADMISSAO,
-    DATA_EXCLUSAO,
-    NOME_MOTIVO_EXCLUSAO,
-    NOME_TABELA_PRECO,
-    NOME_GRUPO_DE_PESSOAS,
-    DESCRICAO_GRUPO_FATURAMENTO
-FROM VW_RELATORIO_CONFERENCIA
-WHERE NUMERO_CPF = @Cpf
-  AND MES_ANO_REFERENCIA = @MesAnoReferencia
-  AND TIPO = @Tipo";
+    vw.VALOR_OPERADORA,
+    vw.DATA_ADMISSAO,
+    vw.DATA_EXCLUSAO,
+    vw.NOME_MOTIVO_EXCLUSAO,
+    (SELECT DISTINCT TOP 1 p1032.NOME_TABELA
+     FROM PS1032 p1032
+     WHERE p1032.CODIGO_TABELA_PRECO = vw.CODIGO_TABELA_PRECO) AS NOME_TABELA_PRECO,
+    vw.NOME_GRUPO_DE_PESSOAS,
+    vw.DESCRICAO_GRUPO_FATURAMENTO
+FROM VW_RELATORIO_CONFERENCIA vw
+WHERE vw.NUMERO_CPF = @Cpf
+  AND vw.MES_ANO_REFERENCIA = @MesAnoReferencia
+  AND vw.TIPO = @Tipo";
             using (SqlConnection conn = new SqlConnection(connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
             {
@@ -209,18 +211,20 @@ WHERE NUMERO_CPF = @Cpf
             string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
             string sql = @"
         SELECT TOP 1
-            VALOR_OPERADORA,
-            DATA_ADMISSAO,
-            DATA_EXCLUSAO,
-            NOME_MOTIVO_EXCLUSAO,
-            NOME_TABELA_PRECO,
-            NOME_GRUPO_DE_PESSOAS,
-            DESCRICAO_GRUPO_FATURAMENTO
-        FROM VW_RELATORIO_CONFERENCIA
-        WHERE NUMERO_CPF = @Cpf
-          AND MES_ANO_REFERENCIA = @MesAnoReferencia
-          AND CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
-          AND TIPO = @Tipo";
+            vw.VALOR_OPERADORA,
+            vw.DATA_ADMISSAO,
+            vw.DATA_EXCLUSAO,
+            vw.NOME_MOTIVO_EXCLUSAO,
+            (SELECT DISTINCT TOP 1 p1032.NOME_TABELA
+             FROM PS1032 p1032
+             WHERE p1032.CODIGO_TABELA_PRECO = vw.CODIGO_TABELA_PRECO) AS NOME_TABELA_PRECO,
+            vw.NOME_GRUPO_DE_PESSOAS,
+            vw.DESCRICAO_GRUPO_FATURAMENTO
+        FROM VW_RELATORIO_CONFERENCIA vw
+        WHERE vw.NUMERO_CPF = @Cpf
+          AND vw.MES_ANO_REFERENCIA = @MesAnoReferencia
+          AND vw.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
+          AND vw.TIPO = @Tipo";
 
             using (SqlConnection conn = new SqlConnection(connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -427,24 +431,26 @@ WHERE NUMERO_CPF = @Cpf
 
             string sql = @"
             SELECT TOP 1
-                VALOR_OPERADORA,
-                DATA_ADMISSAO,
-                DATA_EXCLUSAO,
-                NOME_MOTIVO_EXCLUSAO,
-                NOME_TABELA_PRECO,
-                NOME_GRUPO_DE_PESSOAS,
-                DESCRICAO_GRUPO_FATURAMENTO,
-                CODIGO_EMPRESA,
-                EMPRESA
-            FROM VW_RELATORIO_CONFERENCIA
-            WHERE NUMERO_CARTEIRINHA = @Carteirinha
-              AND MES_ANO_REFERENCIA = @MesAnoReferencia
-              AND CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
-              AND TIPO = @Tipo";
+                vw.VALOR_OPERADORA,
+                vw.DATA_ADMISSAO,
+                vw.DATA_EXCLUSAO,
+                vw.NOME_MOTIVO_EXCLUSAO,
+                (SELECT DISTINCT TOP 1 p1032.NOME_TABELA
+                 FROM PS1032 p1032
+                 WHERE p1032.CODIGO_TABELA_PRECO = vw.CODIGO_TABELA_PRECO) AS NOME_TABELA_PRECO,
+                vw.NOME_GRUPO_DE_PESSOAS,
+                vw.DESCRICAO_GRUPO_FATURAMENTO,
+                vw.CODIGO_EMPRESA,
+                vw.EMPRESA
+            FROM VW_RELATORIO_CONFERENCIA vw
+            WHERE vw.NUMERO_CARTEIRINHA = @Carteirinha
+              AND vw.MES_ANO_REFERENCIA = @MesAnoReferencia
+              AND vw.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
+              AND vw.TIPO = @Tipo";
 
             if (!string.IsNullOrEmpty(filtroDescricao))
             {
-                sql += " AND DESCRICAO LIKE @FiltroDescricao";
+                sql += " AND vw.DESCRICAO LIKE @FiltroDescricao";
             }
 
             using (SqlConnection conn = new SqlConnection(connStr))

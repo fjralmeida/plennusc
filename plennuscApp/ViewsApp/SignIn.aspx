@@ -94,7 +94,7 @@
                             <div class="mini-hexagon"></div>
                         </div> --> 
 
-                        <img src="../Uploads/logo_plennus_sb.png" class="logo-login" ID="imgLogo"/>
+                        <!-- <img src="../Uploads/logo_plennus_sb.png" class="logo-login" ID="imgLogo"/> -->
 
                         <h2>Acesse sua conta</h2>
 
