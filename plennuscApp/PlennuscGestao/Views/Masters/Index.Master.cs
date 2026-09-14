@@ -454,6 +454,23 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeObjeto.Contains("privacy") || nomeDisplay.Contains("privacidade"))
                 return "bi bi-shield-lock me-2";
 
+            // ✅ IMPORTAÇÃO DE CIDs (menu pai)
+            if (nomeObjeto.Contains("menuimportacaocids") ||
+                nomeDisplay.Contains("importação de cids") ||
+                nomeDisplay.Contains("importacao de cids"))
+                return "bi bi-file-medical me-2";
+
+            // ✅ IMPORTAR CIDs (subitem)
+            if (nomeObjeto.Contains("icdimport") ||
+                nomeDisplay.Contains("importar cids"))
+                return "bi bi-file-earmark-arrow-up me-2";
+
+            // ✅ RELATÓRIO DE MOVIMENTAÇÃO
+            if (nomeObjeto.Contains("activityreport") ||
+                nomeDisplay.Contains("relatório de movimentação") ||
+                nomeDisplay.Contains("relatorio de movimentacao"))
+                return "bi bi-file-earmark-bar-graph me-2";
+
             // ✅ ÍCONE PADRÃO
             return "bi bi-circle me-2";
         }
