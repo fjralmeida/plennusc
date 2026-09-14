@@ -122,7 +122,11 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 Adicional = ObterDecimal(v, 15),
                 TaxaAdesao = ObterDecimal(v, 16),
                 Desconto = ObterDecimal(v, 17),
-                Cobrado = ObterDecimal(v, 18)
+                // === ALTERAÇÃO SOLICITADA ===
+                // Antes: Cobrado = ObterDecimal(v, 18)  -> coluna "cobrado" da planilha
+                // Agora: o "Valor Operadora" (campo Cobrado) passa a vir da coluna "mensalidade" (índice 14)
+                // Vale SOMENTE para Hapvida — Unimed e União Médica permanecem inalteradas.
+                Cobrado = ObterDecimal(v, 14)
             };
         }
 
@@ -169,7 +173,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
         // ===================== CONFERÊNCIA COM A VIEW (lógica específica Hapvida) =====================
 
-        public List<ItemRelatorioImportadoHapVida> ConferirComView(List<ItemRelatorioImportadoHapVida> itensImportados, string tipoConferencia,int codigoGrupoContrato)
+        public List<ItemRelatorioImportadoHapVida> ConferirComView(List<ItemRelatorioImportadoHapVida> itensImportados, string tipoConferencia, int codigoGrupoContrato)
         {
             foreach (var item in itensImportados)
             {
@@ -202,8 +206,14 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 item.NomeGrupoPessoas = resultado.NomeGrupoPessoas;
                 item.DescricaoGrupoFaturamento = resultado.DescricaoGrupoFaturamento;
                 item.ValorOperadoraView = resultado.ValorOperadora;
-                decimal diferenca = Math.Abs(item.Cobrado - resultado.ValorOperadora.Value);
+
+                // === ALTERAÇÃO SOLICITADA ===
+                // Antes: comparação usava item.Cobrado (coluna "cobrado" da planilha)
+                // Agora: comparação passa a usar item.Mensalidade (coluna "mensal" da planilha)
+                // Vale SOMENTE para Hapvida — Unimed e União Médica permanecem inalteradas.
+                decimal diferenca = Math.Abs(item.Mensalidade - resultado.ValorOperadora.Value);
                 item.DiferencaValor = diferenca;
+
                 if (diferenca == 0)
                     item.StatusConferencia = "OK";
                 else if (diferenca <= TOLERANCIA_DIVERGENCIA)
