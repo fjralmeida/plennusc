@@ -1883,5 +1883,250 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceYouBut
             }
             return applied;
         }
+        public int FillTitularBasicoUniaoMedica(
+            string templatePath,
+            string outputPath,
+            Dictionary<string, string> dadosTitular)
+        {
+            if (!File.Exists(outputPath))
+                File.Copy(templatePath, outputPath, true);
+
+            int applied = 0;
+
+            string nome = ObterValorDicionario(dadosTitular, "NOME_COMPLETO", "NOMECOMPLETO", "NOME", "NOME_TITULAR");
+            string cpf = FormatarCpf(ObterValorDicionario(dadosTitular, "CPF", "CPFTITULAR", "CPF_TITULAR", "CPFDOTITULAR", "CPF_DO_TITULAR", "CPF_ASSOCIADO", "CPFASSOCIADO"));
+
+            const string CorAzul = "0000FF";
+
+            using (var doc = WordprocessingDocument.Open(outputPath, true))
+            {
+                var body = doc.MainDocumentPart.Document.Body;
+                var paragraphs = body.Descendants<Paragraph>().ToList();
+
+                bool nomeTopoPreenchido = false;
+                bool cpfPreenchido = false;
+                bool assinaturaPreenchida = false;
+
+                for (int i = 0; i < paragraphs.Count; i++)
+                {
+                    var p = paragraphs[i];
+                    string textoCompleto = string.Join("", p.Descendants<Text>().Select(t => t.Text));
+                    string textoUpper = textoCompleto.ToUpperInvariant();
+
+                    bool temEu = !nomeTopoPreenchido &&
+                        Regex.IsMatch(textoCompleto.TrimStart(), @"^Eu\s*,", RegexOptions.IgnoreCase);
+                    bool temCpf = !cpfPreenchido && textoUpper.Contains("CPF SOB O N");
+
+                    // "Eu, ____" e "CPF sob o nº ____" normalmente estão no MESMO parágrafo.
+                    // As duas lacunas são preenchidas em sequência — cada chamada acha e
+                    // preenche a PRÓXIMA lacuna de underscores ainda restante no parágrafo.
+                    if (temEu)
+                    {
+                        if (PreencherLinhaComUnderline(p, nome, CorAzul))
+                        {
+                            applied++;
+                            nomeTopoPreenchido = true;
+                        }
+                    }
+
+                    if (temCpf)
+                    {
+                        if (PreencherLinhaComUnderline(p, cpf, CorAzul))
+                        {
+                            applied++;
+                            cpfPreenchido = true;
+                        }
+                    }
+
+                    if (temEu || temCpf)
+                        continue;
+
+                    // Linha de assinatura: o parágrafo SEGUINTE a "Titular/Responsável Financeiro:"
+                    if (!assinaturaPreenchida &&
+                        textoUpper.Contains("TITULAR") &&
+                        textoUpper.Contains("RESPONS"))
+                    {
+                        if (i + 1 < paragraphs.Count)
+                        {
+                            var pAssinatura = paragraphs[i + 1];
+                            if (PreencherLinhaComUnderline(pAssinatura, nome, CorAzul))
+                            {
+                                applied++;
+                                assinaturaPreenchida = true;
+                            }
+                        }
+                        continue;
+                    }
+                }
+
+                doc.MainDocumentPart.Document.Save();
+            }
+
+            return applied;
+        }
+
+        /// <summary>
+        /// Substitui a PRÓXIMA sequência de underscores (____) de um parágrafo pelo valor
+        /// informado. Funciona mesmo quando os underscores fazem parte de um run maior
+        /// que contém texto depois deles: nesse caso o run é QUEBRADO em até 3 runs
+        /// (prefixo / valor / sufixo), e SÓ o run do valor recebe a cor — o prefixo e o
+        /// sufixo continuam com a formatação/cor original.
+        /// Pode ser chamada várias vezes no mesmo parágrafo: cada chamada preenche a
+        /// PRÓXIMA lacuna de underscores ainda não preenchida.
+        /// </summary>
+        private bool PreencherLinhaComUnderline(Paragraph p, string valor, string corHex = null)
+        {
+            valor = valor ?? "";
+
+            var textElements = p.Descendants<Text>().ToList();
+            if (textElements.Count == 0) return false;
+
+            var fullText = new System.Text.StringBuilder();
+            var owner = new List<Text>(); // owner[k] = elemento Text dono do caractere k
+
+            foreach (var t in textElements)
+                foreach (char c in t.Text)
+                {
+                    fullText.Append(c);
+                    owner.Add(t);
+                }
+
+            string texto = fullText.ToString();
+
+            Match match = Regex.Match(texto, "_{3,}");
+            if (!match.Success) return false;
+
+            int start = match.Index;
+            int len = match.Length;
+
+            // Agrupa os índices [start, start+len) por Text de origem, mantendo a ordem
+            var gruposPorText = new List<(Text texto, int inicioLocal, int tamanho)>();
+            int idx = start;
+            while (idx < start + len)
+            {
+                Text donoAtual = owner[idx];
+                int offsetGlobalDoOwner = owner.FindIndex(t => t == donoAtual);
+                int inicioLocalNoOwner = idx - offsetGlobalDoOwner;
+
+                int tamanho = 0;
+                while (idx < start + len && owner[idx] == donoAtual)
+                {
+                    tamanho++;
+                    idx++;
+                }
+                gruposPorText.Add((donoAtual, inicioLocalNoOwner, tamanho));
+            }
+
+            bool primeiro = true;
+            foreach (var grupo in gruposPorText)
+            {
+                string original = grupo.texto.Text;
+                string prefixo = original.Substring(0, grupo.inicioLocal);
+                string sufixo = original.Substring(grupo.inicioLocal + grupo.tamanho);
+
+                if (primeiro)
+                {
+                    // Este é o trecho que recebe o VALOR — quebramos o run em até 3
+                    // partes pra colorir só o valor, sem afetar prefixo/sufixo.
+                    QuebrarRunEColorirValor(grupo.texto, prefixo, valor, sufixo, corHex);
+                }
+                else
+                {
+                    // Os demais trechos da lacuna só perdem os underscores (sem cor).
+                    grupo.texto.Text = prefixo + sufixo;
+                    grupo.texto.Space = SpaceProcessingModeValues.Preserve;
+                }
+
+                primeiro = false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Substitui o Run que contém "textOriginal" (representado pelo elemento Text)
+        /// por até 3 novos runs: [prefixo com formatação original] [valor colorido]
+        /// [sufixo com formatação original]. Runs vazios não são criados.
+        /// </summary>
+        private void QuebrarRunEColorirValor(Text textoOrigem, string prefixo, string valor, string sufixo, string corHex)
+        {
+            var run = textoOrigem.Ancestors<Run>().FirstOrDefault();
+            if (run == null)
+            {
+                // Fallback: sem Run pai identificável, só troca o texto (sem cor)
+                textoOrigem.Text = prefixo + valor + sufixo;
+                textoOrigem.Space = SpaceProcessingModeValues.Preserve;
+                return;
+            }
+
+            RunProperties propsOriginais = run.RunProperties != null
+                ? (RunProperties)run.RunProperties.CloneNode(true)
+                : null;
+
+            if (!string.IsNullOrEmpty(prefixo))
+            {
+                var runPrefixo = new Run();
+                if (propsOriginais != null)
+                    runPrefixo.RunProperties = (RunProperties)propsOriginais.CloneNode(true);
+                runPrefixo.Append(new Text(prefixo) { Space = SpaceProcessingModeValues.Preserve });
+                run.InsertBeforeSelf(runPrefixo);
+            }
+
+            if (!string.IsNullOrEmpty(valor))
+            {
+                var runValor = new Run();
+                RunProperties propsValor = propsOriginais != null
+                    ? (RunProperties)propsOriginais.CloneNode(true)
+                    : new RunProperties();
+                propsValor.RemoveAllChildren<Color>();
+                if (!string.IsNullOrEmpty(corHex))
+                    propsValor.Append(new Color() { Val = corHex });
+                runValor.RunProperties = propsValor;
+                runValor.Append(new Text(valor) { Space = SpaceProcessingModeValues.Preserve });
+                run.InsertBeforeSelf(runValor);
+            }
+
+            if (!string.IsNullOrEmpty(sufixo))
+            {
+                var runSufixo = new Run();
+                if (propsOriginais != null)
+                    runSufixo.RunProperties = (RunProperties)propsOriginais.CloneNode(true);
+                runSufixo.Append(new Text(sufixo) { Space = SpaceProcessingModeValues.Preserve });
+                run.InsertBeforeSelf(runSufixo);
+            }
+
+            run.Remove();
+        }
+
+        /// <summary>
+        /// Tenta várias chaves possíveis no dicionário (case-insensitive) e retorna a
+        /// primeira que existir e não estiver vazia. Evita quebrar o preenchimento
+        /// quando o nome da chave no seu ConverterAssociadoParaDicionario for
+        /// diferente do que a gente espera.
+        /// </summary>
+        private string ObterValorDicionario(Dictionary<string, string> dados, params string[] chavesPossiveis)
+        {
+            // Normaliza removendo "_" e espaços, pra "CPF_TITULAR", "CpfTitular" e
+            // "CPF TITULAR" serem tratados como a mesma chave.
+            string Normalizar(string s) => Regex.Replace(s ?? "", @"[_\s]", "").ToUpperInvariant();
+
+            foreach (var chave in chavesPossiveis)
+            {
+                var alvo = Normalizar(chave);
+                var achou = dados.Keys.FirstOrDefault(k => Normalizar(k) == alvo);
+                if (achou != null && !string.IsNullOrWhiteSpace(dados[achou]))
+                    return dados[achou];
+            }
+            return "";
+        }
+
+        private string FormatarCpf(string cpf)
+        {
+            if (string.IsNullOrWhiteSpace(cpf)) return "";
+            string numeros = new string(cpf.Where(char.IsDigit).ToArray());
+            if (numeros.Length != 11) return cpf;
+            return $"{numeros.Substring(0, 3)}.{numeros.Substring(3, 3)}.{numeros.Substring(6, 3)}-{numeros.Substring(9, 2)}";
+        }
+
     }
 }

@@ -409,13 +409,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             var grupos = new List<GrupoTitularDependentes>();
 
-            // Normaliza tipo
             foreach (var a in todos)
             {
                 if (a.TipoAssociado?.Trim().StartsWith("T", StringComparison.OrdinalIgnoreCase) == true)
                     a.TipoAssociado = "T";
                 else if (a.TipoAssociado?.Trim().StartsWith("D", StringComparison.OrdinalIgnoreCase) == true)
                     a.TipoAssociado = "D";
+                else if (string.IsNullOrWhiteSpace(a.TipoAssociado))
+                    // Arquivo sem coluna "Categoria" (ex: só NOME/C.P.F) -> assume todo mundo titular
+                    a.TipoAssociado = "T";
             }
 
             var titulares = todos.Where(a => a.TipoAssociado == "T").ToList();
@@ -423,12 +425,8 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             foreach (var titular in titulares)
             {
-                // Associa dependentes que tenham o mesmo Email ou Telefone do titular
                 var dependentesDoTitular = dependentes
                     .Where(d => (titular.Email?.Trim() == d.Email?.Trim())).ToList();
-
-                // Se ainda não achou e o titular tiver um código único (ex: CPF), usa esse código (mas não tem no CSV)
-                // Caso contrário, fica vazio
 
                 grupos.Add(new GrupoTitularDependentes
                 {
@@ -439,6 +437,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             return grupos;
         }
+
 
         private string GerarNomeArquivo(DadosAssociadoCompleto titular, int quantidadeDependentes)
         {
@@ -636,7 +635,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
 
                 // DEPOIS — busca do arquivo Excel/CSV
-                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\AASP_MIGRACAO_UNIAOMED.csv";
+                string caminhoArquivo = @"C:\inetpub\wwwroot\plennusc\PlennuscGestao\UploadsGestao\AASP_MIGRACAO_UNIAOMED_termos.csv";
                 // ou: string caminhoArquivo = Server.MapPath("~/public/uploadgestao/docs/importacao/associados.csv
                 var importService = new ImportacaoAssociadosService();
                 List<DadosAssociadoCompleto> todosAssociados;
@@ -677,7 +676,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     try
                     {
-                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/PROPOSTA_ABRAEST.docx");
+                        string templatePath = Server.MapPath("~/public/uploadgestao/docs/youBut/aditivo_uniao_medica.docx");
 
                         // Nome do arquivo
                         string nomeArquivo = GerarNomeArquivo(grupo.Titular, grupo.Dependentes.Count);
@@ -700,7 +699,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                         }
 
                         // 5. Processar o documento com o titular
-                        int appliedTitular = docxServiceCsv.FillTitularBasico(
+                        int appliedTitular = docxServiceCsv.FillTitularBasicoUniaoMedica(
                             templatePath,
                             outputPath,
                             dadosTitular);
@@ -885,25 +884,37 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (linhas.Length < 2)
                     throw new Exception("CSV vazio ou sem dados.");
 
-                var cabecalho = linhas[0].Split(separador);
-                var mapa = MapearColunasCsv(cabecalho);
+                // Tenta detectar automaticamente o separador entre ';', ',' e TAB,
+                // testando qual deles resulta em colunas mapeadas com sucesso.
+                char[] candidatos = { separador, ';', ',', '\t' };
+                Dictionary<string, int> mapa = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                char separadorEscolhido = separador;
 
-                // Auto-detecta separador
-                if (mapa.Count == 0)
+                foreach (var candidato in candidatos.Distinct())
                 {
-                    separador = separador == ';' ? ',' : ';';
-                    cabecalho = linhas[0].Split(separador);
-                    mapa = MapearColunasCsv(cabecalho);
+                    var cabecalhoTeste = linhas[0].Split(candidato);
+                    var mapaTeste = MapearColunasCsv(cabecalhoTeste);
+
+                    // Considera válido se achou pelo menos a coluna do nome
+                    if (mapaTeste.ContainsKey("NomeCompleto"))
+                    {
+                        mapa = mapaTeste;
+                        separadorEscolhido = candidato;
+                        break;
+                    }
                 }
+
+                if (mapa.Count == 0)
+                    throw new Exception("Não foi possível identificar as colunas do arquivo (tentei ';', ',' e TAB). Confira o cabeçalho do CSV.");
+
+                separador = separadorEscolhido;
 
                 for (int i = 1; i < linhas.Length; i++)
                 {
                     if (string.IsNullOrWhiteSpace(linhas[i])) continue;
 
-                    // SplitCsvLinha vem do Helpers via herança ✅
                     var colunas = SplitCsvLinha(linhas[i], separador);
 
-                    // ObterValorCsv vem do Helpers via herança ✅
                     if (string.IsNullOrWhiteSpace(ObterValorCsv(colunas, mapa, "NomeCompleto")))
                         continue;
 
