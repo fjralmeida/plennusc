@@ -55,40 +55,44 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
 
             string sql = @"
         SELECT
-            pl.TIPO_CONTRATO_ESTIPULADO                                                      AS MODALIDADE,
-            a.CODIGO_PLANO                                                                    AS PLANO,
-            ent.NOME_GRUPO_PESSOAS                                                            AS ENTIDADE,
-            tit.NOME_ASSOCIADO                                                                AS TITULAR,
-            a.NOME_ASSOCIADO                                                                  AS NOME,
-            a.TIPO_ASSOCIADO                                                                  AS TIPO,
-            par.NOME_PARENTESCO                                                               AS PARENTESCO,
-            ec.NOME_ESTADO_CIVIL                                                              AS ESTADO_CIVIL,
-            a.SEXO                                                                            AS SEXO,
-            a.DATA_NASCIMENTO                                                                 AS DATA_NASC,
-            a.NUMERO_CPF                                                                      AS CPF,
-            a.CODIGO_CNS                                                                      AS CNS,
+            CASE pl.TIPO_CONTRATO_ESTIPULADO
+                WHEN 'E'  THEN 'ESTIPULADO'
+                WHEN 'NE' THEN 'NÃO ESTIPULADO'
+                ELSE pl.TIPO_CONTRATO_ESTIPULADO
+            END                                                                                   AS MODALIDADE,
+            p1030.NOME_PLANO_ABREVIADO                                                            AS PLANO,
+            ent.NOME_GRUPO_PESSOAS                                                                AS ENTIDADE,
+            tit.NOME_ASSOCIADO                                                                    AS TITULAR,
+            a.NOME_ASSOCIADO                                                                      AS NOME,
+            a.TIPO_ASSOCIADO                                                                      AS TIPO,
+            par.NOME_PARENTESCO                                                                   AS PARENTESCO,
+            ec.NOME_ESTADO_CIVIL                                                                  AS ESTADO_CIVIL,
+            a.SEXO                                                                                AS SEXO,
+            a.DATA_NASCIMENTO                                                                     AS DATA_NASC,
+            a.NUMERO_CPF                                                                          AS CPF,
+            a.CODIGO_CNS                                                                          AS CNS,
             (
                 SELECT STRING_AGG(t.NUMERO_TELEFONE, '; ')
                 FROM PS1006 t
                 WHERE t.CODIGO_ASSOCIADO = a.CODIGO_ASSOCIADO
-            )                                                                                  AS TELEFONE,
+            )                                                                                     AS TELEFONE,
             CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.ENDERECO       ELSE end15.ENDERECO       END AS ENDERECO,
-            NULL                                                                                 AS COMPLEMENTO,
+            NULL                                                                                  AS COMPLEMENTO,
             CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.BAIRRO         ELSE end15.BAIRRO         END AS BAIRRO,
             CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.CEP            ELSE end15.CEP            END AS CEP,
             CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.CIDADE         ELSE end15.CIDADE         END AS CIDADE,
             CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.ESTADO         ELSE end15.ESTADO         END AS ESTADO,
-            a.DATA_ADMISSAO                                                                     AS DT_VIGENCIA,   -- ← DATA_ADMISSAO
+            a.DATA_ADMISSAO                                                                       AS DT_VIGENCIA,
             CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.ENDERECO_EMAIL ELSE end15.ENDERECO_EMAIL END AS EMAIL,
-            a.NOME_MAE                                                                          AS FILIACAO_1,
-            a.NOME_PAI                                                                          AS FILIACAO_2,
-            car.OBSERVACAO_CARENCIA                                                             AS NOMENCLATURA_CARENCIA,
+            a.NOME_MAE                                                                            AS FILIACAO_1,
+            a.NOME_PAI                                                                            AS FILIACAO_2,
+            car.OBSERVACAO_CARENCIA                                                               AS NOMENCLATURA_CARENCIA,
             (
                 SELECT STRING_AGG(c.CODIGO_CID + ' - ' + cat.NOME_PATOLOGIA, '; ')
                 FROM PS1009 c
                 LEFT JOIN PS5201 cat ON c.CODIGO_CID = cat.CODIGO_CID
                 WHERE c.CODIGO_ASSOCIADO = a.CODIGO_ASSOCIADO
-            )                                                                                    AS CID
+            )                                                                                     AS CID
 
         FROM PS1000 a
         LEFT JOIN PS1014 ent    ON a.CODIGO_GRUPO_PESSOAS   = ent.CODIGO_GRUPO_PESSOAS
@@ -106,6 +110,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
                      THEN 0 ELSE 1 END,
                 p.IDADE_MINIMA
         ) pl
+        OUTER APPLY (
+            SELECT TOP 1 p.NOME_PLANO_ABREVIADO
+            FROM PS1030 p
+            WHERE p.CODIGO_PLANO = a.CODIGO_PLANO
+            ORDER BY p.DATA_CADASTRAMENTO DESC
+        ) p1030
         LEFT JOIN PS1015 end15  ON a.CODIGO_ASSOCIADO       = end15.CODIGO_ASSOCIADO
         LEFT JOIN PS1001 end01  ON a.CODIGO_ASSOCIADO       = end01.CODIGO_ASSOCIADO
         LEFT JOIN PS1007 car    ON a.CODIGO_ASSOCIADO       = car.CODIGO_ASSOCIADO
@@ -114,6 +124,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
         WHERE a.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
           AND a.DATA_EXCLUSAO IS NULL
           AND CAST(a.DATA_ADMISSAO AS DATE) = @Vigencia
+
+        ORDER BY
+            a.CODIGO_TITULAR,
+            CASE WHEN a.TIPO_ASSOCIADO = 'T' THEN 0 ELSE 1 END,
+            a.NOME_ASSOCIADO
     ";
 
             using (SqlConnection conn = new SqlConnection(connStr))
