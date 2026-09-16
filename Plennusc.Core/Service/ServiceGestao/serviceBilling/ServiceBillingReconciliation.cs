@@ -15,11 +15,14 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         private const string OP_HAPVIDA = "HAPVIDA";
         private const string OP_UNIMED = "UNIMED";
         private const string OP_UNIAO_MEDICA = "UNIAO_MEDICA";
+        private const string OP_AURORA = "AURORA"; // NOVO
+
 
         private readonly SqlBillingReconciliation _sql = new SqlBillingReconciliation();
         private readonly ServiceBillingReconciliationHapvida _hapvida = new ServiceBillingReconciliationHapvida();
         private readonly ServiceBillingReconciliationUnimed _unimed = new ServiceBillingReconciliationUnimed();
         private readonly ServiceBillingReconciliationUniaoMedica _uniaoMedica = new ServiceBillingReconciliationUniaoMedica();
+        private readonly ServiceBillingReconciliationAurora _aurora = new ServiceBillingReconciliationAurora();
 
         #region OBTENÇÃO DE DADOS BÁSICOS
 
@@ -66,6 +69,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 nomeOperadora.IndexOf("UNIAO MEDICA", StringComparison.OrdinalIgnoreCase) >= 0)
                 return _uniaoMedica.LerRelatorio(arquivo, extensao);
 
+            // Aurora
+            if (nomeOperadora.IndexOf(OP_AURORA, StringComparison.OrdinalIgnoreCase) >= 0)
+                return _aurora.LerRelatorio(arquivo, extensao);
+
             throw new NotSupportedException($"Ainda não existe leitura implementada para a operadora '{nomeOperadora}'.");
         }
 
@@ -95,6 +102,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 nomeOperadora.IndexOf("UNIAO MEDICA", StringComparison.OrdinalIgnoreCase) >= 0)
                 return _uniaoMedica.ConferirComView(itensImportados, tipoConferencia, codigoGrupoContrato);
 
+            // Aurora
+            if (nomeOperadora.IndexOf(OP_AURORA, StringComparison.OrdinalIgnoreCase) >= 0)
+                return _aurora.ConferirComView(itensImportados, tipoConferencia, codigoGrupoContrato);
+
             throw new NotSupportedException($"Ainda não existe conferência implementada para a operadora '{nomeOperadora}'.");
         }
 
@@ -120,7 +131,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
         private List<ColunaExport> MontarDefinicaoColunas()
         {
-            var operadorasCpf = new[] { OP_HAPVIDA, OP_UNIAO_MEDICA };
+            var operadorasCpf = new[] { OP_HAPVIDA, OP_UNIAO_MEDICA, OP_AURORA };
             var operadorasCarteirinha = new[] { OP_UNIMED };
 
             return new List<ColunaExport>
@@ -129,7 +140,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 new ColunaExport { Header = "Beneficiário", ObterValor = i => i.Beneficiario ?? "" },
                 new ColunaExport { Header = "Nascimento", ObterValor = i => i.Nascimento?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = operadorasCpf },
                 new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } }, // ALTERADO
-                new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA, OP_UNIMED } }, // ALTERADO
+                new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA, OP_UNIMED, OP_AURORA } }, // ALTERADO
                 new ColunaExport { Header = "Mês/Ano Usado", ObterValor = i => i.MesAnoReferencia ?? "" },
                 new ColunaExport { Header = "Valor Operadora", ObterValor = i => i.Cobrado.ToString("N2") },
                 new ColunaExport { Header = "Valor Adicional", ObterValor = i => i.Adicional.ToString("N2"), OperadorasPermitidas = operadorasCpf },

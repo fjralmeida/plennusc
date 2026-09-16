@@ -106,14 +106,17 @@ namespace appWhatsapp.PlennuscGestao.Views
                     bool ehHapvida = IsHapvida(nomeOperadora);
                     bool ehUniaoMedica = IsUniaoMedica(nomeOperadora);
                     bool ehUnimed = IsUnimed(nomeOperadora);
+                    bool ehAurora = IsAurora(nomeOperadora);
 
                     // 1. Painel de Tipo de Conferência: visível APENAS para Hapvida
-                    //    (Unimed e União Médica NÃO exibem)
+                    //    (Unimed, União Médica e Aurora NÃO exibem)
                     pnlTipoConferencia.Visible = ehHapvida;
 
-                    // 2. Se for União Médica, forçamos o tipo como CONVENIO (não haverá radio visível)
-                    //    e garantimos que o item odontológico não atrapalhe
-                    if (ehUniaoMedica)
+                    // 2. Operadoras que NÃO usam tipo de conferência (forçam CONVENIO e removem odontológico):
+                    //    União Médica e Aurora
+                    bool operadoraSemTipoConferencia = ehUniaoMedica || ehAurora;
+
+                    if (operadoraSemTipoConferencia)
                     {
                         // Remove o item Odontológico para não poluir a lista
                         var itemOdonto = rblTipoConferencia.Items.FindByValue("EVENTO_ADICIONAL");
@@ -200,6 +203,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             bool ehHapvida = IsHapvida(nomeOperadora);
             bool ehUniaoMedica = IsUniaoMedica(nomeOperadora);
             bool ehUnimed = IsUnimed(nomeOperadora);
+            bool ehAurora = IsAurora(nomeOperadora);
 
             foreach (DataControlField coluna in gridPreview.Columns)
             {
@@ -207,23 +211,24 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     string dataField = boundField.DataField;
 
-                    // Colunas que ficam visíveis APENAS para Hapvida (e União Médica também)
+                    // Colunas que ficam visíveis APENAS para Hapvida e União Médica
+                    // (Aurora NÃO exibe Nascimento/Adicional/NomeTabelaPreco/DescricaoGrupoFaturamento)
                     if (dataField == "Nascimento" || dataField == "Adicional" ||
                         dataField == "NomeTabelaPreco" || dataField == "DescricaoGrupoFaturamento")
                     {
                         coluna.Visible = ehHapvida || ehUniaoMedica;
                     }
-                    // Parentesco: SÓ para Hapvida (União Médica NÃO exibe)
+                    // Parentesco: SÓ para Hapvida (União Médica e Aurora NÃO exibem)
                     else if (dataField == "Parentesco")
                     {
                         coluna.Visible = ehHapvida;
                     }
-                    // Empresa: SÓ para Hapvida (União Médica NÃO exibe)
+                    // Empresa: SÓ para Hapvida (União Médica e Aurora NÃO exibem)
                     else if (dataField == "Empresa")
                     {
                         coluna.Visible = ehHapvida;
                     }
-                    // Plano: oculto para União Médica, visível para Hapvida e Unimed
+                    // Plano: oculto para União Médica, visível para Hapvida, Unimed e Aurora
                     else if (dataField == "Plano")
                     {
                         coluna.Visible = !ehUniaoMedica;
@@ -358,6 +363,9 @@ namespace appWhatsapp.PlennuscGestao.Views
             if (IsUniaoMedica(nomeOperadora))
                 return "UNIAO_MEDICA";
 
+            if (IsAurora(nomeOperadora))
+                return "AURORA";
+
             return null;
         }
 
@@ -375,6 +383,11 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             return nome.IndexOf("UNIÃO MÉDICA", StringComparison.OrdinalIgnoreCase) >= 0 ||
                    nome.IndexOf("UNIAO MEDICA", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private bool IsAurora(string nome)
+        {
+            return nome.IndexOf("AURORA", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void ExibirMensagem(string mensagem, bool erro)
