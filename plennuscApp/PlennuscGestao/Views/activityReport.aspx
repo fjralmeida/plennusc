@@ -3,6 +3,14 @@
     <link href="../../Content/Css/projects/gestao/structuresCss/CIDs/ReportActivity.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <div class="page-header">
+        <h2 class="page-title">
+            <span class="title-icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
+            Relatório de Movimentação
+        </h2>
+    </div>
+
     <!-- CARD 1: IMPORTAÇÃO -->
     <div class="filters-card" id="divImportacao" runat="server">
         <div class="filters-title"><i class="bi bi-cloud-upload"></i>Dados da Importação</div>

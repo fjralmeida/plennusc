@@ -7,7 +7,7 @@
 
         <div class="page-header">
             <h2 class="page-title">
-                <span class="title-icon"><i class="fa fa-file-medical"></i></span>
+                <span class="title-icon"><i class="bi bi-file-earmark-arrow-up"></i></span>
                 Importação de CID
             </h2>
         </div>
