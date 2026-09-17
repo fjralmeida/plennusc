@@ -15,6 +15,12 @@ namespace appWhatsapp.PlennuscGestao.Views
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["NomeUsuario"] == null || Session["codUsuario"] == null)
+            {
+                Response.Redirect("~/ViewsApp/SignIn.aspx"); // ajuste para a URL real de login
+                return;
+            }
+
             if (!IsPostBack)
             {
                 CarregarDadosUsuarios();
@@ -90,7 +96,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                     throw new Exception("Nenhuma imagem foi selecionada.");
 
                 // Limpa e prepara o nome do arquivo
-                string fileName = Path.GetFileName(fuFoto.FileName).Trim();
+                string extensao = Path.GetExtension(fuFoto.FileName); // ex: ".jpeg"
+                string fileName = Guid.NewGuid().ToString("N") + extensao; // ex: 3f2a1b9c8d7e4f5a.jpeg
+
                 string folderVirtualPath = "~/public/uploadgestao/images/";
                 string folderPhysicalPath = Server.MapPath(folderVirtualPath);
 
