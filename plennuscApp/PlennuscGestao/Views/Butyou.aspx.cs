@@ -443,8 +443,8 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             try
             {
-                //// 1. EMAIL - limpar e garantir
-                //string email = LimparCampo(titular.Email?.Trim(), "sememail", false);
+                // 1. EMAIL - limpar e garantir
+                string email = LimparCampo(titular.Email?.Trim(), "sememail", false);
 
                 // 2. NOME COMPLETO - substituir espaços por UNDERLINE ÚNICO
                 string nomeCompleto = FormatarNomeComUnderline(titular.NomeCompleto?.Trim());
@@ -456,7 +456,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 string dataNascimento = ConverterDataParaDDMMAAAA(titular.DataNascimento);
 
                 // 5. MONTAR COM DOIS UNDERLINES entre campos
-                string nomeArquivo = $"{cpf}__{nomeCompleto}.docx";
+                string nomeArquivo = $"{email}__{nomeCompleto}.docx";
 
                 return SanitizarNomeArquivo(nomeArquivo);
             }
