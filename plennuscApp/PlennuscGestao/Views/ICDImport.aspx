@@ -36,9 +36,23 @@
                         CssClass="msg-importacao erro" Display="Dynamic" />
                 </div>
 
-                <div class="form-row" style="margin-top: 10px;">
-    <asp:Button ID="btnImportar" runat="server" Text="Importar" CssClass="btn btn-primary" OnClick="btnImportar_Click" />
-</div>
+                <div class="form-group form-group-btn">
+                    <span id="wrapBtnImportar" style="position: relative; display: inline-block;">
+                        <asp:Button ID="btnImportar" runat="server"
+                            Text="Importar"
+                            CssClass="btn btn-primary"
+                            OnClick="btnImportar_Click"
+                            OnClientClick="return mostrarLoadingImportacao();" />
+                        <span id="spinnerImportar"
+                              class="spinner-border spinner-border-sm"
+                              role="status" aria-hidden="true"
+                              style="display:none; position:absolute; top:50%; left:50%;
+                                     width:1rem; height:1rem; border-width:.18em;
+                                     margin:-0.5rem 0 0 -0.5rem; color:#fff;
+                                     pointer-events:none; border-radius:50%;">
+                        </span>
+                    </span>
+                </div>
             </div>
 
             
@@ -218,4 +232,38 @@
             });
         });
     </script>
+
+   <!-- Loading da importação -->
+<script type="text/javascript">
+    // @ts-nocheck
+    function mostrarLoadingImportacao() {
+        // 1) Validação client-side
+        if (typeof Page_ClientValidate === 'function') {
+            if (!Page_ClientValidate('')) {
+                return false;
+            }
+        }
+
+        // 2) Check do arquivo
+        var fu = document.getElementById('<%= fileUploadExcel.ClientID %>');
+        if (fu && (!fu.value || fu.value.length === 0)) {
+            alert('Selecione um arquivo Excel.');
+            return false;
+        }
+
+        // 3) Esconde o texto (com !important inline p/ vencer :focus/:active do CSS)
+        var btn = document.getElementById('<%= btnImportar.ClientID %>');
+        if (btn) {
+            btn.style.setProperty('color', 'transparent', 'important');
+            btn.style.setProperty('pointer-events', 'none', 'important');
+        }
+
+        var spinner = document.getElementById('spinnerImportar');
+        if (spinner) {
+            spinner.style.display = 'inline-block';
+        }
+
+        return true; // deixa o postback seguir normalmente
+    }
+</script>
 </asp:Content>
