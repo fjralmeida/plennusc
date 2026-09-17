@@ -72,18 +72,22 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
             a.NUMERO_CPF                                                                          AS CPF,
             a.CODIGO_CNS                                                                          AS CNS,
             (
-                SELECT STRING_AGG(t.NUMERO_TELEFONE, '; ')
+                SELECT STRING_AGG(
+                    CONVERT(VARCHAR(5), t.CODIGO_AREA)
+                    + REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(t.NUMERO_TELEFONE,
+                          '-', ''), ' ', ''), '.', ''), '(', ''), ')', '')
+                , '; ')
                 FROM PS1006 t
-                WHERE t.CODIGO_ASSOCIADO = a.CODIGO_ASSOCIADO
+                WHERE t.CODIGO_ASSOCIADO = eff.CodAssoc
             )                                                                                     AS TELEFONE,
-            CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.ENDERECO       ELSE end15.ENDERECO       END AS ENDERECO,
+            CASE WHEN eff.CodEmp = '400' THEN e01.ENDERECO       ELSE e15.ENDERECO       END     AS ENDERECO,
             NULL                                                                                  AS COMPLEMENTO,
-            CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.BAIRRO         ELSE end15.BAIRRO         END AS BAIRRO,
-            CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.CEP            ELSE end15.CEP            END AS CEP,
-            CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.CIDADE         ELSE end15.CIDADE         END AS CIDADE,
-            CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.ESTADO         ELSE end15.ESTADO         END AS ESTADO,
+            CASE WHEN eff.CodEmp = '400' THEN e01.BAIRRO         ELSE e15.BAIRRO         END     AS BAIRRO,
+            CASE WHEN eff.CodEmp = '400' THEN e01.CEP            ELSE e15.CEP            END     AS CEP,
+            CASE WHEN eff.CodEmp = '400' THEN e01.CIDADE         ELSE e15.CIDADE         END     AS CIDADE,
+            CASE WHEN eff.CodEmp = '400' THEN e01.ESTADO         ELSE e15.ESTADO         END     AS ESTADO,
             a.DATA_ADMISSAO                                                                       AS DT_VIGENCIA,
-            CASE WHEN a.CODIGO_EMPRESA = 400 THEN end01.ENDERECO_EMAIL ELSE end15.ENDERECO_EMAIL END AS EMAIL,
+            CASE WHEN eff.CodEmp = '400' THEN e01.ENDERECO_EMAIL ELSE e15.ENDERECO_EMAIL END     AS EMAIL,
             a.NOME_MAE                                                                            AS FILIACAO_1,
             a.NOME_PAI                                                                            AS FILIACAO_2,
             car.OBSERVACAO_CARENCIA                                                               AS NOMENCLATURA_CARENCIA,
@@ -95,9 +99,27 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
             )                                                                                     AS CID
 
         FROM PS1000 a
+        LEFT JOIN PS1000 tit    ON a.CODIGO_TITULAR         = tit.CODIGO_ASSOCIADO
         LEFT JOIN PS1014 ent    ON a.CODIGO_GRUPO_PESSOAS   = ent.CODIGO_GRUPO_PESSOAS
         LEFT JOIN PS1045 par    ON a.CODIGO_PARENTESCO      = par.CODIGO_PARENTESCO
         LEFT JOIN PS1044 ec     ON a.CODIGO_ESTADO_CIVIL    = ec.CODIGO_ESTADO_CIVIL
+        CROSS APPLY (
+            SELECT
+                CASE
+                    WHEN a.TIPO_ASSOCIADO = 'T' THEN a.CODIGO_ASSOCIADO
+                    ELSE COALESCE(
+                            NULLIF(a.CODIGO_TITULAR, '0'),
+                            NULLIF(a.CODIGO_TITULAR, ''),
+                            a.CODIGO_ASSOCIADO)
+                END AS CodAssoc,
+                CASE
+                    WHEN a.TIPO_ASSOCIADO = 'T' THEN a.CODIGO_EMPRESA
+                    ELSE COALESCE(tit.CODIGO_EMPRESA, a.CODIGO_EMPRESA)
+                END AS CodEmp
+        ) eff
+        LEFT JOIN PS1001 e01    ON e01.CODIGO_ASSOCIADO     = eff.CodAssoc
+        LEFT JOIN PS1015 e15    ON e15.CODIGO_ASSOCIADO     = eff.CodAssoc
+        LEFT JOIN PS1007 car    ON car.CODIGO_ASSOCIADO     = a.CODIGO_ASSOCIADO
         OUTER APPLY (
             SELECT TOP 1 p.*
             FROM PS1032 p
@@ -116,10 +138,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
             WHERE p.CODIGO_PLANO = a.CODIGO_PLANO
             ORDER BY p.DATA_CADASTRAMENTO DESC
         ) p1030
-        LEFT JOIN PS1015 end15  ON a.CODIGO_ASSOCIADO       = end15.CODIGO_ASSOCIADO
-        LEFT JOIN PS1001 end01  ON a.CODIGO_ASSOCIADO       = end01.CODIGO_ASSOCIADO
-        LEFT JOIN PS1007 car    ON a.CODIGO_ASSOCIADO       = car.CODIGO_ASSOCIADO
-        LEFT JOIN PS1000 tit    ON a.CODIGO_TITULAR         = tit.CODIGO_ASSOCIADO
 
         WHERE a.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
           AND a.DATA_EXCLUSAO IS NULL

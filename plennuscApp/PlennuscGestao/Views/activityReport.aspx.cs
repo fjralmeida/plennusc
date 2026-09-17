@@ -70,6 +70,35 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
+            foreach (var item in dados)
+            {
+                // Se o Parentesco for titular, vazio
+                if (string.Equals(item.Parentesco?.Trim(), "TITULAR", StringComparison.OrdinalIgnoreCase))
+                    item.Parentesco = string.Empty;
+
+                // Endereço: o que estiver depois do traço vai para Complemento
+                if (!string.IsNullOrWhiteSpace(item.Endereco))
+                {
+                    var enderecoOriginal = item.Endereco;
+                    var indiceTraco = enderecoOriginal.IndexOf('-');
+
+                    if (indiceTraco >= 0)
+                    {
+                        item.Endereco = enderecoOriginal.Substring(0, indiceTraco).Trim();
+                        item.Complemento = enderecoOriginal.Substring(indiceTraco + 1).Trim();
+                    }
+                    else
+                    {
+                        item.Endereco = enderecoOriginal.Trim();
+                        item.Complemento = string.Empty; // sem traço, complemento fica vazio
+                    }
+                }
+                else
+                {
+                    item.Complemento = string.Empty;
+                }
+            }
+
             DadosRelatorio = dados;
             gvRelatorio.PageIndex = 0;
             VincularGrid();

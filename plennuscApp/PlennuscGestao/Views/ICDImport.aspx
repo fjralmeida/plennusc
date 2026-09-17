@@ -36,6 +36,7 @@
                         CssClass="msg-importacao erro" Display="Dynamic" />
                 </div>
 
+                <!-- Refatorei para adicionar o spinner, não usei CSS, usei o Bootstrap que já tá configurado -->
                 <div class="form-group form-group-btn">
                     <span id="wrapBtnImportar" style="position: relative; display: inline-block;">
                         <asp:Button ID="btnImportar" runat="server"
