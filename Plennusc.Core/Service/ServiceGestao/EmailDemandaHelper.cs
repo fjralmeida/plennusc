@@ -100,9 +100,11 @@ namespace Plennusc.Core.Service.ServiceGestao
 
             string assunto = $"Nova demanda: {titulo}";
             string detalhes = $@"
-        <p style='margin:0 0 10px; font-size:14px; color:#202124;'><strong>Solicitante:</strong> {solicitante}</p>
-        <p style='margin:0 0 4px; font-size:14px; color:#202124;'><strong>{titulo}</strong></p>
-        <p style='margin:0; font-size:14px; color:#5f6368; line-height:1.5;'>Prazo: {prazoTexto}</p>";
+        <p style='margin:0 0 12px; font-size:14px; color:#202124;'><strong>Solicitante:</strong> {solicitante}</p>
+        <p style='margin:0 0 3px; font-size:12px; color:#9aa0a6; text-transform:uppercase; letter-spacing:.4px; font-weight:600;'>Título</p>
+        <p style='margin:0 0 12px; font-size:14px; color:#202124; font-weight:600;'>{titulo}</p>
+        <p style='margin:0 0 3px; font-size:12px; color:#9aa0a6; text-transform:uppercase; letter-spacing:.4px; font-weight:600;'>Prazo</p>
+        <p style='margin:0; font-size:14px; color:#5f6368; line-height:1.5;'>{prazoTexto}</p>";
 
             string corpo = MontarCorpo(
                 "equipe",
@@ -122,8 +124,9 @@ namespace Plennusc.Core.Service.ServiceGestao
 
             string assunto = $"Sua demanda foi aceita: {titulo}";
             string detalhes = $@"
-        <p style='margin:0 0 10px; font-size:14px; color:#202124;'><strong>Aceita por:</strong> {aceitoPor}</p>
-        <p style='margin:0; font-size:14px; color:#202124;'><strong>{titulo}</strong></p>";
+        <p style='margin:0 0 12px; font-size:14px; color:#202124;'><strong>Aceita por:</strong> {aceitoPor}</p>
+        <p style='margin:0 0 3px; font-size:12px; color:#9aa0a6; text-transform:uppercase; letter-spacing:.4px; font-weight:600;'>Título</p>
+        <p style='margin:0; font-size:14px; color:#202124; font-weight:600;'>{titulo}</p>";
 
             string corpo = MontarCorpo(
                 nomeSolicitante ?? "usuário",
@@ -143,8 +146,10 @@ namespace Plennusc.Core.Service.ServiceGestao
 
             string assunto = $"Nova interação na demanda: {titulo}";
             string detalhes = $@"
-        <p style='margin:0 0 10px; font-size:14px; color:#202124;'><strong>Por:</strong> {autorAcompanhamento}</p>
-        <p style='margin:0 0 4px; font-size:14px; color:#202124;'><strong>{titulo}</strong></p>
+        <p style='margin:0 0 12px; font-size:14px; color:#202124;'><strong>Por:</strong> {autorAcompanhamento}</p>
+        <p style='margin:0 0 3px; font-size:12px; color:#9aa0a6; text-transform:uppercase; letter-spacing:.4px; font-weight:600;'>Título</p>
+        <p style='margin:0 0 12px; font-size:14px; color:#202124; font-weight:600;'>{titulo}</p>
+        <p style='margin:0 0 3px; font-size:12px; color:#9aa0a6; text-transform:uppercase; letter-spacing:.4px; font-weight:600;'>Mensagem</p>
         <p style='margin:0; font-size:14px; color:#5f6368; line-height:1.5;'>{trechoTexto}</p>";
 
             string corpo = MontarCorpo(
@@ -164,28 +169,29 @@ namespace Plennusc.Core.Service.ServiceGestao
         <!DOCTYPE html>
         <html>
         <head><meta charset='UTF-8'></head>
-        <body style='font-family: Roboto, Arial, sans-serif; background-color:#f1f3f4; margin:0; padding:24px 0;'>
-            <table align='center' cellpadding='0' cellspacing='0' style='max-width:600px; width:100%; background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px 1px rgba(60,64,67,.15);'>
+        <body style='font-family: Roboto, Arial, sans-serif; background-color:#eef1f4; margin:0; padding:24px 0;'>
+            <table align='center' cellpadding='0' cellspacing='0' width='600' style='max-width:600px; width:100%; background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(60,64,67,.12);'>
 
-                <!-- Logo -->
+                <!-- Logo CENTRALIZADA e maior -->
                 <tr>
-                    <td style='padding:20px 32px 16px; text-align:center;'>
-                        <img src='{logoUrl}' alt='Plennus' style='height:32px; width:auto; display:inline-block;' />
+                    <td style='padding:26px 32px 18px; text-align:center;'>
+                        <img src='{logoUrl}' alt='Plennus' height='40' style='height:40px; width:auto; display:inline-block; border:0;' />
                     </td>
                 </tr>
 
                 <!-- Barra colorida -->
                 <tr>
-                    <td style='height:4px; background:linear-gradient(90deg, #83ceee 0%, #4cb07a 100%); line-height:0; font-size:0;'>&nbsp;</td>
+                    <td style='height:4px; background-color:#4cb07a; line-height:0; font-size:0;'>&nbsp;</td>
                 </tr>
 
                 <!-- Conteúdo -->
                 <tr>
                     <td style='padding:28px 32px 8px;'>
-                        <h2 style='margin:0 0 16px; font-size:20px; font-weight:600; color:#202124;'>
+                        <p style='margin:0 0 4px; font-size:13px; color:#9aa0a6; text-transform:uppercase; letter-spacing:.6px; font-weight:600;'>Plennus Gestão</p>
+                        <h2 style='margin:0 0 16px; font-size:21px; font-weight:700; color:#202124;'>
                             Olá, {nomeDestinatario}
                         </h2>
-                        <p style='margin:0 0 20px; font-size:14px; line-height:1.6; color:#5f6368;'>
+                        <p style='margin:0 0 22px; font-size:14px; line-height:1.6; color:#5f6368;'>
                             {introducao}
                         </p>
                     </td>
@@ -193,27 +199,38 @@ namespace Plennusc.Core.Service.ServiceGestao
 
                 <!-- Caixa de destaque -->
                 <tr>
-                    <td style='padding:0 32px 24px;'>
-                        <div style='background:#f8f9fa; border:1px solid #e8eaed; border-left:4px solid #4cb07a; border-radius:6px; padding:16px 20px;'>
-                            {detalhesHtml}
-                        </div>
+                    <td style='padding:0 32px 28px;'>
+                        <table cellpadding='0' cellspacing='0' width='100%' style='background:#f8f9fa; border-radius:8px;'>
+                            <tr>
+                                <td style='width:4px; background-color:#4cb07a; border-radius:8px 0 0 8px;'>&nbsp;</td>
+                                <td style='padding:16px 20px;'>
+                                    {detalhesHtml}
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
 
                 <!-- Botão -->
                 <tr>
-                    <td style='padding:0 32px 32px;'>
-                        <a href='{linkDemanda}'
-                           style='display:inline-block; background:linear-gradient(135deg, #4cb07a 0%, #3b8b65 100%); color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; padding:13px 28px; border-radius:24px; box-shadow:0 2px 6px rgba(76,176,122,.4); letter-spacing:.2px;'>
-                            {textoBotao} →
-                        </a>
+                    <td style='padding:0 32px 36px;'>
+                        <table cellpadding='0' cellspacing='0'>
+                            <tr>
+                                <td bgcolor='#4cb07a' style='border-radius:24px;'>
+                                    <a href='{linkDemanda}'
+                                       style='display:inline-block; font-family:Roboto, Arial, sans-serif; font-size:14px; font-weight:700; color:#ffffff !important; text-decoration:none; padding:14px 32px; border-radius:24px; letter-spacing:.3px;'>
+                                        {textoBotao} &nbsp;→
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
 
                 <!-- Rodapé -->
                 <tr>
-                    <td style='padding:16px 32px 28px; border-top:1px solid #e8eaed;'>
-                        <p style='margin:0; font-size:12px; color:#9aa0a6;'>
+                    <td style='padding:16px 32px 26px; border-top:1px solid #e8eaed;'>
+                        <p style='margin:0; font-size:11px; color:#9aa0a6;'>
                             Este é um e-mail automático do sistema Plennus Gestão. Não é necessário responder.
                         </p>
                     </td>
