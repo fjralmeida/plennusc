@@ -297,6 +297,7 @@
     <Compile Include="Service\ServiceGestao\company\UserCompanyService.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
     <Compile Include="Service\ServiceGestao\department\createDepartmentService.cs" />
+    <Compile Include="Service\ServiceGestao\EmailDemandaHelper.cs" />
     <Compile Include="Service\ServiceGestao\home\homeManagementService.cs" />
     <Compile Include="Service\ServiceGestao\menu\menusManagementService.cs" />
     <Compile Include="Service\ServiceGestao\menu\MenuSystemService.cs" />

@@ -774,6 +774,23 @@ namespace appWhatsapp.PlennuscGestao.Views
                     AtualizarListaAnexos();
                 }
 
+                try
+                {
+                    var emailSvc = new EmailDemandaHelper("Plennus");
+                    string prazoTexto = prazo.HasValue ? prazo.Value.ToString("dd/MM/yyyy") : "Sem prazo";
+                    string nomeSolicitante = UsuarioEhGestorDoSetorSelecionado && !string.IsNullOrEmpty(ddlSolicitante.SelectedValue)
+                        ? ddlSolicitante.SelectedItem.Text
+                        : lblNomeUser.Text;
+
+                    emailSvc.NotificarNovaDemanda(
+                        dto.CodSetorDestino,
+                        dto.Titulo,
+                        nomeSolicitante,
+                        prazoTexto,
+                        $"https://plennusc.vallorbeneficios.com.br/ViewsApp/SignIn.aspx"); // ajuste depois pro link real
+                }
+                catch { /* não pode travar a criação da demanda por erro de email */ }
+
                 MostrarMensagem($"Demanda criada com sucesso!", "success");
 
                 // Limpa os campos

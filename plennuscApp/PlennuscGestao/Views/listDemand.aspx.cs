@@ -153,7 +153,29 @@ namespace appWhatsapp.PlennuscGestao.Views
                 if (svc.AceitarDemanda(codDemanda, codPessoa))
                 {
                     MostrarMensagem("Demanda aceita com sucesso!", "success");
-                    BindGrid(); // Recarregar o grid
+
+                    try
+                    {
+                        var demanda = svc.ObterDemandaPorId(codDemanda); // troca aqui
+
+                        if (demanda != null && demanda.CodPessoaSolicitacao > 0)
+                        {
+                            var emailSvc = new EmailDemandaHelper("Plennus");
+                            string nomeExecutor = Session["NomeUsuario"]?.ToString() ?? "Um colaborador";
+
+                            emailSvc.NotificarDemandaAceita(
+                                demanda.CodPessoaSolicitacao,
+                                demanda.Titulo,
+                                nomeExecutor,
+                                "https://plennusc.vallorbeneficios.com.br/listDemand");
+                        }
+                    }
+                    catch (Exception exEmail)
+                    {
+                        MostrarMensagem($"ERRO EMAIL: {exEmail.Message}", "error"); // debug, remove depois
+                    }
+
+                    BindGrid();
                 }
                 else
                 {

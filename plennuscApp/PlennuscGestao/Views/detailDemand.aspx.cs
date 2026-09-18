@@ -378,20 +378,43 @@ namespace appWhatsapp.PlennuscGestao.Views
                         AtualizarListaAnexos();
                     }
 
+                    try
+                    {
+                        // GARANTE que demandaAtual está carregado antes de usar
+                        if (demandaAtual == null)
+                            demandaAtual = _service.ObterDemandaPorId(CodDemanda);
+
+                        if (demandaAtual != null)
+                        {
+                            var emailSvc = new EmailDemandaHelper("Plennus");
+                            string autor = Session["NomeUsuario"]?.ToString() ?? "Alguém";
+                            string trecho = texto.Length > 150 ? texto.Substring(0, 350) + "..." : texto;
+                            string link = $"https://plennusc.vallorbeneficios.com.br/detailDemand";
+
+                            if (demandaAtual.CodPessoaSolicitacao != CodPessoaAtual)
+                            {
+                                emailSvc.NotificarDemandaRespondida(
+                                    demandaAtual.CodPessoaSolicitacao, demandaAtual.Titulo, autor, trecho, link);
+                            }
+
+                            if (demandaAtual.CodPessoaExecucao.HasValue &&
+                                demandaAtual.CodPessoaExecucao.Value != CodPessoaAtual)
+                            {
+                                emailSvc.NotificarDemandaRespondida(
+                                    demandaAtual.CodPessoaExecucao.Value, demandaAtual.Titulo, autor, trecho, link);
+                            }
+                        }
+                    }
+                    catch (Exception exEmail)
+                    {
+                        MostrarMensagem($"ERRO EMAIL: {exEmail.Message}", "error"); // debug, remove depois
+                    }
+
                     hdnStatusOriginal.Value = novoStatus.ToString();
-
                     CarregarAnexos();
-
-                    // Mensagem de sucesso do acompanhamento
                     MostrarMensagem("Acompanhamento adicionado com sucesso!", "success");
-
-                    // LIMPA OS CAMPOS
                     txtNovoAcompanhamento.Text = string.Empty;
-
-                    // Limpar FileUpload
                     fuAnexos.Attributes.Clear();
-
-                    // RECARREGA OS DADOS
                     CarregarAcompanhamentos();
                     CarregarDemanda();
                 }
