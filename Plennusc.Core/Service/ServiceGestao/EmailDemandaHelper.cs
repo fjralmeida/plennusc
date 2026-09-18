@@ -95,34 +95,35 @@ namespace Plennusc.Core.Service.ServiceGestao
 
         public void NotificarNovaDemanda(int codSetorDestino, string titulo, string solicitante, string prazoTexto, string linkDemanda)
         {
-            var destinatarios = ObterEmailsDoSetor(codSetorDestino); // se quiser, retorna nome+email junto pra personalizar por pessoa
+            var destinatarios = ObterEmailsDoSetor(codSetorDestino);
             if (destinatarios.Count == 0) return;
 
             string assunto = $"Nova demanda: {titulo}";
             string detalhes = $@"
-        <p style='margin:0 0 8px; font-size:14px; color:#202124;'><strong>Título:</strong> {titulo}</p>
-        <p style='margin:0 0 8px; font-size:14px; color:#202124;'><strong>Solicitante:</strong> {solicitante}</p>
-        <p style='margin:0; font-size:14px; color:#202124;'><strong>Prazo:</strong> {prazoTexto}</p>";
+        <p style='margin:0 0 10px; font-size:14px; color:#202124;'><strong>Solicitante:</strong> {solicitante}</p>
+        <p style='margin:0 0 4px; font-size:14px; color:#202124;'><strong>{titulo}</strong></p>
+        <p style='margin:0; font-size:14px; color:#5f6368; line-height:1.5;'>Prazo: {prazoTexto}</p>";
 
             string corpo = MontarCorpo(
-                "equipe", // ou o nome do setor/pessoa se você buscar individualmente
-                "Uma nova demanda foi aberta para o seu setor. Confira os detalhes abaixo:",
+                "equipe",
+                "Uma nova demanda foi aberta para o seu setor.",
                 detalhes,
                 linkDemanda,
                 "Ver Demanda");
 
             EnviarParaVarios(destinatarios, assunto, corpo);
         }
+
         public void NotificarDemandaAceita(int codPessoaSolicitante, string titulo, string aceitoPor, string linkDemanda)
         {
             var email = ObterEmailPessoa(codPessoaSolicitante);
-            var nomeSolicitante = ObterNomePessoa(codPessoaSolicitante); // ver método novo abaixo
+            var nomeSolicitante = ObterNomePessoa(codPessoaSolicitante);
             if (string.IsNullOrWhiteSpace(email)) return;
 
             string assunto = $"Sua demanda foi aceita: {titulo}";
             string detalhes = $@"
-        <p style='margin:0 0 8px; font-size:14px; color:#202124;'><strong>Título:</strong> {titulo}</p>
-        <p style='margin:0; font-size:14px; color:#202124;'><strong>Aceita por:</strong> {aceitoPor}</p>";
+        <p style='margin:0 0 10px; font-size:14px; color:#202124;'><strong>Aceita por:</strong> {aceitoPor}</p>
+        <p style='margin:0; font-size:14px; color:#202124;'><strong>{titulo}</strong></p>";
 
             string corpo = MontarCorpo(
                 nomeSolicitante ?? "usuário",
@@ -142,9 +143,9 @@ namespace Plennusc.Core.Service.ServiceGestao
 
             string assunto = $"Nova interação na demanda: {titulo}";
             string detalhes = $@"
-        <p style='margin:0 0 8px; font-size:14px; color:#202124;'><strong>Título:</strong> {titulo}</p>
-        <p style='margin:0 0 8px; font-size:14px; color:#202124;'><strong>Por:</strong> {autorAcompanhamento}</p>
-        <p style='margin:0; font-size:14px; color:#202124;'><strong>Mensagem:</strong> {trechoTexto}</p>";
+        <p style='margin:0 0 10px; font-size:14px; color:#202124;'><strong>Por:</strong> {autorAcompanhamento}</p>
+        <p style='margin:0 0 4px; font-size:14px; color:#202124;'><strong>{titulo}</strong></p>
+        <p style='margin:0; font-size:14px; color:#5f6368; line-height:1.5;'>{trechoTexto}</p>";
 
             string corpo = MontarCorpo(
                 nomeDestino ?? "usuário",
@@ -157,7 +158,6 @@ namespace Plennusc.Core.Service.ServiceGestao
         }
         private string MontarCorpo(string nomeDestinatario, string introducao, string detalhesHtml, string linkDemanda, string textoBotao = "Ver Demanda")
         {
-            // Ajuste o caminho absoluto da logo (precisa ser uma URL pública acessível por quem recebe o email)
             string logoUrl = "https://plennusc.vallorbeneficios.com.br/Uploads/logo_plennus_cortado.png";
 
             return $@"
@@ -169,14 +169,14 @@ namespace Plennusc.Core.Service.ServiceGestao
 
                 <!-- Logo -->
                 <tr>
-                    <td style='padding:28px 32px 20px; text-align:center;'>
-                        <img src='{logoUrl}' alt='Plennus' style='height:48px; width:auto;' />
+                    <td style='padding:20px 32px 16px; text-align:center;'>
+                        <img src='{logoUrl}' alt='Plennus' style='height:32px; width:auto; display:inline-block;' />
                     </td>
                 </tr>
 
                 <!-- Barra colorida -->
                 <tr>
-                    <td style='height:6px; background:linear-gradient(90deg, #83ceee 0%, #4cb07a 100%); line-height:0; font-size:0;'>&nbsp;</td>
+                    <td style='height:4px; background:linear-gradient(90deg, #83ceee 0%, #4cb07a 100%); line-height:0; font-size:0;'>&nbsp;</td>
                 </tr>
 
                 <!-- Conteúdo -->
@@ -204,8 +204,8 @@ namespace Plennusc.Core.Service.ServiceGestao
                 <tr>
                     <td style='padding:0 32px 32px;'>
                         <a href='{linkDemanda}'
-                           style='display:inline-block; background:#4cb07a; color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; padding:12px 24px; border-radius:6px;'>
-                            {textoBotao}
+                           style='display:inline-block; background:linear-gradient(135deg, #4cb07a 0%, #3b8b65 100%); color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; padding:13px 28px; border-radius:24px; box-shadow:0 2px 6px rgba(76,176,122,.4); letter-spacing:.2px;'>
+                            {textoBotao} →
                         </a>
                     </td>
                 </tr>
