@@ -52,7 +52,8 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 int colunaCpf = -1;
                 int colunaMensalidade = -1;
                 int colunaUsuario = -1;
-                int colunaNascimento = -1; // NOVO
+                int colunaNascimento = -1;
+                int colunaParticipacao = -1; // NOVO
                 bool cabecalhoEncontrado = false;
 
                 foreach (var row in sheetData.Elements<Row>())
@@ -89,6 +90,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                             else if (valorLimpo.Equals("Nascimento", StringComparison.OrdinalIgnoreCase) ||
                                      valorLimpo.Equals("Data Nascimento", StringComparison.OrdinalIgnoreCase))
                                 colunaNascimento = i;
+                            else if (valorLimpo.Equals("Valor da participação", StringComparison.OrdinalIgnoreCase) ||
+                                     valorLimpo.Equals("coparticipação", StringComparison.OrdinalIgnoreCase))
+                                colunaParticipacao = i; // CORRIGIDO: agora usa sua própria variável
                         }
 
                         if (colunaCpf >= 0 && colunaMensalidade >= 0)
@@ -118,6 +122,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         var mensalidade = colunaMensalidade < celulas.Count ? ObterValorCelula(celulas[colunaMensalidade], workbookPart) : null;
                         var usuario = colunaUsuario >= 0 && colunaUsuario < celulas.Count ? ObterValorCelula(celulas[colunaUsuario], workbookPart) : null;
                         var nascimento = colunaNascimento >= 0 && colunaNascimento < celulas.Count ? ObterValorCelula(celulas[colunaNascimento], workbookPart) : null;
+                        var participacao = colunaParticipacao >= 0 && colunaParticipacao < celulas.Count ? ObterValorCelula(celulas[colunaParticipacao], workbookPart) : null; // NOVO
 
                         if (string.IsNullOrWhiteSpace(cpf) || string.IsNullOrWhiteSpace(mensalidade))
                             continue;
@@ -129,6 +134,11 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         if (!TryConverterValorMonetario(mensalidade, out decimal valor))
                             continue;
 
+                        // Converter valor da participação (opcional, pode não existir)
+                        decimal valorParticipacao = 0;
+                        if (!string.IsNullOrWhiteSpace(participacao))
+                            TryConverterValorMonetario(participacao, out valorParticipacao);
+
                         // Converter data de nascimento
                         DateTime? dataNascimento = ConverterDataNascimento(nascimento);
 
@@ -137,7 +147,8 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                             Cpf = cpf,
                             Beneficiario = usuario,
                             Cobrado = valor,
-                            Nascimento = dataNascimento, // Preenche a data
+                            Nascimento = dataNascimento,
+                            Adicional = valorParticipacao, // NOVO - ajuste o nome da propriedade se for diferente
                             StatusConferencia = "PENDENTE"
                         };
 

@@ -74,7 +74,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            string nomeOperadora = ddlOperadora.SelectedItem.Text;
+            string nomeOperadora = ddlOperadora.SelectedItem.Text;conf
             int codigoOperadora = Convert.ToInt32(ddlOperadora.SelectedValue);
             string mesAnoReferencia = txtMesAnoReferencia.Text.Trim();
             string extensao = System.IO.Path.GetExtension(fileRelatorio.FileName).ToLower();
