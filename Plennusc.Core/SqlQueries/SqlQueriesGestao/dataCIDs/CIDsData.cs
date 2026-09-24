@@ -21,18 +21,27 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
         }
 
         /// <summary>
-        /// Busca CODIGO_ASSOCIADO e DATA_ADMISSAO na PS1000 a partir do CPF.
+        /// Busca CODIGO_ASSOCIADO e DATA_ADMISSAO na PS1000 a partir do CPF e da vigência.
+        /// 
+        /// IMPORTANTE: um mesmo CPF pode ter múltiplos registros na PS1000 (ex: um cancelado antigo
+        /// + um ativo novo após reinclusão/migração). Por isso filtramos pela DATA_ADMISSAO
+        /// informada (que representa a vigência da importação) e priorizamos registros SEM DATA_EXCLUSAO,
+        /// garantindo que o associado retornado seja sempre o do período correto.
         /// </summary>
-        public CIDsAssociadoModel BuscarAssociadoPorCpf(SqlConnection conn, string cpf)
+        public CIDsAssociadoModel BuscarAssociadoPorCpf(SqlConnection conn, string cpf, DateTime vigencia)
         {
             const string sql = @"
-                SELECT CODIGO_ASSOCIADO, DATA_ADMISSAO
+                SELECT TOP 1 CODIGO_ASSOCIADO, DATA_ADMISSAO
                 FROM PS1000
-                WHERE NUMERO_CPF = @cpf";
+                WHERE NUMERO_CPF = @cpf
+                  AND DATA_ADMISSAO = @vigencia
+                  AND DATA_EXCLUSAO IS NULL
+                ORDER BY DATA_ADMISSAO DESC";
 
             using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@cpf", cpf);
+                cmd.Parameters.AddWithValue("@vigencia", vigencia.Date);
 
                 using (var reader = cmd.ExecuteReader())
                 {

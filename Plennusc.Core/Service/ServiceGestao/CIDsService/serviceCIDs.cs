@@ -54,7 +54,8 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                             continue;
                         }
 
-                        var associado = _data.BuscarAssociadoPorCpf(conn, linha.Cpf);
+                        // === ALTERAÇÃO: agora passa a vigência para desambiguar múltiplos registros ===
+                        var associado = _data.BuscarAssociadoPorCpf(conn, linha.Cpf, vigenciaObrigatoria);
 
                         if (associado == null)
                         {
@@ -83,7 +84,7 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                             continue;
                         }
 
-                        // NOVO: valida se o CID existe na tabela de domínio antes de tentar inserir
+                        // Valida se o CID existe na tabela de domínio antes de tentar inserir
                         if (!_data.CidExisteNoDominio(conn, cidIndividual))
                         {
                             item.Sucesso = false;
