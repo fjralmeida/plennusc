@@ -600,9 +600,10 @@ LEFT JOIN dbo.Pessoa pexec ON pexec.CodPessoa = ISNULL(d.CodPessoaExecucao, ph.C
 WHERE d.CodEstr_SituacaoDemanda = 20
   AND (
         d.CodPessoaSolicitacao = @CodPessoa
+        OR d.CodPessoaExecucao = @CodPessoa   
         OR EXISTS (
-            SELECT 1 
-            FROM dbo.DemandaHistorico h 
+            SELECT 1
+            FROM dbo.DemandaHistorico h
             WHERE h.CodDemanda = d.CodDemanda
               AND h.CodEstr_SituacaoDemandaAtual = 20
               AND h.CodPessoaAlteracao = @CodPessoa
