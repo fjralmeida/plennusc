@@ -147,7 +147,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             // Cabeçalho
             string[] cabecalhos = {
-                "Modalidade", "Plano", "Entidade", "Titular", "Nome", "Tipo",
+                "Modalidade", "Plano", "Nome Tabela Preço", "Entidade", "Titular", "Nome", "Tipo",
                 "Parentesco", "Estado Civil", "Sexo", "Data Nasc.", "CPF", "CNS",
                 "Telefone", "Endereço", "Complemento", "Bairro", "CEP", "Cidade",
                 "Estado", "Dt. Vigência", "Email", "Filiação 1", "Filiação 2",
@@ -165,6 +165,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 sb.Append("<tr>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Modalidade)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Plano)).Append("</td>");
+                sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.NomeTabelaPreco)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Entidade)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Titular)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Nome)).Append("</td>");

@@ -61,6 +61,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
                 ELSE pl.TIPO_CONTRATO_ESTIPULADO
             END                                                                                   AS MODALIDADE,
             p1030.NOME_PLANO_ABREVIADO                                                            AS PLANO,
+            pl.NOME_TABELA                                                                        AS NOME_TABELA_PRECO,
             ent.NOME_GRUPO_PESSOAS                                                                AS ENTIDADE,
             tit.NOME_ASSOCIADO                                                                    AS TITULAR,
             a.NOME_ASSOCIADO                                                                      AS NOME,
@@ -92,9 +93,8 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
             a.NOME_PAI                                                                            AS FILIACAO_2,
             car.OBSERVACAO_CARENCIA                                                               AS NOMENCLATURA_CARENCIA,
             (
-                SELECT STRING_AGG(c.CODIGO_CID + ' - ' + cat.NOME_PATOLOGIA, '; ')
+                SELECT STRING_AGG(c.CODIGO_CID, '; ')
                 FROM PS1009 c
-                LEFT JOIN PS5201 cat ON c.CODIGO_CID = cat.CODIGO_CID
                 WHERE c.CODIGO_ASSOCIADO = a.CODIGO_ASSOCIADO
             )                                                                                     AS CID
 
@@ -165,6 +165,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
                         {
                             Modalidade = reader["MODALIDADE"] as string,
                             Plano = reader["PLANO"]?.ToString(),
+                            NomeTabelaPreco = reader["NOME_TABELA_PRECO"] as string,
                             Entidade = reader["ENTIDADE"] as string,
                             Titular = reader["TITULAR"] as string,
                             Nome = reader["NOME"] as string,

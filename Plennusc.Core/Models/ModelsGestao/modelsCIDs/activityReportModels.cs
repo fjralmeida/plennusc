@@ -10,6 +10,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsCIDs
     {
         public string Modalidade { get; set; }
         public string Plano { get; set; }
+        public string NomeTabelaPreco { get; set; } // NOVO - nome da tabela de preço (vinda da PS1032)
         public string Entidade { get; set; }
         public string Titular { get; set; }
         public string Nome { get; set; }

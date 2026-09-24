@@ -58,6 +58,7 @@
                     <Columns>
                         <asp:BoundField DataField="Modalidade" HeaderText="Modalidade" ItemStyle-CssClass="cel-curta" />
                         <asp:BoundField DataField="Plano" HeaderText="Plano" ItemStyle-CssClass="cel-curta" />
+                        <asp:BoundField DataField="NomeTabelaPreco" HeaderText="Nome Tabela Preço" ItemStyle-CssClass="cel-normal" />
                         <asp:BoundField DataField="Entidade" HeaderText="Entidade" ItemStyle-CssClass="cel-normal" />
                         <asp:BoundField DataField="Titular" HeaderText="Titular" ItemStyle-CssClass="cel-nome" />
                         <asp:BoundField DataField="Nome" HeaderText="Nome" ItemStyle-CssClass="cel-nome" />
