@@ -36,7 +36,7 @@
                         CssClass="msg-importacao erro" Display="Dynamic" />
                 </div>
 
-                <!-- Refatorei para adicionar o spinner, não usei CSS, usei o Bootstrap que já tá configurado -->
+                <!-- Botão Importar: mantém validação ativa (CausesValidation=true por padrão) -->
                 <div class="form-group form-group-btn">
                     <span id="wrapBtnImportar" style="position: relative; display: inline-block;">
                         <asp:Button ID="btnImportar" runat="server"
@@ -55,8 +55,6 @@
                     </span>
                 </div>
             </div>
-
-            
         </div>
 
         <asp:Panel ID="pnlResultado" runat="server" Visible="false">
@@ -82,57 +80,71 @@
             </div>
 
 
-      <div class="tab-status-panel active" id="tab-todos">
-    <div class="grid-container">
+            <!-- ABA: TODOS -->
+            <div class="tab-status-panel active" id="tab-todos">
+                <div class="grid-container">
 
-        
-            <div class="grid-toolbar">
-    <div class="grid-toolbar-left">
-        <label for="ddlPageSize">Registros por página:</label>
-        <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged" CssClass="form-control ddl-pagesize">
-            <asp:ListItem Text="5" Value="5" />
-            <asp:ListItem Text="10" Value="10" Selected="True" />
-            <asp:ListItem Text="20" Value="20" />
-            <asp:ListItem Text="50" Value="50" />
-            <asp:ListItem Text="100" Value="100" />
-        </asp:DropDownList>
-    </div>
-</div>
+                    <div class="grid-toolbar">
+                        <div class="grid-toolbar-left">
+                            <label for="ddlPageSize">Registros por página:</label>
+                            <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged" CssClass="form-control ddl-pagesize">
+                                <asp:ListItem Text="5" Value="5" />
+                                <asp:ListItem Text="10" Value="10" Selected="True" />
+                                <asp:ListItem Text="20" Value="20" />
+                                <asp:ListItem Text="50" Value="50" />
+                                <asp:ListItem Text="100" Value="100" />
+                            </asp:DropDownList>
+                        </div>
+                        <div class="grid-toolbar-right">
+                            <asp:Button ID="btnExportarTodos" runat="server" Text="Exportar Excel"
+                                CssClass="btn btn-success" OnClick="btnExportarTodos_Click"
+                                CausesValidation="false" />
+                        </div>
+                    </div>
 
-        <asp:GridView ID="gridTodos" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
-            EmptyDataText="Nenhum registro processado."
-            OnRowDataBound="gridTodos_RowDataBound"
-            OnDataBound="gridTodos_DataBound"
-            AllowPaging="True" PageSize="10"
-            OnPageIndexChanging="gridTodos_PageIndexChanging"
-            EnableViewState="true">
-            <PagerSettings Mode="NumericFirstLast"
-                FirstPageText="«" LastPageText="»"
-                PageButtonCount="7"
-                Position="Bottom" />
-            <PagerStyle CssClass="pager-custom" />
-            <Columns>
-                <asp:BoundField DataField="Cpf" HeaderText="CPF" />
-                <asp:BoundField DataField="Titular" HeaderText="Titular" />
-                <asp:BoundField DataField="Beneficiario" HeaderText="Beneficiário" />
-                <asp:BoundField DataField="Cid" HeaderText="CID" />
-                <asp:BoundField DataField="CodigoAssociado" HeaderText="Cód. Associado" />
-                <asp:TemplateField HeaderText="Status">
-                    <ItemTemplate>
-                        <span class='badge <%# GetStatusCss(Eval("Sucesso"), Eval("Motivo")) %>'>
-                            <%# Eval("Sucesso").Equals(true) ? "Importado" : "Não Importado" %>
-                        </span>
-                    </ItemTemplate>
-                </asp:TemplateField>
-                <asp:BoundField DataField="Motivo" HeaderText="Motivo" />
-            </Columns>
-        </asp:GridView>
-        <asp:Label ID="lblPagerInfo" runat="server" CssClass="pager-info" />
-    </div>
-</div>
-            <!-- Demais grids (Importados, JaCadastrados, etc.) sem paginação -->
+                    <asp:GridView ID="gridTodos" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
+                        EmptyDataText="Nenhum registro processado."
+                        OnRowDataBound="gridTodos_RowDataBound"
+                        OnDataBound="gridTodos_DataBound"
+                        AllowPaging="True" PageSize="10"
+                        OnPageIndexChanging="gridTodos_PageIndexChanging"
+                        EnableViewState="true">
+                        <PagerSettings Mode="NumericFirstLast"
+                            FirstPageText="«" LastPageText="»"
+                            PageButtonCount="7"
+                            Position="Bottom" />
+                        <PagerStyle CssClass="pager-custom" />
+                        <Columns>
+                            <asp:BoundField DataField="Cpf" HeaderText="CPF" />
+                            <asp:BoundField DataField="Titular" HeaderText="Titular" />
+                            <asp:BoundField DataField="Beneficiario" HeaderText="Beneficiário" />
+                            <asp:BoundField DataField="Cid" HeaderText="CID" />
+                            <asp:BoundField DataField="CodigoAssociado" HeaderText="Cód. Associado" />
+                            <asp:TemplateField HeaderText="Status">
+                                <ItemTemplate>
+                                    <span class='badge <%# GetStatusCss(Eval("Sucesso"), Eval("Motivo")) %>'>
+                                        <%# Eval("Sucesso").Equals(true) ? "Importado" : "Não Importado" %>
+                                    </span>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="Motivo" HeaderText="Motivo" />
+                        </Columns>
+                    </asp:GridView>
+                    <asp:Label ID="lblPagerInfo" runat="server" CssClass="pager-info" />
+                </div>
+            </div>
+
+            <!-- ABA: IMPORTADOS -->
             <div class="tab-status-panel" id="tab-importados">
                 <div class="grid-container">
+                    <div class="grid-toolbar">
+                        <div class="grid-toolbar-right">
+                            <asp:Button ID="btnExportarImportados" runat="server" Text="Exportar Excel"
+                                CssClass="btn btn-success" OnClick="btnExportarImportados_Click"
+                                CausesValidation="false" />
+                        </div>
+                    </div>
+
                     <asp:GridView ID="gridImportados" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
                         EmptyDataText="Nenhum registro importado.">
                         <Columns>
@@ -149,8 +161,17 @@
                 </div>
             </div>
 
+            <!-- ABA: JÁ CADASTRADOS -->
             <div class="tab-status-panel" id="tab-ja-cadastrados">
                 <div class="grid-container">
+                    <div class="grid-toolbar">
+                        <div class="grid-toolbar-right">
+                            <asp:Button ID="btnExportarJaCadastrados" runat="server" Text="Exportar Excel"
+                                CssClass="btn btn-success" OnClick="btnExportarJaCadastrados_Click"
+                                CausesValidation="false" />
+                        </div>
+                    </div>
+
                     <asp:GridView ID="gridJaCadastrados" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
                         EmptyDataText="Nenhum registro já cadastrado encontrado.">
                         <Columns>
@@ -166,8 +187,17 @@
                 </div>
             </div>
 
+            <!-- ABA: VIGÊNCIA DIVERGENTE -->
             <div class="tab-status-panel" id="tab-divergencia">
                 <div class="grid-container">
+                    <div class="grid-toolbar">
+                        <div class="grid-toolbar-right">
+                            <asp:Button ID="btnExportarDivergencia" runat="server" Text="Exportar Excel"
+                                CssClass="btn btn-success" OnClick="btnExportarDivergencia_Click"
+                                CausesValidation="false" />
+                        </div>
+                    </div>
+
                     <asp:GridView ID="gridDivergencia" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
                         EmptyDataText="Nenhuma divergência de vigência encontrada.">
                         <Columns>
@@ -183,8 +213,17 @@
                 </div>
             </div>
 
+            <!-- ABA: CID INVÁLIDO -->
             <div class="tab-status-panel" id="tab-cid-invalido">
                 <div class="grid-container">
+                    <div class="grid-toolbar">
+                        <div class="grid-toolbar-right">
+                            <asp:Button ID="btnExportarCidInvalido" runat="server" Text="Exportar Excel"
+                                CssClass="btn btn-success" OnClick="btnExportarCidInvalido_Click"
+                                CausesValidation="false" />
+                        </div>
+                    </div>
+
                     <asp:GridView ID="gridCidInvalido" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
                         EmptyDataText="Nenhum CID inválido encontrado.">
                         <Columns>
@@ -200,8 +239,17 @@
                 </div>
             </div>
 
+            <!-- ABA: CPF NÃO ENCONTRADO -->
             <div class="tab-status-panel" id="tab-nao-encontrado">
                 <div class="grid-container">
+                    <div class="grid-toolbar">
+                        <div class="grid-toolbar-right">
+                            <asp:Button ID="btnExportarNaoEncontrado" runat="server" Text="Exportar Excel"
+                                CssClass="btn btn-success" OnClick="btnExportarNaoEncontrado_Click"
+                                CausesValidation="false" />
+                        </div>
+                    </div>
+
                     <asp:GridView ID="gridNaoEncontrado" runat="server" AutoGenerateColumns="false" CssClass="custom-grid"
                         EmptyDataText="Nenhum CPF não encontrado.">
                         <Columns>
@@ -234,37 +282,37 @@
         });
     </script>
 
-   <!-- Loading da importação -->
-<script type="text/javascript">
-    // @ts-nocheck
-    function mostrarLoadingImportacao() {
-        // 1) Validação client-side
-        if (typeof Page_ClientValidate === 'function') {
-            if (!Page_ClientValidate('')) {
+    <!-- Loading da importação -->
+    <script type="text/javascript">
+        // @ts-nocheck
+        function mostrarLoadingImportacao() {
+            // 1) Validação client-side
+            if (typeof Page_ClientValidate === 'function') {
+                if (!Page_ClientValidate('')) {
+                    return false;
+                }
+            }
+
+            // 2) Check do arquivo
+            var fu = document.getElementById('<%= fileUploadExcel.ClientID %>');
+            if (fu && (!fu.value || fu.value.length === 0)) {
+                alert('Selecione um arquivo Excel.');
                 return false;
             }
-        }
 
-        // 2) Check do arquivo
-        var fu = document.getElementById('<%= fileUploadExcel.ClientID %>');
-        if (fu && (!fu.value || fu.value.length === 0)) {
-            alert('Selecione um arquivo Excel.');
-            return false;
-        }
+            // 3) Esconde o texto (com !important inline p/ vencer :focus/:active do CSS)
+            var btn = document.getElementById('<%= btnImportar.ClientID %>');
+            if (btn) {
+                btn.style.setProperty('color', 'transparent', 'important');
+                btn.style.setProperty('pointer-events', 'none', 'important');
+            }
 
-        // 3) Esconde o texto (com !important inline p/ vencer :focus/:active do CSS)
-        var btn = document.getElementById('<%= btnImportar.ClientID %>');
-        if (btn) {
-            btn.style.setProperty('color', 'transparent', 'important');
-            btn.style.setProperty('pointer-events', 'none', 'important');
-        }
+            var spinner = document.getElementById('spinnerImportar');
+            if (spinner) {
+                spinner.style.display = 'inline-block';
+            }
 
-        var spinner = document.getElementById('spinnerImportar');
-        if (spinner) {
-            spinner.style.display = 'inline-block';
+            return true; // deixa o postback seguir normalmente
         }
-
-        return true; // deixa o postback seguir normalmente
-    }
-</script>
+    </script>
 </asp:Content>

@@ -1,10 +1,18 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using Plennusc.Core.Models.ModelsGestao.modelsCIDs;
+using Plennusc.Core.Service.ServiceGestao.CIDsService;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Plennusc.Core.Service.ServiceGestao.CIDsService;
+// Alias para evitar ambiguidade com System.Web.UI.WebControls (Font, FontSize, Border, Color, Row, etc.)
+using X = DocumentFormat.OpenXml.Spreadsheet;
 
 namespace appWhatsapp.PlennuscGestao.Views
 {
@@ -46,10 +54,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             // Aplica o tamanho de página atual (vindo do DropDown)
             gridTodos.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
-            gridTodos.PageIndex = 0;
-            gridTodos.DataSource = resultados;
-            gridTodos.DataBind();
-
             gridTodos.PageIndex = 0;
             gridTodos.DataSource = resultados;
             gridTodos.DataBind();
@@ -167,6 +171,205 @@ namespace appWhatsapp.PlennuscGestao.Views
         private void ExibirErro(string mensagem)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "erro", $"alert('{mensagem}');", true);
+        }
+
+
+        //  EXPORTAÇÃO PARA EXCEL (um botão por aba)
+
+        protected void btnExportarTodos_Click(object sender, EventArgs e)
+        {
+            var dados = ObterDadosDaSession();
+            ExportarParaExcel(dados, "ICD_Todos");
+        }
+
+        protected void btnExportarImportados_Click(object sender, EventArgs e)
+        {
+            var dados = ObterDadosDaSession();
+            if (dados == null) return;
+
+            var filtrados = dados.Where(r => r.Sucesso).ToList();
+            ExportarParaExcel(filtrados, "ICD_Importados");
+        }
+
+        protected void btnExportarJaCadastrados_Click(object sender, EventArgs e)
+        {
+            var dados = ObterDadosDaSession();
+            if (dados == null) return;
+
+            var filtrados = dados.Where(r => !r.Sucesso && r.Motivo != null && r.Motivo.Contains("Já cadastrado")).ToList();
+            ExportarParaExcel(filtrados, "ICD_Ja_Cadastrados");
+        }
+
+        protected void btnExportarDivergencia_Click(object sender, EventArgs e)
+        {
+            var dados = ObterDadosDaSession();
+            if (dados == null) return;
+
+            var filtrados = dados.Where(r => !r.Sucesso && r.Motivo != null && r.Motivo.Contains("Data de admissão")).ToList();
+            ExportarParaExcel(filtrados, "ICD_Vigencia_Divergente");
+        }
+
+        protected void btnExportarCidInvalido_Click(object sender, EventArgs e)
+        {
+            var dados = ObterDadosDaSession();
+            if (dados == null) return;
+
+            var filtrados = dados.Where(r => !r.Sucesso && r.Motivo != null && r.Motivo.Contains("NÃO CADASTRADO")).ToList();
+            ExportarParaExcel(filtrados, "ICD_CID_Invalido");
+        }
+
+        protected void btnExportarNaoEncontrado_Click(object sender, EventArgs e)
+        {
+            var dados = ObterDadosDaSession();
+            if (dados == null) return;
+
+            var filtrados = dados.Where(r => !r.Sucesso && r.Motivo != null && r.Motivo.Contains("não encontrado na PS1000")).ToList();
+            ExportarParaExcel(filtrados, "ICD_CPF_Nao_Encontrado");
+        }
+
+        /// <summary>
+        /// Recupera a lista completa da sessão. Se não houver, exibe alerta e retorna null.
+        /// </summary>
+        private List<CIDsImportResultModel> ObterDadosDaSession()
+        {
+            var dados = Session[SESSION_KEY] as List<CIDsImportResultModel>;
+            if (dados == null || dados.Count == 0)
+            {
+                ExibirErro("Não há dados para exportar.");
+                return null;
+            }
+            return dados;
+        }
+
+        /// <summary>
+        /// Exporta a lista para um arquivo .xlsx real (DocumentFormat.OpenXml), sem prompts de importação.
+        /// Usa a mesma biblioteca já utilizada no billingReconciliation — sem conflito de versão.
+        /// O alias "X" evita ambiguidade com System.Web.UI.WebControls (Font, FontSize, Border, etc.).
+        /// </summary>
+        private void ExportarParaExcel(List<CIDsImportResultModel> itens, string nomeArquivoBase)
+        {
+            if (itens == null || itens.Count == 0)
+            {
+                ExibirErro("Não há dados para exportar.");
+                return;
+            }
+
+            byte[] bytes;
+
+            using (var stream = new MemoryStream())
+            {
+                using (var doc = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
+                {
+                    var workbookPart = doc.AddWorkbookPart();
+                    workbookPart.Workbook = new X.Workbook();
+
+                    // Stylesheet (negrito no cabeçalho + fundo cinza)
+                    var stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
+                    stylesPart.Stylesheet = CriarStylesheet();
+                    stylesPart.Stylesheet.Save();
+
+                    var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    var sheetData = new X.SheetData();
+                    worksheetPart.Worksheet = new X.Worksheet(sheetData);
+
+                    var sheets = workbookPart.Workbook.AppendChild(new X.Sheets());
+                    sheets.Append(new X.Sheet
+                    {
+                        Id = workbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = 1,
+                        Name = "Importação CID"
+                    });
+
+                    // Cabeçalhos
+                    var cabecalhos = new[] { "CPF", "Titular", "Beneficiário", "CID", "Cód. Associado", "Status", "Motivo" };
+                    var headerRow = new X.Row();
+                    foreach (var cab in cabecalhos)
+                        headerRow.Append(CriarCelulaTexto(cab, 1)); // estilo 1 = cabeçalho
+                    sheetData.Append(headerRow);
+
+                    // Dados
+                    foreach (var item in itens)
+                    {
+                        var row = new X.Row();
+                        row.Append(CriarCelulaTexto(item.Cpf ?? ""));
+                        row.Append(CriarCelulaTexto(item.Titular ?? ""));
+                        row.Append(CriarCelulaTexto(item.Beneficiario ?? ""));
+                        row.Append(CriarCelulaTexto(item.Cid ?? ""));
+                        row.Append(CriarCelulaTexto(item.CodigoAssociado ?? ""));
+                        row.Append(CriarCelulaTexto(item.Sucesso ? "Importado" : "Não Importado"));
+                        row.Append(CriarCelulaTexto(item.Motivo ?? ""));
+                        sheetData.Append(row);
+                    }
+
+                    workbookPart.Workbook.Save();
+                }
+
+                bytes = stream.ToArray();
+            }
+
+            // === LIMPA TUDO ANTES DE ESCREVER ===
+            Response.Clear();
+            Response.ClearHeaders();
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.ContentEncoding = Encoding.UTF8;
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("Content-Disposition",
+                $"attachment; filename=\"{nomeArquivoBase}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx\"");
+            Response.AddHeader("Content-Length", bytes.Length.ToString());
+
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.SuppressContent = true;
+            HttpContext.Current.ApplicationInstance.CompleteRequest();
+        }
+
+        //  HELPERS DE ESTILO / CÉLULA (DocumentFormat.OpenXml)
+
+        /// <summary>
+        /// Cria o Stylesheet mínimo: fonte padrão + fonte negrito (cabeçalho) + fill cinza (cabeçalho).
+        /// Usa o alias X.* para evitar ambiguidade com System.Web.UI.WebControls.
+        /// </summary>
+        private X.Stylesheet CriarStylesheet()
+        {
+            var fonts = new X.Fonts(
+                new X.Font(new X.FontSize { Val = 11 }, new X.FontName { Val = "Calibri" }),   // 0 - padrão
+                new X.Font(new X.Bold(), new X.FontSize { Val = 11 }, new X.FontName { Val = "Calibri" }) // 1 - negrito
+            );
+
+            var fills = new X.Fills(
+                new X.Fill(new X.PatternFill { PatternType = X.PatternValues.None }),           // 0
+                new X.Fill(new X.PatternFill { PatternType = X.PatternValues.Gray125 }),        // 1
+                new X.Fill(new X.PatternFill                                                     // 2 - cinza cabeçalho
+                {
+                    PatternType = X.PatternValues.Solid,
+                    ForegroundColor = new X.ForegroundColor { Rgb = new HexBinaryValue { Value = "E6E6E6" } },
+                    BackgroundColor = new X.BackgroundColor { Indexed = 64 }
+                })
+            );
+
+            var borders = new X.Borders(new X.Border());
+
+            var cellFormats = new X.CellFormats(
+                new X.CellFormat(),                                                              // 0 - padrão
+                new X.CellFormat { FontId = 1, FillId = 2, ApplyFont = true, ApplyFill = true }  // 1 - cabeçalho
+            );
+
+            return new X.Stylesheet(fonts, fills, borders, cellFormats);
+        }
+
+        /// <summary>
+        /// Cria uma célula do tipo texto, opcionalmente com estilo.
+        /// </summary>
+        private X.Cell CriarCelulaTexto(string valor, uint estilo = 0)
+        {
+            return new X.Cell
+            {
+                DataType = X.CellValues.String,
+                CellValue = new X.CellValue(valor ?? ""),
+                StyleIndex = estilo
+            };
         }
     }
 }

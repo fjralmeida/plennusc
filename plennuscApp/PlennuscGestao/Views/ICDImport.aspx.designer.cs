@@ -132,6 +132,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.DropDownList ddlPageSize;
 
         /// <summary>
+        /// Controle btnExportarTodos.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnExportarTodos;
+
+        /// <summary>
         /// Controle gridTodos.
         /// </summary>
         /// <remarks>
@@ -150,6 +159,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.Label lblPagerInfo;
 
         /// <summary>
+        /// Controle btnExportarImportados.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnExportarImportados;
+
+        /// <summary>
         /// Controle gridImportados.
         /// </summary>
         /// <remarks>
@@ -157,6 +175,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gridImportados;
+
+        /// <summary>
+        /// Controle btnExportarJaCadastrados.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnExportarJaCadastrados;
 
         /// <summary>
         /// Controle gridJaCadastrados.
@@ -168,6 +195,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.GridView gridJaCadastrados;
 
         /// <summary>
+        /// Controle btnExportarDivergencia.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnExportarDivergencia;
+
+        /// <summary>
         /// Controle gridDivergencia.
         /// </summary>
         /// <remarks>
@@ -177,6 +213,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.GridView gridDivergencia;
 
         /// <summary>
+        /// Controle btnExportarCidInvalido.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnExportarCidInvalido;
+
+        /// <summary>
         /// Controle gridCidInvalido.
         /// </summary>
         /// <remarks>
@@ -184,6 +229,15 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gridCidInvalido;
+
+        /// <summary>
+        /// Controle btnExportarNaoEncontrado.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnExportarNaoEncontrado;
 
         /// <summary>
         /// Controle gridNaoEncontrado.
