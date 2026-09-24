@@ -71,7 +71,8 @@ namespace appWhatsapp.PlennuscGestao.Views
             gridDivergencia.DataBind();
             litCountDivergencia.Text = divergencia.Count.ToString();
 
-            var cidInvalido = resultados.Where(r => !r.Sucesso && r.Motivo != null && r.Motivo.Contains("tabela de domínio")).ToList();
+            // === ALTERAÇÃO: casa com a mensagem real gerada pelo serviceCIDs ("CID 'X' NÃO CADASTRADO.") ===
+            var cidInvalido = resultados.Where(r => !r.Sucesso && r.Motivo != null && r.Motivo.Contains("NÃO CADASTRADO")).ToList();
             gridCidInvalido.DataSource = cidInvalido;
             gridCidInvalido.DataBind();
             litCountCidInvalido.Text = cidInvalido.Count.ToString();
@@ -150,7 +151,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return "status-nao-encontrado";
             if (motivoTexto.Contains("Data de admissão"))
                 return "status-divergencia-tolerada";
-            if (motivoTexto.Contains("tabela de domínio"))
+            // === ALTERAÇÃO: casa com a mensagem real ("CID 'X' NÃO CADASTRADO.") ===
+            if (motivoTexto.Contains("NÃO CADASTRADO"))
                 return "status-divergente";
             if (motivoTexto.Contains("não encontrado na PS1000"))
                 return "status-nao-encontrado";
