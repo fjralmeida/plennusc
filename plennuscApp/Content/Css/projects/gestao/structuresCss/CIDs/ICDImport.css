@@ -329,10 +329,54 @@
     outline: none !important;
 }
 
+/* ============================================================
+   TOOLBAR DO GRID (paginado e não paginado)
+   Seletor composto (.grid-container .grid-toolbar) para vencer
+   regras globais da Master Page / Bootstrap.
+   ============================================================ */
+
+.grid-container .grid-toolbar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 12px 20px;
+    background: #fafbfc;
+    border-bottom: 1px solid var(--gray-200);
+    gap: 8px;
+}
+
+.grid-container .grid-toolbar-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px;
+    margin-right: auto !important;
+}
+
+    .grid-container .grid-toolbar-left label {
+        font-size: 14px;
+        color: var(--gray-700);
+        font-weight: 500;
+        margin: 0;
+    }
+
+.grid-container .grid-toolbar-right {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px;
+    margin-left: auto !important;
+}
+
+/* Fallback para toolbars fora de um .grid-container (não usado hoje,
+   mas mantém compatibilidade com outras telas) */
 .grid-toolbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-end;
     padding: 12px 20px;
     background: #fafbfc;
     border-bottom: 1px solid var(--gray-200);
@@ -344,6 +388,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-right: auto;
 }
 
     .grid-toolbar-left label {
@@ -352,6 +397,13 @@
         font-weight: 500;
         margin: 0;
     }
+
+.grid-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
 
 
 .ddl-pagesize {

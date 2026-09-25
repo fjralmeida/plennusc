@@ -1,4 +1,5 @@
-﻿using Plennusc.Core.Models.ModelsGestao.modelsCIDs;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using Plennusc.Core.Models.ModelsGestao.modelsCIDs;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -34,10 +35,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
                 SELECT TOP 1 CODIGO_ASSOCIADO, DATA_ADMISSAO
                 FROM PS1000
                 WHERE NUMERO_CPF = @cpf
-                  AND DATA_ADMISSAO = @vigencia
-                  AND DATA_EXCLUSAO IS NULL
-                ORDER BY DATA_ADMISSAO DESC";
-
+                  AND DATA_EXCLUSAO IS NULL      
+                ORDER BY
+                    CASE WHEN DATA_ADMISSAO = @vigencia THEN 0 ELSE 1 END,  
+                    DATA_ADMISSAO DESC";
             using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@cpf", cpf);

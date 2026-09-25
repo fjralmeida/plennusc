@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="ICDImport.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.ICDImport" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link href="../../Content/Css/projects/gestao/structuresCss/CIDs/ICDImport.css" rel="stylesheet" />
+    <link href="../../Content/Css/projects/gestao/structuresCss/CIDs/ICDImport.css?v=2" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-main">
@@ -140,7 +140,7 @@
                     <div class="grid-toolbar">
                         <div class="grid-toolbar-right">
                             <asp:Button ID="btnExportarImportados" runat="server" Text="Exportar Excel"
-                                CssClass="btn btn-success" OnClick="btnExportarImportados_Click"
+                                CssClass="btn btn-success d-flex justify-content-end" OnClick="btnExportarImportados_Click"
                                 CausesValidation="false" />
                         </div>
                     </div>
