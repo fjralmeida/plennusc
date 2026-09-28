@@ -30,7 +30,12 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsBilling
 
         public string MesAnoReferencia { get; set; }
 
-
+        // ===================== Aurora: tipo do item faturado =====================
+        // Valores possíveis (vindos do CSV da Aurora):
+        //   "MENSALIDADE", "TRANSPORTE AEROMÉDICO", "PLANO ODONTOLÓGICO"
+        // Usado pela Aurora para decidir se a conferência é feita contra
+        // CONVÊNIO ou contra EVENTO ADICIONAL (aeromédico / odontológico).
+        public string TipoItemFaturado { get; set; }
 
         // ===================== Campos preenchidos na etapa de conferência =====================
 

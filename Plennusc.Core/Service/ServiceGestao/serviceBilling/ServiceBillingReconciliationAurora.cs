@@ -13,6 +13,12 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
     public class ServiceBillingReconciliationAurora
     {
         private const decimal TOLERANCIA_DIVERGENCIA = 0.10m;
+
+        // Nomes normalizados dos itens faturados que vêm no CSV da Aurora
+        private const string ITEM_MENSALIDADE = "MENSALIDADE";
+        private const string ITEM_TRANSPORTE_AEROMEDICO = "AEROMEDICO";   // CSV: "TRANSPORTE AEROMÉDICO"  | View: contém "AEROMEDICO"
+        private const string ITEM_PLANO_ODONTOLOGICO = "ODONTO";           // CSV: "PLANO ODONTOLÓGICO"      | View: contém "ODONTO"
+
         private readonly SqlBillingReconciliation _sql = new SqlBillingReconciliation();
 
         // ===================== LEITURA DO RELATÓRIO =====================
@@ -78,6 +84,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         string nome = LimparCampo(campos[3]);
                         string cpfBruto = LimparCampo(campos[4]);
                         string plano = LimparCampo(campos[7]);
+                        string itemFaturado = LimparCampo(campos[10]); // NOVO - coluna "ITEM"
                         string valorBruto = LimparCampo(campos[11]);
 
                         if (string.IsNullOrWhiteSpace(cpfBruto) || string.IsNullOrWhiteSpace(valorBruto))
@@ -102,6 +109,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                             Matricula = matricula,
                             Credencial = carteirinha,
                             Plano = plano,
+                            TipoItemFaturado = itemFaturado, // NOVO
                             Cobrado = valor,
                             StatusConferencia = "PENDENTE"
                         };
@@ -179,17 +187,12 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                         continue;
                     }
 
-                    ResultadoViewConferencia resultado;
-
-                    // Aurora não possui odontológico separado; sempre consulta CONVÊNIO
-                    if (tipoConferencia == "EVENTO_ADICIONAL")
-                    {
-                        resultado = _sql.BuscarDadosOdontologicoPorCpf(cpfTratado, item.MesAnoReferencia, codigoGrupoContrato);
-                    }
-                    else
-                    {
-                        resultado = _sql.BuscarDadosConvenioPorCpf(cpfTratado, item.MesAnoReferencia);
-                    }
+                    // Decide QUAL consulta fazer com base no item faturado do CSV da Aurora
+                    ResultadoViewConferencia resultado = BuscarResultadoPorItem(
+                        item.TipoItemFaturado,
+                        cpfTratado,
+                        item.MesAnoReferencia,
+                        codigoGrupoContrato);
 
                     if (resultado == null)
                     {
@@ -228,6 +231,73 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             }
 
             return itensImportados;
+        }
+
+        /// <summary>
+        /// Roteia a busca na VW_RELATORIO_CONFERENCIA com base no item faturado do CSV.
+        /// 
+        /// Regra de negócio (Aurora):
+        ///   - "MENSALIDADE"             -> CONVÊNIO
+        ///   - "TRANSPORTE AEROMÉDICO"   -> EVENTO ADICIONAL filtrando DESCRICAO LIKE '%AEROM%', ou seja, não tem problema se vier com É ou com E no AEROMÉDICO
+        ///   - "PLANO ODONTOLÓGICO"      -> EVENTO ADICIONAL filtrando DESCRICAO LIKE '%ODONTO%'
+        /// 
+        /// A normalização (remover acento, uppercase) garante que tanto a variação do CSV
+        /// quanto a da view casem corretamente.
+        /// </summary>
+        private ResultadoViewConferencia BuscarResultadoPorItem(
+            string tipoItemFaturado,
+            string cpfTratado,
+            string mesAnoReferencia,
+            int codigoGrupoContrato)
+        {
+            string itemNormalizado = NormalizarTexto(tipoItemFaturado);
+
+            // MENSALIDADE (ou vazio/desconhecido): busca CONVÊNIO
+            if (string.IsNullOrEmpty(itemNormalizado) ||
+                itemNormalizado.Contains(ITEM_MENSALIDADE))
+            {
+                return _sql.BuscarDadosConvenioPorCpf(cpfTratado, mesAnoReferencia);
+            }
+
+            // TRANSPORTE AEROMÉDICO: EVENTO ADICIONAL com DESCRICAO contendo "AEROM"
+            if (itemNormalizado.Contains(ITEM_TRANSPORTE_AEROMEDICO))
+            {
+                return _sql.BuscarDadosEventoAdicionalPorCpf(
+                    cpfTratado, mesAnoReferencia, codigoGrupoContrato, "AEROM");
+            }
+
+            // PLANO ODONTOLÓGICO: EVENTO ADICIONAL com DESCRICAO contendo "ODONTO"
+            if (itemNormalizado.Contains(ITEM_PLANO_ODONTOLOGICO))
+            {
+                return _sql.BuscarDadosEventoAdicionalPorCpf(
+                    cpfTratado, mesAnoReferencia, codigoGrupoContrato, "ODONTO");
+            }
+
+            // Fallback: trata como CONVÊNIO
+            return _sql.BuscarDadosConvenioPorCpf(cpfTratado, mesAnoReferencia);
+        }
+
+        /// <summary>
+        /// Normaliza texto para comparação: remove acentos, remove espaços extras e coloca em maiúsculas.
+        /// Ex: "TRANSPORTE AEROMÉDICO" -> "TRANSPORTE AEROMEDICO"
+        /// </summary>
+        private string NormalizarTexto(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return string.Empty;
+
+            // Remove acentos via decomposição Unicode (FormD) e filtragem de marcas
+            var normalizado = texto.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+
+            foreach (var c in normalizado)
+            {
+                var categoria = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (categoria != UnicodeCategory.NonSpacingMark)
+                    sb.Append(c);
+            }
+
+            return sb.ToString().ToUpperInvariant().Trim();
         }
     }
 }
