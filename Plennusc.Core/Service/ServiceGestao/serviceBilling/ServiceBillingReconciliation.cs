@@ -150,14 +150,14 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 new ColunaExport { Header = "Diferença", ObterValor = i => i.DiferencaValor?.ToString("N2") ?? "" },
                 new ColunaExport { Header = "Codigo Empresa", ObterValor = i => i.CodigoEmpresa?.ToString() ?? "", OperadorasPermitidas = operadorasCarteirinha },
                 new ColunaExport { Header = "Empresa", ObterValor = i => i.EmpresaUnimed ?? "", OperadorasPermitidas = operadorasCarteirinha },
-                new ColunaExport { Header = "Data Admissão", ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = operadorasCarteirinha },
+                // new ColunaExport { Header = "Data Admissão", ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = operadorasCarteirinha },
                 new ColunaExport { Header = "Data Exclusão", ObterValor = i => i.DataExclusao?.ToString("dd/MM/yyyy") ?? "" },
                 new ColunaExport { Header = "Motivo Exclusão", ObterValor = i => i.NomeMotivoExclusao ?? "" },
                 new ColunaExport { Header = "Tabela de Preço", ObterValor = i => i.NomeTabelaPreco ?? "", OperadorasPermitidas = operadorasCpf },
                 new ColunaExport { Header = "Grupo de Pessoas", ObterValor = i => i.NomeGrupoPessoas ?? "", OperadorasPermitidas = operadorasCarteirinha },
                 new ColunaExport { Header = "Grupo de Faturamento", ObterValor = i => i.DescricaoGrupoFaturamento ?? "", OperadorasPermitidas = operadorasCpf },
                 new ColunaExport { Header = "Status", ObterValor = i => TraduzirStatusExcel(i.StatusConferencia) },
-                new ColunaExport {Header = "Data Admissão",ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "",OperadorasPermitidas = new[] { OP_UNIAO_MEDICA }
+                new ColunaExport {Header = "Data Admissão",ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "",OperadorasPermitidas = new[] { OP_UNIAO_MEDICA, OP_AURORA }
                 },
             };
         }
