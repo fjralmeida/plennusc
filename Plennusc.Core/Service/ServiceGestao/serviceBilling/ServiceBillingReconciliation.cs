@@ -157,6 +157,8 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 new ColunaExport { Header = "Grupo de Pessoas", ObterValor = i => i.NomeGrupoPessoas ?? "", OperadorasPermitidas = operadorasCarteirinha },
                 new ColunaExport { Header = "Grupo de Faturamento", ObterValor = i => i.DescricaoGrupoFaturamento ?? "", OperadorasPermitidas = operadorasCpf },
                 new ColunaExport { Header = "Status", ObterValor = i => TraduzirStatusExcel(i.StatusConferencia) },
+                new ColunaExport {Header = "Data Admissão",ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "",OperadorasPermitidas = new[] { OP_UNIAO_MEDICA }
+                },
             };
         }
 
