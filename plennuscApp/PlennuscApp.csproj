@@ -337,6 +337,7 @@
     <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\profile.aspx" />
+    <Content Include="PlennuscGestao\Views\setCemgImport.aspx" />
     <Content Include="PlennuscGestao\Views\shell.aspx" />
     <Content Include="PlennuscGestao\Views\structureType.aspx" />
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
@@ -799,6 +800,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\profile.aspx.designer.cs">
       <DependentUpon>profile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\setCemgImport.aspx.cs">
+      <DependentUpon>setCemgImport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\setCemgImport.aspx.designer.cs">
+      <DependentUpon>setCemgImport.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\shell.aspx.cs">
       <DependentUpon>shell.aspx</DependentUpon>
