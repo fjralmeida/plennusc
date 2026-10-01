@@ -92,6 +92,7 @@ namespace appWhatsapp
             // ✅ Importação de CIDs 
             routes.MapPageRoute("ICDImport", "ICDImport", "~/PlennuscGestao/Views/ICDImport.aspx");
             routes.MapPageRoute("activityReport", "activityReport", "~/PlennuscGestao/Views/activityReport.aspx");
+            routes.MapPageRoute("setCemgImport", "setCemgImport", "~/PlennuscGestao/Views/setCemgImport.aspx");
             #endregion
 
 
