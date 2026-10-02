@@ -471,6 +471,22 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 nomeDisplay.Contains("relatorio de movimentacao"))
                 return "bi bi-file-earmark-bar-graph me-2";
 
+            // ✅ COMISSÕES E PREMIAÇÕES
+            if (nomeObjeto.Contains("menucomissoespremiacoes") ||
+                nomeDisplay.Contains("comissões / premiações"))
+                return "bi bi-award me-2";
+
+            if (nomeObjeto.Contains("menutaxasassociativas") ||
+                nomeDisplay.Contains("taxas associativas"))
+                return "bi bi-receipt me-2";
+
+            if (nomeObjeto.Contains("comissionawardsindnapi") ||
+                nomeDisplay.Contains("taxas associativas - sindnapi") ||
+                nomeObjeto.Contains("comissionaward") ||
+                nomeDisplay.Contains("taxas associativas - demais entidades"))
+                return "bi bi-people-fill me-2";
+
+
             // ✅ ÍCONE PADRÃO
             return "bi bi-circle me-2";
         }
