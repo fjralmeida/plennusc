@@ -10,9 +10,9 @@ using System.Web.UI.WebControls;
 namespace appWhatsapp.PlennuscGestao.Views
 {
     public partial class setCemgImport : System.Web.UI.Page
-{
+    {
         private readonly setCemgImportService _service = new setCemgImportService();
-        private readonly setCemgExportService _export = new setCemgExportService();   // NOVO
+        private readonly setCemgExportService _export = new setCemgExportService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -40,13 +40,32 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 var resultado = _service.Ler(fuPlanilha.PostedFile.InputStream);
 
-                // NOVO: transforma no layout e junta os avisos aos erros
-                var saida = _export.Transformar(resultado.Linhas);
+                // Plano digitado (vazio = "PREENCHER MANUALMENTE" no layout)
+                var codPlano = (txtCodPlano.Text ?? string.Empty).Trim();
+                var codAns = (txtCodAnsPlano.Text ?? string.Empty).Trim();
+
+                setCemgPlano plano = null;
+                if (codPlano.Length > 0 || codAns.Length > 0)
+                {
+                    plano = new setCemgPlano
+                    {
+                        CodPlano = codPlano.Length > 0 ? codPlano : setCemgExportService.PreencherManualmente,
+                        CodAnsPlano = codAns.Length > 0 ? codAns : setCemgExportService.PreencherManualmente
+                    };
+                }
+
+                var saida = _export.Transformar(resultado.Linhas, resultado.CnpjEmpresa, plano);
                 Session["CemgLayout"] = saida.Linhas;
                 foreach (var a in saida.Avisos) resultado.Erros.Add(a);
 
+                if (plano != null && codPlano.Length == 0)
+                    resultado.Erros.Add(new Plennusc.Core.Models.ModelsGestao.modelsCIDs.setCemgImportErro { LinhaExcel = 0, Campo = "COD_PLANO", Mensagem = "Código do plano não informado. " + setCemgExportService.PreencherManualmente + "." });
+                if (plano != null && codAns.Length == 0)
+                    resultado.Erros.Add(new Plennusc.Core.Models.ModelsGestao.modelsCIDs.setCemgImportErro { LinhaExcel = 0, Campo = "COD_ANS_PLANO", Mensagem = "Código ANS do plano não informado. " + setCemgExportService.PreencherManualmente + "." });
+
                 lblMensagem.Text = resultado.Linhas.Count + " linha(s) lida(s), "
-                                    + resultado.Erros.Count + " inconsistência(s).";
+                                 + resultado.Erros.Count + " inconsistência(s)/aviso(s). "
+                                 + "CNPJ da empresa: " + (string.IsNullOrEmpty(resultado.CnpjEmpresa) ? "não encontrado" : resultado.CnpjEmpresa) + ".";
 
                 gvLinhas.DataSource = resultado.Linhas;
                 gvLinhas.DataBind();
@@ -62,7 +81,6 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        // NOVO
         protected void btnExportar_Click(object sender, EventArgs e)
         {
             var linhas = Session["CemgLayout"] as List<string[]>;

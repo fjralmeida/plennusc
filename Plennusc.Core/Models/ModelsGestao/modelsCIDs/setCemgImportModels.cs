@@ -137,6 +137,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsCIDs
     /// <summary>Resultado completo da leitura da planilha.</summary>
     public class setCemgImportResultado
     {
+        public string CnpjEmpresa { get; set; }  
         public List<setCemgImportModels> Linhas { get; } = new List<setCemgImportModels>();
         public List<setCemgImportErro> Erros { get; } = new List<setCemgImportErro>();
     }

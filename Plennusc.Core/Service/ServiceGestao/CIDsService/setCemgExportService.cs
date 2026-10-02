@@ -4,22 +4,31 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Plennusc.Core.Service.ServiceGestao.CIDsService
 {
+    /// <summary>Plano que será gravado no layout final (COD_PLANO / COD_ANS_PLANO).</summary>
+    public class setCemgPlano
+    {
+        public string Nome { get; set; }          // texto exibido no filtro
+        public string CodPlano { get; set; }      // COD_PLANO
+        public string CodAnsPlano { get; set; }   // COD_ANS_PLANO
+    }
+
     /// <summary>
     /// Transforma as linhas lidas da planilha de carga (setCemgImportModels)
-    /// no layout de 101 colunas (mesmo do Teste_1.xlsx) e gera o .xlsx.
+    /// no layout de 101 colunas e gera o .xlsx (sem bibliotecas externas).
     /// </summary>
     public class setCemgExportService
     {
         // ------------------------------------------------------------ configuração
 
-        // O arquivo de exemplo (Teste_1.xlsx) usa dd/MM/yyyy. Troque para "ddMMyyyy" se o destino não quiser barras.
-        private const string FormatoData = "dd/MM/yyyy";
+        private const string FormatoData = "dd/MM/yyyy";   // use "ddMMyyyy" se o destino não quiser barras
+        public const string PreencherManualmente = "PREENCHER MANUALMENTE";
 
         // Valores fixos
         private const string CodVend = "12091127000142";
@@ -31,40 +40,56 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
         private const string NomeVendedor = "VENDA INTERNA - ALEXANDRE ANTONIO SA SOARES";
         private const string CpfVendedor = "59587393600";
         private const string CodForma = "BU";
+        private const string DiaVenc = "10";
         private const string TipoContrato = "PJ";
         private const string NomeEntidade = "SETCEMG";
         private const string CnpjEntidade = "17433780000166";
         private const string TipoMovimentacaoFixo = "I";
 
-        // ------------------------------------------------------------ DE/PARA (a validar)
-
-        // Parent (coluna J): código da Unimed -> valor do layout. PREENCHER/AJUSTAR.
-        private static readonly Dictionary<string, string> DeParaParentesco =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        // Campos da empresa que a operadora não disponibiliza no layout.
+        private static readonly string[] CamposManuais =
         {
-            { "T", "TITULAR" },
-            { "C", "CONJUGE" },
-            { "F", "FILHO" }
-            // { "P", "PAI/MAE" }, ...
+            "RAZAO_SOCIAL", "NOME_FANTASIA", "ENDERECO_EMPRESA", "BAIRRO_EMPRESA", "CEP_EMPRESA",
+            "ESTADO_EMPRESA", "CIDADE_EMPRESA", "CNPJ", "DATA_INSC_CNPJ", "NUMERO_INSC_MUNICIPAL",
+            "NUMERO_INSC_ESTADUAL", "EMAIL_EMPRESA", "TELEFONE_EMPRESA"
         };
 
-        // Estado civil (coluna K). PREENCHER/AJUSTAR (o exemplo usa "Casado(a)", "Solteiro(a)", "Outros").
+        // ------------------------------------------------------------ planos (filtro da tela)
+
+        // Preencha com os planos. Depois isso pode vir da PS1030 (basta trocar esta lista por uma consulta).
+        // Exemplo:
+        // new setCemgPlano { Nome = "UNIPART ENFERMARIA", CodPlano = "363", CodAnsPlano = "475303168" },
+        public static readonly List<setCemgPlano> Planos = new List<setCemgPlano>
+        {
+        };
+
+        // ------------------------------------------------------------ DE/PARA
+
+        // Estado civil (coluna K)
         private static readonly Dictionary<string, string> DeParaEstadoCivil =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { "C", "Casado(a)" },
-            { "S", "Solteiro(a)" }
-            // { "D", "Divorciado(a)" }, { "V", "Viúvo(a)" }, ...
+            { "S", "Solteiro(a)" },
+            { "D", "Outros" },
+            { "V", "Outros" },
+            { "A", "Outros" }
         };
 
-        // Produto (coluna AA) -> COD_PLANO e COD_ANS_PLANO. PREENCHER/AJUSTAR.
-        private static readonly Dictionary<string, KeyValuePair<string, string>> DeParaProduto =
-            new Dictionary<string, KeyValuePair<string, string>>(StringComparer.OrdinalIgnoreCase)
-            {
-                // { "UNIPART ENFERMARIA", new KeyValuePair<string,string>("COD_PLANO", "COD_ANS_PLANO") },
-            };
+        // Parentesco (coluna J). Titular fica vazio.
+        private static readonly Dictionary<string, string> DeParaParentesco =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "T", "" },
+            { "C", "2" },
+            { "F", "1" },
+            { "P", "3" },
+            { "S", "11" },
+            { "I", "8" },
+            { "A", "10" }
+        };
 
-        // Prefixo do logradouro (primeira palavra da coluna R) -> tipo por extenso. AJUSTAR.
+        // Prefixo do logradouro (primeira palavra da coluna R) -> tipo por extenso.
         private static readonly Dictionary<string, string> TiposLogradouro =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -100,14 +125,25 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             "NOME_FANTASIA", "ENDERECO_EMPRESA", "BAIRRO_EMPRESA", "CEP_EMPRESA", "ESTADO_EMPRESA", "CIDADE_EMPRESA",
             "CNPJ", "DATA_INSC_CNPJ", "NUMERO_INSC_MUNICIPAL", "NUMERO_INSC_ESTADUAL", "EMAIL_EMPRESA", "TELEFONE_EMPRESA",
             "TIPO_CONTRATO", "STATUS", "NOME_ENTIDADE", "CNPJ_ENTIDADE", "DT_LIBERACAO_DOCUMENTAL"
+
         };
 
-        // ------------------------------------------------------------ API
+        // ------------------------------------------------------------ transformação
 
-        public setCemgExportResultado Transformar(IEnumerable<setCemgImportModels> linhas)
+        public setCemgExportResultado Transformar(IEnumerable<setCemgImportModels> linhas, string cnpjEmpresa, setCemgPlano plano)
         {
             var resultado = new setCemgExportResultado();
             string cpfTitularAtual = string.Empty;
+
+            // Avisos gerais (uma vez só, não por linha)
+            AvisoGeral(resultado, "Campos da empresa",
+                PreencherManualmente + " (operadora não disponibiliza esta informação em layout): " + string.Join(", ", CamposManuais) + ".");
+
+            if (string.IsNullOrEmpty(cnpjEmpresa))
+                AvisoGeral(resultado, "COD_PROP", "CNPJ da empresa não encontrado no cabeçalho da planilha. " + PreencherManualmente + ".");
+
+            if (plano == null)
+                AvisoGeral(resultado, "COD_PLANO / COD_ANS_PLANO", "Nenhum plano selecionado no filtro. " + PreencherManualmente + ".");
 
             foreach (var l in linhas)
             {
@@ -143,16 +179,8 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                 r["DDD_CEL"] = ddd;
                 r["CELULAR"] = cel;
 
-                KeyValuePair<string, string> plano;
-                if (!string.IsNullOrEmpty(l.Produto) && DeParaProduto.TryGetValue(l.Produto, out plano))
-                {
-                    r["COD_PLANO"] = plano.Key;
-                    r["COD_ANS_PLANO"] = plano.Value;
-                }
-                else if (!string.IsNullOrEmpty(l.Produto))
-                {
-                    Aviso(resultado, l, "Produto", "Sem de/para para o produto '" + l.Produto + "'.");
-                }
+                r["COD_PLANO"] = plano != null ? plano.CodPlano : PreencherManualmente;
+                r["COD_ANS_PLANO"] = plano != null ? plano.CodAnsPlano : PreencherManualmente;
 
                 r["DT_INCL"] = FormatarData(l.DataVigencia);
                 r["DT_VIGENCIA"] = FormatarData(l.DataVigencia);
@@ -164,7 +192,9 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
 
                 r["TIPO_MOVIMENTACAO"] = TipoMovimentacaoFixo;
                 r["COD_VEND"] = CodVend;
+                r["COD_PROP"] = string.IsNullOrEmpty(cnpjEmpresa) ? PreencherManualmente : cnpjEmpresa;
                 r["COD_FORMA"] = CodForma;
+                r["DIA_VENC"] = DiaVenc;
                 r["COD_SUPERV"] = CodSuperv;
                 r["COD_PROFISSAO"] = CodProfissao;
                 r["CNPJ_OPERADORA"] = CnpjOperadora;
@@ -176,22 +206,26 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                 r["NOME_ENTIDADE"] = NomeEntidade;
                 r["CNPJ_ENTIDADE"] = CnpjEntidade;
 
-                // A VALIDAR (ficam vazios por enquanto): COD_PROP, DIA_VENC e os campos de empresa
-                // (RAZAO_SOCIAL, NOME_FANTASIA, ENDERECO_EMPRESA, BAIRRO_EMPRESA, CEP_EMPRESA,
-                //  ESTADO_EMPRESA, CIDADE_EMPRESA, CNPJ, DATA_INSC_CNPJ, NUMERO_INSC_MUNICIPAL,
-                //  NUMERO_INSC_ESTADUAL, EMAIL_EMPRESA, TELEFONE_EMPRESA).
+                foreach (var campo in CamposManuais)
+                    r[campo] = PreencherManualmente;
 
-                resultado.Linhas.Add(Cabecalhos.Select(h => { string x; return r.TryGetValue(h, out x) ? (x ?? string.Empty) : string.Empty; }).ToArray());
+                resultado.Linhas.Add(Cabecalhos.Select(h =>
+                {
+                    string x;
+                    return r.TryGetValue(h, out x) ? (x ?? string.Empty) : string.Empty;
+                }).ToArray());
             }
 
             return resultado;
         }
 
+        // ------------------------------------------------------------ geração do xlsx (sem ClosedXML)
+
         public byte[] GerarXlsx(IList<string[]> linhas)
         {
             using (var ms = new MemoryStream())
             {
-                using (var zip = new System.IO.Compression.ZipArchive(ms, System.IO.Compression.ZipArchiveMode.Create, true))
+                using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
                 {
                     const string hdr = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
 
@@ -217,7 +251,7 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                         "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>" +
                         "</Relationships>");
 
-                    var sb = new System.Text.StringBuilder();
+                    var sb = new StringBuilder();
                     sb.Append(hdr);
                     sb.Append("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><sheetData>");
 
@@ -232,14 +266,14 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             }
         }
 
-        private static void EscreverEntrada(System.IO.Compression.ZipArchive zip, string nome, string conteudo)
+        private static void EscreverEntrada(ZipArchive zip, string nome, string conteudo)
         {
             var entrada = zip.CreateEntry(nome);
-            var bytes = new System.Text.UTF8Encoding(false).GetBytes(conteudo);
+            var bytes = new UTF8Encoding(false).GetBytes(conteudo);
             using (var s = entrada.Open()) s.Write(bytes, 0, bytes.Length);
         }
 
-        private static void AppendLinha(System.Text.StringBuilder sb, int numero, string[] valores)
+        private static void AppendLinha(StringBuilder sb, int numero, string[] valores)
         {
             sb.Append("<row r=\"").Append(numero).Append("\">");
             for (int c = 0; c < valores.Length; c++)
@@ -285,17 +319,18 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             return ddMMyyyy;
         }
 
+        // Nunca descarta dado: se não houver de/para, mantém o valor original e avisa.
         private static string DePara(Dictionary<string, string> mapa, string valor, setCemgImportModels l,
                                      string campo, setCemgExportResultado res)
         {
             if (string.IsNullOrEmpty(valor)) return string.Empty;
             string destino;
             if (mapa.TryGetValue(valor, out destino)) return destino;
-            Aviso(res, l, campo, "Sem de/para para o valor '" + valor + "'.");
-            return string.Empty;
+            Aviso(res, l, campo, "Sem de/para para o valor '" + valor + "'. Mantido o valor original.");
+            return valor;
         }
 
-        // "R CARAJAS" -> tipo "RUA", nome "CARAJAS". Se o prefixo não for conhecido, tipo fica vazio.
+        // "R CARAJAS" -> tipo "RUA", nome "CARAJAS". Se o prefixo não for conhecido, tipo fica vazio e o nome fica completo.
         private static void SepararLogradouro(string valor, out string tipo, out string nome)
         {
             tipo = string.Empty;
@@ -335,6 +370,11 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
         private static void Aviso(setCemgExportResultado res, setCemgImportModels l, string campo, string msg)
         {
             res.Avisos.Add(new setCemgImportErro { LinhaExcel = l.LinhaExcel, Campo = campo, Mensagem = msg });
+        }
+
+        private static void AvisoGeral(setCemgExportResultado res, string campo, string msg)
+        {
+            res.Avisos.Add(new setCemgImportErro { LinhaExcel = 0, Campo = campo, Mensagem = msg });
         }
     }
 

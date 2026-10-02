@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -17,15 +18,8 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
         private const int LinhaCabecalho = 2;
         private const int PrimeiraLinhaDados = 3;
         private const int TotalColunas = 50;      // A..AX
-        private const int ColunasLayout = 49;     // A..AW
 
-        private static readonly int[] Tamanhos =
-        {
-            7, 7, 17, 17, 9, 2, 8, 100, 1, 1, 1, 8, 11, 2, 100, 20, 8, 60, 9, 25,
-            30, 40, 2, 15, 15, 60, 6, 4, 4, 4, 4, 4, 4, 6, 6, 4, 17, 8, 17, 50, 11,
-            15, 3, 3, 9, 1, 8, 4, 100
-        };
-
+        // Colunas numéricas de tamanho fixo: coluna (1 = A) -> qtde de dígitos.
         private static readonly Dictionary<int, int> DigitosFixos = new Dictionary<int, int>
         {
             { 1, 7 }, { 7, 8 }, { 12, 8 }, { 13, 11 }, { 14, 2 }, { 17, 8 }, { 38, 8 }, { 47, 8 }
@@ -37,6 +31,11 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
         private static readonly XNamespace NsMain = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
         private static readonly XNamespace NsRel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
         private static readonly XNamespace NsPkgRel = "http://schemas.openxmlformats.org/package/2006/relationships";
+
+        private static readonly Regex RegexCnpjRotulo =
+            new Regex(@"CNPJ\s*:?\s*(\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})", RegexOptions.IgnoreCase);
+        private static readonly Regex RegexCnpj =
+            new Regex(@"\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}");
 
         public setCemgImportResultado Ler(Stream arquivo)
         {
@@ -60,6 +59,9 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                 var estiloData = LerEstilosDeData(zip);
                 var celulas = LerCelulas(zip, caminhoAba, textos, estiloData); // linha -> (coluna -> valor)
 
+                // CNPJ do quadro do cabeçalho (linha 1)
+                resultado.CnpjEmpresa = LerCnpjCabecalho(zip, celulas);
+
                 if (celulas.Count == 0) return resultado;
 
                 var cabecalhos = new string[TotalColunas];
@@ -76,6 +78,7 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
                     for (int c = 1; c <= TotalColunas; c++)
                         v[c - 1] = Normalizar(c, Obter(celulas, l, c));
 
+                    // Seq vem pré-preenchida: a linha só vale se tiver algo além dela.
                     if (v.Skip(1).All(string.IsNullOrEmpty)) continue;
 
                     Validar(l, v, cabecalhos, resultado);
@@ -84,6 +87,53 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             }
 
             return resultado;
+        }
+
+        // ---------------------------------------------------------------- CNPJ do cabeçalho
+
+        // O "quadrado" com o CNPJ é uma forma (caixa de texto) e não uma célula: fica em xl/drawings/*.
+        // Procura lá primeiro; se não achar, tenta nas células da linha 1.
+        private static string LerCnpjCabecalho(ZipArchive zip, Dictionary<int, Dictionary<int, string>> celulas)
+        {
+            var textos = new List<string>();
+
+            foreach (var e in zip.Entries)
+            {
+                var nome = e.FullName.ToLowerInvariant();
+                if (!nome.StartsWith("xl/drawings/")) continue;
+                if (!nome.EndsWith(".xml") && !nome.EndsWith(".vml")) continue;
+
+                string bruto;
+                using (var sr = new StreamReader(e.Open(), Encoding.UTF8))
+                    bruto = sr.ReadToEnd();
+
+                // Remove as tags (sem inserir espaço, para juntar números quebrados em vários trechos).
+                var limpo = WebUtility.HtmlDecode(Regex.Replace(bruto, "<[^>]+>", string.Empty));
+                textos.Add(limpo);
+            }
+
+            Dictionary<int, string> linha1;
+            if (celulas.TryGetValue(1, out linha1))
+                textos.Add(string.Join(" ", linha1.Values));
+
+            foreach (var t in textos)
+            {
+                var m = RegexCnpjRotulo.Match(t);
+                if (m.Success) return Digitos(m.Groups[1].Value);
+            }
+
+            foreach (var t in textos)
+            {
+                var m = RegexCnpj.Match(t);
+                if (m.Success) return Digitos(m.Value);
+            }
+
+            return string.Empty;
+        }
+
+        private static string Digitos(string s)
+        {
+            return new string((s ?? string.Empty).Where(char.IsDigit).ToArray());
         }
 
         // ---------------------------------------------------------------- leitura do xlsx (sem libs externas)
@@ -130,7 +180,6 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
 
             foreach (var si in doc.Descendants(NsMain + "si"))
             {
-                // concatena <t> (inclusive rich text), ignorando fonética (rPh)
                 var sb = new StringBuilder();
                 foreach (var t in si.Descendants(NsMain + "t"))
                 {
@@ -225,7 +274,6 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             if (tipo == "b") return v;
             if (tipo == "e") return string.Empty;
 
-            // número (t="n" ou ausente)
             double num;
             if (!double.TryParse(v, NumberStyles.Float, CultureInfo.InvariantCulture, out num))
                 return v.Trim();
@@ -250,7 +298,7 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             return i > 0 && int.TryParse(referencia.Substring(i), out linha);
         }
 
-        // ---------------------------------------------------------------- normalização / validação (inalterados)
+        // ---------------------------------------------------------------- normalização / validação
 
         private static string Normalizar(int coluna, string valor)
         {
@@ -267,6 +315,7 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
             return valor;
         }
 
+        // Só avisa; nunca corta ou altera o valor da coluna.
         private static void Validar(int linha, string[] v, string[] cabecalhos, setCemgImportResultado resultado)
         {
             var tipoMov = v[5];
@@ -276,13 +325,6 @@ namespace Plennusc.Core.Service.ServiceGestao.CIDsService
 
             if ((tipoMov == "IC" || tipoMov == "ID") && string.IsNullOrEmpty(v[7]))
                 Add(resultado, linha, cabecalhos[7], "Nome do cliente é obrigatório para inclusão.");
-
-            for (int c = 0; c < ColunasLayout; c++)
-            {
-                if (v[c].Length > Tamanhos[c])
-                    Add(resultado, linha, cabecalhos[c],
-                        "Valor com " + v[c].Length + " caracteres excede o limite de " + Tamanhos[c] + ".");
-            }
         }
 
         private static void Add(setCemgImportResultado r, int linha, string campo, string msg)
