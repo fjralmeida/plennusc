@@ -11,7 +11,7 @@
         <div class="page-header">
             <h1 class="page-title">
                 <span class="title-icon">
-                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                    <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
                 </span>
                 Importação de planilha de carga
             </h1>

@@ -49,6 +49,8 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    font-size: 20px; /* <- adicione isso */
+    line-height: 1;
 }
 
 /* ---------- cards de formulário ---------- */
