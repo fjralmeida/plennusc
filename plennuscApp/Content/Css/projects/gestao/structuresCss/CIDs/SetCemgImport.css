@@ -21,7 +21,6 @@
     padding: 0 16px;
 }
 
-/* ---------- cabeçalho ---------- */
 .page-header {
     display: flex;
     align-items: center;
@@ -41,7 +40,7 @@
 
 .title-icon {
     background: var(--primary);
-    color: white;
+    color: #fff;
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -49,13 +48,12 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 20px; /* <- adicione isso */
+    font-size: 20px;
     line-height: 1;
 }
 
-/* ---------- cards de formulário ---------- */
 .filters-card {
-    background: white;
+    background: #fff;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     padding: 20px;
@@ -107,7 +105,7 @@
     border-radius: 4px;
     font-size: 14px;
     transition: var(--transition);
-    background: white;
+    background: #fff;
     height: 40px;
     box-sizing: border-box;
 }
@@ -118,70 +116,100 @@
         box-shadow: 0 0 0 2px rgba(131,206,238,.35);
     }
 
-/* input de arquivo com a mesma altura/borda dos demais campos */
 .file-input {
     width: 100%;
     padding: 6px 12px;
     border: 1px solid var(--gray-300);
     border-radius: 4px;
     font-size: 14px;
-    background: white;
+    background: #fff;
     height: 40px;
     box-sizing: border-box;
 }
 
-/* ---------- botões ---------- */
-.btn {
+/* ========= BOTÕES ========= */
+.cemg-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
     border: none;
     border-radius: 6px;
-    font-weight: 500;
-    padding: 10px 30px;
+    font-weight: 600;
     font-size: 14px;
+    padding: 10px 30px;
+    min-height: 40px;
+    min-width: 130px;
     cursor: pointer;
     transition: var(--transition);
+    box-sizing: border-box;
+    font-family: inherit;
+    line-height: 1;
 }
 
-.btn-primary {
-    background: var(--primary-hover);
-    color: white;
+.cemg-btn-primary {
+    background: #4cb07a !important;
+    color: #fff !important;
 }
 
-    .btn-primary:hover {
-        background: #3c9565;
-        box-shadow: 0 1px 3px rgba(0,0,0,.2);
-    }
-
-    .btn-primary:active,
-    .btn-primary:focus,
-    .btn-primary:active:focus {
+    .cemg-btn-primary:hover {
         background: #3c9565 !important;
-        border-color: #3c9565 !important;
-        color: white !important;
-        box-shadow: 0 0 0 2px rgba(76,176,122,.35) !important;
-        outline: none !important;
-    }
-
-.btn-success {
-    background: var(--success);
-    color: white;
-}
-
-    .btn-success:hover {
-        background: var(--success-hover);
         box-shadow: 0 1px 3px rgba(0,0,0,.2);
     }
 
-    .btn-success:active,
-    .btn-success:focus,
-    .btn-success:active:focus {
-        background: var(--success-hover) !important;
-        border-color: var(--success-hover) !important;
-        color: white !important;
-        box-shadow: 0 0 0 2px rgba(76,176,122,.35) !important;
+    .cemg-btn-primary:active,
+    .cemg-btn-primary:focus {
+        background: #3c9565 !important;
+        color: #fff !important;
         outline: none !important;
+        box-shadow: 0 0 0 2px rgba(76,176,122,.35) !important;
     }
 
-/* ---------- mensagem de retorno ---------- */
+.cemg-btn-success {
+    background: #4cb07a !important;
+    color: #fff !important;
+}
+
+    .cemg-btn-success:hover {
+        background: #3b8b65 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+/* ========= LOADING ========= */
+.cemg-btn.is-loading,
+.cemg-btn.is-loading:hover,
+.cemg-btn.is-loading:focus,
+.cemg-btn.is-loading:active {
+    background: #4cb07a !important;
+    color: transparent !important;
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+    .cemg-btn.is-loading::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 18px;
+        height: 18px;
+        margin: -9px 0 0 -9px;
+        border: 2.5px solid rgba(255,255,255,.45);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: cemg-spin .65s linear infinite;
+    }
+
+@keyframes cemg-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========= resto ========= */
 .msg-importacao {
     display: block;
     margin-top: 12px;
@@ -197,7 +225,6 @@
         color: var(--success-hover);
     }
 
-/* ---------- grids ---------- */
 .section-title {
     display: flex;
     align-items: center;
@@ -208,8 +235,12 @@
     margin: 24px 0 12px;
 }
 
+    .section-title i {
+        color: var(--primary-hover);
+    }
+
 .grid-container {
-    background: #ffffff;
+    background: #fff;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     overflow-x: auto;
@@ -243,7 +274,6 @@
         text-align: left;
     }
 
-/* última coluna (Mensagem) pode quebrar linha */
 .grid-erros td:last-child {
     white-space: normal;
     color: var(--gray-700);
