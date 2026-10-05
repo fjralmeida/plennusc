@@ -471,6 +471,7 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 nomeDisplay.Contains("relatorio de movimentacao"))
                 return "bi bi-file-earmark-bar-graph me-2";
 
+
             // ✅ COMISSÕES E PREMIAÇÕES
             if (nomeObjeto.Contains("menucomissoespremiacoes") ||
                 nomeDisplay.Contains("comissões / premiações"))
@@ -486,6 +487,15 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 nomeDisplay.Contains("taxas associativas - demais entidades"))
                 return "bi bi-people-fill me-2";
 
+
+            // ✅ IMPORTAÇÃO SETCEMG (subitem de Operacional)
+            if (nomeObjeto?.IndexOf("setcemgimport", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                nomeDisplay?.IndexOf("setcemg", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                nomeDisplay?.IndexOf("importação setcemg", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                nomeDisplay?.IndexOf("importacao setcemg", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "bi bi-file-earmark-spreadsheet me-2";
+            }
 
             // ✅ ÍCONE PADRÃO
             return "bi bi-circle me-2";

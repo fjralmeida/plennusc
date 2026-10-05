@@ -94,8 +94,10 @@ namespace appWhatsapp
             routes.MapPageRoute("activityReport", "activityReport", "~/PlennuscGestao/Views/activityReport.aspx");
 
             // ✅ Comissões / Premiações - Taxas Associativas
-            routes.MapPageRoute("comissionAwardSindnapi", "comissionAwardSindnapi", "~/PlennuscGestao/Views/sindnapiTaxaAssociativa.aspx");
-            routes.MapPageRoute("comissionAward", "comissionAward", "~/PlennuscGestao/Views/demaisEntidadesTaxaAssociativa.aspx");
+            routes.MapPageRoute("comissionAwardSindnapi", "comissionAwardSindnapi", "~/PlennuscGestao/Views/sindnapiTaxaAssociativa.aspx"); 
+            routes.MapPageRoute("comissionAward", "comissionAward", "~/PlennuscGestao/Views/demaisEntidadesTaxaAssociativa.aspx"); 
+
+            routes.MapPageRoute("setCemgImport", "setCemgImport", "~/PlennuscGestao/Views/setCemgImport.aspx");
             #endregion
 
 

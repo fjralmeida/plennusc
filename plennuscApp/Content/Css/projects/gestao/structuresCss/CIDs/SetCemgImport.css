@@ -1,0 +1,290 @@
+﻿:root {
+    --primary: #83ceee;
+    --primary-hover: #4cb07a;
+    --success: #4cb07a;
+    --success-hover: #3b8b65;
+    --gray-50: #f8f9fa;
+    --gray-100: #f1f3f4;
+    --gray-200: #e8eaed;
+    --gray-300: #dadce0;
+    --gray-600: #80868b;
+    --gray-700: #5f6368;
+    --gray-800: #3c4043;
+    --border-radius: 8px;
+    --shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    --transition: all .2s ease-in-out;
+}
+
+.container-main {
+    max-width: 2600px;
+    margin: 20px auto;
+    padding: 0 16px;
+}
+
+/* ---------- cabeçalho ---------- */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.title-icon {
+    background: var(--primary);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px; /* <- adicione isso */
+    line-height: 1;
+}
+
+/* ---------- cards de formulário ---------- */
+.filters-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+}
+
+    .filters-card + .filters-card {
+        margin-top: 24px;
+    }
+
+.filters-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-800);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+    .filters-title i {
+        color: var(--primary-hover);
+    }
+
+.form-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+    .form-row .form-group {
+        flex: 1;
+        min-width: 280px;
+        max-width: 400px;
+    }
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    font-size: 14px;
+    transition: var(--transition);
+    background: white;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(131,206,238,.35);
+    }
+
+/* input de arquivo com a mesma altura/borda dos demais campos */
+.file-input {
+    width: 100%;
+    padding: 6px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+/* ---------- botões ---------- */
+.btn {
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 10px 30px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: var(--primary-hover);
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: #3c9565;
+        box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+    .btn-primary:active,
+    .btn-primary:focus,
+    .btn-primary:active:focus {
+        background: #3c9565 !important;
+        border-color: #3c9565 !important;
+        color: white !important;
+        box-shadow: 0 0 0 2px rgba(76,176,122,.35) !important;
+        outline: none !important;
+    }
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+    .btn-success:hover {
+        background: var(--success-hover);
+        box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+    .btn-success:active,
+    .btn-success:focus,
+    .btn-success:active:focus {
+        background: var(--success-hover) !important;
+        border-color: var(--success-hover) !important;
+        color: white !important;
+        box-shadow: 0 0 0 2px rgba(76,176,122,.35) !important;
+        outline: none !important;
+    }
+
+/* ---------- mensagem de retorno ---------- */
+.msg-importacao {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--gray-700);
+}
+
+    .msg-importacao.erro {
+        color: #c0392b;
+    }
+
+    .msg-importacao.sucesso {
+        color: var(--success-hover);
+    }
+
+/* ---------- grids ---------- */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-800);
+    font-size: 16px;
+    font-weight: 500;
+    margin: 24px 0 12px;
+}
+
+.grid-container {
+    background: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+    border: 1px solid var(--gray-200);
+}
+
+.grid-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 12px 20px;
+    background: #fafbfc;
+    border-bottom: 1px solid var(--gray-200);
+    gap: 8px;
+}
+
+.custom-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    min-width: 800px;
+}
+
+    .custom-grid th,
+    .custom-grid td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--gray-100);
+        vertical-align: middle;
+        white-space: nowrap;
+        color: var(--gray-800);
+        text-align: left;
+    }
+
+/* última coluna (Mensagem) pode quebrar linha */
+.grid-erros td:last-child {
+    white-space: normal;
+    color: var(--gray-700);
+    line-height: 1.4;
+}
+
+.custom-grid thead th {
+    background: linear-gradient(180deg, #fbfcfd 0%, var(--gray-50) 100%);
+    color: var(--gray-700);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 16px;
+    border-bottom: 2px solid var(--gray-300);
+}
+
+.custom-grid tbody tr {
+    transition: var(--transition);
+}
+
+    .custom-grid tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .custom-grid tbody tr:hover td {
+        background: #eef6fd !important;
+    }
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .form-row .form-group {
+            max-width: 100%;
+        }
+}

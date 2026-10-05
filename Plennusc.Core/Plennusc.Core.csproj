@@ -244,6 +244,7 @@
     <Compile Include="Models\ModelsGestao\modelsButYou\ProposalModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCIDs\activityReportModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsCIDs\CIDsModels.cs" />
+    <Compile Include="Models\ModelsGestao\modelsCIDs\setCemgImportModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\companyMenuManagementSystemModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanyModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCompany\CompanySelectionModel.cs" />
@@ -295,6 +296,8 @@
     <Compile Include="Service\ServiceGestao\autenticacao\MenuService.cs" />
     <Compile Include="Service\ServiceGestao\CIDsService\activityReportService.cs" />
     <Compile Include="Service\ServiceGestao\CIDsService\serviceCIDs.cs" />
+    <Compile Include="Service\ServiceGestao\CIDsService\setCemgExportService.cs" />
+    <Compile Include="Service\ServiceGestao\CIDsService\setCemgImportService.cs" />
     <Compile Include="Service\ServiceGestao\company\CompanyService.cs" />
     <Compile Include="Service\ServiceGestao\company\UserCompanyService.cs" />
     <Compile Include="Service\ServiceGestao\DemandaService.cs" />
@@ -346,6 +349,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\company\UserCompanyQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\dataCIDs\CIDsData.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\dataCIDs\dataActivityReport.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\dataCIDs\dataSetCemgImport.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\Demanda.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\demanda\homeManagementQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\department\departmentQueries.cs" />
