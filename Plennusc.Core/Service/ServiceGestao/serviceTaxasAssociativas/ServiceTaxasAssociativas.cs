@@ -21,9 +21,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceTaxasAssociativas
         public List<TaxaAssociativaSindnapiModel> ObterTaxasSindnapi(DateTime dataInicio, DateTime dataFim)
             => _sql.BuscarTaxasSindnapi(dataInicio, dataFim);
 
-        // Tela Demais Entidades
+        // Tela Demais Entidades (agora recebe uma lista)
         public List<TaxaAssociativaDemaisEntidadesModel> ObterTaxasDemaisEntidades(
-            int codigoEvento, DateTime dataInicio, DateTime dataFim)
-            => _sql.BuscarTaxasDemaisEntidades(codigoEvento, dataInicio, dataFim);
+            List<int> codigosEvento, DateTime dataInicio, DateTime dataFim)
+            => _sql.BuscarTaxasDemaisEntidades(codigosEvento, dataInicio, dataFim);
     }
 }

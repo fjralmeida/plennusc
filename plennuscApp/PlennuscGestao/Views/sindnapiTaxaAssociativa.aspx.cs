@@ -44,17 +44,17 @@ namespace appWhatsapp.PlennuscGestao.Views
             try
             {
                 var dados = _service.ObterTaxasSindnapi(dataInicio, dataFim);
-
                 // Guarda na session (pra paginar depois sem perder)
                 Session[SESSION_TAXAS_SINDNAPI] = dados;
-
                 // Aplica page size atual
+
                 gvResultado.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
                 gvResultado.PageIndex = 0;
                 gvResultado.DataSource = dados;
                 gvResultado.DataBind();
 
                 litTotalRegistros.Text = dados.Count.ToString();
+                litTotalValor.Text = dados.Sum(x => x.ValorEvento).ToString("N2"); // ← NOVO
                 divResultado.Visible = true;
 
                 if (dados.Count == 0)
@@ -67,7 +67,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                 ExibirMensagem("Erro ao processar: " + ex.Message, erro: true);
             }
         }
-
         protected void gvResultado_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvResultado.PageIndex = e.NewPageIndex;
@@ -151,17 +150,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                         Name = "SINDNAPI"
                     });
 
+                    // Cabeçalho
                     var cabecalhos = new[]
                     {
-                        "CPF", "Beneficiário", "Data Nascimento",
-                        "Data Pagamento", "Valor Taxa", "Valor Total"
-                    };
+                "CPF", "Beneficiário", "Data Nascimento",
+                "Data Pagamento", "Valor Taxa"
+            };
 
                     var headerRow = new X.Row();
                     foreach (var cab in cabecalhos)
                         headerRow.Append(CriarCelulaTexto(cab, 1));
                     sheetData.Append(headerRow);
 
+                    // Dados
                     foreach (var item in dados)
                     {
                         var row = new X.Row();
@@ -170,9 +171,21 @@ namespace appWhatsapp.PlennuscGestao.Views
                         row.Append(CriarCelulaTexto(item.DataNascimento?.ToString("dd/MM/yyyy") ?? ""));
                         row.Append(CriarCelulaTexto(item.DataPagamento?.ToString("dd/MM/yyyy") ?? ""));
                         row.Append(CriarCelulaTexto(item.ValorEvento.ToString("N2")));
-                        row.Append(CriarCelulaTexto(item.ValorTotal.ToString("N2")));
                         sheetData.Append(row);
                     }
+
+                    // ============================================================
+                    // LINHA DE TOTAL — soma dos ValorEvento (negrito)
+                    // ============================================================
+                    decimal somaTotal = dados.Sum(x => x.ValorEvento);
+
+                    var totalRow = new X.Row();
+                    totalRow.Append(CriarCelulaTexto(""));                            // CPF
+                    totalRow.Append(CriarCelulaTexto(""));                            // Beneficiário
+                    totalRow.Append(CriarCelulaTexto(""));                            // Data Nascimento
+                    totalRow.Append(CriarCelulaTexto("Valor Total", 1));              // rótulo (negrito)
+                    totalRow.Append(CriarCelulaTexto(somaTotal.ToString("N2"), 1));   // valor (negrito)
+                    sheetData.Append(totalRow);
 
                     workbookPart.Workbook.Save();
                 }

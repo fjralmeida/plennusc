@@ -17,6 +17,5 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsTaxasAssociativas
         public DateTime? DataNascimento { get; set; }
         public DateTime? DataPagamento { get; set; }
         public decimal ValorEvento { get; set; }
-        public decimal ValorTotal { get; set; }
     }
 }

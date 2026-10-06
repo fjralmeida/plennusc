@@ -92,8 +92,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
                     p1000.NOME_ASSOCIADO      AS NOME_BENEFICIARIO,
                     p1000.DATA_NASCIMENTO     AS DATA_NASCIMENTO,
                     p1020.DATA_PAGAMENTO      AS DATA_PAGAMENTO,
-                    p1029.VALOR_EVENTO        AS VALOR_EVENTO,
-                    p1029.VALOR_TOTAL         AS VALOR_TOTAL
+                    p1029.VALOR_EVENTO        AS VALOR_EVENTO
                 FROM PS1029 p1029
                 INNER JOIN PS1020 p1020 
                     ON p1029.NUMERO_REGISTRO_PS1020 = p1020.NUMERO_REGISTRO
@@ -124,9 +123,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
                             DataPagamento = reader["DATA_PAGAMENTO"] != DBNull.Value
                                 ? Convert.ToDateTime(reader["DATA_PAGAMENTO"]) : (DateTime?)null,
                             ValorEvento = reader["VALOR_EVENTO"] != DBNull.Value
-                                ? Convert.ToDecimal(reader["VALOR_EVENTO"]) : 0,
-                            ValorTotal = reader["VALOR_TOTAL"] != DBNull.Value
-                                ? Convert.ToDecimal(reader["VALOR_TOTAL"]) : 0
+                                ? Convert.ToDecimal(reader["VALOR_EVENTO"]) : 0
                         });
                     }
                 }
@@ -135,16 +132,12 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             return lista;
         }
 
-        // 
-        // DEMAIS ENTIDADES
-        // 
-
         /// <summary>
         /// Retorna as taxas associativas das demais entidades (exceto SINDNAPI) no intervalo
         /// de data de pagamento informado.
         /// 
         /// Filtro:
-        ///   - PS1029.CODIGO_EVENTO = @CodigoEvento (o que o usuário escolheu no dropdown)
+        ///   - PS1029.CODIGO_EVENTO IN (@CodigoEvento0, @CodigoEvento1, ...) — múltipla seleção
         ///   - PS1029.CODIGO_EVENTO <> 17 (garante exclusão do SINDNAPI)
         /// 
         /// Joins:
@@ -153,35 +146,48 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
         ///   PS1000.CODIGO_PLANO           = PS1030.CODIGO_PLANO (LEFT JOIN)
         /// </summary>
         public List<TaxaAssociativaDemaisEntidadesModel> BuscarTaxasDemaisEntidades(
-            int codigoEvento, DateTime dataInicio, DateTime dataFim)
+            List<int> codigosEvento, DateTime dataInicio, DateTime dataFim)
         {
             var lista = new List<TaxaAssociativaDemaisEntidadesModel>();
 
-            string sql = @"
-                SELECT
-                    p1029.NUMERO_REGISTRO_PS1020    AS NUMERO_REGISTRO_PS1020,
-                    p1000.NOME_ASSOCIADO            AS NOME_BENEFICIARIO,
-                    p1030.TIPO_CONTRATACAO_ANS      AS TIPO_CONTRATACAO_ANS,
-                    p1020.DATA_PAGAMENTO            AS DATA_PAGAMENTO,
-                    p1029.VALOR_EVENTO              AS VALOR_EVENTO,
-                    p1029.VALOR_TOTAL               AS VALOR_TOTAL
-                FROM PS1029 p1029
-                INNER JOIN PS1020 p1020 
-                    ON p1029.NUMERO_REGISTRO_PS1020 = p1020.NUMERO_REGISTRO
-                INNER JOIN PS1000 p1000 
-                    ON p1020.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO
-                LEFT JOIN PS1030 p1030 
-                    ON p1000.CODIGO_PLANO = p1030.CODIGO_PLANO
-                WHERE p1029.CODIGO_EVENTO = @CodigoEvento
-                  AND p1029.CODIGO_EVENTO <> 17
-                  AND p1020.DATA_PAGAMENTO >= @DataInicio
-                  AND p1020.DATA_PAGAMENTO <  DATEADD(DAY, 1, @DataFim)
-                ORDER BY p1020.DATA_PAGAMENTO, p1000.NOME_ASSOCIADO";
+            if (codigosEvento == null || codigosEvento.Count == 0)
+                return lista;
+
+            // Monta os parâmetros dinâmicos (@CodigoEvento0, @CodigoEvento1, ...)
+            var nomesParametros = codigosEvento
+                .Select((codigo, indice) => $"@CodigoEvento{indice}")
+                .ToList();
+
+            string sql = $@"
+        SELECT
+            p1029.NUMERO_REGISTRO_PS1020    AS NUMERO_REGISTRO_PS1020,
+            p1000.NOME_ASSOCIADO            AS NOME_BENEFICIARIO,
+            p1030.TIPO_CONTRATACAO_ANS      AS TIPO_CONTRATACAO_ANS,
+            p1020.DATA_PAGAMENTO            AS DATA_PAGAMENTO,
+            p1029.VALOR_EVENTO              AS VALOR_EVENTO,
+            p1029.VALOR_TOTAL               AS VALOR_TOTAL
+        FROM PS1029 p1029
+        INNER JOIN PS1020 p1020 
+            ON p1029.NUMERO_REGISTRO_PS1020 = p1020.NUMERO_REGISTRO
+        INNER JOIN PS1000 p1000 
+            ON p1020.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO
+        LEFT JOIN PS1030 p1030 
+            ON p1000.CODIGO_PLANO = p1030.CODIGO_PLANO
+        WHERE p1029.CODIGO_EVENTO IN ({string.Join(",", nomesParametros)})
+          AND p1029.CODIGO_EVENTO <> 17
+          AND p1020.DATA_PAGAMENTO >= @DataInicio
+          AND p1020.DATA_PAGAMENTO <  DATEADD(DAY, 1, @DataFim)
+        ORDER BY p1020.DATA_PAGAMENTO, p1000.NOME_ASSOCIADO";
 
             using (SqlConnection conn = new SqlConnection(_connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@CodigoEvento", codigoEvento);
+                // Adiciona os códigos de evento dinamicamente
+                for (int i = 0; i < codigosEvento.Count; i++)
+                {
+                    cmd.Parameters.AddWithValue($"@CodigoEvento{i}", codigosEvento[i]);
+                }
+
                 cmd.Parameters.AddWithValue("@DataInicio", dataInicio.Date);
                 cmd.Parameters.AddWithValue("@DataFim", dataFim.Date);
 
@@ -195,7 +201,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
                             NumeroRegistroPs1020 = reader["NUMERO_REGISTRO_PS1020"] != DBNull.Value
                                 ? Convert.ToInt32(reader["NUMERO_REGISTRO_PS1020"]) : 0,
                             NomeBeneficiario = reader["NOME_BENEFICIARIO"] as string,
-                            TipoContratacaoAns = reader["TIPO_CONTRATACAO_ANS"] as string,
+                            TipoContratacaoAns = TraduzirTipoContratacaoAns(reader["TIPO_CONTRATACAO_ANS"]?.ToString()),
                             DataPagamento = reader["DATA_PAGAMENTO"] != DBNull.Value
                                 ? Convert.ToDateTime(reader["DATA_PAGAMENTO"]) : (DateTime?)null,
                             ValorEvento = reader["VALOR_EVENTO"] != DBNull.Value
@@ -208,6 +214,33 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             }
 
             return lista;
+        }
+
+        // 
+        // HELPERS
+        // 
+
+        /// <summary>
+        /// Traduz o código TIPO_CONTRATACAO_ANS da PS1030 para o texto exibido na tela.
+        /// 
+        /// Códigos conhecidos:
+        ///   3 → Empresarial
+        ///   4 → Adesão
+        /// 
+        /// Qualquer outro código retorna o próprio valor (fallback),
+        /// garantindo que um código novo (ex: 5) não quebre a tela.
+        /// </summary>
+        private static string TraduzirTipoContratacaoAns(string codigo)
+        {
+            if (string.IsNullOrWhiteSpace(codigo))
+                return string.Empty;
+
+            switch (codigo.Trim())
+            {
+                case "3": return "Empresarial";
+                case "4": return "Adesão";
+                default: return null; // Ainda não teve casos de retorno diferente, se houver retorna nulo
+            }
         }
     }
 }

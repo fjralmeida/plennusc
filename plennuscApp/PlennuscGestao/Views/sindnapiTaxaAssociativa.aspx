@@ -72,10 +72,11 @@
                             <asp:ListItem Text="100" Value="100" />
                         </asp:DropDownList>
                     </div>
-                    <div class="grid-toolbar-right">
+                   <div class="grid-toolbar-right">
                         <span class="resultado-total">
-                            <strong>
-                                <asp:Literal ID="litTotalRegistros" runat="server" /></strong> registro(s) encontrado(s)
+                            <strong><asp:Literal ID="litTotalRegistros" runat="server" /></strong> registro(s) encontrado(s)
+                            &nbsp;|&nbsp;
+                            Valor Total: <strong><asp:Literal ID="litTotalValor" runat="server" /></strong>
                         </span>
                         <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel"
                             CssClass="btn btn-success" OnClick="btnExportarExcel_Click" />
@@ -101,9 +102,7 @@
                         <asp:BoundField DataField="DataPagamento" HeaderText="Data Pagamento"
                             DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
                         <asp:BoundField DataField="ValorEvento" HeaderText="Valor Taxa"
-                            DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
-                        <asp:BoundField DataField="ValorTotal" HeaderText="Valor Total"
-                            DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
+                            DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />                    
                     </Columns>
                 </asp:GridView>
 

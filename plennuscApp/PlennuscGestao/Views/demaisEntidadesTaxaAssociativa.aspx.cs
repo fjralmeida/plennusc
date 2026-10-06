@@ -27,18 +27,19 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        // CARREGAR CHECKBOX LIST DE ENTIDADES
+
         private void CarregarEntidades()
         {
             try
             {
                 var entidades = _service.ObterEntidades();
 
-                ddlEntidade.Items.Clear();
-                ddlEntidade.Items.Add(new ListItem("Selecione...", ""));
+                cblEntidades.Items.Clear();
 
                 foreach (var ent in entidades)
                 {
-                    ddlEntidade.Items.Add(new ListItem(ent.NomeEvento, ent.CodigoEvento.ToString()));
+                    cblEntidades.Items.Add(new ListItem(ent.NomeEvento, ent.CodigoEvento.ToString()));
                 }
             }
             catch (Exception ex)
@@ -47,12 +48,19 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
+        // PROCESSAR
 
         protected void btnProcessar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(ddlEntidade.SelectedValue))
+            var codigosEvento = cblEntidades.Items
+                .Cast<ListItem>()
+                .Where(i => i.Selected)
+                .Select(i => Convert.ToInt32(i.Value))
+                .ToList();
+
+            if (codigosEvento.Count == 0)
             {
-                ExibirMensagem("Selecione uma entidade.", erro: true);
+                ExibirMensagem("Selecione pelo menos uma entidade.", erro: true);
                 return;
             }
 
@@ -69,11 +77,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            int codigoEvento = Convert.ToInt32(ddlEntidade.SelectedValue);
-
             try
             {
-                var dados = _service.ObterTaxasDemaisEntidades(codigoEvento, dataInicio, dataFim);
+                var dados = _service.ObterTaxasDemaisEntidades(codigosEvento, dataInicio, dataFim);
 
                 Session[SESSION_TAXAS_DEMAIS_ENTIDADES] = dados;
 
@@ -83,6 +89,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                 gvResultado.DataBind();
 
                 litTotalRegistros.Text = dados.Count.ToString();
+                litTotalValor.Text = dados.Sum(x => x.ValorEvento).ToString("N2");
                 divResultado.Visible = true;
 
                 if (dados.Count == 0)
@@ -95,6 +102,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 ExibirMensagem("Erro ao processar: " + ex.Message, erro: true);
             }
         }
+
+        // PAGINAÇÃO NATIVA DO GRIDVIEW
 
         protected void gvResultado_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
@@ -140,9 +149,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             gvResultado.DataBind();
         }
 
-        // 
         // EXPORTAR EXCEL
-        // 
 
         protected void btnExportarExcel_Click(object sender, EventArgs e)
         {
@@ -179,10 +186,11 @@ namespace appWhatsapp.PlennuscGestao.Views
                         Name = "Demais Entidades"
                     });
 
+                    // Cabeçalho
                     var cabecalhos = new[]
                     {
-                        "Nº Registro", "Beneficiário", "Tipo Contratação ANS",
-                        "Data Pagamento", "Valor Taxa", "Valor Total"
+                        "Nº Registro", "Beneficiário", "Tipo",
+                        "Data Pagamento", "Valor Taxa"
                     };
 
                     var headerRow = new X.Row();
@@ -190,6 +198,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                         headerRow.Append(CriarCelulaTexto(cab, 1));
                     sheetData.Append(headerRow);
 
+                    // Dados
                     foreach (var item in dados)
                     {
                         var row = new X.Row();
@@ -198,9 +207,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                         row.Append(CriarCelulaTexto(item.TipoContratacaoAns ?? ""));
                         row.Append(CriarCelulaTexto(item.DataPagamento?.ToString("dd/MM/yyyy") ?? ""));
                         row.Append(CriarCelulaTexto(item.ValorEvento.ToString("N2")));
-                        row.Append(CriarCelulaTexto(item.ValorTotal.ToString("N2")));
                         sheetData.Append(row);
                     }
+
+                    // Linha de total (negrito)
+                    decimal somaTotal = dados.Sum(x => x.ValorEvento);
+
+                    var totalRow = new X.Row();
+                    totalRow.Append(CriarCelulaTexto(""));
+                    totalRow.Append(CriarCelulaTexto(""));
+                    totalRow.Append(CriarCelulaTexto(""));
+                    totalRow.Append(CriarCelulaTexto("Valor Total", 1));
+                    totalRow.Append(CriarCelulaTexto(somaTotal.ToString("N2"), 1));
+                    sheetData.Append(totalRow);
 
                     workbookPart.Workbook.Save();
                 }
@@ -224,6 +243,9 @@ namespace appWhatsapp.PlennuscGestao.Views
             Response.SuppressContent = true;
             HttpContext.Current.ApplicationInstance.CompleteRequest();
         }
+
+       
+        // HELPERS DE ESTILO / CÉLULA
 
         private X.Stylesheet CriarStylesheet()
         {
@@ -262,6 +284,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 StyleIndex = estilo
             };
         }
+
+        // AUXILIAR
 
         private void ExibirMensagem(string mensagem, bool erro)
         {
