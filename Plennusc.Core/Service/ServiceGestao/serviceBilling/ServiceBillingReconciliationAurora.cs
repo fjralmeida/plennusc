@@ -19,6 +19,39 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         private const string ITEM_TRANSPORTE_AEROMEDICO = "AEROMEDICO";   // CSV: "TRANSPORTE AEROMÉDICO"  | View: contém "AEROMEDICO"
         private const string ITEM_PLANO_ODONTOLOGICO = "ODONTO";           // CSV: "PLANO ODONTOLÓGICO"      | View: contém "ODONTO"
 
+        // ============================================================
+        // ÍNDICES DAS COLUNAS NO CSV DA AURORA (layout novo)
+        // ============================================================
+        //   0  → MATRICULA
+        //   1  → CARTEIRINHA
+        //   2  → CODIGO_NA_EMPRESA
+        //   3  → NOME
+        //   4  → CPF
+        //   5  → IDADE
+        //   6  → TIPO
+        //   7  → NOME_TITULAR       (NOVO)
+        //   8  → CPF_TITULAR        (NOVO)
+        //   9  → PLANO              (era 7)
+        //  10  → ADESAO             (era 8)
+        //  11  → COD_ITEM           (era 9)
+        //  12  → ITEM               (era 10)
+        //  13  → VALOR              (era 11)
+        //  14  → PARCELA            (era 12)
+        // ============================================================
+        private const int COL_MATRICULA = 0;
+        private const int COL_CARTEIRINHA = 1;
+        private const int COL_NOME = 3;
+        private const int COL_CPF = 4;
+        private const int COL_PLANO = 9;
+        private const int COL_ITEM = 12;
+        private const int COL_VALOR = 13;
+
+        /// <summary>
+        /// Quantidade mínima de campos esperada por linha do CSV.
+        /// Precisa incluir até o índice 13 (VALOR) → mínimo 14 campos.
+        /// </summary>
+        private const int MIN_CAMPOS_NECESSARIOS = 14;
+
         private readonly SqlBillingReconciliation _sql = new SqlBillingReconciliation();
 
         // ===================== LEITURA DO RELATÓRIO =====================
@@ -68,8 +101,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                     // Cada linha de dados vem no formato: "valor";"valor";"valor";...
                     var campos = linha.Split(';');
 
-                    // Blindagem: precisa ter pelo menos os campos essenciais (índice 11 = VALOR)
-                    const int MIN_CAMPOS_NECESSARIOS = 12;
+                    // Blindagem: precisa ter pelo menos os campos essenciais (até o índice 13 = VALOR)
                     if (campos.Length < MIN_CAMPOS_NECESSARIOS)
                     {
                         System.Diagnostics.Debug.WriteLine(
@@ -79,13 +111,13 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
                     try
                     {
-                        string matricula = LimparCampo(campos[0]);
-                        string carteirinha = LimparCampo(campos[1]);
-                        string nome = LimparCampo(campos[3]);
-                        string cpfBruto = LimparCampo(campos[4]);
-                        string plano = LimparCampo(campos[7]);
-                        string itemFaturado = LimparCampo(campos[10]); // NOVO - coluna "ITEM"
-                        string valorBruto = LimparCampo(campos[11]);
+                        string matricula = LimparCampo(campos[COL_MATRICULA]);
+                        string carteirinha = LimparCampo(campos[COL_CARTEIRINHA]);
+                        string nome = LimparCampo(campos[COL_NOME]);
+                        string cpfBruto = LimparCampo(campos[COL_CPF]);
+                        string plano = LimparCampo(campos[COL_PLANO]);
+                        string itemFaturado = LimparCampo(campos[COL_ITEM]);
+                        string valorBruto = LimparCampo(campos[COL_VALOR]);
 
                         if (string.IsNullOrWhiteSpace(cpfBruto) || string.IsNullOrWhiteSpace(valorBruto))
                             continue;
@@ -109,7 +141,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                             Matricula = matricula,
                             Credencial = carteirinha,
                             Plano = plano,
-                            TipoItemFaturado = itemFaturado, // NOVO
+                            TipoItemFaturado = itemFaturado,
                             Cobrado = valor,
                             StatusConferencia = "PENDENTE"
                         };
@@ -238,7 +270,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         /// 
         /// Regra de negócio (Aurora):
         ///   - "MENSALIDADE"             -> CONVÊNIO
-        ///   - "TRANSPORTE AEROMÉDICO"   -> EVENTO ADICIONAL filtrando DESCRICAO LIKE '%AEROM%', ou seja, não tem problema se vier com É ou com E no AEROMÉDICO
+        ///   - "TRANSPORTE AEROMÉDICO"   -> EVENTO ADICIONAL filtrando DESCRICAO LIKE '%AEROM%'
         ///   - "PLANO ODONTOLÓGICO"      -> EVENTO ADICIONAL filtrando DESCRICAO LIKE '%ODONTO%'
         /// 
         /// A normalização (remover acento, uppercase) garante que tanto a variação do CSV
