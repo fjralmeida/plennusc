@@ -136,7 +136,8 @@
 </div>
 
 <script>
-    function mostrarImportacao(ddl) {
+// @ts-nocheck
+function mostrarImportacao(ddl) {
         var divImportar = document.getElementById('divImportar');
         if (ddl.value && ddl.value !== '') divImportar.classList.remove('hidden');
         else divImportar.classList.add('hidden');
