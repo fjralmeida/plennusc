@@ -174,9 +174,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                         sheetData.Append(row);
                     }
 
-                    // ============================================================
                     // LINHA DE TOTAL — soma dos ValorEvento (negrito)
-                    // ============================================================
                     decimal somaTotal = dados.Sum(x => x.ValorEvento);
 
                     var totalRow = new X.Row();

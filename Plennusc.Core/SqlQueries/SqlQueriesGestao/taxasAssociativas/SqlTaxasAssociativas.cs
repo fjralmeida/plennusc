@@ -26,27 +26,30 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
 
         #endregion
 
-        // 
-        // ENTIDADES (dropdown "Demais Entidades")
-        // 
-
         /// <summary>
-        /// Retorna todas as entidades (eventos) cujo NOME_EVENTO começa com "TX ASSOC",
-        /// exceto SINDNAPI (CODIGO_EVENTO = 17).
-        /// Alimenta o dropdown da tela "Demais Entidades".
+        /// Retorna as entidades (eventos) permitidas para a tela "Demais Entidades".
+        /// Lista fixa:
+        ///   13 → TX ASSOC SINCOR PF
+        ///   14 → TX ASSOC ASPMRN
+        ///   17 → TX ASSOC SINDNAPI
+        ///   18 → TX ASSOC FESN
+        ///   21 → TX ASSOC ABEVA
+        ///   22 → TX ASSOC UNIPROLI
+        ///   43 → TX ASSOC ANASERV
+        ///   44 → TX ASSOC AASP
+        ///   45 → TX ASSOC SINCOR PJ
         /// </summary>
         public List<EntidadeTaxaAssociativaModel> BuscarEntidadesTaxaAssociativa()
         {
             var lista = new List<EntidadeTaxaAssociativaModel>();
 
             string sql = @"
-                SELECT DISTINCT
-                    CODIGO_EVENTO,
-                    NOME_EVENTO
-                FROM PS1024
-                WHERE NOME_EVENTO LIKE 'TX ASSOC%'
-                  AND CODIGO_EVENTO <> 17
-                ORDER BY NOME_EVENTO";
+        SELECT DISTINCT
+            CODIGO_EVENTO,
+            NOME_EVENTO
+        FROM PS1024
+        WHERE CODIGO_EVENTO IN (13, 14, 17, 18, 21, 22, 43, 44, 45)
+        ORDER BY NOME_EVENTO";
 
             using (SqlConnection conn = new SqlConnection(_connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))

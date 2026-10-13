@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="demaisEntidadesTaxaAssociativa.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.demaisEntidadesTaxaAssociativa" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link href="../../Content/Css/projects/gestao/structuresCss/taxasAssociativas/taxasAssociativas.css" rel="stylesheet" />
+    <link href="../../Content/Css/projects/gestao/structuresCss/taxasAssociativas/taxasAssociativas.css?v=5" rel="stylesheet" />
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -41,9 +41,9 @@
                             <!-- Ações rápidas -->
                             <div class="dropdown-acoes">
                                 <a href="javascript:void(0);"
-                                   onclick="selecionarTodos(true); event.stopPropagation();">Selecionar todos</a>
+                                    onclick="selecionarTodos(true); event.stopPropagation();">Selecionar todos</a>
                                 <a href="javascript:void(0);"
-                                   onclick="selecionarTodos(false); event.stopPropagation();">Limpar</a>
+                                    onclick="selecionarTodos(false); event.stopPropagation();">Limpar</a>
                             </div>
 
                             <asp:CheckBoxList ID="cblEntidades" runat="server" ClientIDMode="Static" />
@@ -78,6 +78,37 @@
 
             <div class="grid-container">
 
+                <!-- CABEÇALHO DO RELATÓRIO (papel timbrado) -->
+                <div class="report-header">
+                    <div class="report-header-top">
+                        <div>
+                            <div class="report-header-titulo">VALLOR BENEFÍCIOS</div>
+                            <div class="report-header-sub">Av. Assis Chateaubriand, 288 - Floresta - BH/MG</div>
+                            <div class="report-header-sub">comissoes@vallorbeneficios.com.br</div>
+                        </div>
+                        <div>
+                            <img src="https://www.vallorbeneficios.com.br/wp-content/uploads/2023/08/logo-vallor-administradora-ans.svg" style="width:150px"/>
+                        </div>
+                        <div class="report-header-data">
+                            <asp:Literal ID="litDataRelatorio" runat="server" />
+                        </div>
+                    </div>
+
+                    <div class="report-header-linha">
+                        <span class="report-header-entidade">
+                            <asp:Literal ID="litEntidade" runat="server" />
+                        </span>
+                        <span class="report-header-titulo-rel">RELATÓRIO TAXAS ASSOCIATIVAS
+                        </span>
+                        <span class="report-header-vigencia">Vig.
+                            <asp:Literal ID="litVigencia" runat="server" />
+                        </span>
+                        <span class="report-header-total">TOTAL:
+                            <asp:Literal ID="litTotalRelatorio" runat="server" />
+                        </span>
+                    </div>
+                </div>
+
                 <div class="grid-toolbar">
                     <div class="grid-toolbar-left">
                         <label for="ddlPageSize">Registros por página:</label>
@@ -93,9 +124,9 @@
                     </div>
                     <div class="grid-toolbar-right">
                         <span class="resultado-total">
-                            <strong><asp:Literal ID="litTotalRegistros" runat="server" /></strong> registro(s) encontrado(s)
-                            &nbsp;|&nbsp;
-                            Valor Total: <strong><asp:Literal ID="litTotalValor" runat="server" /></strong>
+                            <strong>
+                                <asp:Literal ID="litTotalRegistros" runat="server" />
+                            </strong> registro(s) encontrado(s)
                         </span>
                         <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel"
                             CssClass="btn btn-success" OnClick="btnExportarExcel_Click" />

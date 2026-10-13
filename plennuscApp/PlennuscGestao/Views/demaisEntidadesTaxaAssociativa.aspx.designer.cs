@@ -69,6 +69,42 @@ namespace appWhatsapp.PlennuscGestao.Views
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divResultado;
 
         /// <summary>
+        /// Controle litDataRelatorio.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litDataRelatorio;
+
+        /// <summary>
+        /// Controle litEntidade.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litEntidade;
+
+        /// <summary>
+        /// Controle litVigencia.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litVigencia;
+
+        /// <summary>
+        /// Controle litTotalRelatorio.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litTotalRelatorio;
+
+        /// <summary>
         /// Controle ddlPageSize.
         /// </summary>
         /// <remarks>
@@ -85,15 +121,6 @@ namespace appWhatsapp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litTotalRegistros;
-
-        /// <summary>
-        /// Controle litTotalValor.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litTotalValor;
 
         /// <summary>
         /// Controle btnExportarExcel.
