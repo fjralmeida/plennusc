@@ -28,7 +28,7 @@ namespace appWhatsapp.PlennuscGestao.Views
         {
             get
             {
-                return @"C:\inetpub\wwroot\plennusc\plennuscApp\public\uploadgestao\images\logoVallor.png";
+                return Server.MapPath("~/Uploads/logoVallor.png");
             }
         }
 
