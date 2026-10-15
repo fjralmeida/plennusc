@@ -3,6 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../../Content/Css/projects/gestao/structuresCss/taxasAssociativas/taxasAssociativas.css" rel="stylesheet" />
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
     <div id="overlayCarregando" class="overlay-carregando">
@@ -59,6 +60,36 @@
 
             <div class="grid-container">
 
+                <!-- CABEÇALHO DO RELATÓRIO (papel timbrado) -->
+                <div class="report-header">
+                    <div class="report-header-top">
+                        <div class="report-header-esquerda">
+                            <div class="report-header-titulo">VALLOR BENEFÍCIOS</div>
+                            <div class="report-header-sub">Av. Assis Chateaubriand, 288 - Floresta - BH/MG</div>
+                            <div class="report-header-sub">comissoes@vallorbeneficios.com.br</div>
+                        </div>
+                        <div>
+                            <img src="https://www.vallorbeneficios.com.br/wp-content/uploads/2023/08/logo-vallor-administradora-ans.svg" style="width:150px"/>
+                        </div>
+                        <div class="report-header-data">
+                            <asp:Literal ID="litDataRelatorio" runat="server" />
+                        </div>
+                    </div>
+
+                    <div class="report-header-linha">
+                        <span class="report-header-entidade">
+                            <asp:Literal ID="litEntidade" runat="server" />
+                        </span>
+                        <span class="report-header-titulo-rel">RELATÓRIO TAXAS ASSOCIATIVAS</span>
+                        <span class="report-header-vigencia">
+                            Vig. <asp:Literal ID="litVigencia" runat="server" />
+                        </span>
+                        <span class="report-header-total">
+                            TOTAL: <asp:Literal ID="litTotalRelatorio" runat="server" />
+                        </span>
+                    </div>
+                </div>
+
                 <div class="grid-toolbar">
                     <div class="grid-toolbar-left">
                         <label for="ddlPageSize">Registros por página:</label>
@@ -72,11 +103,11 @@
                             <asp:ListItem Text="100" Value="100" />
                         </asp:DropDownList>
                     </div>
-                   <div class="grid-toolbar-right">
+                    <div class="grid-toolbar-right">
                         <span class="resultado-total">
-                            <strong><asp:Literal ID="litTotalRegistros" runat="server" /></strong> registro(s) encontrado(s)
-                            &nbsp;|&nbsp;
-                            Valor Total: <strong><asp:Literal ID="litTotalValor" runat="server" /></strong>
+                            <strong>
+                                <asp:Literal ID="litTotalRegistros" runat="server" />
+                            </strong> registro(s) encontrado(s)
                         </span>
                         <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel"
                             CssClass="btn btn-success" OnClick="btnExportarExcel_Click" />
@@ -93,7 +124,7 @@
                         FirstPageText="«" LastPageText="»"
                         PageButtonCount="7"
                         Position="Bottom" />
-                    <PagerStyle CssClass="pager-custom" />
+                    <PagerStyle CssClass="pager-custom" /> 
                     <Columns>
                         <asp:BoundField DataField="Cpf" HeaderText="CPF" ItemStyle-CssClass="col-curta" />
                         <asp:BoundField DataField="NomeBeneficiario" HeaderText="Beneficiário" ItemStyle-CssClass="col-nome" />
@@ -102,7 +133,7 @@
                         <asp:BoundField DataField="DataPagamento" HeaderText="Data Pagamento"
                             DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
                         <asp:BoundField DataField="ValorEvento" HeaderText="Valor Taxa"
-                            DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />                    
+                            DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
                     </Columns>
                 </asp:GridView>
 
@@ -110,7 +141,6 @@
             </div>
         </div>
     </div>
-
 
     <script>
         function mostrarOverlayCarregando() {
