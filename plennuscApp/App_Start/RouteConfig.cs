@@ -44,8 +44,8 @@ namespace appWhatsapp
             routes.MapPageRoute("listPlatform", "listPlatform", "~/PlennuscGestao/Views/listPlatform.aspx");
 
             // ✅ Chatbot e Mensagens
-            routes.MapPageRoute("sendMessageBeneficiary", "sendMessageBeneficiary", "~/PlennuscGestao/Views/sendMessageBeneficiary.aspx");
-            routes.MapPageRoute("sendCompanyMessage", "sendCompanyMessage", "~/PlennuscGestao/Views/sendCompanyMessage.aspx");
+            routes.MapPageRoute("sendMessageFamiliarGroup", "sendMessageFamiliarGroup", "~/PlennuscGestao/Views/sendMessageFamiliarGroup.aspx");
+            routes.MapPageRoute("sendMessageEnterpriseGroup", "sendMessageEnterpriseGroup", "~/PlennuscGestao/Views/sendMessageEnterpriseGroup.aspx");
             routes.MapPageRoute("FixedMessageSending", "FixedMessageSending", "~/PlennuscGestao/Views/FixedMessageSending.aspx");
             routes.MapPageRoute("viewShippingHistory", "viewShippingHistory", "~/PlennuscGestao/Views/viewShippingHistory.aspx");
 
@@ -95,7 +95,8 @@ namespace appWhatsapp
 
             // ✅ Comissões / Premiações - Taxas Associativas
             routes.MapPageRoute("comissionAwardSindnapi", "comissionAwardSindnapi", "~/PlennuscGestao/Views/sindnapiTaxaAssociativa.aspx"); 
-            routes.MapPageRoute("comissionAward", "comissionAward", "~/PlennuscGestao/Views/demaisEntidadesTaxaAssociativa.aspx"); 
+            routes.MapPageRoute("comissionAward", "comissionAward", "~/PlennuscGestao/Views/demaisEntidadesTaxaAssociativa.aspx");
+            routes.MapPageRoute("comissionAwardSincor", "comissionAwardSincor", "~/PlennuscGestao/Views/sincorTaxaAssociativa.aspx");
 
             routes.MapPageRoute("setCemgImport", "setCemgImport", "~/PlennuscGestao/Views/setCemgImport.aspx");
             #endregion

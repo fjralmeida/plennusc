@@ -209,7 +209,7 @@ namespace appWhatsapp.PlennuscGestao.Views
                     var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
                     var sheetData = new X.SheetData();
 
-                    // ⚠️ Worksheet precisa ter: SheetData, MergeCells, Columns (nessa ordem)
+                    //  Worksheet precisa ter: SheetData, MergeCells, Columns (nessa ordem)
                     worksheetPart.Worksheet = new X.Worksheet();
 
                     // Larguras das colunas

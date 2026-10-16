@@ -432,10 +432,10 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeObjeto.Contains("menuchatbot") || nomeDisplay.Contains("chatbot"))
                 return "bi bi-robot me-2";
 
-            if (nomeDisplay.Contains("beneficiário") || nomeObjeto.Contains("sendmessagebeneficiary"))
+            if (nomeDisplay.Contains("grupo familiar") || nomeObjeto.Contains("sendmessagefamiliargroup"))
                 return "bi bi-person-lines-fill me-2";
 
-            if (nomeDisplay.Contains("pme") || nomeObjeto.Contains("sendcompanymessage"))
+            if (nomeDisplay.Contains("grupo empresarial") || nomeObjeto.Contains("sendmessageenterprisegroup"))
                 return "bi bi-building me-2";
 
             if (nomeDisplay.Contains("msg fixa") || nomeObjeto.Contains("fixedmessagesending"))
@@ -484,7 +484,9 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
             if (nomeObjeto.Contains("comissionawardsindnapi") ||
                 nomeDisplay.Contains("taxas associativas - sindnapi") ||
                 nomeObjeto.Contains("comissionaward") ||
-                nomeDisplay.Contains("taxas associativas - demais entidades"))
+                nomeDisplay.Contains("taxas associativas - demais entidades") ||
+                nomeObjeto.Contains("comissionawardsincor") ||
+                nomeDisplay.Contains("taxas associativas - sincor")) 
                 return "bi bi-people-fill me-2";
 
 
