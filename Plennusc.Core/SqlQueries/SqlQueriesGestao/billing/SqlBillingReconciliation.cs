@@ -48,7 +48,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
         //    return lista;
         //}
         #endregion
-
+            
 
         public List<OperadoraModel> BuscarOperadoras()
         {
@@ -63,7 +63,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.billing
                 FROM ESP0002
                 WHERE NOME_OPERADORA IS NOT NULL
                 AND NUMERO_ANS_OPERADORA IS NOT NULL
-                AND CODIGO_GRUPO_CONTRATO IN (4, 3, 15, 46)";
+                AND CODIGO_GRUPO_CONTRATO IN (4, 3, 15, 46, 7)";
 
             using (SqlConnection conn = new SqlConnection(connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -542,6 +542,70 @@ WHERE vw.NUMERO_CPF = @Cpf
                 return null;
 
             return new string(valor.Where(char.IsDigit).ToArray());
+        }
+
+
+        /// <summary>Convênio por CPF filtrando também pelo grupo de contrato (CAS Lorena).</summary>
+        public ResultadoViewConferencia BuscarDadosConvenioPorCpfEGrupo(string cpf, string mesAnoReferencia, int codigoGrupoContrato)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+            string sql = @"
+            SELECT TOP 1
+                vw.VALOR_OPERADORA,
+                vw.DATA_ADMISSAO,
+                vw.DATA_EXCLUSAO,
+                vw.NOME_MOTIVO_EXCLUSAO,
+                (SELECT DISTINCT TOP 1 p1032.NOME_TABELA
+                 FROM PS1032 p1032
+                 WHERE p1032.CODIGO_TABELA_PRECO = vw.CODIGO_TABELA_PRECO) AS NOME_TABELA_PRECO,
+                vw.NOME_GRUPO_DE_PESSOAS,
+                vw.DESCRICAO_GRUPO_FATURAMENTO
+            FROM VW_RELATORIO_CONFERENCIA vw
+            WHERE vw.NUMERO_CPF = @Cpf
+              AND vw.MES_ANO_REFERENCIA = @MesAnoReferencia
+              AND vw.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
+              AND vw.TIPO = @Tipo";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Cpf", cpf);
+                cmd.Parameters.AddWithValue("@MesAnoReferencia", mesAnoReferencia);
+                cmd.Parameters.AddWithValue("@CodigoGrupoContrato", codigoGrupoContrato);
+                cmd.Parameters.AddWithValue("@Tipo", "CONVÊNIO");
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                        return MapearResultadoHapVida(reader);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>Soma dos EVENTOS ADICIONAIS do CPF no mês (null se não existir nenhum).</summary>
+        public decimal? BuscarSomaEventoAdicionalPorCpf(string cpf, string mesAnoReferencia, int codigoGrupoContrato)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString;
+            string sql = @"
+                SELECT SUM(vw.VALOR_OPERADORA)
+                FROM VW_RELATORIO_CONFERENCIA vw
+                WHERE vw.NUMERO_CPF = @Cpf
+                  AND vw.MES_ANO_REFERENCIA = @MesAnoReferencia
+                  AND vw.CODIGO_GRUPO_CONTRATO = @CodigoGrupoContrato
+                  AND vw.TIPO = @Tipo";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@Cpf", cpf);
+                cmd.Parameters.AddWithValue("@MesAnoReferencia", mesAnoReferencia);
+                cmd.Parameters.AddWithValue("@CodigoGrupoContrato", codigoGrupoContrato);
+                cmd.Parameters.AddWithValue("@Tipo", "EVENTO ADICIONAL");
+                conn.Open();
+                var r = cmd.ExecuteScalar();
+                return (r != null && r != DBNull.Value) ? Convert.ToDecimal(r) : (decimal?)null;
+            }
         }
     }
 }

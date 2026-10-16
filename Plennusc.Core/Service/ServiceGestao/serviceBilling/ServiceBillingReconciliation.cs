@@ -15,14 +15,37 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
         private const string OP_HAPVIDA = "HAPVIDA";
         private const string OP_UNIMED = "UNIMED";
         private const string OP_UNIAO_MEDICA = "UNIAO_MEDICA";
-        private const string OP_AURORA = "AURORA"; // NOVO
-
+        private const string OP_AURORA = "AURORA";
+        private const string OP_CAS_LORENA = "CAS_LORENA";
 
         private readonly SqlBillingReconciliation _sql = new SqlBillingReconciliation();
         private readonly ServiceBillingReconciliationHapvida _hapvida = new ServiceBillingReconciliationHapvida();
         private readonly ServiceBillingReconciliationUnimed _unimed = new ServiceBillingReconciliationUnimed();
         private readonly ServiceBillingReconciliationUniaoMedica _uniaoMedica = new ServiceBillingReconciliationUniaoMedica();
         private readonly ServiceBillingReconciliationAurora _aurora = new ServiceBillingReconciliationAurora();
+        private readonly ServiceBillingReconciliationCasLorena _casLorena = new ServiceBillingReconciliationCasLorena();
+
+        #region IDENTIFICAÇÃO DE OPERADORAS
+
+        /// <summary>
+        /// Reconhece a CAS Lorena (CODIGO_GRUPO_CONTRATO 7) por qualquer um dos nomes cadastrados.
+        /// </summary>
+        public static bool IsCasLorena(string nome)
+        {
+            if (string.IsNullOrEmpty(nome)) return false;
+
+            return nome.IndexOf("CAS LORENA", StringComparison.OrdinalIgnoreCase) >= 0
+                || nome.IndexOf("CONDE DE MOREIRA LIMA", StringComparison.OrdinalIgnoreCase) >= 0
+                || nome.IndexOf("PRONTO SOCORRO", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static bool IsUniaoMedica(string nome)
+        {
+            return nome.IndexOf("UNIÃO MÉDICA", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   nome.IndexOf("UNIAO MEDICA", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        #endregion
 
         #region OBTENÇÃO DE DADOS BÁSICOS
 
@@ -45,6 +68,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             if (string.IsNullOrEmpty(extensao))
                 throw new ArgumentException("A extensão do arquivo é obrigatória.");
 
+            // CAS Lorena (verificada primeiro por causa do nome genérico "Pronto Socorro")
+            if (IsCasLorena(nomeOperadora))
+                return _casLorena.LerRelatorio(arquivo, extensao);
+
             // Hapvida
             if (nomeOperadora.IndexOf(OP_HAPVIDA, StringComparison.OrdinalIgnoreCase) >= 0)
                 return _hapvida.LerRelatorio(arquivo, extensao);
@@ -65,8 +92,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                     .ToList();
 
             // União Médica
-            if (nomeOperadora.IndexOf("UNIÃO MÉDICA", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                nomeOperadora.IndexOf("UNIAO MEDICA", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (IsUniaoMedica(nomeOperadora))
                 return _uniaoMedica.LerRelatorio(arquivo, extensao);
 
             // Aurora
@@ -89,6 +115,10 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
             if (itensImportados == null || itensImportados.Count == 0)
                 return itensImportados;
 
+            // CAS Lorena
+            if (IsCasLorena(nomeOperadora))
+                return _casLorena.ConferirComView(itensImportados, tipoConferencia, codigoGrupoContrato);
+
             // Hapvida
             if (nomeOperadora.IndexOf(OP_HAPVIDA, StringComparison.OrdinalIgnoreCase) >= 0)
                 return _hapvida.ConferirComView(itensImportados, tipoConferencia, codigoGrupoContrato);
@@ -98,8 +128,7 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 return _unimed.ConferirComView(itensImportados, codigoGrupoContrato);
 
             // União Médica
-            if (nomeOperadora.IndexOf("UNIÃO MÉDICA", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                nomeOperadora.IndexOf("UNIAO MEDICA", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (IsUniaoMedica(nomeOperadora))
                 return _uniaoMedica.ConferirComView(itensImportados, tipoConferencia, codigoGrupoContrato);
 
             // Aurora
@@ -131,16 +160,17 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
 
         private List<ColunaExport> MontarDefinicaoColunas()
         {
-            var operadorasCpf = new[] { OP_HAPVIDA, OP_UNIAO_MEDICA, OP_AURORA };
+            var operadorasCpf = new[] { OP_HAPVIDA, OP_UNIAO_MEDICA, OP_AURORA, OP_CAS_LORENA };
+            var operadorasNascimento = new[] { OP_HAPVIDA, OP_UNIAO_MEDICA, OP_AURORA };
             var operadorasCarteirinha = new[] { OP_UNIMED };
 
             return new List<ColunaExport>
             {
                 new ColunaExport { Header = "CPF / Carteirinha", ObterValor = i => i.Cpf ?? "" },
                 new ColunaExport { Header = "Beneficiário", ObterValor = i => i.Beneficiario ?? "" },
-                new ColunaExport { Header = "Nascimento", ObterValor = i => i.Nascimento?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = operadorasCpf },
-                new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } }, // ALTERADO
-                new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA, OP_UNIMED, OP_AURORA } }, // ALTERADO
+                new ColunaExport { Header = "Nascimento", ObterValor = i => i.Nascimento?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = operadorasNascimento },
+                new ColunaExport { Header = "Parentesco", ObterValor = i => i.Parentesco ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA } },
+                new ColunaExport { Header = "Plano", ObterValor = i => i.Plano ?? "", OperadorasPermitidas = new[] { OP_HAPVIDA, OP_UNIMED, OP_AURORA, OP_CAS_LORENA } },
                 new ColunaExport { Header = "Mês/Ano Usado", ObterValor = i => i.MesAnoReferencia ?? "" },
                 new ColunaExport { Header = "Valor Operadora", ObterValor = i => i.Cobrado.ToString("N2") },
                 new ColunaExport { Header = "Valor Adicional", ObterValor = i => i.Adicional.ToString("N2"), OperadorasPermitidas = operadorasCpf },
@@ -150,15 +180,14 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceBilling
                 new ColunaExport { Header = "Diferença", ObterValor = i => i.DiferencaValor?.ToString("N2") ?? "" },
                 new ColunaExport { Header = "Codigo Empresa", ObterValor = i => i.CodigoEmpresa?.ToString() ?? "", OperadorasPermitidas = operadorasCarteirinha },
                 new ColunaExport { Header = "Empresa", ObterValor = i => i.EmpresaUnimed ?? "", OperadorasPermitidas = operadorasCarteirinha },
-                // new ColunaExport { Header = "Data Admissão", ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = operadorasCarteirinha },
+                new ColunaExport { Header = "Empresa", ObterValor = i => i.Empresa ?? "", OperadorasPermitidas = new[] { OP_CAS_LORENA } },
                 new ColunaExport { Header = "Data Exclusão", ObterValor = i => i.DataExclusao?.ToString("dd/MM/yyyy") ?? "" },
                 new ColunaExport { Header = "Motivo Exclusão", ObterValor = i => i.NomeMotivoExclusao ?? "" },
                 new ColunaExport { Header = "Tabela de Preço", ObterValor = i => i.NomeTabelaPreco ?? "", OperadorasPermitidas = operadorasCpf },
                 new ColunaExport { Header = "Grupo de Pessoas", ObterValor = i => i.NomeGrupoPessoas ?? "", OperadorasPermitidas = operadorasCarteirinha },
                 new ColunaExport { Header = "Grupo de Faturamento", ObterValor = i => i.DescricaoGrupoFaturamento ?? "", OperadorasPermitidas = operadorasCpf },
                 new ColunaExport { Header = "Status", ObterValor = i => TraduzirStatusExcel(i.StatusConferencia) },
-                new ColunaExport {Header = "Data Admissão",ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "",OperadorasPermitidas = new[] { OP_UNIAO_MEDICA, OP_AURORA }
-                },
+                new ColunaExport { Header = "Data Admissão", ObterValor = i => i.DataAdmissao?.ToString("dd/MM/yyyy") ?? "", OperadorasPermitidas = new[] { OP_UNIAO_MEDICA, OP_AURORA, OP_CAS_LORENA } },
             };
         }
 

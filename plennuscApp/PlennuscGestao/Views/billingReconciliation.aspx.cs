@@ -103,27 +103,25 @@ namespace appWhatsapp.PlennuscGestao.Views
                     Session[SESSION_ITENS_IMPORTADOS] = itensImportados;
 
                     // ===== DEFINIÇÕES DE COMPORTAMENTO POR OPERADORA =====
-                    bool ehHapvida = IsHapvida(nomeOperadora);
-                    bool ehUniaoMedica = IsUniaoMedica(nomeOperadora);
-                    bool ehUnimed = IsUnimed(nomeOperadora);
-                    bool ehAurora = IsAurora(nomeOperadora);
+                    bool ehCasLorena = IsCasLorena(nomeOperadora);
+                    bool ehHapvida = !ehCasLorena && IsHapvida(nomeOperadora);
+                    bool ehUniaoMedica = !ehCasLorena && IsUniaoMedica(nomeOperadora);
+                    bool ehUnimed = !ehCasLorena && IsUnimed(nomeOperadora);
+                    bool ehAurora = !ehCasLorena && IsAurora(nomeOperadora);
 
                     // 1. Painel de Tipo de Conferência: visível APENAS para Hapvida
-                    //    (Unimed, União Médica e Aurora NÃO exibem)
                     pnlTipoConferencia.Visible = ehHapvida;
 
                     // 2. Operadoras que NÃO usam tipo de conferência (forçam CONVENIO e removem odontológico):
-                    //    União Médica e Aurora
-                    bool operadoraSemTipoConferencia = ehUniaoMedica || ehAurora;
+                    //    União Médica, Aurora e CAS Lorena
+                    bool operadoraSemTipoConferencia = ehUniaoMedica || ehAurora || ehCasLorena;
 
                     if (operadoraSemTipoConferencia)
                     {
-                        // Remove o item Odontológico para não poluir a lista
                         var itemOdonto = rblTipoConferencia.Items.FindByValue("EVENTO_ADICIONAL");
                         if (itemOdonto != null)
                             rblTipoConferencia.Items.Remove(itemOdonto);
 
-                        // Garante que o item Convênio exista e seja selecionado
                         var itemConvenio = rblTipoConferencia.Items.FindByValue("CONVENIO");
                         if (itemConvenio == null)
                             rblTipoConferencia.Items.Insert(0, new ListItem("Convênio", "CONVENIO"));
@@ -131,7 +129,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     }
                     else
                     {
-                        // Para outras operadoras, garante que o item Odontológico esteja presente
                         if (rblTipoConferencia.Items.FindByValue("EVENTO_ADICIONAL") == null)
                             rblTipoConferencia.Items.Add(new ListItem("Odontológico (Evento Adicional)", "EVENTO_ADICIONAL"));
                     }
@@ -200,10 +197,11 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void AjustarColunasGridPorOperadora(string nomeOperadora)
         {
-            bool ehHapvida = IsHapvida(nomeOperadora);
-            bool ehUniaoMedica = IsUniaoMedica(nomeOperadora);
-            bool ehUnimed = IsUnimed(nomeOperadora);
-            bool ehAurora = IsAurora(nomeOperadora);
+            bool ehCasLorena = IsCasLorena(nomeOperadora);
+            bool ehHapvida = !ehCasLorena && IsHapvida(nomeOperadora);
+            bool ehUniaoMedica = !ehCasLorena && IsUniaoMedica(nomeOperadora);
+            bool ehUnimed = !ehCasLorena && IsUnimed(nomeOperadora);
+            bool ehAurora = !ehCasLorena && IsAurora(nomeOperadora);
 
             foreach (DataControlField coluna in gridPreview.Columns)
             {
@@ -211,35 +209,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                 {
                     string dataField = boundField.DataField;
 
-                    // Colunas que ficam visíveis APENAS para Hapvida e União Médica
-                    // (Aurora NÃO exibe Nascimento/Adicional/NomeTabelaPreco/DescricaoGrupoFaturamento)
-                    if (dataField == "Nascimento" || dataField == "Adicional" ||
-                        dataField == "NomeTabelaPreco" || dataField == "DescricaoGrupoFaturamento")
-                    {
+                    if (dataField == "Nascimento")
                         coluna.Visible = ehHapvida || ehUniaoMedica;
-                    }
-                    // Parentesco: SÓ para Hapvida (União Médica e Aurora NÃO exibem)
+                    else if (dataField == "Adicional" || dataField == "NomeTabelaPreco" || dataField == "DescricaoGrupoFaturamento")
+                        coluna.Visible = ehHapvida || ehUniaoMedica || ehCasLorena;
                     else if (dataField == "Parentesco")
-                    {
                         coluna.Visible = ehHapvida;
-                    }
-                    // Empresa: SÓ para Hapvida (União Médica e Aurora NÃO exibem)
                     else if (dataField == "Empresa")
-                    {
-                        coluna.Visible = ehHapvida;
-                    }
-                    // Plano: oculto para União Médica, visível para Hapvida, Unimed e Aurora
+                        coluna.Visible = ehHapvida || ehCasLorena;
                     else if (dataField == "Plano")
-                    {
                         coluna.Visible = !ehUniaoMedica;
-                    }
-                    // Colunas específicas da Unimed
                     else if (dataField == "Credito" || dataField == "Debito" ||
                              dataField == "CodigoEmpresa" || dataField == "EmpresaUnimed")
-                    {
                         coluna.Visible = ehUnimed;
-                    }
-                    // Demais colunas (CPF, Beneficiário, etc.) permanecem visíveis para todos
                 }
             }
         }
@@ -294,6 +276,9 @@ namespace appWhatsapp.PlennuscGestao.Views
             {
                 var itensConferidos = _service.ConferirComView(nomeOperadora, itensImportados, tipoConferencia, codigoGrupoContrato);
                 Session[SESSION_ITENS_IMPORTADOS] = itensConferidos;
+
+                // Reaplica a visibilidade das colunas no postback (o estado das colunas não persiste)
+                AjustarColunasGridPorOperadora(nomeOperadora);
 
                 gridPreview.DataSource = itensConferidos;
                 gridPreview.DataBind();
@@ -354,6 +339,9 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private string DeterminarCodigoOperadora(string nomeOperadora)
         {
+            if (IsCasLorena(nomeOperadora))
+                return "CAS_LORENA";
+
             if (IsHapvida(nomeOperadora))
                 return "HAPVIDA";
 
@@ -388,6 +376,11 @@ namespace appWhatsapp.PlennuscGestao.Views
         private bool IsAurora(string nome)
         {
             return nome.IndexOf("AURORA", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private bool IsCasLorena(string nome)
+        {
+            return ServiceBillingReconciliation.IsCasLorena(nome);
         }
 
         private void ExibirMensagem(string mensagem, bool erro)
