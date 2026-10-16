@@ -13,17 +13,33 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceTaxasAssociativas
     {
         private readonly SqlTaxasAssociativas _sql = new SqlTaxasAssociativas();
 
+        // DEMAIS ENTIDADES
+
         // Dropdown "Demais Entidades"
         public List<EntidadeTaxaAssociativaModel> ObterEntidades()
             => _sql.BuscarEntidadesTaxaAssociativa();
+
+        // Tela Demais Entidades (recebe uma lista de códigos)
+        public List<TaxaAssociativaDemaisEntidadesModel> ObterTaxasDemaisEntidades(
+            List<int> codigosEvento, DateTime dataInicio, DateTime dataFim)
+            => _sql.BuscarTaxasDemaisEntidades(codigosEvento, dataInicio, dataFim);
+
+        // SINDNAPI
+        
 
         // Tela SINDNAPI
         public List<TaxaAssociativaSindnapiModel> ObterTaxasSindnapi(DateTime dataInicio, DateTime dataFim)
             => _sql.BuscarTaxasSindnapi(dataInicio, dataFim);
 
-        // Tela Demais Entidades (agora recebe uma lista)
-        public List<TaxaAssociativaDemaisEntidadesModel> ObterTaxasDemaisEntidades(
-            List<int> codigosEvento, DateTime dataInicio, DateTime dataFim)
-            => _sql.BuscarTaxasDemaisEntidades(codigosEvento, dataInicio, dataFim);
+        // SINCOR (PF e PJ)
+
+        // Opções do dropdown do SINCOR (PF / PJ)
+        public List<OpcaoSincorModel> ObterOpcoesSincor()
+            => _sql.BuscarOpcoesSincor();
+
+        // Tela SINCOR (recebe o código do evento: 13 = PF, 45 = PJ)
+        public List<TaxaAssociativaSincorModel> ObterTaxasSincor(
+            int codigoEvento, DateTime dataInicio, DateTime dataFim)
+            => _sql.BuscarTaxasSincor(codigoEvento, dataInicio, dataFim);
     }
 }
