@@ -1,11 +1,27 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="sincorTaxaAssociativa.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sincorTaxaAssociativa" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link href="../../Content/Css/projects/gestao/structuresCss/taxasAssociativas/taxasAssociativas.css" rel="stylesheet" />
+    <link href="../../Content/Css/projects/gestao/structuresCss/taxasAssociativas/taxasAssociativas.css?v=6" rel="stylesheet" />
+    <style>
+        /* Estilo para o input de busca dentro do dropdown */
+        .dropdown-search {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+        .dropdown-search:focus { border-color: #4cb07a; }
+        
+        /* Classe para esconder itens da busca */
+        .hidden-item { display: none !important; }
+    </style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
+    <!-- overlayCarregando ... igual ao anterior ... -->
     <div id="overlayCarregando" class="overlay-carregando">
         <div class="overlay-carregando-card">
             <div class="overlay-spinner"></div>
@@ -14,7 +30,6 @@
     </div>
 
     <div class="container-main">
-
         <div class="page-header">
             <h1 class="page-title">
                 <span class="title-icon"><i class="bi bi-people-fill"></i></span>
@@ -28,11 +43,29 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="ddlTipoPessoa" class="form-label">Entidade *</label>
-                    <asp:DropDownList ID="ddlTipoPessoa" runat="server" CssClass="form-control">
-                        <asp:ListItem Text="SINCOR - Pessoa Física (PF)" Value="13" />
-                        <asp:ListItem Text="SINCOR - Pessoa Jurídica (PJ)" Value="45" />
-                    </asp:DropDownList>
+                    <label class="form-label">Entidade *</label>
+                    <div class="custom-dropdown" id="dropdownEntidades">
+                        <div class="dropdown-header" id="dropdownHeaderEntidades">
+                            <span class="resumo-texto" id="lblEntidadesResumo">
+                                <span class="placeholder">Selecione...</span>
+                            </span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="dropdown-panel">
+                            <!-- CAMPO DE BUSCA -->
+                            <input type="text" id="txtFiltroEntidades" class="dropdown-search" placeholder="Digite para filtrar..." onkeyup="filtrarEntidades()" onclick="event.stopPropagation();" />
+                            
+                            <div class="dropdown-acoes">
+                                <a href="javascript:void(0);" onclick="selecionarTodos(true); event.stopPropagation();">Selecionar todos</a>
+                                <a href="javascript:void(0);" onclick="selecionarTodos(false); event.stopPropagation();">Limpar</a>
+                            </div>
+
+                            <asp:CheckBoxList ID="cblEntidades" runat="server" ClientIDMode="Static">
+                                <asp:ListItem Text="SINCOR - Pessoa Física (PF)" Value="13" />
+                                <asp:ListItem Text="SINCOR - Pessoa Jurídica (PJ)" Value="45" />
+                            </asp:CheckBoxList>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -59,13 +92,11 @@
         <!-- CARD 2: RESULTADO -->
         <div class="filters-card" id="divResultado" runat="server" visible="false">
             <div class="filters-title"><i class="bi bi-table"></i>Resultado</div>
-
             <div class="grid-container">
-
-                <!-- CABEÇALHO DO RELATÓRIO -->
                 <div class="report-header">
+                    <!-- Cabeçalho idêntico -->
                     <div class="report-header-top">
-                        <div class="report-header-esquerda">
+                        <div>
                             <div class="report-header-titulo">VALLOR BENEFÍCIOS</div>
                             <div class="report-header-sub">Av. Assis Chateaubriand, 288 - Floresta - BH/MG</div>
                             <div class="report-header-sub">comissoes@vallorbeneficios.com.br</div>
@@ -77,18 +108,13 @@
                             <asp:Literal ID="litDataRelatorio" runat="server" />
                         </div>
                     </div>
-
                     <div class="report-header-linha">
                         <span class="report-header-entidade">
                             <asp:Literal ID="litEntidade" runat="server" />
                         </span>
                         <span class="report-header-titulo-rel">RELATÓRIO TAXAS ASSOCIATIVAS</span>
-                        <span class="report-header-vigencia">
-                            Vig. <asp:Literal ID="litVigencia" runat="server" />
-                        </span>
-                        <span class="report-header-total">
-                            TOTAL: <asp:Literal ID="litTotalRelatorio" runat="server" />
-                        </span>
+                        <span class="report-header-vigencia">Vig. <asp:Literal ID="litVigencia" runat="server" /></span>
+                        <span class="report-header-total">TOTAL: <asp:Literal ID="litTotalRelatorio" runat="server" /></span>
                     </div>
                 </div>
 
@@ -107,9 +133,7 @@
                     </div>
                     <div class="grid-toolbar-right">
                         <span class="resultado-total">
-                            <strong>
-                                <asp:Literal ID="litTotalRegistros" runat="server" />
-                            </strong> registro(s) encontrado(s)
+                            <strong><asp:Literal ID="litTotalRegistros" runat="server" /></strong> registro(s) encontrado(s)
                         </span>
                         <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel"
                             CssClass="btn btn-success" OnClick="btnExportarExcel_Click" />
@@ -122,20 +146,16 @@
                     AllowPaging="True" PageSize="10"
                     OnPageIndexChanging="gvResultado_PageIndexChanging"
                     OnDataBound="gvResultado_DataBound">
-                    <PagerSettings Mode="NumericFirstLast"
-                        FirstPageText="«" LastPageText="»"
-                        PageButtonCount="7"
-                        Position="Bottom" />
+                    <PagerSettings Mode="NumericFirstLast" FirstPageText="«" LastPageText="»" PageButtonCount="7" Position="Bottom" />
                     <PagerStyle CssClass="pager-custom" />
                     <Columns>
                         <asp:BoundField DataField="CpfCnpj" HeaderText="CPF/CNPJ" ItemStyle-CssClass="col-curta" />
                         <asp:BoundField DataField="NomeBeneficiario" HeaderText="Beneficiário" ItemStyle-CssClass="col-nome" />
-                        <asp:BoundField DataField="DataNascimento" HeaderText="Data Nascimento"
-                            DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
-                        <asp:BoundField DataField="DataPagamento" HeaderText="Data Pagamento"
-                            DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
-                        <asp:BoundField DataField="ValorEvento" HeaderText="Valor Taxa"
-                            DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
+                        <asp:BoundField DataField="Email" HeaderText="E-mail" ItemStyle-CssClass="col-normal" />
+                        <asp:BoundField DataField="Telefone" HeaderText="Telefone" ItemStyle-CssClass="col-curta" />
+                        <asp:BoundField DataField="DataNascimento" HeaderText="Data Nascimento" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
+                        <asp:BoundField DataField="DataPagamento" HeaderText="Data Pagamento" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="col-curta" />
+                        <asp:BoundField DataField="ValorEvento" HeaderText="Valor Taxa" DataFormatString="{0:N2}" ItemStyle-CssClass="col-curta" />
                     </Columns>
                 </asp:GridView>
 
@@ -145,15 +165,101 @@
     </div>
 
     <script>
-function mostrarOverlayCarregando() {
-    document.getElementById('overlayCarregando').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    setTimeout(function () {
-        var botoes = document.querySelectorAll('button, input[type="submit"]');
-        botoes.forEach(function (b) { b.disabled = true; });
-    }, 0);
-    return true;
-}
-</script>
+        function mostrarOverlayCarregando() {
+            document.getElementById('overlayCarregando').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            setTimeout(function () {
+                var botoes = document.querySelectorAll('button, input[type="submit"]');
+                botoes.forEach(function (b) { b.disabled = true; });
+            }, 0);
+            return true;
+        }
 
+        function toggleDropdown(header) {
+            var wrapper = header.parentElement;
+            var isOpen = wrapper.classList.contains('open');
+            document.querySelectorAll('.custom-dropdown.open').forEach(function (w) {
+                if (w !== wrapper) w.classList.remove('open');
+            });
+            wrapper.classList.toggle('open', !isOpen);
+        }
+
+        function atualizarResumoEntidades() {
+            var checkboxes = document.querySelectorAll('#cblEntidades input[type="checkbox"]:checked');
+            var label = document.getElementById('lblEntidadesResumo');
+            label.innerHTML = '';
+
+            if (checkboxes.length === 0) {
+                label.innerHTML = '<span class="placeholder">Selecione...</span>';
+                return;
+            }
+
+            checkboxes.forEach(function (chk) {
+                var nome = chk.closest('td').textContent.trim();
+                var tag = document.createElement('span');
+                tag.className = 'tag-item';
+                tag.textContent = nome;
+                label.appendChild(tag);
+            });
+        }
+
+        function selecionarTodos(marcar) {
+            var painel = document.getElementById('cblEntidades');
+            if (!painel) return;
+            
+            // Pega apenas os checkboxes visíveis (que não estão com display none)
+            var checkboxes = painel.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function (chk) {
+                var td = chk.closest('td');
+                if (!td.classList.contains('hidden-item')) {
+                    chk.checked = marcar;
+                }
+            });
+            atualizarResumoEntidades();
+        }
+
+        // FUNÇÃO DE FILTRO
+        function filtrarEntidades() {
+            var input = document.getElementById('txtFiltroEntidades');
+            var filtro = input.value.toLowerCase();
+            var painel = document.getElementById('cblEntidades');
+            var labels = painel.querySelectorAll('td');
+
+            labels.forEach(function (td) {
+                var texto = td.textContent.toLowerCase() || td.innerText.toLowerCase();
+                if (texto.indexOf(filtro) > -1) {
+                    td.classList.remove('hidden-item');
+                } else {
+                    td.classList.add('hidden-item');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var header = document.getElementById('dropdownHeaderEntidades');
+            if (header) {
+                header.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleDropdown(this);
+                });
+            }
+
+            document.addEventListener('click', function (e) {
+                document.querySelectorAll('.custom-dropdown').forEach(function (wrapper) {
+                    if (!wrapper.contains(e.target)) wrapper.classList.remove('open');
+                });
+            });
+
+            var painel = document.getElementById('cblEntidades');
+            if (painel) {
+                painel.addEventListener('change', function (e) {
+                    if (e.target && e.target.type === 'checkbox')
+                        atualizarResumoEntidades();
+                });
+            }
+
+            atualizarResumoEntidades();
+        });
+    </script>
 </asp:Content>

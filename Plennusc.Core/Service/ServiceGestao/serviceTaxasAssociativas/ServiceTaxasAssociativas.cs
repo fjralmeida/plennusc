@@ -37,9 +37,9 @@ namespace Plennusc.Core.Service.ServiceGestao.serviceTaxasAssociativas
         public List<OpcaoSincorModel> ObterOpcoesSincor()
             => _sql.BuscarOpcoesSincor();
 
-        // Tela SINCOR (recebe o código do evento: 13 = PF, 45 = PJ)
+        // Tela SINCOR (agora recebe uma lista)
         public List<TaxaAssociativaSincorModel> ObterTaxasSincor(
-            int codigoEvento, DateTime dataInicio, DateTime dataFim)
-            => _sql.BuscarTaxasSincor(codigoEvento, dataInicio, dataFim);
+            List<int> codigosEvento, DateTime dataInicio, DateTime dataFim)
+            => _sql.BuscarTaxasSincor(codigosEvento, dataInicio, dataFim);
     }
 }

@@ -743,18 +743,25 @@
         text-transform: uppercase;
         letter-spacing: .3px;
         min-width: 180px;
-        font-size: 23px !important;
+        white-space: normal !important; 
+        word-break: break-word; 
+        max-width: 400px; 
+        line-height: 1.4; 
     }
 
-    .report-header-linha .report-header-titulo-rel {
-        font-weight: 700;
-        color: #1F3B73;
-        text-transform: uppercase;
-        letter-spacing: .3px;
-        flex: 1;
-        text-align: center;
-        font-size: 23px !important;
-    }
+.report-header-entidade {
+    font-size: 17px !important;
+}
+
+.report-header-linha .report-header-titulo-rel {
+    font-weight: 700;
+    color: #1F3B73;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    flex: 1;
+    text-align: center;
+    font-size: 23px !important;
+}
 
     .report-header-linha .report-header-vigencia {
         color: var(--gray-700);

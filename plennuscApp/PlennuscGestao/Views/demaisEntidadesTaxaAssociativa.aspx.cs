@@ -21,9 +21,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private const string SESSION_TAXAS_DEMAIS_ENTIDADES = "TaxasDemaisEntidades_Dados";
 
-        /// <summary>
-        /// Caminho físico do logo da Vallor (usado no Excel).
-        /// </summary>
         private string CaminhoLogoVallor
         {
             get
@@ -107,10 +104,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                 litTotalRegistros.Text = dados.Count.ToString();
                 divResultado.Visible = true;
 
-                var selecionado = cblEntidades.Items.Cast<ListItem>().FirstOrDefault(i => i.Selected);
-                litEntidade.Text = selecionado != null
-                    ? RemoverPrefixoEntidade(selecionado.Text)
-                    : "DEMAIS ENTIDADES";
+                // CABEÇALHO TIMBRADO: Exibe todos os nomes selecionados
+                var selecionados = cblEntidades.Items.Cast<ListItem>().Where(i => i.Selected).ToList();
+
+                if (selecionados.Count == 1)
+                {
+                    litEntidade.Text = RemoverPrefixoEntidade(selecionados[0].Text);
+                }
+                else
+                {
+                    // Junta todos os nomes com quebra de linha na tela HTML
+                    litEntidade.Text = string.Join("<br />", selecionados.Select(i => RemoverPrefixoEntidade(i.Text)));
+                }
+
                 litVigencia.Text = ObterVigenciaMesAno(dados);
                 litTotalRelatorio.Text = $"R$ {dados.Sum(x => x.ValorEvento):N2}";
                 litDataRelatorio.Text = DateTime.Now.ToString("dd/MM/yyyy");
@@ -183,10 +189,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            string nomeEntidade = "DEMAIS ENTIDADES";
-            var selecionado = cblEntidades.Items.Cast<ListItem>().FirstOrDefault(i => i.Selected);
-            if (selecionado != null)
-                nomeEntidade = RemoverPrefixoEntidade(selecionado.Text);
+            // NOME PARA O EXCEL: Exibe todos os nomes selecionados
+            var selecionados = cblEntidades.Items.Cast<ListItem>().Where(i => i.Selected).ToList();
+            string nomeEntidade;
+
+            if (selecionados.Count == 1)
+            {
+                nomeEntidade = RemoverPrefixoEntidade(selecionados[0].Text);
+            }
+            else
+            {
+                // Junta todos os nomes com " | | " (conforme solicitado para o Excel)
+                nomeEntidade = string.Join(" | | ", selecionados.Select(i => RemoverPrefixoEntidade(i.Text)));
+            }
 
             string vigencia = ObterVigenciaMesAno(dados);
             decimal somaTotal = dados.Sum(x => x.ValorEvento);
@@ -214,7 +229,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     // Larguras das colunas
                     var columns = new X.Columns(
-                        new X.Column { Min = 1, Max = 1, Width = 15, CustomWidth = true },  // A - Nº Registro
+                        new X.Column { Min = 1, Max = 1, Width = 20, CustomWidth = true },  // A - Nº Registro / Nome Entidade (aumentei um pouco)
                         new X.Column { Min = 2, Max = 2, Width = 30, CustomWidth = true },  // B - Beneficiário
                         new X.Column { Min = 3, Max = 3, Width = 15, CustomWidth = true },  // C - Tipo
                         new X.Column { Min = 4, Max = 4, Width = 18, CustomWidth = true },  // D - Data Pagamento
@@ -227,13 +242,9 @@ namespace appWhatsapp.PlennuscGestao.Views
 
                     // MERGE CELLS
                     var mergeCells = new X.MergeCells(
-                        // Linha 1: A1:D1 (VALLOR BENEFÍCIOS)
                         new X.MergeCell { Reference = "A1:D1" },
-                        // Linha 2: A2:D2 (endereço)
                         new X.MergeCell { Reference = "A2:D2" },
-                        // Linha 3: A3:D3 (e-mail)
                         new X.MergeCell { Reference = "A3:D3" },
-                        // Linha 5: B5:C5 (RELATÓRIO TAXAS ASSOCIATIVAS)
                         new X.MergeCell { Reference = "B5:C5" }
                     );
                     worksheetPart.Worksheet.AppendChild(mergeCells);
@@ -248,8 +259,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     });
 
                     // FOLHA DE ROSTO
-
-                    // Linha 1: VALLOR BENEFÍCIOS (mesclado A:D) + data (E)
                     var linha1 = new X.Row();
                     linha1.Append(CriarCelulaTexto("VALLOR BENEFÍCIOS", 10, "A1"));
                     linha1.Append(CriarCelulaTexto("", 10, "B1"));
@@ -258,7 +267,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     linha1.Append(CriarCelulaTexto(DateTime.Now.ToString("dd/MM/yyyy"), 11, "E1"));
                     sheetData.Append(linha1);
 
-                    // Linha 2: endereço (mesclado A:D)
                     var linha2 = new X.Row();
                     linha2.Append(CriarCelulaTexto("Av. Assis Chateaubriand, 288 - Floresta - BH/MG", 12, "A2"));
                     linha2.Append(CriarCelulaTexto("", 12, "B2"));
@@ -267,7 +275,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     linha2.Append(CriarCelulaTexto("", 12, "E2"));
                     sheetData.Append(linha2);
 
-                    // Linha 3: e-mail (mesclado A:D)
                     var linha3 = new X.Row();
                     linha3.Append(CriarCelulaTexto("comissoes@vallorbeneficios.com.br", 12, "A3"));
                     linha3.Append(CriarCelulaTexto("", 12, "B3"));
@@ -276,16 +283,14 @@ namespace appWhatsapp.PlennuscGestao.Views
                     linha3.Append(CriarCelulaTexto("", 12, "E3"));
                     sheetData.Append(linha3);
 
-                    // Linha 4: vazia (respiro), com borda branca
                     var linha4 = new X.Row();
                     for (int i = 1; i <= 5; i++)
                         linha4.Append(CriarCelulaTexto("", 14, $"{LetraColuna(i)}4"));
                     sheetData.Append(linha4);
 
-                    // Linha 5: faixa azul
-                    // A5 = ENTIDADE | B5:C5 = RELATÓRIO | D5 = Vig | E5 = TOTAL
+                    // Linha 5: faixa azul (usando estilo 15 para aceitar quebra de texto)
                     var linha5 = new X.Row();
-                    linha5.Append(CriarCelulaTexto(nomeEntidade, 13, "A5"));
+                    linha5.Append(CriarCelulaTexto(nomeEntidade, 15, "A5"));
                     linha5.Append(CriarCelulaTexto("RELATÓRIO TAXAS ASSOCIATIVAS", 13, "B5"));
                     linha5.Append(CriarCelulaTexto("", 13, "C5"));
                     linha5.Append(CriarCelulaTexto($"Vig. {vigencia}", 13, "D5"));
@@ -314,7 +319,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                         sheetData.Append(row);
                         linha++;
                     }
-
 
                     // LINHA DE TOTAL
                     var totalRow = new X.Row();
@@ -353,9 +357,6 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         // HELPERS
 
-        /// <summary>
-        /// Retorna a letra da coluna a partir do índice 1-based (1 = A, 2 = B, ...).
-        /// </summary>
         private string LetraColuna(int indice)
         {
             return ((char)('A' + indice - 1)).ToString();
@@ -392,6 +393,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         private void InserirLogoVallor(WorksheetPart worksheetPart, string caminhoLogo)
         {
+            // Código idêntico ao seu original...
             if (!File.Exists(caminhoLogo))
                 throw new FileNotFoundException($"Logo da Vallor não encontrado em: {caminhoLogo}");
 
@@ -412,26 +414,16 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             var oneCellAnchor = new Xdr.OneCellAnchor(
                 new Xdr.FromMarker(
-                    new Xdr.ColumnId("2"),   // coluna C
+                    new Xdr.ColumnId("2"),
                     new Xdr.ColumnOffset("0"),
-                    new Xdr.RowId("0"),       // linha 1
+                    new Xdr.RowId("0"),
                     new Xdr.RowOffset("0")
                 ),
-                new Xdr.Extent
-                {
-                    Cx = 2000000,
-                    Cy = 900000
-                },
+                new Xdr.Extent { Cx = 2000000, Cy = 900000 },
                 new Xdr.Picture(
                     new Xdr.NonVisualPictureProperties(
-                        new Xdr.NonVisualDrawingProperties
-                        {
-                            Id = drawingObjectId,
-                            Name = "Logo Vallor"
-                        },
-                        new Xdr.NonVisualPictureDrawingProperties(
-                            new A.PictureLocks { NoChangeAspect = true }
-                        )
+                        new Xdr.NonVisualDrawingProperties { Id = drawingObjectId, Name = "Logo Vallor" },
+                        new Xdr.NonVisualPictureDrawingProperties(new A.PictureLocks { NoChangeAspect = true })
                     ),
                     new Xdr.BlipFill(
                         new A.Blip { Embed = imagePartId },
@@ -440,16 +432,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                     new Xdr.ShapeProperties(
                         new A.Transform2D(
                             new A.Offset { X = 0, Y = 0 },
-                            new A.Extents
-                            {
-                                Cx = 2000000,
-                                Cy = 900000
-                            }
+                            new A.Extents { Cx = 2000000, Cy = 900000 }
                         ),
-                        new A.PresetGeometry(new A.AdjustValueList())
-                        {
-                            Preset = A.ShapeTypeValues.Rectangle
-                        }
+                        new A.PresetGeometry(new A.AdjustValueList()) { Preset = A.ShapeTypeValues.Rectangle }
                     )
                 )
             );
@@ -459,20 +444,13 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             if (!worksheetPart.Worksheet.Elements<X.Drawing>().Any())
             {
-                worksheetPart.Worksheet.AppendChild(new X.Drawing
-                {
-                    Id = drawingPartId
-                });
+                worksheetPart.Worksheet.AppendChild(new X.Drawing { Id = drawingPartId });
             }
         }
 
 
         // HELPERS DE ESTILO / CÉLULA
 
-        /// <summary>
-        /// Cria uma borda fina nos quatro lados com a cor informada (ARGB).
-        /// A ordem dos elementos (Left, Right, Top, Bottom, Diagonal) é obrigatória no OpenXML.
-        /// </summary>
         private X.Border CriarBordaFina(string corArgb)
         {
             return new X.Border(
@@ -515,16 +493,12 @@ namespace appWhatsapp.PlennuscGestao.Views
             );
 
             var borders = new X.Borders(
-                // 0 - sem borda (padrão)
                 new X.Border(),
-                // 1 - todas as bordas brancas
                 CriarBordaFina("FFFFFFFF")
             );
 
             var cellFormats = new X.CellFormats(
-                // 0 - padrão
                 new X.CellFormat(),
-                // 1 - cabeçalho da tabela (bordas brancas)
                 new X.CellFormat
                 {
                     FontId = 1,
@@ -534,16 +508,9 @@ namespace appWhatsapp.PlennuscGestao.Views
                     ApplyFill = true,
                     ApplyBorder = true
                 },
-                // 2..9 - reservados
-                new X.CellFormat(),
-                new X.CellFormat(),
-                new X.CellFormat(),
-                new X.CellFormat(),
-                new X.CellFormat(),
-                new X.CellFormat(),
-                new X.CellFormat(),
-                new X.CellFormat(),
-                // 10 - título VALLOR (fundo branco + negrito 12 + bordas brancas)
+                new X.CellFormat(), new X.CellFormat(), new X.CellFormat(),
+                new X.CellFormat(), new X.CellFormat(), new X.CellFormat(),
+                new X.CellFormat(), new X.CellFormat(),
                 new X.CellFormat
                 {
                     FontId = 2,
@@ -553,7 +520,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     ApplyFill = true,
                     ApplyBorder = true
                 },
-                // 11 - data (fundo branco + direita + bordas brancas)
                 new X.CellFormat
                 {
                     FontId = 0,
@@ -564,7 +530,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     ApplyBorder = true,
                     Alignment = new X.Alignment { Horizontal = X.HorizontalAlignmentValues.Right }
                 },
-                // 12 - subtexto endereço/email (fundo branco + cinza 10 + bordas brancas)
                 new X.CellFormat
                 {
                     FontId = 3,
@@ -574,7 +539,6 @@ namespace appWhatsapp.PlennuscGestao.Views
                     ApplyFill = true,
                     ApplyBorder = true
                 },
-                // 13 - faixa azul (bordas brancas)
                 new X.CellFormat
                 {
                     FontId = 4,
@@ -589,11 +553,22 @@ namespace appWhatsapp.PlennuscGestao.Views
                         Vertical = X.VerticalAlignmentValues.Center
                     }
                 },
-                // 14 - só borda branca (sem fundo)
+                new X.CellFormat { BorderId = 1, ApplyBorder = true },
+                // 15 - Faixa azul com quebra de texto (Para a célula A5)
                 new X.CellFormat
                 {
+                    FontId = 4,
+                    FillId = 3,
                     BorderId = 1,
-                    ApplyBorder = true
+                    ApplyFont = true,
+                    ApplyFill = true,
+                    ApplyBorder = true,
+                    Alignment = new X.Alignment
+                    {
+                        Horizontal = X.HorizontalAlignmentValues.Left,
+                        Vertical = X.VerticalAlignmentValues.Center,
+                        WrapText = true
+                    }
                 }
             );
 

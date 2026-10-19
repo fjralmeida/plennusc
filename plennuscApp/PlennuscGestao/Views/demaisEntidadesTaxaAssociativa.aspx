@@ -1,7 +1,23 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="demaisEntidadesTaxaAssociativa.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.demaisEntidadesTaxaAssociativa" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link href="../../Content/Css/projects/gestao/structuresCss/taxasAssociativas/taxasAssociativas.css?v=5" rel="stylesheet" />
+    <link href="../../Content/Css/projects/gestao/structuresCss/taxasAssociativas/taxasAssociativas.css?v=6" rel="stylesheet" />
+    <style>
+        /* Estilo para o input de busca dentro do dropdown */
+        .dropdown-search {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+        .dropdown-search:focus { border-color: #4cb07a; }
+        
+        /* Classe para esconder itens da busca */
+        .hidden-item { display: none !important; }
+    </style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -38,6 +54,9 @@
                             <span class="arrow">▼</span>
                         </div>
                         <div class="dropdown-panel">
+                            <!-- CAMPO DE BUSCA -->
+                            <input type="text" id="txtFiltroEntidades" class="dropdown-search" placeholder="Digite para filtrar..." onkeyup="filtrarEntidades()" onclick="event.stopPropagation();" />
+                            
                             <!-- Ações rápidas -->
                             <div class="dropdown-acoes">
                                 <a href="javascript:void(0);"
@@ -212,12 +231,33 @@
             var painel = document.getElementById('cblEntidades');
             if (!painel) return;
 
+            // Pega apenas os checkboxes visíveis (que não estão com display none)
             var checkboxes = painel.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(function (chk) {
-                chk.checked = marcar;
+                var td = chk.closest('td');
+                if (!td.classList.contains('hidden-item')) {
+                    chk.checked = marcar;
+                }
             });
 
             atualizarResumoEntidades();
+        }
+
+        // FUNÇÃO DE FILTRO
+        function filtrarEntidades() {
+            var input = document.getElementById('txtFiltroEntidades');
+            var filtro = input.value.toLowerCase();
+            var painel = document.getElementById('cblEntidades');
+            var labels = painel.querySelectorAll('td');
+
+            labels.forEach(function (td) {
+                var texto = td.textContent.toLowerCase() || td.innerText.toLowerCase();
+                if (texto.indexOf(filtro) > -1) {
+                    td.classList.remove('hidden-item');
+                } else {
+                    td.classList.add('hidden-item');
+                }
+            });
         }
 
         // Inicialização

@@ -30,21 +30,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
 
         /// <summary>
         /// Retorna as entidades (eventos) permitidas para a tela "Demais Entidades".
-        /// 
-        /// A partir desta refatoração, o SINCOR (PF = 13 e PJ = 45) foi REMOVIDO
-        /// desta lista, pois agora possui tela própria (sincorTaxaAssociativa).
-        /// 
-        /// Lista atual:
-        ///   14 → TX ASSOC ASPMRN
-        ///   17 → TX ASSOC SINDNAPI (mantido aqui? NÃO — o SINDNAPI também tem tela própria,
-        ///        mas o IN abaixo ainda o inclui por compatibilidade. O filtro de exclusão
-        ///        (CODIGO_EVENTO <> 17) no BuscarTaxasDemaisEntidades garante que ele
-        ///        não apareça nos resultados.)
-        ///   18 → TX ASSOC FESN
-        ///   21 → TX ASSOC ABEVA
-        ///   22 → TX ASSOC UNIPROLI
-        ///   43 → TX ASSOC ANASERV
-        ///   44 → TX ASSOC AASP
         /// </summary>
         public List<EntidadeTaxaAssociativaModel> BuscarEntidadesTaxaAssociativa()
         {
@@ -85,10 +70,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
         /// <summary>
         /// Retorna as taxas associativas do SINDNAPI (CODIGO_EVENTO = 17) no intervalo
         /// de data de pagamento informado (PS1020.DATA_PAGAMENTO).
-        /// 
-        /// Joins:
-        ///   PS1029.NUMERO_REGISTRO_PS1020 = PS1020.NUMERO_REGISTRO
-        ///   PS1020.CODIGO_ASSOCIADO       = PS1000.CODIGO_ASSOCIADO
         /// </summary>
         public List<TaxaAssociativaSindnapiModel> BuscarTaxasSindnapi(DateTime dataInicio, DateTime dataFim)
         {
@@ -140,22 +121,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             return lista;
         }
 
-        // ============================================================
         // DEMAIS ENTIDADES (resultado)
-        // ============================================================
 
         /// <summary>
         /// Retorna as taxas associativas das demais entidades no intervalo
         /// de data de pagamento informado.
-        /// 
-        /// Filtro:
-        ///   - PS1029.CODIGO_EVENTO IN (@CodigoEvento0, @CodigoEvento1, ...) — múltipla seleção
-        ///   - PS1029.CODIGO_EVENTO <> 17 (garante exclusão do SINDNAPI)
-        /// 
-        /// Joins:
-        ///   PS1029.NUMERO_REGISTRO_PS1020 = PS1020.NUMERO_REGISTRO
-        ///   PS1020.CODIGO_ASSOCIADO       = PS1000.CODIGO_ASSOCIADO
-        ///   PS1000.CODIGO_PLANO           = PS1030.CODIGO_PLANO (LEFT JOIN)
         /// </summary>
         public List<TaxaAssociativaDemaisEntidadesModel> BuscarTaxasDemaisEntidades(
             List<int> codigosEvento, DateTime dataInicio, DateTime dataFim)
@@ -165,7 +135,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             if (codigosEvento == null || codigosEvento.Count == 0)
                 return lista;
 
-            // Monta os parâmetros dinâmicos (@CodigoEvento0, @CodigoEvento1, ...)
             var nomesParametros = codigosEvento
                 .Select((codigo, indice) => $"@CodigoEvento{indice}")
                 .ToList();
@@ -194,7 +163,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             using (SqlConnection conn = new SqlConnection(_connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
             {
-                // Adiciona os códigos de evento dinamicamente
                 for (int i = 0; i < codigosEvento.Count; i++)
                 {
                     cmd.Parameters.AddWithValue($"@CodigoEvento{i}", codigosEvento[i]);
@@ -230,9 +198,6 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
 
         // SINCOR (tela própria — PF e PJ)
 
-        /// <summary>
-        /// Retorna as opções do dropdown do SINCOR (PF e PJ).
-        /// </summary>
         public List<OpcaoSincorModel> BuscarOpcoesSincor()
         {
             return new List<OpcaoSincorModel>
@@ -246,41 +211,73 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
         /// Retorna as taxas associativas do SINCOR (PF = 13 ou PJ = 45) no intervalo
         /// de data de pagamento informado (PS1020.DATA_PAGAMENTO).
         /// 
-        /// Joins:
-        ///   PS1029.NUMERO_REGISTRO_PS1020 = PS1020.NUMERO_REGISTRO
-        ///   PS1020.CODIGO_ASSOCIADO       = PS1000.CODIGO_ASSOCIADO
+        /// Como os contatos estão espalhados (PS1006, PS1001, PS1015), usamos um OUTER APPLY
+        /// com COALESCE para tentar pegar o dado de onde ele existir, priorizando PS1006.
         /// </summary>
+
         public List<TaxaAssociativaSincorModel> BuscarTaxasSincor(
-            int codigoEvento, DateTime dataInicio, DateTime dataFim)
-        {
-            var lista = new List<TaxaAssociativaSincorModel>();
+         List<int> codigosEvento, DateTime dataInicio, DateTime dataFim)
+            {
+                var lista = new List<TaxaAssociativaSincorModel>();
 
-            // Validação: só aceita 13 (PF) ou 45 (PJ)
-            if (codigoEvento != 13 && codigoEvento != 45)
-                return lista;
+                if (codigosEvento == null || codigosEvento.Count == 0)
+                    return lista;
 
+                var nomesParametros = codigosEvento
+                    .Select((codigo, indice) => $"@CodigoEvento{indice}")
+                    .ToList();
 
-            string sql = @"
-                SELECT
-                    p1000.NUMERO_CPF          AS CPF_CNPJ,
-                    p1000.NOME_ASSOCIADO      AS NOME_BENEFICIARIO,
-                    p1000.DATA_NASCIMENTO     AS DATA_NASCIMENTO,
-                    p1020.DATA_PAGAMENTO      AS DATA_PAGAMENTO,
-                    p1029.VALOR_EVENTO        AS VALOR_EVENTO
-                FROM PS1029 p1029
-                INNER JOIN PS1020 p1020 
-                    ON p1029.NUMERO_REGISTRO_PS1020 = p1020.NUMERO_REGISTRO
-                INNER JOIN PS1000 p1000 
-                    ON p1020.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO
-                WHERE p1029.CODIGO_EVENTO = @CodigoEvento
-                  AND p1020.DATA_PAGAMENTO >= @DataInicio
-                  AND p1020.DATA_PAGAMENTO <  DATEADD(DAY, 1, @DataFim)
-                ORDER BY p1020.DATA_PAGAMENTO, p1000.NOME_ASSOCIADO";
+                string sql = $@"
+            SELECT
+                p1000.NUMERO_CPF          AS CPF_CNPJ,
+                p1000.NOME_ASSOCIADO      AS NOME_BENEFICIARIO,
+                p1000.DATA_NASCIMENTO     AS DATA_NASCIMENTO,
+                p1020.DATA_PAGAMENTO      AS DATA_PAGAMENTO,
+                p1029.VALOR_EVENTO        AS VALOR_EVENTO,
+            
+                contato_email.EMAIL       AS EMAIL,
+                contato_tel.TELEFONE      AS TELEFONE
+        
+            FROM PS1029 p1029
+            INNER JOIN PS1020 p1020 
+                ON p1029.NUMERO_REGISTRO_PS1020 = p1020.NUMERO_REGISTRO
+            INNER JOIN PS1000 p1000 
+                ON p1020.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO
+        
+            LEFT JOIN PS1015 p1015 
+                ON p1000.CODIGO_ASSOCIADO = p1015.CODIGO_ASSOCIADO
+        
+            OUTER APPLY (
+                SELECT TOP 1 
+                    COALESCE(p1001.ENDERECO_EMAIL, p1015.ENDERECO_EMAIL) AS EMAIL
+                FROM PS1001 p1001
+                WHERE p1001.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO 
+                   OR (p1015.CODIGO_ASSOCIADO IS NOT NULL AND p1001.CODIGO_ASSOCIADO = p1015.CODIGO_ASSOCIADO)
+                ORDER BY CASE WHEN p1001.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO THEN 1 ELSE 2 END
+            ) contato_email
+        
+            OUTER APPLY (
+                SELECT TOP 1 
+                    ISNULL(CAST(p1006.CODIGO_AREA AS VARCHAR(10)), '') + ISNULL(p1006.NUMERO_TELEFONE, '') AS TELEFONE
+                FROM PS1006 p1006
+                WHERE p1006.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO 
+                   OR (p1015.CODIGO_ASSOCIADO IS NOT NULL AND p1006.CODIGO_ASSOCIADO = p1015.CODIGO_ASSOCIADO)
+                ORDER BY CASE WHEN p1006.CODIGO_ASSOCIADO = p1000.CODIGO_ASSOCIADO THEN 1 ELSE 2 END
+            ) contato_tel
+    
+            WHERE p1029.CODIGO_EVENTO IN ({string.Join(",", nomesParametros)})
+              AND p1020.DATA_PAGAMENTO >= @DataInicio
+              AND p1020.DATA_PAGAMENTO <  DATEADD(DAY, 1, @DataFim)
+            ORDER BY p1020.DATA_PAGAMENTO, p1000.NOME_ASSOCIADO";
 
             using (SqlConnection conn = new SqlConnection(_connStr))
             using (SqlCommand cmd = new SqlCommand(sql, conn))
             {
-                cmd.Parameters.AddWithValue("@CodigoEvento", codigoEvento);
+                for (int i = 0; i < codigosEvento.Count; i++)
+                {
+                    cmd.Parameters.AddWithValue($"@CodigoEvento{i}", codigosEvento[i]);
+                }
+
                 cmd.Parameters.AddWithValue("@DataInicio", dataInicio.Date);
                 cmd.Parameters.AddWithValue("@DataFim", dataFim.Date);
 
@@ -293,13 +290,16 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
                         {
                             CpfCnpj = reader["CPF_CNPJ"] as string,
                             NomeBeneficiario = reader["NOME_BENEFICIARIO"] as string,
+                            Email = reader["EMAIL"] as string,
+                            Telefone = reader["TELEFONE"] as string,
                             DataNascimento = reader["DATA_NASCIMENTO"] != DBNull.Value
                                 ? Convert.ToDateTime(reader["DATA_NASCIMENTO"]) : (DateTime?)null,
                             DataPagamento = reader["DATA_PAGAMENTO"] != DBNull.Value
                                 ? Convert.ToDateTime(reader["DATA_PAGAMENTO"]) : (DateTime?)null,
                             ValorEvento = reader["VALOR_EVENTO"] != DBNull.Value
                                 ? Convert.ToDecimal(reader["VALOR_EVENTO"]) : 0,
-                            TipoPessoa = codigoEvento == 13 ? "PF" : "PJ"
+                            TipoPessoa = codigosEvento.Contains(13) && codigosEvento.Count == 1 ? "PF" :
+                                         codigosEvento.Contains(45) && codigosEvento.Count == 1 ? "PJ" : "MÚLTIPLO"
                         });
                     }
                 }
@@ -308,18 +308,9 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             return lista;
         }
 
+
         // HELPERS
 
-        /// <summary>
-        /// Traduz o código TIPO_CONTRATACAO_ANS da PS1030 para o texto exibido na tela.
-        /// 
-        /// Códigos conhecidos:
-        ///   3 → Empresarial
-        ///   4 → Adesão
-        /// 
-        /// Qualquer outro código retorna o próprio valor (fallback),
-        /// garantindo que um código novo (ex: 5) não quebre a tela.
-        /// </summary>
         private static string TraduzirTipoContratacaoAns(string codigo)
         {
             if (string.IsNullOrWhiteSpace(codigo))
@@ -329,7 +320,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             {
                 case "3": return "Empresarial";
                 case "4": return "Adesão";
-                default: return null; // Ainda não teve casos de retorno diferente, se houver retorna nulo
+                default: return null;
             }
         }
     }

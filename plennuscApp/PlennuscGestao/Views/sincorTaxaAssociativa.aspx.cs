@@ -28,13 +28,23 @@ namespace appWhatsapp.PlennuscGestao.Views
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Nada especial aqui.
         }
 
         // PROCESSAR
-
         protected void btnProcessar_Click(object sender, EventArgs e)
         {
+            var codigosEvento = cblEntidades.Items
+                .Cast<ListItem>()
+                .Where(i => i.Selected)
+                .Select(i => Convert.ToInt32(i.Value))
+                .ToList();
+
+            if (codigosEvento.Count == 0)
+            {
+                ExibirMensagem("Selecione pelo menos uma entidade (PF ou PJ).", erro: true);
+                return;
+            }
+
             if (!DateTime.TryParse(txtDataInicio.Text, out var dataInicio) ||
                 !DateTime.TryParse(txtDataFim.Text, out var dataFim))
             {
@@ -50,10 +60,7 @@ namespace appWhatsapp.PlennuscGestao.Views
 
             try
             {
-                int codigoEvento = Convert.ToInt32(ddlTipoPessoa.SelectedValue);
-                string descricaoTipo = ddlTipoPessoa.SelectedItem.Text;
-
-                var dados = _service.ObterTaxasSincor(codigoEvento, dataInicio, dataFim);
+                var dados = _service.ObterTaxasSincor(codigosEvento, dataInicio, dataFim);
                 Session[SESSION_TAXAS_SINCOR] = dados;
 
                 gvResultado.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
@@ -64,8 +71,19 @@ namespace appWhatsapp.PlennuscGestao.Views
                 litTotalRegistros.Text = dados.Count.ToString();
                 divResultado.Visible = true;
 
-                // Cabeçalho timbrado
-                litEntidade.Text = ddlTipoPessoa.SelectedItem.Text.ToUpper();
+                // CABEÇALHO TIMBRADO: Exibe todos os nomes selecionados
+                var selecionados = cblEntidades.Items.Cast<ListItem>().Where(i => i.Selected).ToList();
+
+                if (selecionados.Count == 1)
+                {
+                    litEntidade.Text = selecionados[0].Value == "13" ? "SINCOR - PESSOA FÍSICA" : "SINCOR - PESSOA JURÍDICA";
+                }
+                else
+                {
+                    // Quebra de linha com <br /> para a tela (HTML)
+                    litEntidade.Text = string.Join("<br />", selecionados.Select(i => i.Text.ToUpper()));
+                }
+
                 litVigencia.Text = ObterVigenciaMesAno(dados);
                 litTotalRelatorio.Text = $"R$ {dados.Sum(x => x.ValorEvento):N2}";
                 litDataRelatorio.Text = DateTime.Now.ToString("dd/MM/yyyy");
@@ -138,7 +156,20 @@ namespace appWhatsapp.PlennuscGestao.Views
                 return;
             }
 
-            string nomeEntidade = ddlTipoPessoa.SelectedItem.Text.ToUpper();
+            // NOME PARA O EXCEL: Exibe todos os nomes selecionados
+            var selecionados = cblEntidades.Items.Cast<ListItem>().Where(i => i.Selected).ToList();
+            string nomeEntidade;
+
+            if (selecionados.Count == 1)
+            {
+                nomeEntidade = selecionados[0].Value == "13" ? "SINCOR - PESSOA FÍSICA" : "SINCOR - PESSOA JURÍDICA";
+            }
+            else
+            {
+                // Junta todos os nomes com " | " 
+                nomeEntidade = string.Join(" | ", selecionados.Select(i => i.Text.ToUpper()));
+            }
+
             string vigencia = ObterVigenciaMesAno(dados);
             decimal somaTotal = dados.Sum(x => x.ValorEvento);
 
@@ -159,20 +190,24 @@ namespace appWhatsapp.PlennuscGestao.Views
                     var sheetData = new X.SheetData();
                     worksheetPart.Worksheet = new X.Worksheet();
 
+                    // 1. CONFIGURAÇÃO DAS COLUNAS (A a G)
                     var columns = new X.Columns(
-                        new X.Column { Min = 1, Max = 1, Width = 18, CustomWidth = true },
-                        new X.Column { Min = 2, Max = 2, Width = 30, CustomWidth = true },
-                        new X.Column { Min = 3, Max = 3, Width = 18, CustomWidth = true },
-                        new X.Column { Min = 4, Max = 4, Width = 18, CustomWidth = true },
-                        new X.Column { Min = 5, Max = 5, Width = 15, CustomWidth = true }
+                        new X.Column { Min = 1, Max = 1, Width = 25, CustomWidth = true }, // A - Aumentei a largura da coluna do nome
+                        new X.Column { Min = 2, Max = 2, Width = 30, CustomWidth = true }, // B - Beneficiário
+                        new X.Column { Min = 3, Max = 3, Width = 30, CustomWidth = true }, // C - E-mail
+                        new X.Column { Min = 4, Max = 4, Width = 15, CustomWidth = true }, // D - Telefone
+                        new X.Column { Min = 5, Max = 5, Width = 18, CustomWidth = true }, // E - Data Nascimento
+                        new X.Column { Min = 6, Max = 6, Width = 18, CustomWidth = true }, // F - Data Pagamento
+                        new X.Column { Min = 7, Max = 7, Width = 15, CustomWidth = true }  // G - Valor Taxa
                     );
                     worksheetPart.Worksheet.AppendChild(columns);
                     worksheetPart.Worksheet.AppendChild(sheetData);
 
+                    // 2. MERGE CELLS
                     var mergeCells = new X.MergeCells(
-                        new X.MergeCell { Reference = "A1:D1" },
-                        new X.MergeCell { Reference = "A2:D2" },
-                        new X.MergeCell { Reference = "A3:D3" },
+                        new X.MergeCell { Reference = "A1:F1" },
+                        new X.MergeCell { Reference = "A2:F2" },
+                        new X.MergeCell { Reference = "A3:F3" },
                         new X.MergeCell { Reference = "B5:C5" }
                     );
                     worksheetPart.Worksheet.AppendChild(mergeCells);
@@ -185,72 +220,91 @@ namespace appWhatsapp.PlennuscGestao.Views
                         Name = "SINCOR"
                     });
 
-                    // Cabeçalho
+                    // Cabeçalho Linha 1
                     var linha1 = new X.Row();
                     linha1.Append(CriarCelulaTexto("VALLOR BENEFÍCIOS", 10, "A1"));
                     linha1.Append(CriarCelulaTexto("", 10, "B1"));
                     linha1.Append(CriarCelulaTexto("", 10, "C1"));
                     linha1.Append(CriarCelulaTexto("", 10, "D1"));
-                    linha1.Append(CriarCelulaTexto(DateTime.Now.ToString("dd/MM/yyyy"), 11, "E1"));
+                    linha1.Append(CriarCelulaTexto("", 10, "E1"));
+                    linha1.Append(CriarCelulaTexto("", 10, "F1"));
+                    linha1.Append(CriarCelulaTexto(DateTime.Now.ToString("dd/MM/yyyy"), 11, "G1"));
                     sheetData.Append(linha1);
 
+                    // Cabeçalho Linha 2
                     var linha2 = new X.Row();
                     linha2.Append(CriarCelulaTexto("Av. Assis Chateaubriand, 288 - Floresta - BH/MG", 12, "A2"));
                     linha2.Append(CriarCelulaTexto("", 12, "B2"));
                     linha2.Append(CriarCelulaTexto("", 12, "C2"));
                     linha2.Append(CriarCelulaTexto("", 12, "D2"));
                     linha2.Append(CriarCelulaTexto("", 12, "E2"));
+                    linha2.Append(CriarCelulaTexto("", 12, "F2"));
+                    linha2.Append(CriarCelulaTexto("", 12, "G2"));
                     sheetData.Append(linha2);
 
+                    // Cabeçalho Linha 3
                     var linha3 = new X.Row();
                     linha3.Append(CriarCelulaTexto("comissoes@vallorbeneficios.com.br", 12, "A3"));
                     linha3.Append(CriarCelulaTexto("", 12, "B3"));
                     linha3.Append(CriarCelulaTexto("", 12, "C3"));
                     linha3.Append(CriarCelulaTexto("", 12, "D3"));
                     linha3.Append(CriarCelulaTexto("", 12, "E3"));
+                    linha3.Append(CriarCelulaTexto("", 12, "F3"));
+                    linha3.Append(CriarCelulaTexto("", 12, "G3"));
                     sheetData.Append(linha3);
 
+                    // Linha 4 (Vazia)
                     var linha4 = new X.Row();
-                    for (int i = 1; i <= 5; i++)
+                    for (int i = 1; i <= 7; i++)
                         linha4.Append(CriarCelulaTexto("", 14, $"{LetraColuna(i)}4"));
                     sheetData.Append(linha4);
 
+                    // Linha 5 (Faixa azul)
                     var linha5 = new X.Row();
-                    linha5.Append(CriarCelulaTexto(nomeEntidade, 13, "A5"));
+                    // AQUI: Alterei o estilo da célula A5 para o estilo 15 (com quebra de texto)
+                    linha5.Append(CriarCelulaTexto(nomeEntidade, 15, "A5"));
                     linha5.Append(CriarCelulaTexto("RELATÓRIO TAXAS ASSOCIATIVAS", 13, "B5"));
                     linha5.Append(CriarCelulaTexto("", 13, "C5"));
                     linha5.Append(CriarCelulaTexto($"Vig. {vigencia}", 13, "D5"));
-                    linha5.Append(CriarCelulaTexto($"TOTAL: R$ {somaTotal:N2}", 13, "E5"));
+                    linha5.Append(CriarCelulaTexto("", 13, "E5"));
+                    linha5.Append(CriarCelulaTexto($"TOTAL: R$ {somaTotal:N2}", 13, "F5"));
+                    linha5.Append(CriarCelulaTexto("", 13, "G5"));
                     sheetData.Append(linha5);
 
-                    // Cabeçalho da tabela
-                    var cabecalhos = new[] { "CPF/CNPJ", "Beneficiário", "Data Nascimento", "Data Pagamento", "Valor Taxa" };
+                    // Cabeçalho da tabela (Linha 6)
+                    var cabecalhos = new[] { "CPF/CNPJ", "Beneficiário", "E-mail", "Telefone", "Data Nascimento", "Data Pagamento", "Valor Taxa" };
                     var headerRow = new X.Row();
                     for (int i = 0; i < cabecalhos.Length; i++)
+                    {
                         headerRow.Append(CriarCelulaTexto(cabecalhos[i], 1, $"{LetraColuna(i + 1)}6"));
+                    }
                     sheetData.Append(headerRow);
 
-                    // Dados
+                    // Dados (Linha 7 em diante)
                     int linha = 7;
                     foreach (var item in dados)
                     {
                         var row = new X.Row();
                         row.Append(CriarCelulaTexto(item.CpfCnpj ?? "", 0, $"A{linha}"));
                         row.Append(CriarCelulaTexto(item.NomeBeneficiario ?? "", 0, $"B{linha}"));
-                        row.Append(CriarCelulaTexto(item.DataNascimento?.ToString("dd/MM/yyyy") ?? "", 0, $"C{linha}"));
-                        row.Append(CriarCelulaTexto(item.DataPagamento?.ToString("dd/MM/yyyy") ?? "", 0, $"D{linha}"));
-                        row.Append(CriarCelulaTexto(item.ValorEvento.ToString("N2"), 0, $"E{linha}"));
+                        row.Append(CriarCelulaTexto(item.Email ?? "", 0, $"C{linha}"));
+                        row.Append(CriarCelulaTexto(item.Telefone ?? "", 0, $"D{linha}"));
+                        row.Append(CriarCelulaTexto(item.DataNascimento?.ToString("dd/MM/yyyy") ?? "", 0, $"E{linha}"));
+                        row.Append(CriarCelulaTexto(item.DataPagamento?.ToString("dd/MM/yyyy") ?? "", 0, $"F{linha}"));
+                        row.Append(CriarCelulaTexto(item.ValorEvento.ToString("N2"), 0, $"G{linha}"));
                         sheetData.Append(row);
                         linha++;
                     }
 
-                    // Total
+                    // Total (Linha final)
                     var totalRow = new X.Row();
                     totalRow.Append(CriarCelulaTexto("", 0, $"A{linha}"));
                     totalRow.Append(CriarCelulaTexto("", 0, $"B{linha}"));
                     totalRow.Append(CriarCelulaTexto("", 0, $"C{linha}"));
-                    totalRow.Append(CriarCelulaTexto("Valor Total", 1, $"D{linha}"));
-                    totalRow.Append(CriarCelulaTexto(somaTotal.ToString("N2"), 1, $"E{linha}"));
+                    totalRow.Append(CriarCelulaTexto("", 0, $"D{linha}"));
+                    totalRow.Append(CriarCelulaTexto("", 0, $"E{linha}"));
+                    totalRow.Append(CriarCelulaTexto("Valor Total", 1, $"F{linha}"));
+                    totalRow.Append(CriarCelulaTexto(somaTotal.ToString("N2"), 1, $"G{linha}"));
                     sheetData.Append(totalRow);
 
                     InserirLogoVallor(worksheetPart, CaminhoLogoVallor);
@@ -299,7 +353,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             return menorData.ToString("MM.yyyy");
         }
 
-        // INSERIR LOGO NO EXCEL (cópia idêntica do SINDNAPI)
+        // INSERIR LOGO NO EXCEL
 
         private void InserirLogoVallor(WorksheetPart worksheetPart, string caminhoLogo)
         {
@@ -356,7 +410,7 @@ namespace appWhatsapp.PlennuscGestao.Views
             }
         }
 
-        // HELPERS DE ESTILO / CÉLULA (cópia idêntica do SINDNAPI)
+        // HELPERS DE ESTILO / CÉLULA
 
         private X.Border CriarBordaFina(string corArgb)
         {
@@ -460,7 +514,23 @@ namespace appWhatsapp.PlennuscGestao.Views
                         Vertical = X.VerticalAlignmentValues.Center
                     }
                 },
-                new X.CellFormat { BorderId = 1, ApplyBorder = true }
+                new X.CellFormat { BorderId = 1, ApplyBorder = true },
+                // 15 - Faixa azul com quebra de texto (Para a célula A5)
+                new X.CellFormat
+                {
+                    FontId = 4,
+                    FillId = 3,
+                    BorderId = 1,
+                    ApplyFont = true,
+                    ApplyFill = true,
+                    ApplyBorder = true,
+                    Alignment = new X.Alignment
+                    {
+                        Horizontal = X.HorizontalAlignmentValues.Left, // Alinhado à esquerda
+                        Vertical = X.VerticalAlignmentValues.Center,   // Centralizado na vertical
+                        WrapText = true                                // Habilita a quebra de linha!
+                    }
+                }
             );
 
             return new X.Stylesheet(fonts, fills, borders, cellFormats);

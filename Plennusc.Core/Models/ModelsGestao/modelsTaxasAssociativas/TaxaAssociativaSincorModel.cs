@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Plennusc.Core.Models.ModelsGestao.modelsTaxasAssociativas
 {
@@ -14,6 +10,11 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsTaxasAssociativas
     {
         public string CpfCnpj { get; set; }
         public string NomeBeneficiario { get; set; }
+
+        // Propriedades de contato adicionadas
+        public string Email { get; set; }
+        public string Telefone { get; set; }
+
         public DateTime? DataNascimento { get; set; }
         public DateTime? DataPagamento { get; set; }
         public decimal ValorEvento { get; set; }
