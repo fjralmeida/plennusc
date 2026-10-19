@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master"
-    AutoEventWireup="true" CodeBehind="sendMessageBeneficiary.aspx.cs"
+    AutoEventWireup="true" CodeBehind="sendMessageFamiliarGroup.aspx.cs"
     Inherits="PlennuscApp.PlennuscGestao.Views.EnvioMensagemBeneficiario"
     Async="true" %>
 
@@ -9,13 +9,11 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-    <link href="../../Content/Css/projects/gestao/structuresCss/sendMessageBeneficiary.css" rel="stylesheet" />
+    <link href="../../Content/Css/projects/gestao/structuresCss/sendMessageFamiliarGroup.css" rel="stylesheet" />
 
     <script>
-    // ============================================
-    // FUNÇÕES ORIGINAIS (MANTÉM TUDO FUNCIONANDO)
-    // ============================================
 
+    // FUNÇÕES ORIGINAIS (MANTÉM TUDO FUNCIONANDO)
     function alternarSelecao(chk) {
         var row = chk.closest('tr');
         if (row) {
@@ -131,9 +129,7 @@
         document.getElementById("lblSelecionados").innerText = totalSelecionados;
     }
 
-    // ============================================
     // FUNÇÕES NOVAS PARA SELECIONAR TODAS AS PÁGINAS
-    // ============================================
 
     // Variável global para armazenar TODOS os códigos da consulta
     var todosCodigosConsulta = [];

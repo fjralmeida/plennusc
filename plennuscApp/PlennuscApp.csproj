@@ -282,8 +282,8 @@
     <Content Include="Content\Css\projects\gestao\structuresCss\register-structure-type.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\register-Structures.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\RegistrationOperador\operatorRegistration.css" />
-    <Content Include="Content\Css\projects\gestao\structuresCss\sendCompanyMessage.css" />
-    <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageBeneficiary.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageEnterpriseGroup.css" />
+    <Content Include="Content\Css\projects\gestao\structuresCss\sendMessageFamiliarGroup.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sendMessage\ViewShippingHistory.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\sistema\Company-Menu-Management-System.css" />
     <Content Include="Content\Css\projects\gestao\structuresCss\taxasAssociativas\taxasAssociativas.css" />
@@ -336,12 +336,13 @@
     <Content Include="PlennuscGestao\Views\registerStructureType.aspx" />
     <Content Include="PlennuscGestao\Views\revenueVerified.aspx" />
     <Content Include="PlennuscGestao\Views\sendAnAutomatedEmail.aspx" />
-    <Content Include="PlennuscGestao\Views\sendCompanyMessage.aspx" />
-    <Content Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx" />
+    <Content Include="PlennuscGestao\Views\sendMessageEnterpriseGroup.aspx" />
+    <Content Include="PlennuscGestao\Views\sendMessageFamiliarGroup.aspx" />
     <Content Include="PlennuscGestao\Views\homeManagement.aspx" />
     <Content Include="PlennuscGestao\Views\profile.aspx" />
     <Content Include="PlennuscGestao\Views\setCemgImport.aspx" />
     <Content Include="PlennuscGestao\Views\shell.aspx" />
+    <Content Include="PlennuscGestao\Views\sincorTaxaAssociativa.aspx" />
     <Content Include="PlennuscGestao\Views\sindnapiTaxaAssociativa.aspx" />
     <Content Include="PlennuscGestao\Views\structureType.aspx" />
     <Content Include="PlennuscGestao\Views\TelaEnvio.aspx" />
@@ -777,19 +778,19 @@
     <Compile Include="PlennuscGestao\Views\sendAnAutomatedEmail.aspx.designer.cs">
       <DependentUpon>sendAnAutomatedEmail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\sendCompanyMessage.aspx.cs">
-      <DependentUpon>sendCompanyMessage.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\sendMessageEnterpriseGroup.aspx.cs">
+      <DependentUpon>sendMessageEnterpriseGroup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\sendCompanyMessage.aspx.designer.cs">
-      <DependentUpon>sendCompanyMessage.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\sendMessageEnterpriseGroup.aspx.designer.cs">
+      <DependentUpon>sendMessageEnterpriseGroup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx.cs">
-      <DependentUpon>sendMessageBeneficiary.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\sendMessageFamiliarGroup.aspx.cs">
+      <DependentUpon>sendMessageFamiliarGroup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PlennuscGestao\Views\sendMessageBeneficiary.aspx.designer.cs">
-      <DependentUpon>sendMessageBeneficiary.aspx</DependentUpon>
+    <Compile Include="PlennuscGestao\Views\sendMessageFamiliarGroup.aspx.designer.cs">
+      <DependentUpon>sendMessageFamiliarGroup.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\homeManagement.aspx.cs">
       <DependentUpon>homeManagement.aspx</DependentUpon>
@@ -825,6 +826,13 @@
     </Compile>
     <Compile Include="PlennuscGestao\Views\shell.aspx.designer.cs">
       <DependentUpon>shell.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\sincorTaxaAssociativa.aspx.cs">
+      <DependentUpon>sincorTaxaAssociativa.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlennuscGestao\Views\sincorTaxaAssociativa.aspx.designer.cs">
+      <DependentUpon>sincorTaxaAssociativa.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlennuscGestao\Views\sindnapiTaxaAssociativa.aspx.cs">
       <DependentUpon>sindnapiTaxaAssociativa.aspx</DependentUpon>
