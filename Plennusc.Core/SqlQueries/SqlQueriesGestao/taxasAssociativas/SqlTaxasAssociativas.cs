@@ -259,6 +259,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.taxasAssociativas
             if (codigoEvento != 13 && codigoEvento != 45)
                 return lista;
 
+
             string sql = @"
                 SELECT
                     p1000.NUMERO_CPF          AS CPF_CNPJ,
