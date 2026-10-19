@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="sendCompanyMessage.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sendCompanyMessage" Async="true" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PlennuscGestao/Views/Masters/IndexFrame.Master" AutoEventWireup="true" CodeBehind="sendMessageEnterpriseGroup.aspx.cs" Inherits="appWhatsapp.PlennuscGestao.Views.sendCompanyMessage" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
-    <link href="../../Content/Css/projects/gestao/structuresCss/sendCompanyMessage.css" rel="stylesheet" />
-    <script src="../../Content/Css/js/projects/gestaoJs/structuresJs/sendCompanyMessage.js"></script>
+    <link href="../../Content/Css/projects/gestao/structuresCss/sendMessageEnterpriseGroup.css" rel="stylesheet" />
+    <script src="../../Content/Css/js/projects/gestaoJs/structuresJs/sendMessageEnterpriseGroup.js"></script>
 
     <script type="text/javascript">
 

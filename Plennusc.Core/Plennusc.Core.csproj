@@ -276,6 +276,7 @@
     <Compile Include="Models\ModelsGestao\modelsStructure\structureTypeModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\subTypeDate.cs" />
     <Compile Include="Models\ModelsGestao\modelsTaxasAssociativas\TaxaAssociativaDemaisEntidadesModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsTaxasAssociativas\TaxaAssociativaSincorModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsTaxasAssociativas\TaxaAssociativaSindnapiModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsUser\UsuarioSistemaEmpresaMenu.cs" />
     <Compile Include="Models\ModelsGestao\modelsUser\VinculoUsuarioRequest.cs" />
