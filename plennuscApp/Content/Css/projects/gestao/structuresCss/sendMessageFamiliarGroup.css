@@ -133,7 +133,7 @@ body {
     border-top: 1px solid #dee2e6;
     flex-wrap: wrap;
     align-items: end;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 /* TABELA */
 .table thead {
@@ -632,6 +632,24 @@ input[type="checkbox"].form-check-input {
     width: 0%;
     transition: width 0.5s ease;
     border-radius: 3px;
+}
+
+.texto-mensagem {
+    white-space: pre-line;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.6;
+}
+
+    .texto-mensagem strong {
+        color: #2c3e50;
+        font-weight: 700;
+    }
+
+.input-data-card {
+    max-width: 200px;
+    margin: 15px 0;
+    border-color: #4CB07A;
 }
 
 /* ANIMAÇÕES */

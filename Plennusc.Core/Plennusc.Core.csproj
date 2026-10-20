@@ -269,6 +269,7 @@
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraListDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsOperator\OperadoraSyncDto.cs" />
     <Compile Include="Models\ModelsGestao\modelsPlan\PlanoModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsSendMessage\GrupoFamiliarEnvioModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsSendMessage\DetailedSubmissionResult.cs" />
     <Compile Include="Models\ModelsGestao\modelsSistema\SistemaModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsStructure\OptionItemStructure.cs" />
@@ -315,6 +316,7 @@
     <Compile Include="Service\ServiceGestao\PlatformSys\listPlatformService.cs" />
     <Compile Include="Service\ServiceGestao\planiumApi\PrecoService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\ExcelReportService.cs" />
+    <Compile Include="Service\ServiceGestao\sendMessage\FamiliarGroupService.cs" />
     <Compile Include="Service\ServiceGestao\sendMessage\historicalShippingService.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliation.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationAurora.cs" />
@@ -369,6 +371,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\AutenticacaoDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\profile\PessoaDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\registrationPlan\PlanoQueries.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\sendMessage\GrupoFamiliarQuery.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\sendMessage\HistoricoEnvioQuery.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\settings\PrivacySettings.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\SistemaUtil.cs" />
