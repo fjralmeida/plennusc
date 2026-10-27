@@ -6,23 +6,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <title>Envio de Mensagens - Grupo Familiar</title>
     <link href="../../Content/Css/projects/gestao/structuresCss/sendMessageFamiliarGroup.css" rel="stylesheet" />
-    
-    <style>
-        .texto-mensagem { white-space: pre-line; font-size: 13px; color: #444; line-height: 1.6; }
-        .texto-mensagem strong { color: #2c3e50; font-weight: 700; }
-        .input-data-card { max-width: 200px; margin: 15px 0; border-color: #4CB07A; }
-
-        /* ESTILOS DO DROPDOWN COM FILTRO SIMPLES */
-        .custom-dropdown { position: relative; width: 100%; }
-        .dropdown-header { border: 1px solid #ced4da; border-radius: 8px; padding: 8px 12px; cursor: pointer; background: #fff; display: flex; justify-content: space-between; align-items: center; min-height: 36px; font-size: 13px; }
-        .dropdown-panel { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #ced4da; border-radius: 8px; margin-top: 4px; z-index: 1000; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .custom-dropdown.open .dropdown-panel { display: block; }
-        .dropdown-search { padding: 8px; border-bottom: 1px solid #e9ecef; }
-        .dropdown-list { max-height: 250px; overflow-y: auto; padding: 4px 0; }
-        .dropdown-list div { padding: 8px 12px; cursor: pointer; font-size: 13px; }
-        .dropdown-list div:hover { background-color: #e6f5ee; color: #4CB07A; }
-        .dropdown-list .placeholder { color: #999; font-size: 12px; font-style: italic; text-align: center; padding: 10px; }
-    </style>
 
     <script>
         function abrirModal() { document.getElementById('modalEscolherMensagem').style.display = 'block'; }
@@ -150,9 +133,10 @@
                 </div>
             </div>
 
+            <!-- FILTROS -->
             <div class="filter-panel">
-                <div class="filter-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-                    
+                <!-- LINHA 1: Tipo de Plano, Operadora e Faturamento -->
+                <div class="filter-grid-row-3">
                     <div class="filter-group">
                         <label class="form-label fw-semibold text-primary">Tipo de Plano (Familiar) *</label>
                         <asp:DropDownList ID="ddlTipoPlano" runat="server" CssClass="form-select form-select-sm border-primary">
@@ -167,34 +151,37 @@
                         <asp:DropDownList ID="ddlOperadora" runat="server" CssClass="form-select form-select-sm"></asp:DropDownList>
                     </div>
                     
-                    <!-- DROPDOWN COM FILTRO INTERNO -->
+                    <div class="filter-group">
+                        <label class="form-label fw-semibold">Grupo de Faturamento:</label>
+                        <asp:DropDownList ID="ddlFaturamento" runat="server" CssClass="form-select form-select-sm"></asp:DropDownList>
+                    </div>
+                </div>
+
+                <!-- LINHA 2: Grupo de Pessoas (Esticado) -->
+                <div class="filter-grid-row-1">
                     <div class="filter-group">
                         <label class="form-label fw-semibold">Grupo de Pessoas:</label>
                         <div class="custom-dropdown" id="wrapperEntidades">
                             <div class="dropdown-header" id="dropdownHeaderEntidades">
-                                <span id="lblEntidadesResumo"><span class="text-muted">Todos</span></span>
+                                <span id="lblEntidadesResumo" class="text-truncate-custom"><span class="text-muted">Todos</span></span>
                                 <span class="arrow">▼</span>
                             </div>
                             <div class="dropdown-panel" id="dropdownPanelEntidades">
                                 <div class="dropdown-search">
-                                    <input type="text" id="txtFiltroEntidades" class="form-control form-control-sm" placeholder="Digite para filtrar..." autocomplete="off" />
+                                    <input type="text" id="txtFiltroEntidades" class="form-control form-control-sm" placeholder="Digite 5 letras para filtrar..." autocomplete="off" />
                                 </div>
                                 <div class="dropdown-list" id="listaEntidades">
                                     <!-- Itens renderizados via JS -->
                                 </div>
                             </div>
                         </div>
-                        <!-- HiddenField para guardar o valor selecionado -->
                         <asp:HiddenField ID="hfEntidadeId" runat="server" />
-                        <!-- HiddenField com TODAS as entidades para o JS ler rápido -->
                         <asp:HiddenField ID="hfTodosEntidades" runat="server" />
                     </div>
-                    
-                    <div class="filter-group">
-                        <label class="form-label fw-semibold">Grupo de Faturamento:</label>
-                        <asp:DropDownList ID="ddlFaturamento" runat="server" CssClass="form-select form-select-sm"></asp:DropDownList>
-                    </div>
+                </div>
 
+                <!-- LINHA 3: Datas (Vencimento e Envio Antecipado) -->
+                <div class="filter-grid-row-4">
                     <div class="filter-group">
                         <label class="form-label fw-semibold">Vencimento De:</label>
                         <asp:TextBox ID="txtDataVencimentoInicio" runat="server" TextMode="Date" CssClass="form-control form-control-sm"></asp:TextBox>

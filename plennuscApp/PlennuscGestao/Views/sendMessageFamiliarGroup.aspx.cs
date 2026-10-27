@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web.Script.Serialization; // Necessário para o JSON
+using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -26,7 +26,6 @@ namespace PlennuscApp.PlennuscGestao.Views
         {
             try
             {
-                // 1. Operadoras
                 DataTable dtOperadoras = _service.ObterOperadoras();
                 ddlOperadora.DataSource = dtOperadoras;
                 ddlOperadora.DataTextField = "DESCRICAO_GRUPO_CONTRATO";
@@ -34,17 +33,14 @@ namespace PlennuscApp.PlennuscGestao.Views
                 ddlOperadora.DataBind();
                 ddlOperadora.Items.Insert(0, new ListItem("Todas", ""));
 
-                // 2. Faturamento
-                Dictionary<string, string> dictFaturamento = _service.ObterGruposFaturamento();
-                ddlFaturamento.DataSource = dictFaturamento;
-                ddlFaturamento.DataTextField = "Value";
-                ddlFaturamento.DataValueField = "Key";
+                DataTable dtFaturamento = _service.ObterGruposFaturamento();
+                ddlFaturamento.DataSource = dtFaturamento;
+                ddlFaturamento.DataTextField = "DESCRICAO_GP_FATURAMENTO";
+                ddlFaturamento.DataValueField = "CODIGO_GRUPO_FATURAMENTO";
                 ddlFaturamento.DataBind();
                 ddlFaturamento.Items.Insert(0, new ListItem("Todos", ""));
 
-                // 3. Entidades (Carrega tudo de uma vez e serializa para JSON)
                 DataTable dtEntidades = _service.ObterTodasEntidades();
-
                 var listaEntidades = new List<object>();
                 foreach (DataRow row in dtEntidades.Rows)
                 {
@@ -54,14 +50,13 @@ namespace PlennuscApp.PlennuscGestao.Views
                         Nome = row["NOME_GRUPO_PESSOAS"].ToString()
                     });
                 }
-
-                // Serializa a lista e joga no HiddenField para o JavaScript ler
                 var serializer = new JavaScriptSerializer();
                 hfTodosEntidades.Value = serializer.Serialize(listaEntidades);
             }
             catch (Exception ex)
             {
                 MostrarToast("Erro ao carregar filtros: " + ex.Message, "error");
+                System.Diagnostics.Debug.WriteLine("ERRO CARREGAR FILTROS: " + ex.Message);
             }
         }
 
@@ -88,16 +83,24 @@ namespace PlennuscApp.PlennuscGestao.Views
         {
             try
             {
+                DateTime vencInicio = new DateTime(1900, 1, 1);
+                if (!string.IsNullOrEmpty(txtDataVencimentoInicio.Text))
+                    vencInicio = Convert.ToDateTime(txtDataVencimentoInicio.Text);
+
+                DateTime vencFim = new DateTime(2099, 12, 31);
+                if (!string.IsNullOrEmpty(txtDataVencimentoFim.Text))
+                    vencFim = Convert.ToDateTime(txtDataVencimentoFim.Text);
+
                 var filtro = new FiltroEnvioModel
                 {
                     TipoPlano = ddlTipoPlano.SelectedValue,
                     Operadora = ddlOperadora.SelectedValue,
-                    GrupoPessoas = hfEntidadeId.Value, // ID da entidade escolhida no Dropdown
+                    GrupoPessoas = hfEntidadeId.Value,
                     GrupoFaturamento = ddlFaturamento.SelectedValue,
-                    VencimentoInicio = !string.IsNullOrEmpty(txtDataVencimentoInicio.Text) ? Convert.ToDateTime(txtDataVencimentoInicio.Text) : (DateTime?)null,
-                    VencimentoFim = !string.IsNullOrEmpty(txtDataVencimentoFim.Text) ? Convert.ToDateTime(txtDataVencimentoFim.Text) : (DateTime?)null,
-                    EnvioInicio = !string.IsNullOrEmpty(txtEnvioInicio.Text) ? Convert.ToDateTime(txtEnvioInicio.Text) : (DateTime?)null,
-                    EnvioFim = !string.IsNullOrEmpty(txtEnvioFim.Text) ? Convert.ToDateTime(txtEnvioFim.Text) : (DateTime?)null,
+                    VencimentoInicio = vencInicio,
+                    VencimentoFim = vencFim,
+                    EnvioInicio = null,
+                    EnvioFim = null,
                     Mensagem = hfTemplateEscolhido.Value
                 };
 
@@ -107,15 +110,16 @@ namespace PlennuscApp.PlennuscGestao.Views
                 GridAssociados.DataBind();
 
                 lblTotalRegistros.Text = lista.Count.ToString();
-                hfTodosCodigos.Value = string.Join(",", lista.Select(x => x.CodigoAssociado));
+                hfTodosCodigos.Value = string.Join(",", lista.Select(x => x.ChaveEnvio));
                 btnTestarApi.Enabled = lista.Count > 0 && !string.IsNullOrEmpty(hfTemplateEscolhido.Value);
 
                 if (lista.Count == 0)
-                    MostrarToast("Nenhum beneficiário encontrado.", "info");
+                    MostrarToast("Nenhum beneficiário encontrado para os filtros selecionados.", "info");
             }
             catch (Exception ex)
             {
                 MostrarToast("Erro ao filtrar: " + ex.Message, "error");
+                System.Diagnostics.Debug.WriteLine("ERRO FILTRAR: " + ex.Message);
             }
         }
 
@@ -148,14 +152,23 @@ namespace PlennuscApp.PlennuscGestao.Views
                 }
 
                 var codigosSelecionados = hfSelecionados.Value.Split(',').ToList();
+
+                DateTime vencInicio = new DateTime(1900, 1, 1);
+                if (!string.IsNullOrEmpty(txtDataVencimentoInicio.Text))
+                    vencInicio = Convert.ToDateTime(txtDataVencimentoInicio.Text);
+
+                DateTime vencFim = new DateTime(2099, 12, 31);
+                if (!string.IsNullOrEmpty(txtDataVencimentoFim.Text))
+                    vencFim = Convert.ToDateTime(txtDataVencimentoFim.Text);
+
                 var filtro = new FiltroEnvioModel
                 {
                     TipoPlano = ddlTipoPlano.SelectedValue,
                     Operadora = ddlOperadora.SelectedValue,
                     GrupoPessoas = hfEntidadeId.Value,
                     GrupoFaturamento = ddlFaturamento.SelectedValue,
-                    VencimentoInicio = !string.IsNullOrEmpty(txtDataVencimentoInicio.Text) ? Convert.ToDateTime(txtDataVencimentoInicio.Text) : (DateTime?)null,
-                    VencimentoFim = !string.IsNullOrEmpty(txtDataVencimentoFim.Text) ? Convert.ToDateTime(txtDataVencimentoFim.Text) : (DateTime?)null,
+                    VencimentoInicio = vencInicio,
+                    VencimentoFim = vencFim,
                     Mensagem = mensagemEscolhida
                 };
 

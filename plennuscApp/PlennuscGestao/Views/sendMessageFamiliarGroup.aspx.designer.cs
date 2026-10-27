@@ -51,6 +51,15 @@ namespace PlennuscApp.PlennuscGestao.Views
         protected global::System.Web.UI.WebControls.DropDownList ddlOperadora;
 
         /// <summary>
+        /// Controle ddlFaturamento.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlFaturamento;
+
+        /// <summary>
         /// Controle hfEntidadeId.
         /// </summary>
         /// <remarks>
@@ -67,15 +76,6 @@ namespace PlennuscApp.PlennuscGestao.Views
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfTodosEntidades;
-
-        /// <summary>
-        /// Controle ddlFaturamento.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFaturamento;
 
         /// <summary>
         /// Controle txtDataVencimentoInicio.

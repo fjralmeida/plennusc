@@ -5,6 +5,8 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsSendMessage
     public class GrupoFamiliarEnvioModel
     {
         public string CodigoAssociado { get; set; }
+        public string CodigoEmpresa { get; set; }
+
         public string NomeTitular { get; set; }
         public string CpfCnpj { get; set; }
         public string GrupoContrato { get; set; }
@@ -16,13 +18,22 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsSendMessage
         public string Telefone { get; set; }
         public decimal ValorBoleto { get; set; }
         public string MesReferencia { get; set; }
+
+        // Chave de controle de envio (usará o código do associado ou da empresa)
+        public string ChaveEnvio
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(CodigoAssociado) ? CodigoAssociado : CodigoEmpresa;
+            }
+        }
     }
 
     public class FiltroEnvioModel
     {
         public string TipoPlano { get; set; }
         public string Operadora { get; set; }
-        public string GrupoPessoas { get; set; } // Recebe o ID (string)
+        public string GrupoPessoas { get; set; }
         public string GrupoFaturamento { get; set; }
         public DateTime? VencimentoInicio { get; set; }
         public DateTime? VencimentoFim { get; set; }
