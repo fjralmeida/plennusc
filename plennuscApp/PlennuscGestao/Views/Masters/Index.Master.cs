@@ -499,6 +499,14 @@ namespace appWhatsapp.PlennuscGestao.Views.Masters
                 return "bi bi-file-earmark-spreadsheet me-2";
             }
 
+            // ✅ CARTEIRINHA
+            if (nomeObjeto?.IndexOf("cardsImport", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                nomeDisplay?.IndexOf("importação carteirinhas", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "bi bi-person-vcard me-2";
+            }
+
+
             // ✅ ÍCONE PADRÃO
             return "bi bi-circle me-2";
         }

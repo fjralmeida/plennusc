@@ -242,6 +242,7 @@
     <Compile Include="Models\ModelsGestao\modelsButYou\DependentModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\GrupoTitularDependentes.cs" />
     <Compile Include="Models\ModelsGestao\modelsButYou\ProposalModel.cs" />
+    <Compile Include="Models\ModelsGestao\modelsCardsImport\CardsImportModel.cs" />
     <Compile Include="Models\ModelsGestao\modelsCIDs\activityReportModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsCIDs\CIDsModels.cs" />
     <Compile Include="Models\ModelsGestao\modelsCIDs\setCemgImportModels.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUniaoMedica.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceBillingReconciliationUnimed.cs" />
     <Compile Include="Service\ServiceGestao\serviceBilling\ServiceRevenueVerified.cs" />
+    <Compile Include="Service\ServiceGestao\serviceCardsImport\serviceCardsImport.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\DocxServiceSetCemg.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\DocxToPdfConverter.cs" />
     <Compile Include="Service\ServiceGestao\serviceMigration\ImportacaoSetCemgService.cs" />
@@ -349,6 +351,7 @@
     <Compile Include="SqlQueries\SqlQueriesGestao\billing\SqlRevenueVerified.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\butYouQueries\butYouQueriesAssociados.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\butYouQueries\enterpriseButYouQueries.cs" />
+    <Compile Include="SqlQueries\SqlQueriesGestao\cardsImport\CardsImportData.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\CompanyDAO.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\company\UserCompanyQueries.cs" />
     <Compile Include="SqlQueries\SqlQueriesGestao\dataCIDs\CIDsData.cs" />

@@ -99,6 +99,9 @@ namespace appWhatsapp
             routes.MapPageRoute("comissionAwardSincor", "comissionAwardSincor", "~/PlennuscGestao/Views/sincorTaxaAssociativa.aspx");
 
             routes.MapPageRoute("setCemgImport", "setCemgImport", "~/PlennuscGestao/Views/setCemgImport.aspx");
+
+            routes.MapPageRoute("cardsImport", "cardsImport", "~/PlennuscGestao/Views/cardsImport.aspx");
+
             #endregion
 
 
