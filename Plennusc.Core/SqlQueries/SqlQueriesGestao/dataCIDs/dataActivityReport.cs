@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
 {
@@ -96,7 +93,11 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
                 SELECT STRING_AGG(c.CODIGO_CID, '; ')
                 FROM PS1009 c
                 WHERE c.CODIGO_ASSOCIADO = a.CODIGO_ASSOCIADO
-            )                                                                                     AS CID
+            )                                                                                     AS CID,
+
+            -- NOVAS COLUNAS (PS1010): vazias quando CodEmp = '400', preenchidas caso contrário
+            CASE WHEN eff.CodEmp = '400' THEN NULL ELSE emp1010.NOME_EMPRESA END                AS NOME_EMPRESA,
+            CASE WHEN eff.CodEmp = '400' THEN NULL ELSE emp1010.NUMERO_CNPJ   END                AS CNPJ_EMPRESA
 
         FROM PS1000 a
         LEFT JOIN PS1000 tit    ON a.CODIGO_TITULAR         = tit.CODIGO_ASSOCIADO
@@ -120,6 +121,15 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
         LEFT JOIN PS1001 e01    ON e01.CODIGO_ASSOCIADO     = eff.CodAssoc
         LEFT JOIN PS1015 e15    ON e15.CODIGO_ASSOCIADO     = eff.CodAssoc
         LEFT JOIN PS1007 car    ON car.CODIGO_ASSOCIADO     = a.CODIGO_ASSOCIADO
+        -- NOVO JOIN: PS1010 (empresa) pela CODIGO_EMPRESA, 1 linha por empresa
+        OUTER APPLY (
+            SELECT TOP 1
+                x.NOME_EMPRESA  AS NOME_EMPRESA,
+                x.NUMERO_CNPJ   AS NUMERO_CNPJ
+            FROM PS1010 x
+            WHERE x.CODIGO_EMPRESA = eff.CodEmp
+            ORDER BY x.CODIGO_EMPRESA
+        ) emp1010
         OUTER APPLY (
             SELECT TOP 1 p.*
             FROM PS1032 p
@@ -188,7 +198,9 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao.dataCIDs
                             Filiacao1 = reader["FILIACAO_1"] as string,
                             Filiacao2 = reader["FILIACAO_2"] as string,
                             NomenclaturaCarencia = reader["NOMENCLATURA_CARENCIA"] as string,
-                            Cid = reader["CID"] as string
+                            Cid = reader["CID"] as string,
+                            NomeEmpresa = reader["NOME_EMPRESA"] as string,
+                            CnpjEmpresa = reader["CNPJ_EMPRESA"] as string
                         });
                     }
                 }

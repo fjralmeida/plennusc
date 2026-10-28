@@ -145,21 +145,19 @@ namespace appWhatsapp.PlennuscGestao.Views
             sb.Append("<style>td { mso-number-format:'\\@'; } th { background:#DCDCDC; font-weight:bold; }</style>");
             sb.Append("</head><body><table border='1'>");
 
-            // Cabeçalho
             string[] cabecalhos = {
-                "Modalidade", "Plano", "Nome Tabela Preço", "Entidade", "Titular", "Nome", "Tipo",
-                "Parentesco", "Estado Civil", "Sexo", "Data Nasc.", "CPF", "CNS",
-                "Telefone", "Endereço", "Complemento", "Bairro", "CEP", "Cidade",
-                "Estado", "Dt. Vigência", "Email", "Filiação 1", "Filiação 2",
-                "Nomenclatura da Carência", "CID"
-            };
+        "Modalidade", "Plano", "Nome Tabela Preço", "Entidade", "Titular", "Nome", "Tipo",
+        "Parentesco", "Estado Civil", "Sexo", "Data Nasc.", "CPF", "CNS",
+        "Telefone", "Endereço", "Complemento", "Bairro", "CEP", "Cidade",
+        "Estado", "Dt. Vigência", "Email", "Filiação 1", "Filiação 2",
+        "Nomenclatura da Carência", "CID", "Nome", "CNPJ"
+    };
 
             sb.Append("<tr>");
             foreach (var c in cabecalhos)
                 sb.Append("<th>").Append(HttpUtility.HtmlEncode(c)).Append("</th>");
             sb.Append("</tr>");
 
-            // Linhas
             foreach (var item in dados)
             {
                 sb.Append("<tr>");
@@ -167,6 +165,8 @@ namespace appWhatsapp.PlennuscGestao.Views
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Plano)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.NomeTabelaPreco)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Entidade)).Append("</td>");
+                sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.CnpjEmpresa)).Append("</td>");
+                sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.NomeEmpresa)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Titular)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Nome)).Append("</td>");
                 sb.Append("<td>").Append(HttpUtility.HtmlEncode(item.Tipo)).Append("</td>");

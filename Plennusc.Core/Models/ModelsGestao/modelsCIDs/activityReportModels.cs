@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Plennusc.Core.Models.ModelsGestao.modelsCIDs
 {
@@ -10,7 +6,7 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsCIDs
     {
         public string Modalidade { get; set; }
         public string Plano { get; set; }
-        public string NomeTabelaPreco { get; set; } // NOVO - nome da tabela de preço (vinda da PS1032)
+        public string NomeTabelaPreco { get; set; }
         public string Entidade { get; set; }
         public string Titular { get; set; }
         public string Nome { get; set; }
@@ -34,5 +30,9 @@ namespace Plennusc.Core.Models.ModelsGestao.modelsCIDs
         public string Filiacao2 { get; set; }
         public string NomenclaturaCarencia { get; set; }
         public string Cid { get; set; }
+
+        // Novas colunas (PS1010) — vazias quando CodEmp = '400'
+        public string NomeEmpresa { get; set; }
+        public string CnpjEmpresa { get; set; }
     }
 }

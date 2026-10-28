@@ -60,6 +60,8 @@
                         <asp:BoundField DataField="Plano" HeaderText="Plano" ItemStyle-CssClass="cel-curta" />
                         <asp:BoundField DataField="NomeTabelaPreco" HeaderText="Nome Tabela Preço" ItemStyle-CssClass="cel-normal" />
                         <asp:BoundField DataField="Entidade" HeaderText="Entidade" ItemStyle-CssClass="cel-normal" />
+                        <asp:BoundField DataField="CnpjEmpresa" HeaderText="CNPJ Empresa" ItemStyle-CssClass="cel-normal" />
+                        <asp:BoundField DataField="NomeEmpresa" HeaderText="Nome Empresa" ItemStyle-CssClass="cel-normal" />
                         <asp:BoundField DataField="Titular" HeaderText="Titular" ItemStyle-CssClass="cel-nome" />
                         <asp:BoundField DataField="Nome" HeaderText="Nome" ItemStyle-CssClass="cel-nome" />
 
@@ -99,6 +101,7 @@
                                 </div>
                             </ItemTemplate>
                         </asp:TemplateField>
+
                     </Columns>
                 </asp:GridView>
             </div>
