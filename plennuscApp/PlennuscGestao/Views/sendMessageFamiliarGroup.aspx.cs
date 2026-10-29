@@ -125,10 +125,42 @@ namespace PlennuscApp.PlennuscGestao.Views
 
         protected async void btnTestarApi_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(hfSelecionados.Value))
+            // 1. Tenta pegar os códigos do HiddenField (caso o JS tenha funcionado)
+            var codigosSelecionados = new List<string>();
+            if (!string.IsNullOrEmpty(hfSelecionados.Value))
             {
-                MostrarToast("Selecione pelo menos um beneficiário.", "warning");
-                return;
+                codigosSelecionados = hfSelecionados.Value.Split(',').ToList();
+            }
+
+            // 2. PLANO B: Varre o Grid na hora para ver quem está com checkbox marcado
+            if (codigosSelecionados.Count == 0)
+            {
+                foreach (GridViewRow row in GridAssociados.Rows)
+                {
+                    CheckBox chk = (CheckBox)row.FindControl("chkSelecionar");
+                    if (chk != null && chk.Checked)
+                    {
+                        Label lblCodigo = (Label)row.FindControl("lblCodigo");
+                        if (lblCodigo != null)
+                        {
+                            codigosSelecionados.Add(lblCodigo.Text);
+                        }
+                    }
+                }
+            }
+
+            // 3. Se não achou ninguém marcado no Grid, envia para todos os filtrados (Plano C)
+            if (codigosSelecionados.Count == 0)
+            {
+                if (!string.IsNullOrEmpty(hfTodosCodigos.Value))
+                {
+                    codigosSelecionados = hfTodosCodigos.Value.Split(',').ToList();
+                }
+                else
+                {
+                    MostrarToast("Selecione pelo menos um beneficiário.", "warning");
+                    return;
+                }
             }
 
             string mensagemEscolhida = hfTemplateEscolhido.Value;
@@ -150,8 +182,6 @@ namespace PlennuscApp.PlennuscGestao.Views
                     MostrarToast("Preencha a Data no card da mensagem escolhida.", "warning");
                     return;
                 }
-
-                var codigosSelecionados = hfSelecionados.Value.Split(',').ToList();
 
                 DateTime vencInicio = new DateTime(1900, 1, 1);
                 if (!string.IsNullOrEmpty(txtDataVencimentoInicio.Text))

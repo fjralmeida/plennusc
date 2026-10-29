@@ -20,10 +20,10 @@ namespace Plennusc.Core.Service.ServiceGestao
 
         public List<GrupoFamiliarEnvioModel> BuscarBeneficiarios(FiltroEnvioModel filtro)
         {
-            // 1. Traz os dados do Aliança (sem data de vencimento convertida no banco)
+            // 1. Traz os dados do Aliança
             var lista = _query.BuscarBeneficiarios(filtro, "PS1000");
 
-            // 2. Filtro de Data no C#
+            // 2. Filtro de Data no C# (O usuário que manda no período)
             if (filtro.VencimentoInicio.HasValue)
                 lista = lista.Where(x => x.DataVencimento >= filtro.VencimentoInicio.Value).ToList();
 
@@ -33,24 +33,31 @@ namespace Plennusc.Core.Service.ServiceGestao
             // 3. Regras das Mensagens
             if (filtro.Mensagem == "MSG_1")
             {
+                // A Vencer: Pega apenas o que não venceu ainda
                 lista = lista.Where(x => x.DataVencimento >= DateTime.Today).ToList();
             }
             else if (filtro.Mensagem == "MSG_2" || filtro.Mensagem == "MSG_4" || filtro.Mensagem == "MSG_5")
             {
-                var agrupado = lista.GroupBy(x => x.CodigoAssociado).ToList();
+                // Para as mensagens de atraso, separamos APENAS os boletos que estão vencidos
+                var boletosVencidos = lista.Where(x => x.DataVencimento < DateTime.Today).ToList();
+
+                // Agrupamos por cliente para contar quantos boletos ele tem
+                var agrupado = boletosVencidos.GroupBy(x => x.CodigoAssociado).ToList();
                 var listaFiltrada = new List<GrupoFamiliarEnvioModel>();
 
                 foreach (var grupo in agrupado)
                 {
-                    int boletosVencidos = grupo.Count(x => x.DataVencimento < DateTime.Today);
+                    int qtdBoletos = grupo.Count();
 
                     if (filtro.Mensagem == "MSG_2" || filtro.Mensagem == "MSG_4")
                     {
-                        if (boletosVencidos == 1) listaFiltrada.AddRange(grupo);
+                        // Exatamente 1 boleto vencido
+                        if (qtdBoletos == 1) listaFiltrada.AddRange(grupo);
                     }
                     else if (filtro.Mensagem == "MSG_5")
                     {
-                        if (boletosVencidos >= 2) listaFiltrada.AddRange(grupo);
+                        // 2 ou mais boletos vencidos
+                        if (qtdBoletos >= 2) listaFiltrada.AddRange(grupo);
                     }
                 }
                 lista = listaFiltrada;

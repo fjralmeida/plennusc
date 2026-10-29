@@ -17,31 +17,31 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
             var lista = new List<GrupoFamiliarEnvioModel>();
 
             string query = @"
-                SELECT 
-                    A.CODIGO_ASSOCIADO,
-                    CAST(A.CODIGO_EMPRESA AS VARCHAR) AS CodigoEmpresa,
-                    ISNULL(A.NOME_SOCIAL, A.NOME_ASSOCIADO) AS NomeTitular, 
-                    A.NUMERO_CPF AS CpfCnpj,
-                    C.NOME_PLANO_ABREVIADO AS GrupoContrato,
-                    CAST(A.CODIGO_EMPRESA AS VARCHAR) AS GrupoFaturamento,
-                    E.NOME_GRUPO_PESSOAS AS NomeGrupoPessoas,
-                    B.NUMERO_REGISTRO AS NumeroRegistroBoleto,
-                    TRY_CAST(B.DATA_VENCIMENTO AS DATETIME) AS DataVencimento,
-                    B.VALOR_FATURA AS ValorBoleto,
-                    '' AS Email,
-                    '' AS Telefone
-                FROM PS1000 A
-                INNER JOIN PS1020 B ON A.CODIGO_ASSOCIADO = B.CODIGO_ASSOCIADO
-                INNER JOIN PS1030 C ON A.CODIGO_PLANO = C.CODIGO_PLANO
-                LEFT JOIN PS1014 E ON A.CODIGO_GRUPO_PESSOAS = E.CODIGO_GRUPO_PESSOAS
-                WHERE 1=1
-                    -- REGRA DO GRUPO FAMILIAR
-                    AND A.CODIGO_EMPRESA = 400
-                    AND B.DATA_PAGAMENTO IS NULL
-                    
-                    AND (@TipoContratacaoAns IS NULL OR C.TIPO_CONTRATACAO_ANS = @TipoContratacaoAns)
-                    AND (@Operadora IS NULL OR A.CODIGO_GRUPO_CONTRATO = @Operadora)
-                    AND (@GrupoPessoas IS NULL OR A.CODIGO_GRUPO_PESSOAS = @GrupoPessoas)";
+        SELECT 
+            A.CODIGO_ASSOCIADO,
+            CAST(A.CODIGO_EMPRESA AS VARCHAR) AS CodigoEmpresa,
+            ISNULL(A.NOME_SOCIAL, A.NOME_ASSOCIADO) AS NomeTitular, 
+            A.NUMERO_CPF AS CpfCnpj,
+            C.NOME_PLANO_ABREVIADO AS GrupoContrato,
+            CAST(A.CODIGO_EMPRESA AS VARCHAR) AS GrupoFaturamento,
+            E.NOME_GRUPO_PESSOAS AS NomeGrupoPessoas,
+            B.NUMERO_REGISTRO AS NumeroRegistroBoleto,
+            CAST(B.DATA_VENCIMENTO AS VARCHAR(20)) AS DataVencimentoTexto, -- Data como TEXTO
+            B.VALOR_FATURA AS ValorBoleto,
+            ISNULL(EM.ENDERECO_EMAIL, '') AS Email,
+            ISNULL(TEL.NUMERO_TELEFONE, '') AS Telefone
+        FROM PS1000 A
+        INNER JOIN PS1020 B ON A.CODIGO_ASSOCIADO = B.CODIGO_ASSOCIADO
+        INNER JOIN PS1030 C ON A.CODIGO_PLANO = C.CODIGO_PLANO
+        LEFT JOIN PS1014 E ON A.CODIGO_GRUPO_PESSOAS = E.CODIGO_GRUPO_PESSOAS
+        LEFT JOIN PS1001 EM ON A.CODIGO_ASSOCIADO = EM.CODIGO_ASSOCIADO
+        LEFT JOIN PS1006 TEL ON A.CODIGO_ASSOCIADO = TEL.CODIGO_ASSOCIADO AND TEL.TIPO_TELEFONE = 'CELULAR'
+        WHERE 1=1
+            AND A.CODIGO_EMPRESA = 400
+            AND B.DATA_PAGAMENTO IS NULL
+            AND (@TipoContratacaoAns IS NULL OR C.TIPO_CONTRATACAO_ANS = @TipoContratacaoAns)
+            AND (@Operadora IS NULL OR A.CODIGO_GRUPO_CONTRATO = @Operadora)
+            AND (@GrupoPessoas IS NULL OR A.CODIGO_GRUPO_PESSOAS = @GrupoPessoas)";
 
             using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["Alianca"].ConnectionString))
             {
@@ -56,6 +56,10 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
                     {
                         while (reader.Read())
                         {
+                            DateTime dataConvertida;
+                            // Tenta converter o texto para data no C#. Se for lixo, vira DateTime.MinValue.
+                            DateTime.TryParse(reader["DataVencimentoTexto"].ToString(), out dataConvertida);
+
                             lista.Add(new GrupoFamiliarEnvioModel
                             {
                                 CodigoAssociado = reader["CODIGO_ASSOCIADO"].ToString(),
@@ -66,7 +70,7 @@ namespace Plennusc.Core.SqlQueries.SqlQueriesGestao
                                 GrupoFaturamento = reader["GrupoFaturamento"].ToString(),
                                 NomeGrupoPessoas = reader["NomeGrupoPessoas"] != DBNull.Value ? reader["NomeGrupoPessoas"].ToString() : "N/A",
                                 NumeroRegistroBoleto = Convert.ToInt32(reader["NumeroRegistroBoleto"]),
-                                DataVencimento = reader["DataVencimento"] != DBNull.Value ? Convert.ToDateTime(reader["DataVencimento"]) : DateTime.MinValue,
+                                DataVencimento = dataConvertida, // Aqui já é a data segura!
                                 ValorBoleto = Convert.ToDecimal(reader["ValorBoleto"]),
                                 Email = reader["Email"].ToString(),
                                 Telefone = reader["Telefone"].ToString()
